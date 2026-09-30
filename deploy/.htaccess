@@ -1,0 +1,3 @@
+# Pacote de deploy: SQL com o dump completo da BD e ZIP do site.
+# Nunca deve ser servido pela web (o site no servidor e um clone git).
+Require all denied

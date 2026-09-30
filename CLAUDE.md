@@ -91,3 +91,10 @@
   Festas" do site oficial é um iframe; não preenchido.
 - Fotos: 12 comércios e 4 associações sem imagem.
 - Sem deploy — site só local.
+
+## Deploy
+
+Pacote de primeira instalação em `deploy/` (30/09/2026): `atalaia_deploy.zip` (site completo,
+sem credenciais nem `debug-config.php`), `atalaia_migracoes.sql` (BD completa para uma BD vazia) e
+`LEIA-ME.md` com os passos. Testado a partir do próprio ZIP numa pasta e BD limpas (34 páginas e
+ficheiros, 0 falhas). Ainda **sem deploy feito** — site só local.

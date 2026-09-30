@@ -56,14 +56,16 @@
 - **História**: juf.aaej.pt (Igreja e Cruzeiros) + CM Montijo (resenhas da Atalaia e do Alto
   Estanqueiro-Jardia). Datas da cronologia todas das duas fontes.
 - **Pontos de interesse (8)**: Igreja de N.ª Sr.ª da Atalaia, Cruzeiro Mor, Cruzeiro de Alcochete,
-  Cruzeiro das Esmolas, Museu Agrícola da Atalaia, Monumento de Homenagem à Floricultura,
-  Monumento a Álvaro Tavares Mora e Cruzeiro de Granito (estes dois da "Rota da Atalaia" e da
+  Cruzeiro das Esmolas, Museu Agrícola da Atalaia, Flor da Liberdade (homenagem à
+  floricultura, Tony Cassanelli, inaugurada a 25/04/2024), Monumento a Álvaro Tavares Mora e Cruzeiro de Granito (estes dois da "Rota da Atalaia" e da
   "Arte Pública" da CM Montijo). Coordenadas: nós OSM dentro do polígono (o Cruzeiro de Granito
   não tem nó — sem coordenadas). Fotos: Wikimedia Commons (CC BY-SA — "Igreja da Nossa Senhora
   da Atalaia.jpg", "EUROPA - PORTUGAL - SETUBAL - MONTIJO - ATALAIA 01.jpg", "Cruzeiro da Atalaia
   - Portugal (50929638332).jpg", autor Vitor Oliveira) e CM Montijo (restantes, incl. 7 fotos
-  extra nos álbuns da galeria). Sem foto: Cruzeiro de Alcochete, Cruzeiro das Esmolas,
-  Floricultura.
+  extra nos álbuns da galeria). Cruzeiro das Esmolas: foto Commons com a placa «Cruzeiro da
+  Estrada ou das Esmolas»; Cruzeiro de Alcochete: o terceiro cruzeiro da categoria Commons dos três
+  cruzeiros (por eliminação — sem GPS na foto). Flor da Liberdade: foto da inauguração, Diário do
+  Distrito. **Todos os 8 pontos têm foto.**
   ⚠️ **A Fonte da Senhora fica no concelho de Alcochete** (nota da própria CM Montijo) — não
   incluída. As "Chaminés" da Rota da Atalaia ficam na estrada velha para o Montijo — freguesia não
   confirmada, não incluídas.
@@ -87,5 +89,5 @@
 - Documentos oficiais (orçamento, atas) — pedir à Junta.
 - Eventos (Festas de N.ª Sr.ª da Atalaia, agosto; Festas do Alto Estanqueiro) — o "Programa de
   Festas" do site oficial é um iframe; não preenchido.
-- Fotos: 3 pontos, 12 comércios e 4 associações sem imagem.
+- Fotos: 12 comércios e 4 associações sem imagem.
 - Sem deploy — site só local.

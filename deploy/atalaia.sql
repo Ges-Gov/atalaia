@@ -169,7 +169,7 @@ CREATE TABLE `assembleia_composicao` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,15 +179,15 @@ CREATE TABLE `assembleia_composicao` (
 LOCK TABLES `assembleia_composicao` WRITE;
 /*!40000 ALTER TABLE `assembleia_composicao` DISABLE KEYS */;
 INSERT INTO `assembleia_composicao` VALUES
-(35,'David Costa','Presidente da Assembleia','Mesa da Assembleia','CHEGA','david_costa.jpg',NULL,1,1,1,'2026-09-30 10:52:27',NULL),
-(36,'Luís Pinho','1.º Secretário','Mesa da Assembleia','CHEGA','luis_pinho.jpg',NULL,2,0,1,'2026-09-30 10:52:27',NULL),
-(37,'Carla Mestre','2.º Secretário','Mesa da Assembleia','CHEGA','carla_mestre.jpg',NULL,3,0,1,'2026-09-30 10:52:27',NULL),
-(38,'Bruno Silva','Vogal','Vogais','PS','bruno_silva.jpg',NULL,4,0,1,'2026-09-30 10:52:27',NULL),
-(39,'Adelino Silva','Vogal','Vogais','PS','adelino_silva.jpg',NULL,5,0,1,'2026-09-30 10:52:27',NULL),
-(40,'Inga Oliveira','Vogal','Vogais','MVC',NULL,NULL,6,0,1,'2026-09-30 10:52:27',NULL),
-(41,'Dora Horta','Vogal','Vogais','MVC','dora_horta.jpg',NULL,7,0,1,'2026-09-30 10:52:27',NULL),
-(42,'Patrícia Machado','Vogal','Vogais','PSD','patricia_machado.jpg',NULL,8,0,1,'2026-09-30 10:52:27',NULL),
-(43,'Rui Joaquim','Vogal','Vogais','IL','rui_joaquim.jpg',NULL,9,0,1,'2026-09-30 10:52:27',NULL);
+(53,'David Costa','Presidente da Assembleia','Mesa da Assembleia','CHEGA','david_costa.jpg',NULL,1,1,1,'2026-09-30 11:05:49',NULL),
+(54,'Luís Pinho','1.º Secretário','Mesa da Assembleia','CHEGA','luis_pinho.jpg',NULL,2,0,1,'2026-09-30 11:05:49',NULL),
+(55,'Carla Mestre','2.º Secretário','Mesa da Assembleia','CHEGA','carla_mestre.jpg',NULL,3,0,1,'2026-09-30 11:05:49',NULL),
+(56,'Bruno Silva','Vogal','Vogais','PS','bruno_silva.jpg',NULL,4,0,1,'2026-09-30 11:05:49',NULL),
+(57,'Adelino Silva','Vogal','Vogais','PS','adelino_silva.jpg',NULL,5,0,1,'2026-09-30 11:05:49',NULL),
+(58,'Inga Oliveira','Vogal','Vogais','MVC',NULL,NULL,6,0,1,'2026-09-30 11:05:49',NULL),
+(59,'Dora Horta','Vogal','Vogais','MVC','dora_horta.jpg',NULL,7,0,1,'2026-09-30 11:05:49',NULL),
+(60,'Patrícia Machado','Vogal','Vogais','PSD','patricia_machado.jpg',NULL,8,0,1,'2026-09-30 11:05:49',NULL),
+(61,'Rui Joaquim','Vogal','Vogais','IL','rui_joaquim.jpg',NULL,9,0,1,'2026-09-30 11:05:49',NULL);
 /*!40000 ALTER TABLE `assembleia_composicao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -471,7 +471,7 @@ CREATE TABLE `associacoes` (
   `instagram` varchar(255) DEFAULT NULL,
   `outros_contactos` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -481,12 +481,14 @@ CREATE TABLE `associacoes` (
 LOCK TABLES `associacoes` WRITE;
 /*!40000 ALTER TABLE `associacoes` DISABLE KEYS */;
 INSERT INTO `associacoes` VALUES
-(59,'Sociedade Recreativa Atalaiense','Associação desportiva, cultural e recreativa fundada a 11 de outubro de 1946.',NULL,NULL,'sociedade_recreativa_atalaiense.jpg','Avenida 28 de Setembro, 2870-701 Atalaia','38.7065383','-8.9213201','https://atalaiense.pt/','https://www.facebook.com/sociedade.atalaiense',NULL,NULL),
-(60,'Rancho Folclórico Juventude Atalaiense','Associação etnográfica, presença habitual nas Festas em honra de Nossa Senhora da Atalaia.',NULL,NULL,NULL,'Rua do Bairro Novo, Atalaia','38.7038851','-8.9255232',NULL,NULL,NULL,NULL),
-(61,'Águias Negras Futebol Clube','Clube fundado a 1 de março de 1964, no Alto Estanqueiro, com um papel importante na dinamização desportiva, social e cultural da freguesia.',NULL,'212 301 826',NULL,'Estrada da Charnequinha, 2870-604 Alto Estanqueiro-Jardia','38.6779956','-8.9237494',NULL,NULL,NULL,NULL),
-(62,'União Futebol Clube Jardiense','Clube de futebol da Jardia, fundado a 1 de maio de 1963.','uniaofcjardiense@gmail.com',NULL,NULL,'Rua União Clube Jardiense, 2870-684 Alto Estanqueiro-Jardia','38.6655363','-8.9256051',NULL,NULL,NULL,NULL),
-(63,'Academia Desportiva Infantil e Juvenil Bairro Miranda','Associação desportiva, recreativa e cultural fundada a 31 de março de 2003, dedicada sobretudo ao futsal jovem. Recebeu a Bandeira da Ética do IPDJ em 2020.',NULL,NULL,'academia_bairro_miranda.jpg','Rua das Águias, 85 – Bairro Miranda, 2870-682 Alto Estanqueiro-Jardia','38.6721345','-8.9258328',NULL,'https://www.facebook.com/academia.bairro.miranda/',NULL,NULL),
-(64,'Associação Mansos e Vadios','Tertúlia e charanga da Atalaia, organizadora da Caminhada Solidária da Atalaia, integrada nas comemorações do 25 de Abril.',NULL,NULL,NULL,'Atalaia',NULL,NULL,NULL,NULL,NULL,NULL);
+(73,'Sociedade Recreativa Atalaiense','Associação desportiva, cultural e recreativa fundada a 11 de outubro de 1946.',NULL,NULL,'sociedade_recreativa_atalaiense.jpg','Avenida 28 de Setembro, 2870-701 Atalaia','38.7065383','-8.9213201','https://atalaiense.pt/','https://www.facebook.com/sociedade.atalaiense',NULL,NULL),
+(74,'Rancho Folclórico Juventude Atalaiense','Associação etnográfica, presença habitual nas Festas em honra de Nossa Senhora da Atalaia.',NULL,NULL,NULL,'Rua do Bairro Novo, Atalaia','38.7038851','-8.9255232',NULL,NULL,NULL,NULL),
+(75,'Águias Negras Futebol Clube','Clube fundado a 1 de março de 1964, no Alto Estanqueiro, com um papel importante na dinamização desportiva, social e cultural da freguesia.',NULL,'212 301 826','noticia_aguias_negras_62.jpg','Estrada da Charnequinha, 2870-604 Alto Estanqueiro-Jardia','38.6779956','-8.9237494',NULL,NULL,NULL,NULL),
+(76,'União Futebol Clube Jardiense','Clube de futebol da Jardia, fundado a 1 de maio de 1963.','uniaofcjardiense@gmail.com','917 752 975','ufc_jardiense.jpg','Rua União Clube Jardiense, 2870-684 Alto Estanqueiro-Jardia','38.6655363','-8.9256051',NULL,'https://www.facebook.com/formacaojardia/',NULL,NULL),
+(77,'Academia Desportiva Infantil e Juvenil Bairro Miranda','Associação desportiva, recreativa e cultural fundada a 31 de março de 2003, dedicada sobretudo ao futsal jovem. Recebeu a Bandeira da Ética do IPDJ em 2020.',NULL,NULL,'academia_bairro_miranda.jpg','Rua das Águias, 85 – Bairro Miranda, 2870-682 Alto Estanqueiro-Jardia','38.6721345','-8.9258328',NULL,'https://www.facebook.com/academia.bairro.miranda/',NULL,NULL),
+(78,'Associação Mansos e Vadios','Tertúlia e charanga da Atalaia, organizadora da Caminhada Solidária da Atalaia, integrada nas comemorações do 25 de Abril.',NULL,NULL,NULL,'Atalaia',NULL,NULL,NULL,NULL,NULL,NULL),
+(79,'Centro Social e Paroquial de Nossa Senhora da Atalaia','Instituição Particular de Solidariedade Social que gere creche, centro de dia e serviço de apoio domiciliário. Atendimento das 9h30 às 12h30 e das 14h30 às 18h45.','geral.csatalaia@gmail.com','212 317 534 / 915 943 757',NULL,'Escadaria do Adro da Igreja, 2870-711 Atalaia',NULL,NULL,'https://www.cspatalaia.com/',NULL,NULL,NULL),
+(80,'Cáritas Paroquial de Nossa Senhora da Atalaia','Apoio social às famílias da freguesia, ligada à paróquia de Nossa Senhora da Atalaia.','caritas.atalaia@gmail.com',NULL,NULL,'Atalaia',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `associacoes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -543,7 +545,7 @@ CREATE TABLE `comercio_local` (
   `instagram` varchar(255) DEFAULT NULL,
   `outros_contactos` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -553,13 +555,22 @@ CREATE TABLE `comercio_local` (
 LOCK TABLES `comercio_local` WRITE;
 /*!40000 ALTER TABLE `comercio_local` DISABLE KEYS */;
 INSERT INTO `comercio_local` VALUES
-(80,'O Ninho','Restaurante','212 318 988','o_ninho.jpg',NULL,'Avenida Dom Manuel I, 2870-736 Atalaia','38.7062978','-8.9230556','https://restauranteoninho.net/',NULL,NULL,'Grelhados no carvão, peixe e cozinha tradicional portuguesa.'),
-(81,'Adega do Mocho','Restaurante',NULL,NULL,NULL,'EN 4, 2870-700 Atalaia','38.7066864','-8.9287066',NULL,NULL,NULL,NULL),
-(82,'A Rotunda','Restaurante',NULL,NULL,NULL,'Rua das Forças Armadas, 2870-712 Atalaia','38.7064795','-8.9276435',NULL,NULL,NULL,NULL),
-(83,'O Típico','Restaurante','211 586 265 / 914 602 806',NULL,NULL,'EN 5, 2870-621 Alto Estanqueiro','38.6812278','-8.928787',NULL,NULL,NULL,NULL),
-(84,'Padaria da Atalaia','Padaria','212 474 228',NULL,NULL,'Rua do Mercado, 31, 2870-751 Atalaia','38.7052472','-8.9226277',NULL,NULL,NULL,NULL),
-(85,'Farmácia Cravidão','Farmácia',NULL,NULL,NULL,'Avenida Dom Manuel I, 2870-736 Atalaia','38.7064108','-8.9228921',NULL,NULL,NULL,NULL),
-(86,'Provari','Comércio agrícola e ferragens','212 318 904',NULL,NULL,'Rua 25 de Abril, 25, 2870-709 Atalaia','38.7061291','-8.9222211',NULL,NULL,NULL,'Comércio agrícola, agropecuária e ferragens.');
+(103,'O Ninho','Restaurante','212 318 988','o_ninho.jpg',NULL,'Avenida Dom Manuel I, 2870-736 Atalaia','38.7062978','-8.9230556','https://restauranteoninho.net/',NULL,NULL,'Grelhados no carvão, peixe e cozinha tradicional portuguesa.'),
+(104,'Adega do Mocho','Restaurante','212 316 312 / 912 217 453','adega_do_mocho.jpg',NULL,'EN 4, n.º 41, Atalaia','38.7066864','-8.9287066',NULL,'https://www.facebook.com/pages/Adega-Mocho/175906119213164',NULL,'Cozinha simples e rústica, com destaque para a carne de porco preto.'),
+(105,'Restaurante Churrasqueira O Carlos','Restaurante','212 316 760','o_carlos.jpg','restaurantecarlos52@gmail.com','Rua Círio de Aldegalega, 210, 2870-724 Atalaia','38.7095185','-8.9263794',NULL,'https://www.facebook.com/Restaurante-Churrasqueira-O-Carlos-639343232765601/',NULL,'Grelhados e cozinha tradicional.'),
+(106,'O Tacho d\'Mãe','Restaurante',NULL,'o_tacho_d_mae.jpg',NULL,'Rua da Figueira, 68, 2870-738 Atalaia','38.7003828','-8.9297564',NULL,'https://www.facebook.com/tachodamae',NULL,'Cozinha tradicional alentejana.'),
+(107,'A Rotunda','Restaurante','910 532 529',NULL,NULL,'Rua das Forças Armadas, 2870-712 Atalaia','38.7064795','-8.9276435',NULL,NULL,NULL,NULL),
+(108,'Sinfonia dos Sabores','Restaurante / Marisqueira',NULL,NULL,NULL,'Rua das Forças Armadas, 2870-712 Atalaia','38.7041687','-8.9276785',NULL,'https://www.facebook.com/p/Sinfonia-dos-Sabores-Restaurante-Marisqueira-61581520914922/',NULL,'Marisqueira e grelhados.'),
+(109,'O Típico','Restaurante','211 586 265 / 914 602 806',NULL,NULL,'EN 5, 2870-621 Alto Estanqueiro','38.6812278','-8.928787',NULL,NULL,NULL,NULL),
+(110,'Marisqueira Sabores do Mar','Restaurante / Marisqueira',NULL,NULL,NULL,'Rua 1.º de Maio, 2870-626 Jardia',NULL,NULL,NULL,'https://www.facebook.com/p/Restaurante-Marisqueira-Sabores-do-Mar-100067801087481/',NULL,'Antigo «Mercado do Peixe».'),
+(111,'O Pardal','Restaurante',NULL,NULL,NULL,'Rua dos Tractores, 506 – Parque Industrial da Jardia','38.6720755','-8.9367860',NULL,'https://www.facebook.com/opardal.montijo/',NULL,'Almoços de segunda a sexta-feira.'),
+(112,'Apeadeiro Café','Café',NULL,NULL,NULL,'Rua do Operário, 10, 2870-609 Alto Estanqueiro-Jardia',NULL,NULL,NULL,NULL,NULL,NULL),
+(113,'Padaria da Atalaia','Padaria','212 474 228',NULL,NULL,'Rua do Mercado, 31, 2870-751 Atalaia','38.7052472','-8.9226277',NULL,NULL,NULL,NULL),
+(114,'Farmácia Cravidão','Farmácia',NULL,NULL,NULL,'Avenida Dom Manuel I, 2870-736 Atalaia','38.7064108','-8.9228921',NULL,NULL,NULL,NULL),
+(115,'Provari','Comércio agrícola e ferragens','212 318 904',NULL,NULL,'Rua 25 de Abril, 25, 2870-709 Atalaia','38.7061291','-8.9222211',NULL,NULL,NULL,'Comércio agrícola, agropecuária e ferragens.'),
+(116,'Rolizoo','Loja de animais','212 384 731',NULL,NULL,'EN 252, gaveto com a Rua Gil Fernandes, 2, Alto Estanqueiro','38.6804598','-8.9387858','https://www.rolizoo.com/',NULL,NULL,NULL),
+(117,'Stand Ricarauto','Comércio automóvel','964 604 547',NULL,NULL,'EN 252, 2870-660 Alto Estanqueiro','38.6810634','-8.9393324','https://www.standricarauto.pt/',NULL,NULL,NULL),
+(118,'RP Auto','Oficina automóvel',NULL,NULL,NULL,'EN 4, 2870-700 Atalaia','38.7066243','-8.9285662',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `comercio_local` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -659,7 +670,7 @@ CREATE TABLE `contactos_uteis` (
   `ativo` tinyint(1) NOT NULL DEFAULT 1,
   `atualizado_em` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -669,13 +680,13 @@ CREATE TABLE `contactos_uteis` (
 LOCK TABLES `contactos_uteis` WRITE;
 /*!40000 ALTER TABLE `contactos_uteis` DISABLE KEYS */;
 INSERT INTO `contactos_uteis` VALUES
-(24,'Junta de Freguesia — Sede','Junta de Freguesia','212 320 480 / 910 697 305 / 961 826 278','geral@juf.aaej.pt','Av. 28 de Setembro, n.º 56, 2870-701 Atalaia','Segunda a sexta, 9h00–12h30 e 14h00–17h30',NULL,NULL,1,1,1,NULL),
-(25,'Junta de Freguesia — Dependência','Junta de Freguesia','212 301 076',NULL,'Rua dos Russos – Quinta das Tílias, 2870-624 Alto Estanqueiro-Jardia',NULL,NULL,NULL,2,1,1,NULL),
-(26,'Posto CTT (na sede da Junta)','Serviços','212 320 480',NULL,'Av. 28 de Setembro, n.º 56, 2870-701 Atalaia','Segunda a sexta, 9h00–12h30',NULL,NULL,3,0,1,NULL),
-(27,'Escola Básica de Novos Trilhos','Educação','212 312 623',NULL,'Rua 28 de Setembro, Atalaia',NULL,NULL,NULL,4,0,1,NULL),
-(28,'Escola Básica do Alto Estanqueiro','Educação','212 318 521',NULL,'Rua Gomes Martins de Lemos, Alto Estanqueiro',NULL,NULL,NULL,5,0,1,NULL),
-(29,'Escola Básica de Jardia','Educação','212 361 576',NULL,'Jardia',NULL,NULL,NULL,6,0,1,NULL),
-(30,'Jardim de Infância de Alto Estanqueiro-Jardia','Educação',NULL,NULL,'Alto Estanqueiro',NULL,NULL,NULL,7,0,1,NULL);
+(38,'Junta de Freguesia — Sede','Junta de Freguesia','212 320 480 / 910 697 305 / 961 826 278','geral@juf.aaej.pt','Av. 28 de Setembro, n.º 56, 2870-701 Atalaia','Segunda a sexta, 9h00–12h30 e 14h00–17h30',NULL,NULL,1,1,1,NULL),
+(39,'Junta de Freguesia — Dependência','Junta de Freguesia','212 301 076',NULL,'Rua dos Russos – Quinta das Tílias, 2870-624 Alto Estanqueiro-Jardia',NULL,NULL,NULL,2,1,1,NULL),
+(40,'Posto CTT (na sede da Junta)','Serviços','212 320 480',NULL,'Av. 28 de Setembro, n.º 56, 2870-701 Atalaia','Segunda a sexta, 9h00–12h30',NULL,NULL,3,0,1,NULL),
+(41,'Escola Básica de Novos Trilhos','Educação','212 312 623',NULL,'Rua 28 de Setembro, Atalaia',NULL,NULL,NULL,4,0,1,NULL),
+(42,'Escola Básica do Alto Estanqueiro','Educação','212 318 521',NULL,'Rua Gomes Martins de Lemos, Alto Estanqueiro',NULL,NULL,NULL,5,0,1,NULL),
+(43,'Escola Básica de Jardia','Educação','212 361 576',NULL,'Jardia',NULL,NULL,NULL,6,0,1,NULL),
+(44,'Jardim de Infância de Alto Estanqueiro-Jardia','Educação',NULL,NULL,'Alto Estanqueiro',NULL,NULL,NULL,7,0,1,NULL);
 /*!40000 ALTER TABLE `contactos_uteis` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1127,7 +1138,7 @@ CREATE TABLE `executivo_membros` (
   `ativo` tinyint(1) DEFAULT 1,
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1137,9 +1148,9 @@ CREATE TABLE `executivo_membros` (
 LOCK TABLES `executivo_membros` WRITE;
 /*!40000 ALTER TABLE `executivo_membros` DISABLE KEYS */;
 INSERT INTO `executivo_membros` VALUES
-(22,'Pedro Miguel Guerreiro da Franca Araújo','Presidente','Gestão Financeira\nRecursos Humanos\nPatrimónio\nExpediente\nDesporto e Associativismo',NULL,NULL,'pedro_araujo.jpg',1,1,'2026-09-30 10:52:27'),
-(23,'Vanessa Sofia Leite de Castro','Secretária','Ação Social\nCultura\nEducação e Ensino\nCertificação de Atas\nSubscrição de Atestados',NULL,NULL,'vanessa_castro.jpg',2,1,'2026-09-30 10:52:27'),
-(24,'Augusto Marques Cardoso','Tesoureiro','Higiene e Limpeza Urbana\nMercados e Feiras\nObras\nArrecadação de Receitas\nSubscrição de Despesas autorizadas',NULL,NULL,'augusto_cardoso.jpg',3,1,'2026-09-30 10:52:27');
+(28,'Pedro Miguel Guerreiro da Franca Araújo','Presidente','Gestão Financeira\nRecursos Humanos\nPatrimónio\nExpediente\nDesporto e Associativismo',NULL,NULL,'pedro_araujo.jpg',1,1,'2026-09-30 11:05:49'),
+(29,'Vanessa Sofia Leite de Castro','Secretária','Ação Social\nCultura\nEducação e Ensino\nCertificação de Atas\nSubscrição de Atestados',NULL,NULL,'vanessa_castro.jpg',2,1,'2026-09-30 11:05:49'),
+(30,'Augusto Marques Cardoso','Tesoureiro','Higiene e Limpeza Urbana\nMercados e Feiras\nObras\nArrecadação de Receitas\nSubscrição de Despesas autorizadas',NULL,NULL,'augusto_cardoso.jpg',3,1,'2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `executivo_membros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1200,7 +1211,7 @@ CREATE TABLE `galeria_albuns` (
   `criado_em` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_origem` (`origem`,`origem_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1210,9 +1221,11 @@ CREATE TABLE `galeria_albuns` (
 LOCK TABLES `galeria_albuns` WRITE;
 /*!40000 ALTER TABLE `galeria_albuns` DISABLE KEYS */;
 INSERT INTO `galeria_albuns` VALUES
-(121,'Igreja de Nossa Senhora da Atalaia',NULL,'igreja_atalaia.jpg','ponto',90,90,1,'2026-09-30 10:52:27'),
-(122,'Cruzeiro Mor',NULL,'cruzeiro_mor.jpg','ponto',91,91,1,'2026-09-30 10:52:27'),
-(123,'Museu Agrícola da Atalaia',NULL,'museu_agricola_atalaia.jpg','ponto',94,94,1,'2026-09-30 10:52:27');
+(131,'Igreja de Nossa Senhora da Atalaia',NULL,'igreja_atalaia.jpg','ponto',104,104,1,'2026-09-30 11:05:49'),
+(132,'Cruzeiro Mor',NULL,'cruzeiro_mor.jpg','ponto',105,105,1,'2026-09-30 11:05:49'),
+(133,'Museu Agrícola da Atalaia',NULL,'museu_agricola_atalaia.jpg','ponto',108,108,1,'2026-09-30 11:05:49'),
+(134,'Monumento a Álvaro Tavares Mora',NULL,'monumento_alvaro_tavares_mora.jpg','ponto',110,110,1,'2026-09-30 11:05:49'),
+(135,'Cruzeiro de Granito',NULL,'cruzeiro_granito.jpg','ponto',111,111,1,'2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `galeria_albuns` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1234,7 +1247,7 @@ CREATE TABLE `galeria_imagens` (
   PRIMARY KEY (`id`),
   KEY `idx_album` (`album_id`),
   CONSTRAINT `fk_galeria_imagens_album` FOREIGN KEY (`album_id`) REFERENCES `galeria_albuns` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1244,9 +1257,18 @@ CREATE TABLE `galeria_imagens` (
 LOCK TABLES `galeria_imagens` WRITE;
 /*!40000 ALTER TABLE `galeria_imagens` DISABLE KEYS */;
 INSERT INTO `galeria_imagens` VALUES
-(128,121,'igreja_atalaia.jpg','Igreja de Nossa Senhora da Atalaia',1,1,'2026-09-30 10:52:27'),
-(129,122,'cruzeiro_mor.jpg','Cruzeiro Mor',1,1,'2026-09-30 10:52:27'),
-(130,123,'museu_agricola_atalaia.jpg','Museu Agrícola da Atalaia',1,1,'2026-09-30 10:52:27');
+(145,131,'igreja_atalaia.jpg','Igreja de Nossa Senhora da Atalaia',1,1,'2026-09-30 11:05:49'),
+(146,132,'cruzeiro_mor.jpg','Cruzeiro Mor',1,1,'2026-09-30 11:05:49'),
+(147,133,'museu_agricola_atalaia.jpg','Museu Agrícola da Atalaia',1,1,'2026-09-30 11:05:49'),
+(148,134,'monumento_alvaro_tavares_mora.jpg','Monumento a Álvaro Tavares Mora',1,1,'2026-09-30 11:05:49'),
+(149,135,'cruzeiro_granito.jpg','Cruzeiro de Granito',1,1,'2026-09-30 11:05:49'),
+(152,131,'igreja_atalaia_interior.jpg','Interior e retábulo do altar-mor',2,1,'2026-09-30 11:05:49'),
+(153,131,'igreja_atalaia_escadaria.jpg','A escadaria do Santuário',3,1,'2026-09-30 11:05:49'),
+(154,132,'cruzeiro_mor_2.jpg','Cruzeiro Mor',2,1,'2026-09-30 11:05:49'),
+(155,132,'cruzeiro_mor_noite.jpg','Cruzeiro Mor à noite',3,1,'2026-09-30 11:05:49'),
+(156,133,'museu_agricola_lagar.jpg','Mós do lagar de azeite',2,1,'2026-09-30 11:05:49'),
+(157,133,'museu_agricola_quinta_nova.jpg','Quinta Nova da Atalaia',3,1,'2026-09-30 11:05:49'),
+(158,134,'monumento_alvaro_tavares_mora_2.jpg','Busto de Álvaro Tavares Mora',2,1,'2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `galeria_imagens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1268,7 +1290,7 @@ CREATE TABLE `heraldica_elementos` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1278,10 +1300,10 @@ CREATE TABLE `heraldica_elementos` (
 LOCK TABLES `heraldica_elementos` WRITE;
 /*!40000 ALTER TABLE `heraldica_elementos` DISABLE KEYS */;
 INSERT INTO `heraldica_elementos` VALUES
-(32,'Brasão da Atalaia','Escudo de prata, cruzeiro de púrpura assente num monte de negro, movente da ponta e entre uma flor-de-lis de azul, à dextra, e uma espiga de milho de ouro, folhada de verde, à sinistra. Coroa mural de prata de três torres. Listel branco, com a legenda a negro: «Atalaia – Montijo».','bi-shield',NULL,1,1,'2026-09-30 10:52:27',NULL),
-(33,'Bandeira da Atalaia','De azul. Cordão e borlas de prata e azul. Haste e lança de ouro.','bi-flag',NULL,2,1,'2026-09-30 10:52:27',NULL),
-(34,'Brasão do Alto Estanqueiro-Jardia','Escudo de prata, uma cruz da Ordem de Santiago, de vermelho, uma roda dentada de azul, uma espiga de milho de ouro, folhada de verde, e um pinheiro arrancado de verde, frutado de ouro, as quatro figuras dispostas em cruz. Coroa mural de três torres de prata. Listel branco, com a legenda a negro: «Alto Estanqueiro–Jardia».','bi-shield',NULL,3,1,'2026-09-30 10:52:27',NULL),
-(35,'Bandeira do Alto Estanqueiro-Jardia','De vermelho. Cordão e borlas de prata e vermelho. Haste e lança de ouro.','bi-flag',NULL,4,1,'2026-09-30 10:52:27',NULL);
+(40,'Brasão da Atalaia','Escudo de prata, cruzeiro de púrpura assente num monte de negro, movente da ponta e entre uma flor-de-lis de azul, à dextra, e uma espiga de milho de ouro, folhada de verde, à sinistra. Coroa mural de prata de três torres. Listel branco, com a legenda a negro: «Atalaia – Montijo».','bi-shield',NULL,1,1,'2026-09-30 11:05:49',NULL),
+(41,'Bandeira da Atalaia','De azul. Cordão e borlas de prata e azul. Haste e lança de ouro.','bi-flag',NULL,2,1,'2026-09-30 11:05:49',NULL),
+(42,'Brasão do Alto Estanqueiro-Jardia','Escudo de prata, uma cruz da Ordem de Santiago, de vermelho, uma roda dentada de azul, uma espiga de milho de ouro, folhada de verde, e um pinheiro arrancado de verde, frutado de ouro, as quatro figuras dispostas em cruz. Coroa mural de três torres de prata. Listel branco, com a legenda a negro: «Alto Estanqueiro–Jardia».','bi-shield',NULL,3,1,'2026-09-30 11:05:49',NULL),
+(43,'Bandeira do Alto Estanqueiro-Jardia','De vermelho. Cordão e borlas de prata e vermelho. Haste e lança de ouro.','bi-flag',NULL,4,1,'2026-09-30 11:05:49',NULL);
 /*!40000 ALTER TABLE `heraldica_elementos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1675,7 +1697,7 @@ CREATE TABLE `noticias` (
   `imagem_foco_y` tinyint(3) unsigned NOT NULL DEFAULT 50,
   `categoria` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1685,13 +1707,13 @@ CREATE TABLE `noticias` (
 LOCK TABLES `noticias` WRITE;
 /*!40000 ALTER TABLE `noticias` DISABLE KEYS */;
 INSERT INTO `noticias` VALUES
-(58,'Montijo, 41 anos de cidade','No dia 14 de agosto de 1985, o Montijo foi elevado à categoria de cidade.\n\nHoje, 41 anos depois, celebramos não apenas uma data, mas uma história construída por gerações de Montijenses e por todas as freguesias do concelho, que ao longo dos anos contribuíram para o seu desenvolvimento e afirmação.\n\nO crescimento do Montijo fez-se também a partir das suas freguesias, através do trabalho das suas populações, da atividade económica, da agricultura, do comércio, das associações, da cultura, das tradições e da vida comunitária.\n\nA União das Freguesias de Atalaia e Alto Estanqueiro-Jardia associa-se a esta celebração, deixando uma palavra de reconhecimento a todos aqueles que, ao longo dos anos, contribuíram e continuam a contribuir para o crescimento e desenvolvimento do nosso concelho.\n\nParabéns, Montijo.',NULL,'2026-08-14 10:00:00',50,50,'Freguesia'),
-(59,'Entrega do donativo angariado à Cáritas Diocesana','No dia 22 de maio foi entregue à Cáritas Diocesana o donativo angariado na 3.ª Caminhada Solidária da Atalaia, iniciativa promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, com o apoio da Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia.\n\nGraças à participação de todos, foi possível angariar 306 €, valor que reverteu integralmente para esta instituição, contribuindo para apoiar quem mais precisa na nossa comunidade.\n\nA todos os que participaram e contribuíram, o nosso sincero obrigado. Juntos, continuamos a construir uma união de freguesias mais solidária, unida e próxima da comunidade.','noticia_caritas.jpg','2026-05-22 10:00:00',50,50,'Social'),
-(60,'3.ª Caminhada Solidária da Atalaia','A Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia marcou presença na 3.ª Caminhada Solidária da Atalaia.\n\nEsta iniciativa, promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, voltou a reunir fregueses, munícipes, famílias e visitantes num momento de convívio, partilha e solidariedade. Com um percurso acessível, a caminhada teve como principal objetivo apoiar uma instituição de solidariedade do concelho.\n\nO valor total angariado através das inscrições foi de 306 €, doado à Cáritas Diocesana da Atalaia. A Junta felicita a Associação Mansos e Vadios pela excelente organização desta 3.ª edição e todos os participantes, e agradece ao Restaurante «O Ninho» o apoio prestado a esta causa.','noticia_caminhada_2026.jpg','2026-04-25 10:00:00',50,50,'Eventos'),
-(61,'Mensagem de Páscoa','Estimados fregueses da Atalaia, Alto Estanqueiro e Jardia.\n\nNesta época de celebração e partilha, dirijo-me a cada um de vós para desejar uma Santa Páscoa, repleta de harmonia e paz. A Páscoa é, acima de tudo, um tempo de renovação e de esperança — valores que guiam o nosso trabalho diário na União de Freguesias.\n\nQue este período seja vivido com serenidade junto das vossas famílias e que o espírito de união que carateriza a nossa terra se fortaleça ainda mais.\n\nUm abraço fraterno a todos.\nPedro Araújo — O Presidente','noticia_pascoa_2026.jpg','2026-04-03 15:00:00',50,50,'Freguesia'),
-(62,'Apresentação do livro «Um Pouco de Tudo», de José Martinho','No passado dia 28 de março, a dependência da Junta no Alto Estanqueiro encheu-se de poesia, emoção e partilha com a apresentação do livro «Um Pouco de Tudo», de José Martinho, um autor da nossa terra.\n\nCom um percurso marcante no futebol — como jogador, treinador e árbitro ao mais alto nível —, José Martinho traz agora para a escrita o mesmo rigor, sensibilidade e olhar atento sobre a vida, dando continuidade a obras como «Histórias Rimadas» e «Amor e Humor em Poesia».\n\nA sessão, conduzida por Inga Oliveira, locutora e também membro da assembleia de freguesia, contou com momentos verdadeiramente especiais: enquanto a poesia era declamada, o Sr. Sérgio Pastor acompanhava ao acordeão. No final, houve ainda uma sessão de autógrafos e um momento de convívio com o autor.','noticia_livro_jose_martinho.jpg','2026-03-28 18:00:00',50,50,'Cultura'),
-(63,'62.º aniversário do Águias Negras Futebol Clube','No dia 1 de março de 2026, o Senhor Presidente e o Senhor Tesoureiro da Junta estiveram presentes no almoço comemorativo do 62.º aniversário do Águias Negras Futebol Clube, que teve lugar na sua sede, no Alto Estanqueiro.\n\nA iniciativa reuniu sócios, familiares e amigos desta coletividade, num momento de convívio e celebração, assinalado com um almoço tradicional de feijoada caramela.\n\nA Junta associa-se a esta data, felicitando o Águias Negras Futebol Clube pelos seus 62 anos de existência e destacando o seu importante papel na dinamização desportiva, social e cultural da freguesia.','noticia_aguias_negras_62.jpg','2026-03-01 13:00:00',50,50,'Associativismo'),
-(64,'Ajuda solidária a Alcácer do Sal','As recentes cheias em Alcácer do Sal afetaram várias famílias, que neste momento precisam do apoio de todos. A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia está a promover uma angariação de bens alimentares e produtos de higiene, que serão entregues diretamente no local com a carrinha da Junta.\n\nO que pode doar: alimentos não perecíveis (arroz, massa, enlatados, leite, óleo, bolachas) e produtos de higiene pessoal (gel de banho, champô, pasta e escova de dentes, fraldas, pensos higiénicos, papel higiénico).\n\nPontos de recolha: Sede (Av. 28 de Setembro, n.º 56, Atalaia) e Dependência (Rua dos Russos – Quinta das Tílias, Alto Estanqueiro-Jardia), das 9h00 às 12h30 e das 14h00 às 17h30, até terça-feira, dia 10 de fevereiro.','noticia_alcacer_do_sal.jpg','2026-02-05 10:00:00',50,50,'Social');
+(72,'Montijo, 41 anos de cidade','No dia 14 de agosto de 1985, o Montijo foi elevado à categoria de cidade.\n\nHoje, 41 anos depois, celebramos não apenas uma data, mas uma história construída por gerações de Montijenses e por todas as freguesias do concelho, que ao longo dos anos contribuíram para o seu desenvolvimento e afirmação.\n\nO crescimento do Montijo fez-se também a partir das suas freguesias, através do trabalho das suas populações, da atividade económica, da agricultura, do comércio, das associações, da cultura, das tradições e da vida comunitária.\n\nA União das Freguesias de Atalaia e Alto Estanqueiro-Jardia associa-se a esta celebração, deixando uma palavra de reconhecimento a todos aqueles que, ao longo dos anos, contribuíram e continuam a contribuir para o crescimento e desenvolvimento do nosso concelho.\n\nParabéns, Montijo.','noticia_montijo_41_anos.jpg','2026-08-14 10:00:00',50,50,'Freguesia'),
+(73,'Entrega do donativo angariado à Cáritas Diocesana','No dia 22 de maio foi entregue à Cáritas Diocesana o donativo angariado na 3.ª Caminhada Solidária da Atalaia, iniciativa promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, com o apoio da Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia.\n\nGraças à participação de todos, foi possível angariar 306 €, valor que reverteu integralmente para esta instituição, contribuindo para apoiar quem mais precisa na nossa comunidade.\n\nA todos os que participaram e contribuíram, o nosso sincero obrigado. Juntos, continuamos a construir uma união de freguesias mais solidária, unida e próxima da comunidade.','noticia_caritas.jpg','2026-05-22 10:00:00',50,50,'Social'),
+(74,'3.ª Caminhada Solidária da Atalaia','A Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia marcou presença na 3.ª Caminhada Solidária da Atalaia.\n\nEsta iniciativa, promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, voltou a reunir fregueses, munícipes, famílias e visitantes num momento de convívio, partilha e solidariedade. Com um percurso acessível, a caminhada teve como principal objetivo apoiar uma instituição de solidariedade do concelho.\n\nO valor total angariado através das inscrições foi de 306 €, doado à Cáritas Diocesana da Atalaia. A Junta felicita a Associação Mansos e Vadios pela excelente organização desta 3.ª edição e todos os participantes, e agradece ao Restaurante «O Ninho» o apoio prestado a esta causa.','noticia_caminhada_2026.jpg','2026-04-25 10:00:00',50,50,'Eventos'),
+(75,'Mensagem de Páscoa','Estimados fregueses da Atalaia, Alto Estanqueiro e Jardia.\n\nNesta época de celebração e partilha, dirijo-me a cada um de vós para desejar uma Santa Páscoa, repleta de harmonia e paz. A Páscoa é, acima de tudo, um tempo de renovação e de esperança — valores que guiam o nosso trabalho diário na União de Freguesias.\n\nQue este período seja vivido com serenidade junto das vossas famílias e que o espírito de união que carateriza a nossa terra se fortaleça ainda mais.\n\nUm abraço fraterno a todos.\nPedro Araújo — O Presidente','noticia_pascoa_2026.jpg','2026-04-03 15:00:00',50,50,'Freguesia'),
+(76,'Apresentação do livro «Um Pouco de Tudo», de José Martinho','No passado dia 28 de março, a dependência da Junta no Alto Estanqueiro encheu-se de poesia, emoção e partilha com a apresentação do livro «Um Pouco de Tudo», de José Martinho, um autor da nossa terra.\n\nCom um percurso marcante no futebol — como jogador, treinador e árbitro ao mais alto nível —, José Martinho traz agora para a escrita o mesmo rigor, sensibilidade e olhar atento sobre a vida, dando continuidade a obras como «Histórias Rimadas» e «Amor e Humor em Poesia».\n\nA sessão, conduzida por Inga Oliveira, locutora e também membro da assembleia de freguesia, contou com momentos verdadeiramente especiais: enquanto a poesia era declamada, o Sr. Sérgio Pastor acompanhava ao acordeão. No final, houve ainda uma sessão de autógrafos e um momento de convívio com o autor.','noticia_livro_jose_martinho.jpg','2026-03-28 18:00:00',50,50,'Cultura'),
+(77,'62.º aniversário do Águias Negras Futebol Clube','No dia 1 de março de 2026, o Senhor Presidente e o Senhor Tesoureiro da Junta estiveram presentes no almoço comemorativo do 62.º aniversário do Águias Negras Futebol Clube, que teve lugar na sua sede, no Alto Estanqueiro.\n\nA iniciativa reuniu sócios, familiares e amigos desta coletividade, num momento de convívio e celebração, assinalado com um almoço tradicional de feijoada caramela.\n\nA Junta associa-se a esta data, felicitando o Águias Negras Futebol Clube pelos seus 62 anos de existência e destacando o seu importante papel na dinamização desportiva, social e cultural da freguesia.','noticia_aguias_negras_62.jpg','2026-03-01 13:00:00',50,50,'Associativismo'),
+(78,'Ajuda solidária a Alcácer do Sal','As recentes cheias em Alcácer do Sal afetaram várias famílias, que neste momento precisam do apoio de todos. A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia está a promover uma angariação de bens alimentares e produtos de higiene, que serão entregues diretamente no local com a carrinha da Junta.\n\nO que pode doar: alimentos não perecíveis (arroz, massa, enlatados, leite, óleo, bolachas) e produtos de higiene pessoal (gel de banho, champô, pasta e escova de dentes, fraldas, pensos higiénicos, papel higiénico).\n\nPontos de recolha: Sede (Av. 28 de Setembro, n.º 56, Atalaia) e Dependência (Rua dos Russos – Quinta das Tílias, Alto Estanqueiro-Jardia), das 9h00 às 12h30 e das 14h00 às 17h30, até terça-feira, dia 10 de fevereiro.','noticia_alcacer_do_sal.jpg','2026-02-05 10:00:00',50,50,'Social');
 /*!40000 ALTER TABLE `noticias` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2058,7 +2080,7 @@ CREATE TABLE `pagina_freguesia` (
 LOCK TABLES `pagina_freguesia` WRITE;
 /*!40000 ALTER TABLE `pagina_freguesia` DISABLE KEYS */;
 INSERT INTO `pagina_freguesia` VALUES
-(1,'Concelho do Montijo','Atalaia e Alto Estanqueiro-Jardia','Num monte sobranceiro ao estuário do Tejo, entre o Santuário da Atalaia e os campos do Alto Estanqueiro e da Jardia.','santuario_atalaia.jpg','Uma freguesia do Montijo','A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia pertence ao concelho do Montijo, distrito de Setúbal. Tem 13,65 km² e 5379 habitantes (Censos 2021). Foi constituída pela Lei n.º 11-A/2013, de 28 de janeiro, que agregou as freguesias da Atalaia e do Alto Estanqueiro-Jardia.','História e memória','A cerca de quatro quilómetros da sede do município, a Atalaia beneficiou desde sempre da proximidade da Estrada Real que ligava Lisboa a Badajoz, por Aldeia Galega, e viu passar monarcas e outras personagens ilustres a caminho da fronteira e do sul do país. Já no início do século XVI, as populações locais e dos arredores vinham aqui em peregrinação.','Identidade','O culto de Nossa Senhora da Atalaia, vivido por romeiros e festeiros, é o grande traço de identidade da freguesia. Alguns monarcas foram particularmente devotos da Senhora, como D. João V; a última visita régia foi a da rainha D. Maria II, a 5 de outubro de 1843.','Património','A Igreja de Nossa Senhora da Atalaia e os seus três cruzeiros — o Cruzeiro Mor (1551), o Cruzeiro de Alcochete (1669) e o Cruzeiro das Esmolas — foram classificados em 2009 como Imóveis de Interesse Público. Junto à escadaria do Santuário fica o Museu Agrícola da Atalaia, na Quinta Nova da Atalaia.','Localidades da freguesia','Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia\nAlto Estanqueiro|Onde fica a dependência da Junta, na Quinta das Tílias\nJardia|Lugar já referido em 1866, de tradição hortícola','A freguesia em imagens','Ver pontos de interesse','/pontos.php','Explorar no mapa','/mapa.php','2026-09-30 10:52:27');
+(1,'Concelho do Montijo','Atalaia e Alto Estanqueiro-Jardia','Num monte sobranceiro ao estuário do Tejo, entre o Santuário da Atalaia e os campos do Alto Estanqueiro e da Jardia.','santuario_atalaia.jpg','Uma freguesia do Montijo','A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia pertence ao concelho do Montijo, distrito de Setúbal. Tem 13,65 km² e 5379 habitantes (Censos 2021). Foi constituída pela Lei n.º 11-A/2013, de 28 de janeiro, que agregou as freguesias da Atalaia e do Alto Estanqueiro-Jardia.','História e memória','A cerca de quatro quilómetros da sede do município, a Atalaia beneficiou desde sempre da proximidade da Estrada Real que ligava Lisboa a Badajoz, por Aldeia Galega, e viu passar monarcas e outras personagens ilustres a caminho da fronteira e do sul do país. Já no início do século XVI, as populações locais e dos arredores vinham aqui em peregrinação.','Identidade','O culto de Nossa Senhora da Atalaia, vivido por romeiros e festeiros, é o grande traço de identidade da freguesia. Alguns monarcas foram particularmente devotos da Senhora, como D. João V; a última visita régia foi a da rainha D. Maria II, a 5 de outubro de 1843.','Património','A Igreja de Nossa Senhora da Atalaia e os seus três cruzeiros — o Cruzeiro Mor (1551), o Cruzeiro de Alcochete (1669) e o Cruzeiro das Esmolas — foram classificados em 2009 como Imóveis de Interesse Público. Junto à escadaria do Santuário fica o Museu Agrícola da Atalaia, na Quinta Nova da Atalaia.','Localidades da freguesia','Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia\nAlto Estanqueiro|Onde fica a dependência da Junta, na Quinta das Tílias\nJardia|Lugar já referido em 1866, de tradição hortícola','A freguesia em imagens','Ver pontos de interesse','/pontos.php','Explorar no mapa','/mapa.php','2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `pagina_freguesia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2100,7 +2122,7 @@ CREATE TABLE `pagina_historia` (
 LOCK TABLES `pagina_historia` WRITE;
 /*!40000 ALTER TABLE `pagina_historia` DISABLE KEYS */;
 INSERT INTO `pagina_historia` VALUES
-(1,'História','História de Atalaia e Alto Estanqueiro-Jardia','Do Santuário da Atalaia aos campos hortícolas do Alto Estanqueiro e da Jardia.','cruzeiro_mor.jpg','A Atalaia','Assente num monte sobranceiro ao estuário do Tejo, a povoação da Atalaia cresceu à volta do seu Santuário. A proximidade da Estrada Real, que ligava Lisboa a Badajoz via Aldeia Galega, trouxe-lhe passagem constante de viajantes — e a fé trouxe-lhe peregrinos desde o início do século XVI. Por volta de 1507, os funcionários da Alfândega de Lisboa vieram aqui em promessa a Nossa Senhora da Atalaia por ocasião de uma peste.','Tempos difíceis','Em 1808, as invasões francesas levaram ao saque da Igreja da Atalaia pelos exércitos de Napoleão. Mais tarde, com a implantação da República e o anticlericalismo que a acompanhou, o Cruzeiro Mor ficou com as imagens decapitadas e a coroa das armas reais do retábulo partida; em 1912, depois de um comício em Aldeia Galega, populares assaltaram a igreja. Ainda assim, o culto da Senhora da Atalaia manteve-se vivo até aos nossos dias.','Alto Estanqueiro e Jardia','Nascida da junção de dois lugares, a antiga freguesia do Alto Estanqueiro-Jardia pertenceu à jurisdição da Ordem de Santiago, sediada em Palmela. O topónimo «Estanqueiro» liga-se provavelmente ao comércio em regime de monopólio (tabaco, pólvora, palha); «Jardia» à járdia, a charneca de rosmaninho e alecrim. Até meados do século XX o território era de fazendas e terrenos agrícolas que abasteciam o concelho de produtos hortícolas; o crescimento urbano veio na segunda metade do século.','Principais datas','c. 1507|Os funcionários da Alfândega de Lisboa vêm em promessa a Nossa Senhora da Atalaia, por ocasião de uma peste.\n1551|A Confraria de Lisboa manda construir o Cruzeiro Mor.\n1669|Uma família de Alcochete manda construir o Cruzeiro de Alcochete.\n1808|Saque da Igreja da Atalaia durante as invasões francesas.\n1843|A rainha D. Maria II visita a Igreja da Atalaia, a 5 de outubro.\n1866|A Jardia é referida como lugar da freguesia do Divino Espírito Santo do Montijo.\n1985|A Lei n.º 82/85, de 4 de outubro, cria a freguesia de Alto Estanqueiro-Jardia.\n1997|Abre ao público o Museu Agrícola da Atalaia, na Quinta Nova da Atalaia.\n2009|A Igreja de Nossa Senhora da Atalaia e os três cruzeiros são classificados como Imóveis de Interesse Público.\n2013|Lei n.º 11-A/2013: constituição da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia.','A freguesia em imagens',NULL,NULL,NULL,NULL,'2026-09-30 10:52:27');
+(1,'História','História de Atalaia e Alto Estanqueiro-Jardia','Do Santuário da Atalaia aos campos hortícolas do Alto Estanqueiro e da Jardia.','cruzeiro_mor.jpg','A Atalaia','Assente num monte sobranceiro ao estuário do Tejo, a povoação da Atalaia cresceu à volta do seu Santuário. A proximidade da Estrada Real, que ligava Lisboa a Badajoz via Aldeia Galega, trouxe-lhe passagem constante de viajantes — e a fé trouxe-lhe peregrinos desde o início do século XVI. Por volta de 1507, os funcionários da Alfândega de Lisboa vieram aqui em promessa a Nossa Senhora da Atalaia por ocasião de uma peste.','Tempos difíceis','Em 1808, as invasões francesas levaram ao saque da Igreja da Atalaia pelos exércitos de Napoleão. Mais tarde, com a implantação da República e o anticlericalismo que a acompanhou, o Cruzeiro Mor ficou com as imagens decapitadas e a coroa das armas reais do retábulo partida; em 1912, depois de um comício em Aldeia Galega, populares assaltaram a igreja. Ainda assim, o culto da Senhora da Atalaia manteve-se vivo até aos nossos dias.','Alto Estanqueiro e Jardia','Nascida da junção de dois lugares, a antiga freguesia do Alto Estanqueiro-Jardia pertenceu à jurisdição da Ordem de Santiago, sediada em Palmela. O topónimo «Estanqueiro» liga-se provavelmente ao comércio em regime de monopólio (tabaco, pólvora, palha); «Jardia» à járdia, a charneca de rosmaninho e alecrim. Até meados do século XX o território era de fazendas e terrenos agrícolas que abasteciam o concelho de produtos hortícolas; o crescimento urbano veio na segunda metade do século.','Principais datas','c. 1507|Os funcionários da Alfândega de Lisboa vêm em promessa a Nossa Senhora da Atalaia, por ocasião de uma peste.\n1551|A Confraria de Lisboa manda construir o Cruzeiro Mor.\n1669|Uma família de Alcochete manda construir o Cruzeiro de Alcochete.\n1808|Saque da Igreja da Atalaia durante as invasões francesas.\n1843|A rainha D. Maria II visita a Igreja da Atalaia, a 5 de outubro.\n1866|A Jardia é referida como lugar da freguesia do Divino Espírito Santo do Montijo.\n1985|A Lei n.º 82/85, de 4 de outubro, cria a freguesia de Alto Estanqueiro-Jardia.\n1997|Abre ao público o Museu Agrícola da Atalaia, na Quinta Nova da Atalaia.\n2009|A Igreja de Nossa Senhora da Atalaia e os três cruzeiros são classificados como Imóveis de Interesse Público.\n2013|Lei n.º 11-A/2013: constituição da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia.','A freguesia em imagens',NULL,NULL,NULL,NULL,'2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `pagina_historia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2451,7 +2473,7 @@ CREATE TABLE `pontos_interesse` (
   `latitude` varchar(50) DEFAULT NULL,
   `longitude` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2461,12 +2483,14 @@ CREATE TABLE `pontos_interesse` (
 LOCK TABLES `pontos_interesse` WRITE;
 /*!40000 ALTER TABLE `pontos_interesse` DISABLE KEYS */;
 INSERT INTO `pontos_interesse` VALUES
-(90,'Igreja de Nossa Senhora da Atalaia','Igreja-santuário edificada no século XVI e reedificada no século XVIII, classificada como Imóvel de Interesse Público em 2009, com os três cruzeiros. Antecedida por um alpendre de três arcos, tem uma só nave, púlpito de mármore da Arrábida e altar-mor com retábulo setecentista de madeira do Brasil. As paredes estão forradas de azulejos azuis e brancos do século XVIII com cenas da vida da Virgem. Numa dependência anexa guardam-se os ex-votos populares; nas traseiras, a Fonte da Senhora, onde, segundo a lenda, terá aparecido a imagem de Nossa Senhora da Atalaia.','igreja_atalaia.jpg','Atalaia','38.7075836','-8.9220027'),
-(91,'Cruzeiro Mor','Com as imagens esculpidas de Jesus Cristo e de Nossa Senhora da Piedade cobertas por uma cúpula sustida por quatro colunas, foi mandado construir pela Confraria de Lisboa em 1551 e reconstruído em 2001. As imagens continuam decapitadas, marca do anticlericalismo da República. Imóvel de Interesse Público (2009).','cruzeiro_mor.jpg','Atalaia','38.7070004','-8.9245699'),
-(92,'Cruzeiro de Alcochete','Cruzeiro de pedra lioz, à direita da igreja, junto à linha limite do concelho, mandado construir por uma família de Alcochete em 1669. Imóvel de Interesse Público (2009).',NULL,'Atalaia','38.7082449','-8.9224782'),
-(93,'Cruzeiro das Esmolas','Também chamado Cruzeiro da Estrada, junto à Estrada Nacional n.º 4, a cerca de 150 metros da igreja. É o mais simples dos três; desconhece-se o ano da sua construção e foi reconstruído no início deste século. Imóvel de Interesse Público (2009).',NULL,'Atalaia','38.7063537','-8.9221678'),
-(94,'Museu Agrícola da Atalaia','Desde 1997, a Quinta Nova da Atalaia, junto à escadaria do Santuário, é o núcleo museológico do concelho dedicado à temática agrícola. Requalificado em 2009, preserva o lagar de azeite (com moinho de duas galgas e prensas), a adega e as práticas agrícolas tradicionais ligadas ao azeite, ao vinho e à fruta. Entrada gratuita.','museu_agricola_atalaia.jpg','Rua da Atalaia, Atalaia','38.7082512','-8.9231138'),
-(95,'Monumento de Homenagem à Floricultura','Monumento de homenagem à floricultura, no Alto Estanqueiro.',NULL,'EN 5, Alto Estanqueiro','38.6864969','-8.944169');
+(104,'Igreja de Nossa Senhora da Atalaia','Igreja-santuário edificada no século XVI e reedificada no século XVIII, classificada como Imóvel de Interesse Público em 2009, com os três cruzeiros. Antecedida por um alpendre de três arcos, tem uma só nave, púlpito de mármore da Arrábida e altar-mor com retábulo setecentista de madeira do Brasil. As paredes estão forradas de azulejos azuis e brancos do século XVIII com cenas da vida da Virgem. Numa dependência anexa guardam-se os ex-votos populares; nas traseiras, a Fonte da Senhora, onde, segundo a lenda, terá aparecido a imagem de Nossa Senhora da Atalaia.','igreja_atalaia.jpg','Atalaia','38.7075836','-8.9220027'),
+(105,'Cruzeiro Mor','Com as imagens esculpidas de Jesus Cristo e de Nossa Senhora da Piedade cobertas por uma cúpula sustida por quatro colunas, foi mandado construir pela Confraria de Lisboa em 1551 e reconstruído em 2001. As imagens continuam decapitadas, marca do anticlericalismo da República. Imóvel de Interesse Público (2009).','cruzeiro_mor.jpg','Atalaia','38.7070004','-8.9245699'),
+(106,'Cruzeiro de Alcochete','Cruzeiro de pedra lioz, à direita da igreja, junto à linha limite do concelho, mandado construir por uma família de Alcochete em 1669. Imóvel de Interesse Público (2009).',NULL,'Atalaia','38.7082449','-8.9224782'),
+(107,'Cruzeiro das Esmolas','Também chamado Cruzeiro da Estrada, junto à Estrada Nacional n.º 4, a cerca de 150 metros da igreja. É o mais simples dos três; desconhece-se o ano da sua construção e foi reconstruído no início deste século. Imóvel de Interesse Público (2009).',NULL,'Atalaia','38.7063537','-8.9221678'),
+(108,'Museu Agrícola da Atalaia','Desde 1997, a Quinta Nova da Atalaia, junto à escadaria do Santuário, é o núcleo museológico do concelho dedicado à temática agrícola. Requalificado em 2009, preserva o lagar de azeite (com moinho de duas galgas e prensas), a adega e as práticas agrícolas tradicionais ligadas ao azeite, ao vinho e à fruta. Entrada gratuita.','museu_agricola_atalaia.jpg','Rua da Atalaia, Atalaia','38.7082512','-8.9231138'),
+(109,'Monumento de Homenagem à Floricultura','Monumento de homenagem à floricultura, no Alto Estanqueiro.',NULL,'EN 5, Alto Estanqueiro','38.6864969','-8.944169'),
+(110,'Monumento a Álvaro Tavares Mora','Busto em bronze e calcário moleano de Laureano Ribatua, inaugurado a 24 de agosto de 2001. É uma homenagem da população da Atalaia a Álvaro Tavares Mora, autarca da Câmara Municipal do Montijo e benemérito que, em 1947, mandou construir dois chafarizes, resolvendo o problema do abastecimento de água à população.','monumento_alvaro_tavares_mora.jpg','Praça dos Operários, Atalaia','38.7069401','-8.9220795'),
+(111,'Cruzeiro de Granito','Cruzeiro em granito mandado colocar pela Junta de Freguesia em 2005, na rotunda da Atalaia, em homenagem aos círios que ainda hoje fazem romagem à Atalaia.','cruzeiro_granito.jpg','Estrada Nacional 4, Atalaia',NULL,NULL);
 /*!40000 ALTER TABLE `pontos_interesse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2646,7 +2670,7 @@ CREATE TABLE `separadores_fundo` (
   `atualizado_em` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `chave` (`chave`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2656,16 +2680,16 @@ CREATE TABLE `separadores_fundo` (
 LOCK TABLES `separadores_fundo` WRITE;
 /*!40000 ALTER TABLE `separadores_fundo` DISABLE KEYS */;
 INSERT INTO `separadores_fundo` VALUES
-(123,'freguesia','sep-igreja.jpg','2026-09-30 10:52:27'),
-(124,'historia','sep-cruzeiro.jpg','2026-09-30 10:52:27'),
-(125,'heraldica','sep-cruzeiro.jpg','2026-09-30 10:52:27'),
-(126,'pontos','sep-museu.jpg','2026-09-30 10:52:27'),
-(127,'galeria','sep-museu.jpg','2026-09-30 10:52:27'),
-(128,'noticias','sep-igreja.jpg','2026-09-30 10:52:27'),
-(129,'eventos','sep-igreja.jpg','2026-09-30 10:52:27'),
-(130,'contactos','sep-igreja.jpg','2026-09-30 10:52:27'),
-(131,'executivo','sep-cruzeiro.jpg','2026-09-30 10:52:27'),
-(132,'associacoes','sep-museu.jpg','2026-09-30 10:52:27');
+(143,'freguesia','sep-igreja.jpg','2026-09-30 11:05:49'),
+(144,'historia','sep-cruzeiro.jpg','2026-09-30 11:05:49'),
+(145,'heraldica','sep-cruzeiro.jpg','2026-09-30 11:05:49'),
+(146,'pontos','sep-museu.jpg','2026-09-30 11:05:49'),
+(147,'galeria','sep-museu.jpg','2026-09-30 11:05:49'),
+(148,'noticias','sep-igreja.jpg','2026-09-30 11:05:49'),
+(149,'eventos','sep-igreja.jpg','2026-09-30 11:05:49'),
+(150,'contactos','sep-igreja.jpg','2026-09-30 11:05:49'),
+(151,'executivo','sep-cruzeiro.jpg','2026-09-30 11:05:49'),
+(152,'associacoes','sep-museu.jpg','2026-09-30 11:05:49');
 /*!40000 ALTER TABLE `separadores_fundo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2684,7 +2708,7 @@ CREATE TABLE `slides_homepage` (
   `link_destino` varchar(255) DEFAULT NULL,
   `ativo` tinyint(4) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2694,9 +2718,9 @@ CREATE TABLE `slides_homepage` (
 LOCK TABLES `slides_homepage` WRITE;
 /*!40000 ALTER TABLE `slides_homepage` DISABLE KEYS */;
 INSERT INTO `slides_homepage` VALUES
-(32,'Atalaia e Alto Estanqueiro-Jardia','Um santuário de peregrinação desde o século XVI, no concelho do Montijo.','santuario_atalaia.jpg','freguesia.php',1),
-(33,'Cruzeiro Mor','Imóvel de Interesse Público, mandado construir em 1551.','cruzeiro_mor.jpg','pontos.php',1),
-(34,'Museu Agrícola da Atalaia','O lagar, a adega e as tradições agrícolas do concelho.','museu_agricola_atalaia.jpg','mapa.php',1);
+(38,'Atalaia e Alto Estanqueiro-Jardia','Um santuário de peregrinação desde o século XVI, no concelho do Montijo.','santuario_atalaia.jpg','freguesia.php',1),
+(39,'Cruzeiro Mor','Imóvel de Interesse Público, mandado construir em 1551.','cruzeiro_mor.jpg','pontos.php',1),
+(40,'Museu Agrícola da Atalaia','O lagar, a adega e as tradições agrícolas do concelho.','museu_agricola_atalaia.jpg','mapa.php',1);
 /*!40000 ALTER TABLE `slides_homepage` ENABLE KEYS */;
 UNLOCK TABLES;
 

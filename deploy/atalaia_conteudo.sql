@@ -217,13 +217,27 @@ INSERT INTO pontos_interesse (nome, descricao, imagem, localizacao, latitude, lo
 ('Cruzeiro de Alcochete', 'Cruzeiro de pedra lioz, à direita da igreja, junto à linha limite do concelho, mandado construir por uma família de Alcochete em 1669. Imóvel de Interesse Público (2009).', NULL, 'Atalaia', '38.7082449', '-8.9224782'),
 ('Cruzeiro das Esmolas', 'Também chamado Cruzeiro da Estrada, junto à Estrada Nacional n.º 4, a cerca de 150 metros da igreja. É o mais simples dos três; desconhece-se o ano da sua construção e foi reconstruído no início deste século. Imóvel de Interesse Público (2009).', NULL, 'Atalaia', '38.7063537', '-8.9221678'),
 ('Museu Agrícola da Atalaia', 'Desde 1997, a Quinta Nova da Atalaia, junto à escadaria do Santuário, é o núcleo museológico do concelho dedicado à temática agrícola. Requalificado em 2009, preserva o lagar de azeite (com moinho de duas galgas e prensas), a adega e as práticas agrícolas tradicionais ligadas ao azeite, ao vinho e à fruta. Entrada gratuita.', 'museu_agricola_atalaia.jpg', 'Rua da Atalaia, Atalaia', '38.7082512', '-8.9231138'),
-('Monumento de Homenagem à Floricultura', 'Monumento de homenagem à floricultura, no Alto Estanqueiro.', NULL, 'EN 5, Alto Estanqueiro', '38.6864969', '-8.944169');
+('Monumento de Homenagem à Floricultura', 'Monumento de homenagem à floricultura, no Alto Estanqueiro.', NULL, 'EN 5, Alto Estanqueiro', '38.6864969', '-8.944169'),
+('Monumento a Álvaro Tavares Mora', 'Busto em bronze e calcário moleano de Laureano Ribatua, inaugurado a 24 de agosto de 2001. É uma homenagem da população da Atalaia a Álvaro Tavares Mora, autarca da Câmara Municipal do Montijo e benemérito que, em 1947, mandou construir dois chafarizes, resolvendo o problema do abastecimento de água à população.', 'monumento_alvaro_tavares_mora.jpg', 'Praça dos Operários, Atalaia', '38.7069401', '-8.9220795'),
+('Cruzeiro de Granito', 'Cruzeiro em granito mandado colocar pela Junta de Freguesia em 2005, na rotunda da Atalaia, em homenagem aos círios que ainda hoje fazem romagem à Atalaia.', 'cruzeiro_granito.jpg', 'Estrada Nacional 4, Atalaia', NULL, NULL);
 
 -- Álbuns da galeria: um por ponto com foto, com capa preenchida.
 INSERT INTO galeria_albuns (nome, descricao, capa, origem, origem_id, ordem, ativo)
 SELECT nome, NULL, imagem, 'ponto', id, id, 1 FROM pontos_interesse WHERE imagem IS NOT NULL;
 INSERT INTO galeria_imagens (album_id, ficheiro, titulo, ordem, ativo)
 SELECT a.id, a.capa, a.nome, 1, 1 FROM galeria_albuns a;
+-- Fotos adicionais (Câmara Municipal do Montijo — Rota da Atalaia e
+-- Arte Pública) nos álbuns dos pontos.
+INSERT INTO galeria_imagens (album_id, ficheiro, titulo, ordem, ativo)
+SELECT a.id, x.f, x.t, x.o, 1 FROM galeria_albuns a
+JOIN (SELECT 'Igreja de Nossa Senhora da Atalaia' n, 'igreja_atalaia_interior.jpg' f, 'Interior e retábulo do altar-mor' t, 2 o
+      UNION ALL SELECT 'Igreja de Nossa Senhora da Atalaia', 'igreja_atalaia_escadaria.jpg', 'A escadaria do Santuário', 3
+      UNION ALL SELECT 'Cruzeiro Mor', 'cruzeiro_mor_2.jpg', 'Cruzeiro Mor', 2
+      UNION ALL SELECT 'Cruzeiro Mor', 'cruzeiro_mor_noite.jpg', 'Cruzeiro Mor à noite', 3
+      UNION ALL SELECT 'Museu Agrícola da Atalaia', 'museu_agricola_lagar.jpg', 'Mós do lagar de azeite', 2
+      UNION ALL SELECT 'Museu Agrícola da Atalaia', 'museu_agricola_quinta_nova.jpg', 'Quinta Nova da Atalaia', 3
+      UNION ALL SELECT 'Monumento a Álvaro Tavares Mora', 'monumento_alvaro_tavares_mora_2.jpg', 'Busto de Álvaro Tavares Mora', 2) x
+  ON CONVERT(x.n USING utf8mb4) COLLATE utf8mb4_bin = CONVERT(a.nome USING utf8mb4) COLLATE utf8mb4_bin;
 
 INSERT INTO slides_homepage (titulo, subtitulo, imagem, link_destino, ativo) VALUES
 ('Atalaia e Alto Estanqueiro-Jardia', 'Um santuário de peregrinação desde o século XVI, no concelho do Montijo.', 'santuario_atalaia.jpg', 'freguesia.php', 1),
@@ -243,10 +257,12 @@ INSERT INTO slides_homepage (titulo, subtitulo, imagem, link_destino, ativo) VAL
 INSERT INTO associacoes (nome, descricao, email, telefone, imagem, morada, facebook, website, latitude, longitude) VALUES
 ('Sociedade Recreativa Atalaiense', 'Associação desportiva, cultural e recreativa fundada a 11 de outubro de 1946.', NULL, NULL, 'sociedade_recreativa_atalaiense.jpg', 'Avenida 28 de Setembro, 2870-701 Atalaia', 'https://www.facebook.com/sociedade.atalaiense', 'https://atalaiense.pt/', '38.7065383', '-8.9213201'),
 ('Rancho Folclórico Juventude Atalaiense', 'Associação etnográfica, presença habitual nas Festas em honra de Nossa Senhora da Atalaia.', NULL, NULL, NULL, 'Rua do Bairro Novo, Atalaia', NULL, NULL, '38.7038851', '-8.9255232'),
-('Águias Negras Futebol Clube', 'Clube fundado a 1 de março de 1964, no Alto Estanqueiro, com um papel importante na dinamização desportiva, social e cultural da freguesia.', NULL, '212 301 826', NULL, 'Estrada da Charnequinha, 2870-604 Alto Estanqueiro-Jardia', NULL, NULL, '38.6779956', '-8.9237494'),
-('União Futebol Clube Jardiense', 'Clube de futebol da Jardia, fundado a 1 de maio de 1963.', 'uniaofcjardiense@gmail.com', NULL, NULL, 'Rua União Clube Jardiense, 2870-684 Alto Estanqueiro-Jardia', NULL, NULL, '38.6655363', '-8.9256051'),
+('Águias Negras Futebol Clube', 'Clube fundado a 1 de março de 1964, no Alto Estanqueiro, com um papel importante na dinamização desportiva, social e cultural da freguesia.', NULL, '212 301 826', 'noticia_aguias_negras_62.jpg', 'Estrada da Charnequinha, 2870-604 Alto Estanqueiro-Jardia', NULL, NULL, '38.6779956', '-8.9237494'),
+('União Futebol Clube Jardiense', 'Clube de futebol da Jardia, fundado a 1 de maio de 1963.', 'uniaofcjardiense@gmail.com', '917 752 975', 'ufc_jardiense.jpg', 'Rua União Clube Jardiense, 2870-684 Alto Estanqueiro-Jardia', 'https://www.facebook.com/formacaojardia/', NULL, '38.6655363', '-8.9256051'),
 ('Academia Desportiva Infantil e Juvenil Bairro Miranda', 'Associação desportiva, recreativa e cultural fundada a 31 de março de 2003, dedicada sobretudo ao futsal jovem. Recebeu a Bandeira da Ética do IPDJ em 2020.', NULL, NULL, 'academia_bairro_miranda.jpg', 'Rua das Águias, 85 – Bairro Miranda, 2870-682 Alto Estanqueiro-Jardia', 'https://www.facebook.com/academia.bairro.miranda/', NULL, '38.6721345', '-8.9258328'),
-('Associação Mansos e Vadios', 'Tertúlia e charanga da Atalaia, organizadora da Caminhada Solidária da Atalaia, integrada nas comemorações do 25 de Abril.', NULL, NULL, NULL, 'Atalaia', NULL, NULL, NULL, NULL);
+('Associação Mansos e Vadios', 'Tertúlia e charanga da Atalaia, organizadora da Caminhada Solidária da Atalaia, integrada nas comemorações do 25 de Abril.', NULL, NULL, NULL, 'Atalaia', NULL, NULL, NULL, NULL),
+('Centro Social e Paroquial de Nossa Senhora da Atalaia', 'Instituição Particular de Solidariedade Social que gere creche, centro de dia e serviço de apoio domiciliário. Atendimento das 9h30 às 12h30 e das 14h30 às 18h45.', 'geral.csatalaia@gmail.com', '212 317 534 / 915 943 757', NULL, 'Escadaria do Adro da Igreja, 2870-711 Atalaia', NULL, 'https://www.cspatalaia.com/', NULL, NULL),
+('Cáritas Paroquial de Nossa Senhora da Atalaia', 'Apoio social às famílias da freguesia, ligada à paróquia de Nossa Senhora da Atalaia.', 'caritas.atalaia@gmail.com', NULL, NULL, 'Atalaia', NULL, NULL, NULL, NULL);
 
 
 -- ------------------------------------------------------------
@@ -256,21 +272,36 @@ INSERT INTO associacoes (nome, descricao, email, telefone, imagem, morada, faceb
 -- DENTRO do freguesia.geojson, cada um confirmado pelo Nominatim
 -- (reverse → "Atalaia" ou "Atalaia e Alto Estanqueiro-Jardia").
 -- O Ninho é citado numa notícia oficial (apoio à 3.ª Caminhada Solidária).
-INSERT INTO comercio_local (nome, tipo, telefone, email, morada, website, outros_contactos, latitude, longitude, imagem) VALUES
-('O Ninho', 'Restaurante', '212 318 988', NULL, 'Avenida Dom Manuel I, 2870-736 Atalaia', 'https://restauranteoninho.net/', 'Grelhados no carvão, peixe e cozinha tradicional portuguesa.', '38.7062978', '-8.9230556', 'o_ninho.jpg'),
-('Adega do Mocho', 'Restaurante', NULL, NULL, 'EN 4, 2870-700 Atalaia', NULL, NULL, '38.7066864', '-8.9287066', NULL),
-('A Rotunda', 'Restaurante', NULL, NULL, 'Rua das Forças Armadas, 2870-712 Atalaia', NULL, NULL, '38.7064795', '-8.9276435', NULL),
-('O Típico', 'Restaurante', '211 586 265 / 914 602 806', NULL, 'EN 5, 2870-621 Alto Estanqueiro', NULL, NULL, '38.6812278', '-8.928787', NULL),
-('Padaria da Atalaia', 'Padaria', '212 474 228', NULL, 'Rua do Mercado, 31, 2870-751 Atalaia', NULL, NULL, '38.7052472', '-8.9226277', NULL),
-('Farmácia Cravidão', 'Farmácia', NULL, NULL, 'Avenida Dom Manuel I, 2870-736 Atalaia', NULL, NULL, '38.7064108', '-8.9228921', NULL),
-('Provari', 'Comércio agrícola e ferragens', '212 318 904', NULL, 'Rua 25 de Abril, 25, 2870-709 Atalaia', NULL, 'Comércio agrícola, agropecuária e ferragens.', '38.7061291', '-8.9222211', NULL);
+-- Restantes restaurantes: pesquisa web (moradas com código postal da
+-- freguesia) + rua geocodificada no Nominatim e testada no polígono.
+-- Coordenadas por rua (aproximadas): O Carlos, O Tacho d'Mãe, Sinfonia
+-- dos Sabores, O Pardal. Sem coordenadas: Sabores do Mar, Apeadeiro Café.
+-- Imagens: logótipos/fotos das páginas de Facebook (O Tacho d'Mãe,
+-- Adega do Mocho, O Carlos) e foto de um prato do site d'O Ninho.
+INSERT INTO comercio_local (nome, tipo, telefone, email, morada, website, facebook, outros_contactos, latitude, longitude, imagem) VALUES
+('O Ninho', 'Restaurante', '212 318 988', NULL, 'Avenida Dom Manuel I, 2870-736 Atalaia', 'https://restauranteoninho.net/', NULL, 'Grelhados no carvão, peixe e cozinha tradicional portuguesa.', '38.7062978', '-8.9230556', 'o_ninho.jpg'),
+('Adega do Mocho', 'Restaurante', '212 316 312 / 912 217 453', NULL, 'EN 4, n.º 41, Atalaia', NULL, 'https://www.facebook.com/pages/Adega-Mocho/175906119213164', 'Cozinha simples e rústica, com destaque para a carne de porco preto.', '38.7066864', '-8.9287066', 'adega_do_mocho.jpg'),
+('Restaurante Churrasqueira O Carlos', 'Restaurante', '212 316 760', 'restaurantecarlos52@gmail.com', 'Rua Círio de Aldegalega, 210, 2870-724 Atalaia', NULL, 'https://www.facebook.com/Restaurante-Churrasqueira-O-Carlos-639343232765601/', 'Grelhados e cozinha tradicional.', '38.7095185', '-8.9263794', 'o_carlos.jpg'),
+('O Tacho d''Mãe', 'Restaurante', NULL, NULL, 'Rua da Figueira, 68, 2870-738 Atalaia', NULL, 'https://www.facebook.com/tachodamae', 'Cozinha tradicional alentejana.', '38.7003828', '-8.9297564', 'o_tacho_d_mae.jpg'),
+('A Rotunda', 'Restaurante', '910 532 529', NULL, 'Rua das Forças Armadas, 2870-712 Atalaia', NULL, NULL, NULL, '38.7064795', '-8.9276435', NULL),
+('Sinfonia dos Sabores', 'Restaurante / Marisqueira', NULL, NULL, 'Rua das Forças Armadas, 2870-712 Atalaia', NULL, 'https://www.facebook.com/p/Sinfonia-dos-Sabores-Restaurante-Marisqueira-61581520914922/', 'Marisqueira e grelhados.', '38.7041687', '-8.9276785', NULL),
+('O Típico', 'Restaurante', '211 586 265 / 914 602 806', NULL, 'EN 5, 2870-621 Alto Estanqueiro', NULL, NULL, NULL, '38.6812278', '-8.928787', NULL),
+('Marisqueira Sabores do Mar', 'Restaurante / Marisqueira', NULL, NULL, 'Rua 1.º de Maio, 2870-626 Jardia', NULL, 'https://www.facebook.com/p/Restaurante-Marisqueira-Sabores-do-Mar-100067801087481/', 'Antigo «Mercado do Peixe».', NULL, NULL, NULL),
+('O Pardal', 'Restaurante', NULL, NULL, 'Rua dos Tractores, 506 – Parque Industrial da Jardia', NULL, 'https://www.facebook.com/opardal.montijo/', 'Almoços de segunda a sexta-feira.', '38.6720755', '-8.9367860', NULL),
+('Apeadeiro Café', 'Café', NULL, NULL, 'Rua do Operário, 10, 2870-609 Alto Estanqueiro-Jardia', NULL, NULL, NULL, NULL, NULL, NULL),
+('Padaria da Atalaia', 'Padaria', '212 474 228', NULL, 'Rua do Mercado, 31, 2870-751 Atalaia', NULL, NULL, NULL, '38.7052472', '-8.9226277', NULL),
+('Farmácia Cravidão', 'Farmácia', NULL, NULL, 'Avenida Dom Manuel I, 2870-736 Atalaia', NULL, NULL, NULL, '38.7064108', '-8.9228921', NULL),
+('Provari', 'Comércio agrícola e ferragens', '212 318 904', NULL, 'Rua 25 de Abril, 25, 2870-709 Atalaia', NULL, NULL, 'Comércio agrícola, agropecuária e ferragens.', '38.7061291', '-8.9222211', NULL),
+('Rolizoo', 'Loja de animais', '212 384 731', NULL, 'EN 252, gaveto com a Rua Gil Fernandes, 2, Alto Estanqueiro', 'https://www.rolizoo.com/', NULL, NULL, '38.6804598', '-8.9387858', NULL),
+('Stand Ricarauto', 'Comércio automóvel', '964 604 547', NULL, 'EN 252, 2870-660 Alto Estanqueiro', 'https://www.standricarauto.pt/', NULL, NULL, '38.6810634', '-8.9393324', NULL),
+('RP Auto', 'Oficina automóvel', NULL, NULL, 'EN 4, 2870-700 Atalaia', NULL, NULL, NULL, '38.7066243', '-8.9285662', NULL);
 
 
 -- ------------------------------------------------------------
 -- 8. Notícias (site oficial, 2026; texto integral, fotos originais)
 -- ------------------------------------------------------------
 INSERT INTO noticias (titulo, descricao, imagem, data, categoria) VALUES
-('Montijo, 41 anos de cidade', 'No dia 14 de agosto de 1985, o Montijo foi elevado à categoria de cidade.\n\nHoje, 41 anos depois, celebramos não apenas uma data, mas uma história construída por gerações de Montijenses e por todas as freguesias do concelho, que ao longo dos anos contribuíram para o seu desenvolvimento e afirmação.\n\nO crescimento do Montijo fez-se também a partir das suas freguesias, através do trabalho das suas populações, da atividade económica, da agricultura, do comércio, das associações, da cultura, das tradições e da vida comunitária.\n\nA União das Freguesias de Atalaia e Alto Estanqueiro-Jardia associa-se a esta celebração, deixando uma palavra de reconhecimento a todos aqueles que, ao longo dos anos, contribuíram e continuam a contribuir para o crescimento e desenvolvimento do nosso concelho.\n\nParabéns, Montijo.', NULL, '2026-08-14 10:00:00', 'Freguesia'),
+('Montijo, 41 anos de cidade', 'No dia 14 de agosto de 1985, o Montijo foi elevado à categoria de cidade.\n\nHoje, 41 anos depois, celebramos não apenas uma data, mas uma história construída por gerações de Montijenses e por todas as freguesias do concelho, que ao longo dos anos contribuíram para o seu desenvolvimento e afirmação.\n\nO crescimento do Montijo fez-se também a partir das suas freguesias, através do trabalho das suas populações, da atividade económica, da agricultura, do comércio, das associações, da cultura, das tradições e da vida comunitária.\n\nA União das Freguesias de Atalaia e Alto Estanqueiro-Jardia associa-se a esta celebração, deixando uma palavra de reconhecimento a todos aqueles que, ao longo dos anos, contribuíram e continuam a contribuir para o crescimento e desenvolvimento do nosso concelho.\n\nParabéns, Montijo.', 'noticia_montijo_41_anos.jpg', '2026-08-14 10:00:00', 'Freguesia'),
 ('Entrega do donativo angariado à Cáritas Diocesana', 'No dia 22 de maio foi entregue à Cáritas Diocesana o donativo angariado na 3.ª Caminhada Solidária da Atalaia, iniciativa promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, com o apoio da Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia.\n\nGraças à participação de todos, foi possível angariar 306 €, valor que reverteu integralmente para esta instituição, contribuindo para apoiar quem mais precisa na nossa comunidade.\n\nA todos os que participaram e contribuíram, o nosso sincero obrigado. Juntos, continuamos a construir uma união de freguesias mais solidária, unida e próxima da comunidade.', 'noticia_caritas.jpg', '2026-05-22 10:00:00', 'Social'),
 ('3.ª Caminhada Solidária da Atalaia', 'A Junta da União das Freguesias de Atalaia e Alto Estanqueiro-Jardia marcou presença na 3.ª Caminhada Solidária da Atalaia.\n\nEsta iniciativa, promovida pela Associação Mansos e Vadios e integrada nas comemorações do 25 de Abril, voltou a reunir fregueses, munícipes, famílias e visitantes num momento de convívio, partilha e solidariedade. Com um percurso acessível, a caminhada teve como principal objetivo apoiar uma instituição de solidariedade do concelho.\n\nO valor total angariado através das inscrições foi de 306 €, doado à Cáritas Diocesana da Atalaia. A Junta felicita a Associação Mansos e Vadios pela excelente organização desta 3.ª edição e todos os participantes, e agradece ao Restaurante «O Ninho» o apoio prestado a esta causa.', 'noticia_caminhada_2026.jpg', '2026-04-25 10:00:00', 'Eventos'),
 ('Mensagem de Páscoa', 'Estimados fregueses da Atalaia, Alto Estanqueiro e Jardia.\n\nNesta época de celebração e partilha, dirijo-me a cada um de vós para desejar uma Santa Páscoa, repleta de harmonia e paz. A Páscoa é, acima de tudo, um tempo de renovação e de esperança — valores que guiam o nosso trabalho diário na União de Freguesias.\n\nQue este período seja vivido com serenidade junto das vossas famílias e que o espírito de união que carateriza a nossa terra se fortaleça ainda mais.\n\nUm abraço fraterno a todos.\nPedro Araújo — O Presidente', 'noticia_pascoa_2026.jpg', '2026-04-03 15:00:00', 'Freguesia'),

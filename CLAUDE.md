@@ -55,22 +55,29 @@
 - **Mensagem do presidente**: texto real de juf.aaej.pt, ligada (`mostrar_mensagem_presidente=1`).
 - **História**: juf.aaej.pt (Igreja e Cruzeiros) + CM Montijo (resenhas da Atalaia e do Alto
   Estanqueiro-Jardia). Datas da cronologia todas das duas fontes.
-- **Pontos de interesse (6)**: Igreja de N.ª Sr.ª da Atalaia, Cruzeiro Mor, Cruzeiro de Alcochete,
-  Cruzeiro das Esmolas, Museu Agrícola da Atalaia, Monumento de Homenagem à Floricultura. Todos com
-  nó OSM, dentro do polígono e confirmados pelo Nominatim. Fotos: igreja, escadaria do Santuário e
-  Cruzeiro Mor da **Wikimedia Commons** (CC BY-SA — "Igreja da Nossa Senhora da Atalaia.jpg",
-  "EUROPA - PORTUGAL - SETUBAL - MONTIJO - ATALAIA 01.jpg", "Cruzeiro da Atalaia - Portugal
-  (50929638332).jpg", autor Vitor Oliveira; créditos a acrescentar se for pedido); museu da CM
-  Montijo. Sem foto: Cruzeiro de Alcochete, Cruzeiro das Esmolas, Floricultura. A Fonte da Senhora
-  (atrás da igreja) não tem coordenadas no OSM — não incluída.
-- **Associações (6)**: lista oficial (Associativismo). Moradas verificadas por pesquisa web; todas
-  com código postal da freguesia. Coordenadas: SRA = nó OSM; Rancho, Águias Negras, Jardiense e
-  Academia = ponto da rua (aproximado); Mansos e Vadios sem morada. Emblemas: SRA e Academia
-  (Facebook).
-- **Comércio local (7)**: o site oficial não tem lista. Nós OSM dentro do polígono, confirmados
-  pelo Nominatim: O Ninho (foto de um prato do site do restaurante), Adega do Mocho, A Rotunda,
-  O Típico, Padaria da Atalaia, Farmácia Cravidão, Provari.
-- **Notícias (7)**: juf.aaej.pt, 2026, texto integral. Datas pelo texto; a da "Ajuda solidária a
+- **Pontos de interesse (8)**: Igreja de N.ª Sr.ª da Atalaia, Cruzeiro Mor, Cruzeiro de Alcochete,
+  Cruzeiro das Esmolas, Museu Agrícola da Atalaia, Monumento de Homenagem à Floricultura,
+  Monumento a Álvaro Tavares Mora e Cruzeiro de Granito (estes dois da "Rota da Atalaia" e da
+  "Arte Pública" da CM Montijo). Coordenadas: nós OSM dentro do polígono (o Cruzeiro de Granito
+  não tem nó — sem coordenadas). Fotos: Wikimedia Commons (CC BY-SA — "Igreja da Nossa Senhora
+  da Atalaia.jpg", "EUROPA - PORTUGAL - SETUBAL - MONTIJO - ATALAIA 01.jpg", "Cruzeiro da Atalaia
+  - Portugal (50929638332).jpg", autor Vitor Oliveira) e CM Montijo (restantes, incl. 7 fotos
+  extra nos álbuns da galeria). Sem foto: Cruzeiro de Alcochete, Cruzeiro das Esmolas,
+  Floricultura.
+  ⚠️ **A Fonte da Senhora fica no concelho de Alcochete** (nota da própria CM Montijo) — não
+  incluída. As "Chaminés" da Rota da Atalaia ficam na estrada velha para o Montijo — freguesia não
+  confirmada, não incluídas.
+- **Associações (8)**: as 6 da lista oficial + Centro Social e Paroquial de N.ª Sr.ª da Atalaia
+  (IPSS, Escadaria do Adro da Igreja) + Cáritas Paroquial. Coordenadas: SRA = nó OSM; Rancho,
+  Águias Negras, Jardiense e Academia = ponto da rua (aproximado). Imagens: SRA, Academia,
+  Jardiense (Facebook) e Águias Negras (imagem oficial do 62.º aniversário, da notícia da Junta).
+- **Comércio local (16)**: o site oficial não tem lista. Nós OSM dentro do polígono (confirmados
+  pelo Nominatim) + restaurantes de pesquisa web com código postal da freguesia e rua
+  geocodificada (O Carlos, O Tacho d'Mãe, Sinfonia dos Sabores, O Pardal — coordenadas da rua).
+  Sem coordenadas: Sabores do Mar, Apeadeiro Café. Imagens: O Ninho, Adega do Mocho, O Carlos,
+  O Tacho d'Mãe.
+- **Notícias (7)**: juf.aaej.pt, 2026, texto integral. Todas com imagem; a de "Montijo, 41 anos
+  de cidade" usa o cartaz oficial da CM Montijo das comemorações. Datas pelo texto; a da "Ajuda solidária a
   Alcácer do Sal" é aproximada (recolha até 10/02/2026).
 - **Documentos**: nenhum — o site oficial não publica documentos.
 - **Contactos úteis**: sede, dependência, posto CTT (na sede) e 4 escolas (nós OSM).
@@ -80,5 +87,5 @@
 - Documentos oficiais (orçamento, atas) — pedir à Junta.
 - Eventos (Festas de N.ª Sr.ª da Atalaia, agosto; Festas do Alto Estanqueiro) — o "Programa de
   Festas" do site oficial é um iframe; não preenchido.
-- Fotos: 3 pontos, 6 comércios e 4 associações sem imagem.
+- Fotos: 3 pontos, 12 comércios e 4 associações sem imagem.
 - Sem deploy — site só local.

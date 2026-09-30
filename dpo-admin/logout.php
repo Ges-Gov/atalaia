@@ -1,0 +1,1 @@
+<?php if(session_status()===PHP_SESSION_NONE)session_start(); unset($_SESSION['dpo_user_id'],$_SESSION['dpo_user_nome'],$_SESSION['dpo_user_email']); header("Location: login.php"); exit; ?>

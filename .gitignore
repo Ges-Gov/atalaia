@@ -1,0 +1,6 @@
+includes/db_config.php
+includes/ia_config.php
+includes/mail_config.php
+uploads/
+deploy/*.zip
+.claude/

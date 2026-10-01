@@ -98,3 +98,21 @@ Pacote de primeira instalação em `deploy/` (30/09/2026): `atalaia_deploy.zip` 
 sem credenciais nem `debug-config.php`), `atalaia_migracoes.sql` (BD completa para uma BD vazia) e
 `LEIA-ME.md` com os passos. Testado a partir do próprio ZIP numa pasta e BD limpas (34 páginas e
 ficheiros, 0 falhas). Ainda **sem deploy feito** — site só local.
+
+## Produção (instalado a 01/10/2026)
+
+| | |
+|---|---|
+| **Endereço** | https://atalaia.185.205.244.198.nip.io (**provisório** — `nip.io` até haver domínio próprio) |
+| **Servidor** | VPS `185.205.244.198`, FastPanel. Dono `atalaia_185__usr`, pasta `/var/www/atalaia_185__usr/data/www/atalaia.185.205.244.198.nip.io` — clone git (`git@github.com:Ges-Gov/atalaia.git`, ramo `main`) |
+| **BD produção** | `atalaia_185_` (utilizador `atalaia_185_`) |
+| **SSL** | Let's Encrypt só para o domínio principal (sem `www.`) |
+| **Credenciais** (só no servidor) | `includes/db_config.php`; `includes/mail_config.php` e `includes/ia_config.php` copiados do `jf-granho.pt` (conta `newsletter@gesgov.pt` e chave Gemini partilhadas) |
+| **Cron** | `0 8 * * *` no crontab de `atalaia_185__usr` → `cron/newsletter_enviar_mensal.php` (log em `cron/newsletter.log`) |
+
+- **Atualizar:** `git -c safe.directory=$PWD pull --ff-only origin main` na pasta do site.
+- `deploy/*.zip` apagado no servidor (o nginx servia-o diretamente); o `.sql` dá 403.
+- **Newsletter automática desligada de propósito** e `configuracoes_site.dominio` vazio: os links e
+  imagens dos emails ficariam presos ao `nip.io`. Quando houver domínio definitivo: alias + SSL no
+  FastPanel, `UPDATE configuracoes_site SET dominio='https://…'` e ligar a newsletter no backoffice.
+- Por fazer: mudar a password do `admin` (herdada dos outros sites).

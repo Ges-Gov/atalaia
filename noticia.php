@@ -309,7 +309,7 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
         <article class="noticia-detail-card">
 
             <?php if (!empty($noticia['imagem'])): ?>
-                <button type="button" class="lb-trigger" onclick="lbAbrir(todasImagens, 0)" title="Clique para ver em tamanho completo">
+                <button type="button" class="lb-trigger" onclick="lbAbrir(todasImagens, 0)" title="Clique para ver em tamanho completo" data-carrossel data-fotos="<?= htmlspecialchars(json_encode($todasImagens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) ?>">
                     <img
                         class="noticia-detail-img"
                         src="/assets/img/<?= htmlspecialchars($noticia['imagem']) ?>"
@@ -331,7 +331,7 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                 .noticia-galeria-item:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.16);opacity:.9;}
                 .noticia-galeria-item img{width:100%;height:170px;object-fit:cover;display:block;}
                 </style>
-                <div class="noticia-galeria">
+                <div class="noticia-galeria" data-carrossel-substitui>
                     <h3>Galeria de fotos</h3>
                     <div class="noticia-galeria-grid">
                         <?php foreach ($galeriaNoticiaFotos as $gIdx => $g): ?>

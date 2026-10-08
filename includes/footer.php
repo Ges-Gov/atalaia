@@ -487,6 +487,6 @@ if (is_file($iaConfigPath)) {
 </script>
 <?php endif; ?>
 
-<script src="/assets/js/app.js?v=20261008b"></script>
+<script src="/assets/js/app.js?v=20261008d"></script>
 </body>
 </html>

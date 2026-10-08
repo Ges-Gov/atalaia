@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function startSlider() {
+        if (timer) return;                       // nunca dois temporizadores ao mesmo tempo
         if (slides.length > 1) {
             timer = setInterval(nextSlide, 5500);
         }
@@ -57,7 +58,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function stopSlider() {
         clearInterval(timer);
+        timer = null;
     }
+
+    // Separador do browser escondido: pausa; ao voltar, retoma.
+    // (Já não pausa com o rato por cima: o slider ocupa quase o ecrã todo e parecia parado.)
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            stopSlider();
+        } else {
+            startSlider();
+        }
+    });
 
     if (next) {
         next.addEventListener("click", function () {
@@ -82,11 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
             startSlider();
         });
     });
-
-    if (slider) {
-        slider.addEventListener("mouseenter", stopSlider);
-        slider.addEventListener("mouseleave", startSlider);
-    }
 
     startSlider();
 });
@@ -373,5 +380,127 @@ document.addEventListener("DOMContentLoaded", function () {
             sub.classList.toggle("open", vaiAbrir);
             link.setAttribute("aria-expanded", vaiAbrir ? "true" : "false");
         });
+    });
+});
+
+
+// Fotos de notícias, eventos e pontos de interesse: a foto principal troca com as setas (no ecrã e no
+// teclado) e com o dedo; miniaturas por baixo. Clicar abre o visualizador na foto que está à vista.
+// A página marca a foto principal com data-carrossel e data-fotos='["url", ...]'; sem JS fica como antes.
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-carrossel]").forEach(function (alvo) {
+        if (alvo.dataset.carrosselPronto === "1") return;
+        alvo.dataset.carrosselPronto = "1";
+
+        let fotos = [];
+        try { fotos = JSON.parse(alvo.dataset.fotos || "[]"); } catch (e) { return; }
+        fotos = fotos.filter(function (f, i) { return f && fotos.indexOf(f) === i; });
+        if (fotos.length < 2) return;
+
+        const img = alvo.tagName === "IMG" ? alvo : alvo.querySelector("img");
+        if (!img) return;
+        const focoPrincipal = img.style.objectPosition;
+        let atual = 0;
+
+        const moldura = document.createElement("div");
+        moldura.className = "carrossel-moldura";
+        alvo.parentNode.insertBefore(moldura, alvo);
+        moldura.appendChild(alvo);
+
+        function seta(classe, rotulo, texto) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "carrossel-seta " + classe;
+            b.setAttribute("aria-label", rotulo);
+            b.textContent = texto;
+            moldura.appendChild(b);
+            return b;
+        }
+        const anterior = seta("anterior", "Foto anterior", "‹");
+        const seguinte = seta("seguinte", "Foto seguinte", "›");
+        const contador = document.createElement("span");
+        contador.className = "carrossel-contador";
+        moldura.appendChild(contador);
+
+        const tira = document.createElement("div");
+        tira.className = "carrossel-miniaturas";
+        fotos.forEach(function (src, i) {
+            const t = document.createElement("button");
+            t.type = "button";
+            t.setAttribute("aria-label", "Ver foto " + (i + 1) + " de " + fotos.length);
+            const m = document.createElement("img");
+            m.src = src;
+            m.alt = "";
+            m.loading = "lazy";
+            t.appendChild(m);
+            t.addEventListener("click", function () { mostrar(i); });
+            tira.appendChild(t);
+        });
+        moldura.insertAdjacentElement("afterend", tira);
+
+        function mostrar(i) {
+            atual = (i + fotos.length) % fotos.length;
+            img.src = fotos[atual];
+            img.style.objectPosition = atual === 0 ? focoPrincipal : "50% 50%";
+            Array.prototype.forEach.call(tira.children, function (t, k) {
+                t.classList.toggle("ativa", k === atual);
+                if (k === atual) {
+                    const esq = t.offsetLeft - (tira.clientWidth - t.offsetWidth) / 2;
+                    tira.scrollTo({ left: Math.max(0, esq), behavior: "smooth" });
+                }
+            });
+            contador.textContent = (atual + 1) + " / " + fotos.length;
+        }
+
+        anterior.addEventListener("click", function (e) { e.stopPropagation(); mostrar(atual - 1); });
+        seguinte.addEventListener("click", function (e) { e.stopPropagation(); mostrar(atual + 1); });
+
+        // Clicar na foto abre o visualizador (se a página o tiver) na foto que está à vista
+        alvo.removeAttribute("onclick");
+        alvo.addEventListener("click", function (e) {
+            if (typeof window.lbAbrir === "function") {
+                e.preventDefault();
+                window.lbAbrir(fotos, atual);
+            }
+        });
+
+        // Setas do teclado (exceto a escrever num campo ou com o visualizador aberto)
+        document.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+            const lb = document.getElementById("lbOverlay");
+            if (lb && lb.classList.contains("open")) return;
+            const t = e.target;
+            if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+            mostrar(atual + (e.key === "ArrowRight" ? 1 : -1));
+        });
+
+        // Deslizar com o dedo (como no slider: decide também no touchcancel)
+        let x0 = null, y0 = null, xU = null, yU = null;
+        moldura.addEventListener("touchstart", function (e) {
+            if (e.touches.length !== 1) { x0 = null; return; }
+            x0 = xU = e.touches[0].clientX;
+            y0 = yU = e.touches[0].clientY;
+        }, { passive: true });
+        moldura.addEventListener("touchmove", function (e) {
+            if (x0 === null) return;
+            xU = e.touches[0].clientX;
+            yU = e.touches[0].clientY;
+        }, { passive: true });
+        function fimToque(e) {
+            if (x0 === null) return;
+            const t = e.changedTouches && e.changedTouches[0];
+            const dx = (t ? t.clientX : xU) - x0;
+            const dy = (t ? t.clientY : yU) - y0;
+            x0 = null;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+            mostrar(atual + (dx < 0 ? 1 : -1));
+        }
+        moldura.addEventListener("touchend", fimToque, { passive: true });
+        moldura.addEventListener("touchcancel", fimToque, { passive: true });
+
+        // A grelha antiga de fotos deixa de ser precisa: as miniaturas substituem-na
+        document.querySelectorAll("[data-carrossel-substitui]").forEach(function (g) { g.hidden = true; });
+
+        mostrar(0);
     });
 });

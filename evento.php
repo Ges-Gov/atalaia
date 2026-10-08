@@ -314,7 +314,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
         <div class="evento-detalhe-card">
 
             <?php if ($imagem): ?>
-                <button type="button" class="lb-trigger" onclick="lbAbrir(todasImagensEvento, 0)" title="Clique para ver em tamanho completo">
+                <button type="button" class="lb-trigger" onclick="lbAbrir(todasImagensEvento, 0)" title="Clique para ver em tamanho completo" data-carrossel data-fotos="<?= htmlspecialchars(json_encode($todasImagensEvento, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) ?>">
                     <img class="evento-detalhe-img" src="<?= $imagem ?>" alt="<?= htmlspecialchars($evento['titulo']) ?>" style="object-position:<?= (int)($evento['imagem_foco_x'] ?? 50) ?>% <?= (int)($evento['imagem_foco_y'] ?? 50) ?>%">
                 </button>
             <?php endif; ?>
@@ -409,7 +409,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
             <?php endif; ?>
 
             <?php if (!empty($fotosGaleriaEvento)): ?>
-                <div class="evento-galeria">
+                <div class="evento-galeria" data-carrossel-substitui>
                     <h3>Galeria de fotos</h3>
                     <div class="evento-galeria-grid">
                         <?php foreach ($fotosGaleriaEvento as $gIdx => $g): ?>

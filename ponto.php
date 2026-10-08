@@ -86,22 +86,25 @@ $imagem = !empty($ponto['imagem'])
     <div class="container">
         <div class="ponto-detalhe-card">
 
+            <?php
+            // Fotografias do ponto: vivem na Galeria, num álbum criado automaticamente
+            // com o nome do ponto. Não há cópias — são lidas de lá.
+            require_once __DIR__ . "/includes/galeria.php";
+            $fotosPonto = imagensDaOrigem($pdo, 'ponto', (int)$ponto['id']);
+            $todasFotosPonto = $imagem ? [html_entity_decode($imagem)] : [];
+            foreach ($fotosPonto as $f) $todasFotosPonto[] = imagemGaleriaUrl($f['ficheiro']);
+            ?>
             <?php if ($imagem): ?>
-                <img class="ponto-detalhe-img" src="<?= $imagem ?>" alt="<?= htmlspecialchars($ponto['nome']) ?>">
+                <img class="ponto-detalhe-img" src="<?= $imagem ?>" alt="<?= htmlspecialchars($ponto['nome']) ?>"
+                     data-carrossel data-fotos="<?= htmlspecialchars(json_encode($todasFotosPonto, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) ?>">
             <?php endif; ?>
 
             <div class="ponto-detalhe-texto">
                 <?= nl2br(htmlspecialchars($ponto['descricao'] ?? '')) ?>
             </div>
 
-            <?php
-            // Fotografias do ponto: vivem na Galeria, num álbum criado automaticamente
-            // com o nome do ponto. Não há cópias — são lidas de lá.
-            require_once __DIR__ . "/includes/galeria.php";
-            $fotosPonto = imagensDaOrigem($pdo, 'ponto', (int)$ponto['id']);
-            ?>
-
             <?php if (!empty($fotosPonto)): ?>
+                <div data-carrossel-substitui>
                 <h2 style="margin:28px 0 14px;">Fotografias</h2>
 
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;">
@@ -113,6 +116,7 @@ $imagem = !empty($ponto['imagem'])
                                  style="width:100%;height:145px;object-fit:cover;display:block;">
                         </a>
                     <?php endforeach; ?>
+                </div>
                 </div>
             <?php endif; ?>
 

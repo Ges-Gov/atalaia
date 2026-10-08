@@ -9022,7 +9022,7 @@ a:hover{
     }
 
     .main-header{
-        padding:8px 0;
+        padding:10px 0;
     }
 
     .header-inner .brand{
@@ -9030,14 +9030,14 @@ a:hover{
     }
 
     .header-inner .brand img{
-        height:40px !important;
+        height:48px !important;
     }
 
     /* o nome da Junta aparece sempre inteiro (nunca cortado com «…»): nomes compridos ocupam
        mais uma linha, com letra um pouco mais pequena; o subtítulo (município) só no computador */
     .header-inner .brand strong{
-        font-size:13px;
-        line-height:1.2;
+        font-size:15px;
+        line-height:1.22;
     }
 
     .header-inner .brand small{

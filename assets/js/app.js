@@ -317,3 +317,44 @@ if (input && preview) {
         preview.style.display = "flex";
     });
 }
+
+
+// Slider: deslizar com o dedo (usa as setas existentes, por isso serve qualquer versão do slider).
+// Num telemóvel real o browser pode ficar com o gesto e mandar "touchcancel" em vez de "touchend":
+// por isso guarda-se a última posição no touchmove e decide-se em ambos os casos.
+document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.getElementById("heroSlider");
+    const next = document.getElementById("nextSlide");
+    const prev = document.getElementById("prevSlide");
+    if (!slider || !next || !prev || slider.dataset.deslizar === "1") return;
+    slider.dataset.deslizar = "1";
+
+    let inicioX = null, inicioY = null, ultimoX = null, ultimoY = null;
+
+    slider.addEventListener("touchstart", function (e) {
+        if (e.touches.length !== 1) { inicioX = null; return; }
+        inicioX = ultimoX = e.touches[0].clientX;
+        inicioY = ultimoY = e.touches[0].clientY;
+    }, { passive: true });
+
+    slider.addEventListener("touchmove", function (e) {
+        if (inicioX === null) return;
+        ultimoX = e.touches[0].clientX;
+        ultimoY = e.touches[0].clientY;
+    }, { passive: true });
+
+    function terminar(e) {
+        if (inicioX === null) return;
+        const t = e.changedTouches && e.changedTouches[0];
+        const x = t ? t.clientX : ultimoX;
+        const y = t ? t.clientY : ultimoY;
+        const dx = x - inicioX;
+        const dy = y - inicioY;
+        inicioX = null;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+        (dx < 0 ? next : prev).click();
+    }
+
+    slider.addEventListener("touchend", terminar, { passive: true });
+    slider.addEventListener("touchcancel", terminar, { passive: true });
+});

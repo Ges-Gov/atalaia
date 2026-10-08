@@ -9067,3 +9067,42 @@ a:hover{
         margin-right:24px;
     }
 }
+
+/* SLIDER NO TELEMÓVEL (08/10/2026): o texto do slide está ancorado ao fundo e cresce para cima;
+   com títulos/parágrafos compridos passava o topo do slider e ficava atrás do cabeçalho.
+   Mais compacto e com o parágrafo limitado a 4 linhas, cabe sempre. Deslizar: touch-action. */
+.hero-slider{
+    touch-action:pan-y;
+}
+
+@media (max-width: 850px){
+    .hero-overlay{
+        bottom:96px;
+    }
+
+    .hero-overlay span{
+        margin-bottom:12px;
+        padding:6px 12px;
+        font-size:13px;
+    }
+
+    .hero-overlay h1{
+        font-size:clamp(28px, 8vw, 34px);
+        line-height:1.08;
+        margin-bottom:12px;
+    }
+
+    .hero-overlay p{
+        font-size:15px;
+        line-height:1.5;
+        margin-bottom:18px;
+        display:-webkit-box;
+        -webkit-line-clamp:4;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+    }
+
+    .hero-btn{
+        padding:12px 16px;
+    }
+}

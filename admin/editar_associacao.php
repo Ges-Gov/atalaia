@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $website = trim($_POST['website'] ?? '');
     $facebook = trim($_POST['facebook'] ?? '');
     $instagram = trim($_POST['instagram'] ?? '');
+    $categoria = in_array($_POST['categoria'] ?? '', ['Cultura', 'Desporto', 'Comunidade'], true) ? $_POST['categoria'] : null;
     $outros_contactos = trim($_POST['outros_contactos'] ?? '');
     $latitude = trim($_POST['latitude'] ?? '');
     $longitude = trim($_POST['longitude'] ?? '');
@@ -64,10 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("
         UPDATE associacoes
         SET nome = ?, morada = ?, email = ?, telefone = ?, imagem = ?, descricao = ?,
-            website = ?, facebook = ?, instagram = ?, outros_contactos = ?, latitude = ?, longitude = ?
+            website = ?, facebook = ?, instagram = ?, outros_contactos = ?, latitude = ?, longitude = ?, categoria = ?
         WHERE id = ?
     ");
-    $stmt->execute([$nome, $morada, $email, $telefone, $imagem, $descricao, $website, $facebook, $instagram, $outros_contactos, $latitude, $longitude, $id]);
+    $stmt->execute([$nome, $morada, $email, $telefone, $imagem, $descricao, $website, $facebook, $instagram, $outros_contactos, $latitude, $longitude, $categoria, $id]);
 
     header("Location: associacoes.php");
     exit;
@@ -112,6 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <form method="POST" enctype="multipart/form-data" class="assoc-admin-form">
     <input type="text" name="nome" value="<?= htmlspecialchars($associacao['nome']) ?>" required>
+    <select name="categoria">
+        <?php $catAtual = $associacao['categoria'] ?? ''; ?>
+        <option value="">Categoria (Cultura, Desporto ou Comunidade)</option>
+        <?php foreach (['Cultura', 'Desporto', 'Comunidade'] as $c): ?>
+            <option value="<?= $c ?>" <?= $catAtual === $c ? 'selected' : '' ?>><?= $c ?></option>
+        <?php endforeach; ?>
+    </select>
 
     <textarea name="morada" placeholder="Morada"><?= htmlspecialchars($associacao['morada'] ?? '') ?></textarea>
 

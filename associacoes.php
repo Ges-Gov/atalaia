@@ -5,12 +5,22 @@ $porPagina = 6;
 $pagina = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
 $offset = ($pagina - 1) * $porPagina;
 
-$totalAssociacoes = (int)$pdo->query("SELECT COUNT(*) FROM associacoes")->fetchColumn();
+// Categorias das associações (migração 037): as etiquetas da página filtram a lista
+$categoriasAssoc = ['Cultura' => 'bi-music-note-beamed', 'Desporto' => 'bi-trophy-fill', 'Comunidade' => 'bi-people-fill'];
+$categoriaAssoc = (isset($_GET['categoria']) && isset($categoriasAssoc[$_GET['categoria']])) ? $_GET['categoria'] : '';
+try {
+    $pdo->query("SELECT categoria FROM associacoes LIMIT 1");
+} catch (Exception $e) {
+    $categoriaAssoc = '';                     // migração ainda não corrida: mostra todas
+}
+// valor só pode ser uma das três categorias acima (lista fechada)
+$filtroAssoc = $categoriaAssoc !== '' ? " WHERE categoria = " . $pdo->quote($categoriaAssoc) : "";
+$totalAssociacoes = (int)$pdo->query("SELECT COUNT(*) FROM associacoes" . $filtroAssoc)->fetchColumn();
 $totalPaginas = max(1, ceil($totalAssociacoes / $porPagina));
 
 $stmt = $pdo->prepare("
     SELECT *
-    FROM associacoes
+    FROM associacoes{$filtroAssoc}
     ORDER BY nome ASC
     LIMIT ? OFFSET ?
 ");
@@ -186,6 +196,32 @@ function getAssociacaoIcon($nome)
     background:#242A30;
     color:white;
     border-color:#242A30;
+}
+
+.assoc-tabs a{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    color:#334155;
+    padding:12px 16px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:13px;
+    text-decoration:none;
+    transition:background .2s ease, color .2s ease;
+}
+
+.assoc-tabs a:hover{
+    border-color:var(--cor-principal);
+    color:var(--cor-principal);
+}
+
+.assoc-tabs a.active{
+    background:var(--cor-principal);
+    color:white;
+    border-color:var(--cor-principal);
 }
 
 .assoc-count{
@@ -535,14 +571,14 @@ function getAssociacaoIcon($nome)
 
         <div class="assoc-intro-panel">
             <div class="assoc-tabs">
-                <span class="active"><i class="bi bi-people-fill"></i> Todas</span>
-                <span><i class="bi bi-music-note-beamed"></i> Cultura</span>
-                <span><i class="bi bi-trophy-fill"></i> Desporto</span>
-                <span><i class="bi bi-people-fill"></i> Comunidade</span>
+                <a href="/associacoes.php" class="<?= $categoriaAssoc === '' ? 'active' : '' ?>"><i class="bi bi-people-fill"></i> Todas</a>
+                <?php foreach ($categoriasAssoc as $cNome => $cIcone): ?>
+                    <a href="/associacoes.php?categoria=<?= urlencode($cNome) ?>" class="<?= $categoriaAssoc === $cNome ? 'active' : '' ?>"><i class="bi <?= $cIcone ?>"></i> <?= $cNome ?></a>
+                <?php endforeach; ?>
             </div>
 
             <div class="assoc-count">
-                <?= (int)$totalAssociacoes ?> associação<?= (int)$totalAssociacoes === 1 ? '' : 'ões' ?> registada<?= (int)$totalAssociacoes === 1 ? '' : 's' ?>
+                <?= (int)$totalAssociacoes ?> <?= (int)$totalAssociacoes === 1 ? 'associação registada' : 'associações registadas' ?>
             </div>
         </div>
 
@@ -564,7 +600,7 @@ function getAssociacaoIcon($nome)
                     <article class="assoc-card-insane">
 
                         <div class="assoc-image">
-                            <span class="assoc-category-float">Associação</span>
+                            <span class="assoc-category-float"><?= htmlspecialchars(!empty($a['categoria']) ? $a['categoria'] : 'Associação') ?></span>
 
                             <?php if (!empty($a['imagem'])): ?>
                                 <img src="/assets/img/<?= htmlspecialchars($a['imagem']) ?>" alt="<?= htmlspecialchars($a['nome']) ?>">
@@ -664,17 +700,17 @@ function getAssociacaoIcon($nome)
                 <div class="assoc-pagination">
 
                     <?php if ($pagina > 1): ?>
-                        <a href="?pagina=<?= $pagina - 1 ?>">‹</a>
+                        <a href="?<?= $categoriaAssoc !== '' ? 'categoria=' . urlencode($categoriaAssoc) . '&amp;' : '' ?>pagina=<?= $pagina - 1 ?>">‹</a>
                     <?php endif; ?>
 
                     <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                        <a href="?pagina=<?= $i ?>" class="<?= $i === $pagina ? 'active' : '' ?>">
+                        <a href="?<?= $categoriaAssoc !== '' ? 'categoria=' . urlencode($categoriaAssoc) . '&amp;' : '' ?>pagina=<?= $i ?>" class="<?= $i === $pagina ? 'active' : '' ?>">
                             <?= $i ?>
                         </a>
                     <?php endfor; ?>
 
                     <?php if ($pagina < $totalPaginas): ?>
-                        <a href="?pagina=<?= $pagina + 1 ?>">›</a>
+                        <a href="?<?= $categoriaAssoc !== '' ? 'categoria=' . urlencode($categoriaAssoc) . '&amp;' : '' ?>pagina=<?= $pagina + 1 ?>">›</a>
                     <?php endif; ?>
 
                 </div>
@@ -684,7 +720,7 @@ function getAssociacaoIcon($nome)
         <?php else: ?>
 
             <div class="assoc-empty">
-                Ainda não existem associações publicadas.
+                <?= $categoriaAssoc !== '' ? 'Ainda não há associações de ' . htmlspecialchars($categoriaAssoc) . '. <a href="/associacoes.php">Ver todas</a>' : 'Ainda não existem associações publicadas.' ?>
             </div>
 
         <?php endif; ?>

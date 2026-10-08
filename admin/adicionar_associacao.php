@@ -42,16 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $website = trim($_POST['website'] ?? '');
     $facebook = trim($_POST['facebook'] ?? '');
     $instagram = trim($_POST['instagram'] ?? '');
+    $categoria = in_array($_POST['categoria'] ?? '', ['Cultura', 'Desporto', 'Comunidade'], true) ? $_POST['categoria'] : null;
     $outros_contactos = trim($_POST['outros_contactos'] ?? '');
     $latitude = trim($_POST['latitude'] ?? '');
     $longitude = trim($_POST['longitude'] ?? '');
     $imagem = uploadImagemAssociacao('imagem');
 
     $stmt = $pdo->prepare("
-        INSERT INTO associacoes (nome, morada, email, telefone, imagem, descricao, website, facebook, instagram, outros_contactos, latitude, longitude)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO associacoes (nome, morada, email, telefone, imagem, descricao, website, facebook, instagram, outros_contactos, latitude, longitude, categoria)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $stmt->execute([$nome, $morada, $email, $telefone, $imagem, $descricao, $website, $facebook, $instagram, $outros_contactos, $latitude, $longitude]);
+    $stmt->execute([$nome, $morada, $email, $telefone, $imagem, $descricao, $website, $facebook, $instagram, $outros_contactos, $latitude, $longitude, $categoria]);
 
     header("Location: associacoes.php");
     exit;
@@ -87,6 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <form method="POST" enctype="multipart/form-data" class="assoc-admin-form">
     <input type="text" name="nome" placeholder="Nome da associação" required>
+    <select name="categoria">
+        <?php $catAtual = $associacao['categoria'] ?? ''; ?>
+        <option value="">Categoria (Cultura, Desporto ou Comunidade)</option>
+        <?php foreach (['Cultura', 'Desporto', 'Comunidade'] as $c): ?>
+            <option value="<?= $c ?>" <?= $catAtual === $c ? 'selected' : '' ?>><?= $c ?></option>
+        <?php endforeach; ?>
+    </select>
     <textarea name="morada" placeholder="Morada"></textarea>
     <input type="email" name="email" placeholder="Email">
     <input type="text" name="telefone" placeholder="Telefone">

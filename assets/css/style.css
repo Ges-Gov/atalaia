@@ -9033,14 +9033,11 @@ a:hover{
         height:40px !important;
     }
 
-    /* nome no máximo em 2 linhas; o subtítulo (município) só no computador */
+    /* o nome da Junta aparece sempre inteiro (nunca cortado com «…»): nomes compridos ocupam
+       mais uma linha, com letra um pouco mais pequena; o subtítulo (município) só no computador */
     .header-inner .brand strong{
-        font-size:14px;
-        line-height:1.25;
-        display:-webkit-box;
-        -webkit-line-clamp:2;
-        -webkit-box-orient:vertical;
-        overflow:hidden;
+        font-size:13px;
+        line-height:1.2;
     }
 
     .header-inner .brand small{

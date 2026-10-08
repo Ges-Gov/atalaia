@@ -566,8 +566,8 @@ body {
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(90deg, rgba(17,21,28,.78), rgba(17,21,28,.22)),
-        linear-gradient(0deg, rgba(0,0,0,.35), transparent);
+        linear-gradient(90deg, rgba(17,21,28,var(--tema-hero-veu,.62)), rgba(17,21,28,var(--tema-hero-veu-fim,.12))),
+        linear-gradient(0deg, rgba(0,0,0,.3), transparent);
 }
 
 .hero-overlay {
@@ -9298,4 +9298,13 @@ a:hover{
         width:62px;
         height:46px;
     }
+}
+
+/* Slider um pouco mais claro (08/10/2026): o véu da esquerda para a direita mantém-se, só com menos
+   opacidade; o texto ganha uma sombra suave para continuar legível. Afinável por site em tema_config
+   (hero_veu / hero_veu_fim). */
+.hero-overlay h1,
+.hero-overlay h2,
+.hero-overlay p {
+    text-shadow: 0 2px 14px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.3);
 }

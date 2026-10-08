@@ -61,7 +61,7 @@ if (!empty($_SESSION['cidadao_id'])) {
         }
     </style>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261008d">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261008e">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <?php $faviconFich = temaConfig('favicon', '') !== '' ? temaConfig('favicon') : siteConfig('logo', ''); ?>

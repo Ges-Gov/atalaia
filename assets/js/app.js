@@ -358,3 +358,20 @@ document.addEventListener("DOMContentLoaded", function () {
     slider.addEventListener("touchend", terminar, { passive: true });
     slider.addEventListener("touchcancel", terminar, { passive: true });
 });
+
+
+// Menu em telemóvel: "Recursos Humanos" abre as opções em vez de navegar logo
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".dropdown-submenu > .submenu-main").forEach(function (link) {
+        if (link.dataset.submenu === "1") return;
+        link.dataset.submenu = "1";
+        link.addEventListener("click", function (e) {
+            if (!window.matchMedia("(max-width: 850px)").matches) return;
+            e.preventDefault();
+            const sub = link.parentElement;
+            const vaiAbrir = !sub.classList.contains("open");
+            sub.classList.toggle("open", vaiAbrir);
+            link.setAttribute("aria-expanded", vaiAbrir ? "true" : "false");
+        });
+    });
+});

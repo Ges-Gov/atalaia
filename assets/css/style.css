@@ -9106,3 +9106,96 @@ a:hover{
         padding:12px 16px;
     }
 }
+
+/* (copiado do ciborro a 08/10/2026 — o demo/atalaia vinham de antes destas correções) */
+/* Slider da página inicial em telemóvel: botões lado a lado, sem setas */
+@media (max-width: 850px) {
+    .hero-slider .hero-overlay {
+        bottom: 84px;
+    }
+
+    .hero-slider .hero-overlay span {
+        display: block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 11px;
+        padding: 5px 11px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        width: fit-content;
+    }
+
+    .hero-slider .hero-overlay h2 {
+        font-size: clamp(24px, 7vw, 38px);
+        line-height: 1.1;
+        margin: 0 0 10px;
+    }
+
+    .hero-slider .hero-actions {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin-top: 4px;
+    }
+
+    .hero-slider .hero-actions a {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 12px;
+        line-height: 1.25;
+    }
+
+    .hero-slider .hero-actions a.hero-btn-outline {
+        background: rgba(17, 21, 27, .35);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, .55);
+        box-shadow: none;
+    }
+
+    /* Em telemóvel muda-se de slide a deslizar com o dedo (app.js) */
+    .hero-slider .slider-arrow {
+        display: none;
+    }
+
+    .hero-slider .slider-dots {
+        left: 16px;
+        bottom: 36px;
+    }
+}
+
+/* Submenu de Recursos Humanos em telemóvel: abre por baixo, ao tocar */
+@media (max-width: 850px) {
+    .main-nav {
+        box-sizing: border-box;
+    }
+
+    .dropdown-submenu-content {
+        position: static;
+        min-width: 0;
+        box-shadow: none;
+        background: transparent;
+        padding: 0 0 4px 14px;
+        margin-left: 6px;
+        border-left: 2px solid color-mix(in srgb, var(--cor-principal) 35%, transparent);
+        border-radius: 0;
+    }
+
+    .dropdown-submenu:hover .dropdown-submenu-content {
+        display: none;
+    }
+
+    .dropdown-submenu.open .dropdown-submenu-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-submenu.open > .submenu-main {
+        font-weight: 800;
+    }
+}

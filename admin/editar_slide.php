@@ -2,6 +2,7 @@
 require_once "includes/auth.php";
 require_once "../includes/db.php";
 require_once "../includes/galeria.php";
+require_once "includes/slides_ordem.php";
 
 $id = (int)($_GET['id'] ?? 0);
 
@@ -40,6 +41,7 @@ if ($_POST) {
             WHERE id = ?
         ");
         $stmt->execute([$titulo, $subtitulo, $imagem, $link_destino, $ativo, $id]);
+        reordenarSlides($pdo, $id, posicaoSlidePedida() ?? (int)($slide['ordem'] ?? 0) ?: null);
 
         header("Location: slides.php");
         exit;
@@ -85,6 +87,10 @@ if ($_POST) {
 
         <label>Subtítulo</label>
         <textarea name="subtitulo"><?= htmlspecialchars($slide['subtitulo']) ?></textarea>
+
+        <label>Ordem de apresentação</label>
+        <input type="number" name="ordem" min="1" max="<?= (int)$pdo->query("SELECT COUNT(*) FROM slides_homepage")->fetchColumn() ?>" value="<?= htmlspecialchars((string)($slide['ordem'] ?? '')) ?>" placeholder="Ex.: 1">
+        <small>1 = primeiro slide, 2 = segundo, e assim por diante. Os outros slides ajustam-se sozinhos.</small>
 
         <label>Imagem atual</label>
         <?php if (!empty($slide['imagem'])): ?>

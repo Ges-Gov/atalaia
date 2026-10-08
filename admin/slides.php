@@ -3,7 +3,11 @@ $adminPageTitle = "Slides";
 $adminActive = "slides";
 require_once "includes/header.php";
 
-$slides = $pdo->query("SELECT * FROM slides_homepage ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $slides = $pdo->query("SELECT * FROM slides_homepage ORDER BY COALESCE(ordem, 999999), id ASC")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {   // migração 038 ainda não corrida
+    $slides = $pdo->query("SELECT * FROM slides_homepage ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <div class="admin-actions">
@@ -13,6 +17,7 @@ $slides = $pdo->query("SELECT * FROM slides_homepage ORDER BY id ASC")->fetchAll
 <div class="table-box">
     <table>
         <tr>
+            <th>Ordem</th>
             <th>Imagem</th>
             <th>Título</th>
             <th>Subtítulo</th>
@@ -23,6 +28,7 @@ $slides = $pdo->query("SELECT * FROM slides_homepage ORDER BY id ASC")->fetchAll
 
         <?php foreach ($slides as $s): ?>
             <tr>
+                <td style="font-weight:900;font-size:18px;text-align:center;"><?= !empty($s['ordem']) ? (int)$s['ordem'] . 'º' : '—' ?></td>
                 <td>
                     <?php if (!empty($s['imagem'])): ?>
                         <img src="../assets/img/<?= htmlspecialchars($s['imagem']) ?>" style="width:110px;height:65px;object-fit:cover;border-radius:12px;">

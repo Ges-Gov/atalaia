@@ -9,7 +9,7 @@ try {
         $dbConfigPreload['user'],
         $dbConfigPreload['pass']
     );
-    $primeiroSlide = $pdoPreload->query("SELECT imagem FROM slides_homepage WHERE ativo = 1 ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    $primeiroSlide = $pdoPreload->query("SELECT imagem FROM slides_homepage WHERE ativo = 1 ORDER BY COALESCE(ordem, 999999), id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     $heroPreloadImage = $primeiroSlide['imagem'] ?? null;
 } catch (Exception $e) {
     $heroPreloadImage = null;
@@ -56,7 +56,11 @@ function youtubeEmbedHome($url) {
     return $url;
 }
 
-$slides = $pdo->query("SELECT * FROM slides_homepage WHERE ativo = 1 ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $slides = $pdo->query("SELECT * FROM slides_homepage WHERE ativo = 1 ORDER BY COALESCE(ordem, 999999), id ASC")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {   // migração 038 ainda não corrida
+    $slides = $pdo->query("SELECT * FROM slides_homepage WHERE ativo = 1 ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+}
 
 $home = $pdo->query("SELECT * FROM homepage_config ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 

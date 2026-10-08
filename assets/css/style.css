@@ -8896,3 +8896,174 @@ a:hover{
     cursor:pointer;
 }
 
+
+
+/* CABEÇALHO LIMPO (07/10/2026) — sem barra de contactos no topo nem faixa de pesquisa:
+   o slider fica logo a seguir ao menu. A pesquisa abre pela lupa, à esquerda de «Início»
+   (no telemóvel, ao lado do ☰), num painel por cima do conteúdo. */
+.nav-search-toggle,
+.mobile-search-toggle{
+    background:none;
+    border:0;
+    margin:0;
+    padding:7px;
+    border-radius:999px;
+    color:#1f2933;
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    transition:color .2s ease, background .2s ease;
+}
+
+.nav-search-toggle:hover,
+.mobile-search-toggle:hover,
+.nav-search-toggle[aria-expanded="true"],
+.mobile-search-toggle[aria-expanded="true"]{
+    color:var(--cor-principal);
+    background:color-mix(in srgb, var(--cor-principal) 10%, transparent);
+}
+
+.nav-search-toggle:focus-visible,
+.mobile-search-toggle:focus-visible,
+.global-search-close:focus-visible{
+    outline:2px solid var(--cor-principal);
+    outline-offset:2px;
+}
+
+.mobile-search-toggle{
+    display:none;
+}
+
+/* Cabeçalho mais baixo: o logótipo tem height:78px escrito no HTML — aqui fica em 56px. */
+.main-header{
+    padding:10px 0;
+}
+
+.header-inner .brand img{
+    height:56px !important;
+}
+
+.header-inner .brand strong{
+    font-size:17px;
+}
+
+/* Alinhamento do menu pelo topo: os botões com submenu («A Freguesia ▾»…) têm 12px de
+   padding por baixo (ponte para o rato chegar ao submenu); centrados, subiam 6px em relação
+   a «Início» e «Contactos». A lupa tem a altura de uma linha de texto para não esticar o menu. */
+.main-nav{
+    align-items:flex-start;
+}
+
+.main-nav .nav-search-toggle{
+    padding:0 4px;
+    height:1.25em;
+    font-size:17px;
+}
+
+.global-search-panel{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#fff;
+    border-top:1px solid #edf2f7;
+    padding:18px 0 22px;
+    box-shadow:0 18px 30px rgba(15,23,42,.12);
+    z-index:60;
+}
+
+.global-search-panel[hidden]{
+    display:none;
+}
+
+.global-search-panel .global-search-box{
+    border:1px solid #e2e8f0;
+}
+
+.global-search-close{
+    background:none;
+    border:0;
+    padding:6px;
+    border-radius:999px;
+    color:#64748b;
+    font-size:15px;
+    cursor:pointer;
+    display:inline-flex;
+    flex-shrink:0;
+}
+
+.global-search-close:hover{
+    color:#11151B;
+}
+
+@media (max-width: 850px){
+    .nav-search-toggle{
+        display:none;
+    }
+
+    .mobile-search-toggle{
+        display:inline-flex;
+        margin-left:auto;
+        margin-right:6px;
+        font-size:20px;
+    }
+
+    /* o bloco do logótipo encolhe para a lupa e o ☰ caberem sempre no ecrã */
+    .header-inner .brand{
+        flex:1 1 auto;
+        min-width:0;
+    }
+
+    .header-inner .brand > div{
+        min-width:0;
+    }
+
+    .main-header{
+        padding:8px 0;
+    }
+
+    .header-inner .brand{
+        gap:10px;
+    }
+
+    .header-inner .brand img{
+        height:40px !important;
+    }
+
+    /* nome no máximo em 2 linhas; o subtítulo (município) só no computador */
+    .header-inner .brand strong{
+        font-size:14px;
+        line-height:1.25;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+    }
+
+    .header-inner .brand small{
+        display:none;
+    }
+
+    .mobile-search-toggle,
+    .menu-toggle{
+        flex-shrink:0;
+    }
+}
+
+/* Nomes de Junta compridos: acima de 1200px os itens do menu não partem em duas linhas
+   («A / Freguesia»); quem encolhe é o nome da Junta. */
+@media (min-width: 1200px){
+    .main-nav > a,
+    .main-nav .nav-parent{
+        white-space:nowrap;
+    }
+
+    .header-inner .brand{
+        flex:1 1 auto;
+        min-width:0;
+        margin-right:24px;
+    }
+}

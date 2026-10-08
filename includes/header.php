@@ -61,7 +61,7 @@ if (!empty($_SESSION['cidadao_id'])) {
         }
     </style>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=20260930a">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261008c">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <?php $faviconFich = temaConfig('favicon', '') !== '' ? temaConfig('favicon') : siteConfig('logo', ''); ?>
@@ -109,12 +109,6 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 <header class="site-header">
 
-    <div class="top-bar">
-        <div class="container top-bar-inner">
-            <span><?= htmlspecialchars(siteConfig('email', '')) ?></span>
-            <span><?= htmlspecialchars(siteConfig('telefone', '')) ?></span>
-        </div>
-    </div>
 
     <div class="main-header">
         <div class="container header-inner">
@@ -142,6 +136,8 @@ if (!empty($_SESSION['cidadao_id'])) {
             </a>
 
             <nav class="main-nav" id="mainNav">
+                <button type="button" class="nav-search-toggle js-search-toggle" aria-label="Pesquisar no site"
+                        aria-controls="globalSearchPanel" aria-expanded="false"><i class="bi bi-search"></i></button>
                 <a href="/index.php">Início</a>
 
                 <div class="nav-dropdown">
@@ -255,12 +251,16 @@ if (!empty($_SESSION['cidadao_id'])) {
                 </div>
             <?php endif; ?>
 
+            <button type="button" class="mobile-search-toggle js-search-toggle" aria-label="Pesquisar no site"
+                    aria-controls="globalSearchPanel" aria-expanded="false"><i class="bi bi-search"></i></button>
+
             <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><i class="bi bi-list"></i></button>
 
         </div>
     </div>
 
-    <div class="global-search-strip">
+    <!-- Pesquisa: abre pela lupa do menu, por cima do conteúdo (não ocupa espaço na página) -->
+    <div class="global-search-panel" id="globalSearchPanel" hidden>
         <div class="container">
 
             <div class="global-search-wrapper global-search-wide">
@@ -275,6 +275,8 @@ if (!empty($_SESSION['cidadao_id'])) {
                         id="globalSearchInput"
                         placeholder="Pesquisar notícias, documentos, eventos, serviços..."
                         autocomplete="off">
+
+                    <button type="button" class="global-search-close js-search-close" aria-label="Fechar pesquisa"><i class="bi bi-x-lg"></i></button>
                 </div>
 
                 <div id="globalSearchResults" class="global-search-results"></div>
@@ -326,6 +328,44 @@ if (!empty($_SESSION['cidadao_id'])) {
 document.addEventListener("DOMContentLoaded", function () {
     const globalSearchInput = document.getElementById("globalSearchInput");
     const globalSearchResults = document.getElementById("globalSearchResults");
+
+    // Painel da pesquisa: abre pela lupa (menu no computador, junto ao ☰ no telemóvel)
+    const searchPanel = document.getElementById("globalSearchPanel");
+    const searchToggles = document.querySelectorAll(".js-search-toggle");
+
+    function abrirPesquisa(aberta) {
+        if (!searchPanel) return;
+        searchPanel.hidden = !aberta;
+        document.body.classList.toggle("search-open", aberta);
+        searchToggles.forEach(function (b) { b.setAttribute("aria-expanded", aberta ? "true" : "false"); });
+        if (aberta && globalSearchInput) {
+            globalSearchInput.focus();
+        }
+    }
+
+    searchToggles.forEach(function (b) {
+        b.addEventListener("click", function (e) {
+            e.stopPropagation();
+            abrirPesquisa(searchPanel.hidden);
+        });
+    });
+
+    document.querySelectorAll(".js-search-close").forEach(function (b) {
+        b.addEventListener("click", function () { abrirPesquisa(false); });
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && searchPanel && !searchPanel.hidden) {
+            abrirPesquisa(false);
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (searchPanel && !searchPanel.hidden && !e.target.closest("#globalSearchPanel") && !e.target.closest(".js-search-toggle")) {
+            abrirPesquisa(false);
+        }
+    });
+
 
     if (globalSearchInput && globalSearchResults) {
         globalSearchInput.addEventListener("input", async function () {

@@ -101,6 +101,25 @@ ficheiros, 0 falhas). Ainda **sem deploy feito** — site só local.
 
 ## Produção (instalado a 01/10/2026)
 
+## ⚠️ Desde 15/10/2026 o site de produção está no SERVIDOR DA JUNTA
+
+| | |
+|---|---|
+| **Endereço** | https://new.aaej.pt (provisório; o informático vai mudar o nome da pasta para `juf.aaej.pt` quando a Junta aprovar) |
+| **Servidor** | alojamento cPanel da Junta, `185.12.116.247` (`cpanel903.dnscpanel.com`, DNS gerida pela Flesk). O email da Junta (`geral@juf.aaej.pt`) está no mesmo servidor. |
+| **Acesso** | só FTP: `gesgov@new.aaej.pt` em `ftp.jfaaej.pt:21`, FTP explícito sobre TLS. O certificado não é para esse nome, por isso tem de se aceitar. A password fica com o utilizador e não é guardada aqui. |
+| **PHP / BD** | PHP 8.4 (ea-php84), MariaDB 10.6. BD `jfatalai_atalaia`, utilizador `jfatalai_GesGov`. Porta 3306 fechada ao exterior. |
+| **Atualizar** | **O `pull_sites2.sh` não chega lá.** Fazer push para `Ges-Gov/atalaia` e depois enviar por FTP só os ficheiros alterados desde o último envio (`git diff --name-only <último>..HEAD`; último enviado: `8c062bb`). **Nunca enviar a `.htaccess` da raiz**, porque a deles tem diretivas do cPanel. Migrações: script temporário que dá sessão de admin e faz `require migrations/run.php`, chamado uma vez e apagado logo a seguir. |
+| **Cuidados** | O alojamento limita pedidos seguidos (erro 429 e bloqueio temporário do IP no FTP): espaçar os pedidos. Antes de substituir ficheiros, confirmar que ninguém os alterou lá. |
+| **Credenciais nossas lá** | `mail_config.php` (conta `newsletter@gesgov.pt`) e o hash do `admin` oculto, comum ao portefólio. Proposto: SMTP próprio e password única do `admin` no Atalaia. Chave Gemini própria do site, posta pelo utilizador. |
+| **Cron** | A pedir ao informático, no cPanel → Cron Jobs: diário às 8h, `/usr/local/bin/php /home/jfatalai/<pasta final>/cron/newsletter_enviar_mensal.php` |
+
+A cópia `atalaia.185.205.244.198.nip.io` no nosso VPS (abaixo) ficou **desatualizada e não deve ser usada**: o
+backoffice real é `new.aaej.pt/admin`. Em 15/10/2026 o código foi também atualizado para o modelo antigo atual
+(ciborro `81efc4f`), porque vinha do Caia, de antes de várias correções. O commit é `8c062bb`, com a migração 033.
+
+### Instalação anterior no nosso VPS (já não é a produção)
+
 | | |
 |---|---|
 | **Endereço** | https://atalaia.185.205.244.198.nip.io (**provisório** — `nip.io` até haver domínio próprio) |

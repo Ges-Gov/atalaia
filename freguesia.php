@@ -13,12 +13,14 @@ if (!$pagina) {
         'intro_texto' => 'A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia pertence ao concelho do Montijo, distrito de Setúbal. Tem 13,65 km² e 5379 habitantes (Censos 2021). Foi constituída pela Lei n.º 11-A/2013, de 28 de janeiro, que agregou as freguesias da Atalaia e do Alto Estanqueiro-Jardia.',
         'historia_titulo' => 'História e memória',
         'historia_texto' => 'A cerca de quatro quilómetros da sede do município, a Atalaia beneficiou desde sempre da proximidade da Estrada Real que ligava Lisboa a Badajoz, por Aldeia Galega. Já no início do século XVI, as populações locais e dos arredores vinham aqui em peregrinação.',
-        'identidade_titulo' => 'Identidade',
+        'identidade_titulo' => 'Terra de gente amistosa',
         'identidade_texto' => 'O culto de Nossa Senhora da Atalaia, vivido por romeiros e festeiros, é o grande traço de identidade da freguesia.',
-        'patrimonio_titulo' => 'Património',
+        'patrimonio_titulo' => 'Património e natureza',
         'patrimonio_texto' => 'A Igreja de Nossa Senhora da Atalaia e os seus três cruzeiros foram classificados em 2009 como Imóveis de Interesse Público. Junto à escadaria do Santuário fica o Museu Agrícola da Atalaia.',
         'localidades_titulo' => 'Localidades da freguesia',
-        'localidades_texto' => "Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia\nAlto Estanqueiro|Onde fica a dependência da Junta\nJardia|Lugar de tradição hortícola",
+        'localidades_texto' => "Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia
+Alto Estanqueiro|Onde fica a dependência da Junta
+Jardia|Lugar de tradição hortícola",
         'galeria_titulo' => 'A freguesia em imagens',
         'botao1_texto' => 'Ver pontos de interesse',
         'botao1_link' => '/pontos.php',
@@ -108,9 +110,9 @@ function textoSeguro($texto) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: #D4AA00;
-    background: rgba(212,170,0,.14);
-    border: 1px solid rgba(212,170,0,.42);
+    color: var(--cor-secundaria);
+    background: color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
     padding: 10px 16px;
     border-radius: 999px;
     font-size: 13px;
@@ -333,7 +335,7 @@ function textoSeguro($texto) {
 
 .localidade-card h3 {
     margin: 0 0 10px;
-    color: #F0D060;
+    color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     font-size: 22px;
 }
 
@@ -448,11 +450,22 @@ function textoSeguro($texto) {
 
 @media (max-width: 700px) {
     .freguesia-hero-premium {
-        min-height: 560px;
+        min-height: 420px;
     }
 
     .freguesia-hero-inner {
-        padding: 80px 0 120px;
+        padding: 55px 0 90px;
+    }
+
+    .freguesia-hero-inner h1 {
+        font-size: clamp(26px, 7vw, 38px);
+        letter-spacing: -1px;
+    }
+
+    .freguesia-hero-inner p {
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0 0 20px;
     }
 
     .freguesia-intro-card,
@@ -535,7 +548,7 @@ function textoSeguro($texto) {
             <aside class="freguesia-mini-panel">
                 <div>
                     <strong><?= htmlspecialchars(temaConfig("logo_iniciais", "")) ?></strong>
-                    <span>Freguesia de Atalaia e Alto Estanqueiro-Jardia · Setúbal</span>
+                    <span>Freguesia de Atalaia e Alto Estanqueiro-Jardia · Montijo</span>
                 </div>
                 <p style="color:#dbeafe;line-height:1.7;margin:25px 0 0;">
                     Um território onde a história, a paisagem e a comunidade se encontram.

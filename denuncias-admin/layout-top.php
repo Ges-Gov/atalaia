@@ -2,11 +2,13 @@
 <!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title><?= htmlspecialchars($pageTitle ?? 'Canal de Denúncias') ?></title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
+<?php $__cores = ['cor_principal' => '#242A30', 'cor_secundaria' => '#C8A02E']; try { $__cores = array_merge($__cores, array_filter((array)$pdo->query("SELECT cor_principal, cor_secundaria FROM configuracoes_site LIMIT 1")->fetch(PDO::FETCH_ASSOC))); } catch (Throwable $e) {} ?>:root{--cor-principal:<?= htmlspecialchars($__cores['cor_principal']) ?>;--cor-secundaria:<?= htmlspecialchars($__cores['cor_secundaria']) ?>;}
+
 *{box-sizing:border-box}
 body{margin:0;background:#f8fafc;color:#11151B;font-family:Arial,sans-serif}
 .den-layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
 .den-sidebar{background:linear-gradient(180deg,#242A30,#11151B);color:white;padding:24px}
-.den-logo{display:flex;gap:12px;align-items:center;margin-bottom:28px}.den-logo span{width:52px;height:52px;border-radius:18px;background:#D4AA00;color:#11151B;display:grid;place-items:center;font-size:24px}.den-logo strong{display:block;font-size:18px}.den-logo small{color:#dbeafe}
+.den-logo{display:flex;gap:12px;align-items:center;margin-bottom:28px}.den-logo span{width:52px;height:52px;border-radius:18px;background:var(--cor-secundaria);color:#11151B;display:grid;place-items:center;font-size:24px}.den-logo strong{display:block;font-size:18px}.den-logo small{color:#dbeafe}
 .den-menu{display:grid;gap:8px}.den-menu a{color:#dbeafe;text-decoration:none;padding:13px 14px;border-radius:15px;font-weight:900}.den-menu a.active,.den-menu a:hover{background:rgba(255,255,255,.12);color:white}
 .den-logout{display:block;margin-top:26px;color:#fca5a5;text-decoration:none;font-weight:900}
 .den-main{padding:28px}.den-topbar{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px 22px;margin-bottom:24px;display:flex;justify-content:space-between;gap:18px;align-items:center;box-shadow:0 12px 30px rgba(15,23,42,.06)}

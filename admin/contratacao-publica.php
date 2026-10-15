@@ -54,7 +54,7 @@ $linkAutomatico = "https://www.base.gov.pt/Base4/pt/pesquisa/?type=contratos&adj
 <style>
 .cpinfo-admin-hero{background:linear-gradient(135deg,var(--cor-principal),#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18)}
 .cpinfo-admin-hero h2{margin:8px 0;font-size:34px}.cpinfo-admin-hero p{margin:0;color:#dbeafe}
-.cpinfo-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.cpinfo-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .cpinfo-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:24px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .cpinfo-form{display:grid;gap:14px}.cpinfo-form label{font-weight:900;color:#11151B;font-size:13px}
 .cpinfo-form input,.cpinfo-form textarea{width:100%;box-sizing:border-box;border:1px solid #dbe4ee;background:#f8fafc;color:#11151B;border-radius:15px;min-height:48px;padding:0 14px;font-weight:800}

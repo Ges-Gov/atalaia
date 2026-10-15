@@ -6,7 +6,7 @@
     position:relative;
     overflow:hidden;
     background:
-        radial-gradient(circle at top right, rgba(212,170,0,.24), transparent 34%),
+        radial-gradient(circle at top right, color-mix(in srgb, var(--cor-secundaria) 24%, transparent), transparent 34%),
         linear-gradient(135deg, var(--cor-principal), #11151B 72%);
     color:white;
     padding:92px 0 76px;
@@ -45,8 +45,8 @@
     align-items:center;
     gap:8px;
     color:var(--cor-secundaria);
-    background:rgba(212,170,0,.13);
-    border:1px solid rgba(212,170,0,.34);
+    background:color-mix(in srgb, var(--cor-secundaria) 13%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 34%, transparent);
     border-radius:999px;
     padding:8px 13px;
     font-size:13px;

@@ -69,7 +69,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .eventos-hero-insane:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;right:-220px;top:-260px;background:rgba(255,255,255,.06)}
 .eventos-hero-insane:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(0deg,#f8fafc,transparent)}
 .eventos-hero-inner{position:relative;z-index:2;padding:80px 0 125px}
-.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:rgba(212,170,0,.15);border:1px solid rgba(212,170,0,.42);color:#F0D060;border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
+.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
 .eventos-hero-insane h1{font-size:clamp(46px,7vw,84px);line-height:.98;margin:0 0 20px;letter-spacing:-2px}
 .eventos-hero-insane p{color:#dbeafe;font-size:21px;line-height:1.8;max-width:780px;margin:0}
 .eventos-main{position:relative;z-index:5;margin-top:-78px}
@@ -77,15 +77,15 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-feature-insane{background:linear-gradient(135deg,#242A30,#11151B);border-radius:34px;padding:34px;color:white;box-shadow:0 24px 70px rgba(0,0,0,.18);overflow:hidden;position:relative;min-height:560px;display:flex;flex-direction:column}
 .evento-feature-insane:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-140px;top:-160px;background:rgba(255,255,255,.06)}
 .evento-feature-insane>*{position:relative;z-index:2}
-.evento-feature-badge{width:max-content;display:inline-flex;align-items:center;background:#D4AA00;color:#11151B;border-radius:999px;padding:10px 16px;font-weight:900;font-size:13px;text-transform:uppercase;margin-bottom:22px}
+.evento-feature-badge{width:max-content;display:inline-flex;align-items:center;background:var(--cor-secundaria);color:#11151B;border-radius:999px;padding:10px 16px;font-weight:900;font-size:13px;text-transform:uppercase;margin-bottom:22px}
 .evento-feature-insane h2{font-size:clamp(34px,4vw,52px);line-height:1.08;letter-spacing:-1.4px;margin:0 0 18px}
 .evento-feature-insane p{color:#dbeafe;line-height:1.8;font-size:16px;margin:0 0 18px}
 .evento-feature-date{display:inline-flex;gap:9px;align-items:center;color:white;font-weight:900;margin:6px 0 18px}
-.evento-countdown{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;color:#D4AA00;font-weight:900;margin-bottom:18px}
+.evento-countdown{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;color:var(--cor-secundaria);font-weight:900;margin-bottom:18px}
 .evento-feature-image{width:100%;height:250px;border-radius:24px;overflow:hidden;background:rgba(255,255,255,.10);margin-top:auto;box-shadow:0 20px 50px rgba(0,0,0,.22)}
 .evento-feature-image img{width:100%;height:100%;object-fit:cover;display:block;transition:.45s}
 .evento-feature-image:hover img{transform:scale(1.05)}
-.evento-feature-noimg{width:100%;height:100%;display:grid;place-items:center;color:#D4AA00;font-size:64px;font-weight:900}
+.evento-feature-noimg{width:100%;height:100%;display:grid;place-items:center;color:var(--cor-secundaria);font-size:64px;font-weight:900}
 .evento-feature-btn{margin-top:18px;display:flex;justify-content:center;text-decoration:none;color:white;border:1px solid rgba(255,255,255,.30);background:rgba(255,255,255,.08);border-radius:16px;padding:14px;font-weight:900;transition:.25s}
 .evento-feature-btn:hover{transform:translateY(-3px);background:rgba(255,255,255,.14)}
 .agenda-month-insane{background:white;border-radius:34px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.10);border:1px solid #eef2f7}
@@ -96,8 +96,8 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .agenda-weekdays-insane{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:12px}.agenda-weekdays-insane span{color:#52606d;font-weight:900;text-align:center;font-size:13px}
 .agenda-calendar-insane{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
 .agenda-day-insane{min-height:78px;border-radius:18px;background:#f8fafc;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;position:relative;font-weight:900;color:#11151B;transition:.25s}
-.agenda-day-insane.empty{opacity:0;pointer-events:none}.agenda-day-insane.today{border-color:#D4AA00}.agenda-day-insane.has-event{background:#242A30;color:white;border-color:#242A30;box-shadow:0 16px 36px rgba(36,42,50,.18)}
-.event-dot-insane{position:absolute;bottom:12px;width:8px;height:8px;background:#D4AA00;border-radius:50%}
+.agenda-day-insane.empty{opacity:0;pointer-events:none}.agenda-day-insane.today{border-color:var(--cor-secundaria)}.agenda-day-insane.has-event{background:#242A30;color:white;border-color:#242A30;box-shadow:0 16px 36px rgba(36,42,50,.18)}
+.event-dot-insane{position:absolute;bottom:12px;width:8px;height:8px;background:var(--cor-secundaria);border-radius:50%}
 .agenda-day-insane:hover{transform:translateY(-4px);z-index:30}
 .agenda-tooltip-insane{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translateX(-50%) translateY(8px);width:300px;background:white;color:#11151B;border-radius:22px;box-shadow:0 26px 70px rgba(0,0,0,.22);border:1px solid #eef2f7;padding:16px;opacity:0;pointer-events:none;transition:.25s;z-index:99;text-align:left}
 .agenda-tooltip-insane:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:10px solid transparent;border-top-color:white}
@@ -123,7 +123,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-card-body{padding:22px}.evento-card-body h3{color:#11151B;font-size:21px;line-height:1.25;margin:0 0 12px}.evento-card-body small{display:block;color:#64748b;font-weight:800;margin-bottom:12px}.evento-card-body p{color:#52606d;line-height:1.7;margin:0 0 16px;font-size:14px}
 .evento-badge{display:inline-flex;background:#dcfce7;color:#166534;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900}.eventos-empty{background:white;border-radius:28px;padding:38px;text-align:center;color:#64748b;font-weight:800;box-shadow:0 18px 45px rgba(0,0,0,.08)}
 @media(max-width:1200px){.agenda-top-grid-insane{grid-template-columns:1fr}.eventos-grid-insane{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.eventos-hero-insane{min-height:360px}.eventos-main{margin-top:-52px}.evento-feature-insane,.agenda-month-insane{padding:24px;border-radius:26px}.agenda-calendar-insane,.agenda-weekdays-insane{gap:6px}.agenda-day-insane{min-height:54px;border-radius:14px}.agenda-tooltip-insane{width:245px}.eventos-grid-insane{grid-template-columns:1fr}.eventos-section-head{flex-direction:column;align-items:flex-start}}
+@media(max-width:760px){.eventos-hero-insane{min-height:340px}.eventos-hero-insane h1{font-size:clamp(28px,8vw,40px);letter-spacing:-1px}.eventos-hero-insane p{font-size:15px;line-height:1.5;margin:0}.eventos-main{margin-top:-52px}.evento-feature-insane,.agenda-month-insane{padding:24px;border-radius:26px}.agenda-calendar-insane,.agenda-weekdays-insane{gap:6px}.agenda-day-insane{min-height:54px;border-radius:14px}.agenda-tooltip-insane{width:245px}.eventos-grid-insane{grid-template-columns:1fr}.eventos-section-head{flex-direction:column;align-items:flex-start}}
 </style>
 
 <main class="eventos-page-insane">

@@ -3,7 +3,7 @@
 .cd-page{background:linear-gradient(180deg,#f7f4ef,#f8fafc 45%,#fff)}
 .cd-hero{padding:96px 0 118px;background:linear-gradient(135deg,rgba(36,42,50,.98),rgba(17,21,28,.94)),url('/assets/img/freguesia-1.jpg') center/cover no-repeat;color:white}
 .cd-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:42px;align-items:center}
-.cd-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.38);color:#F0D060;border-radius:999px;padding:10px 15px;font-size:13px;font-weight:900;text-transform:uppercase}
+.cd-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 15px;font-size:13px;font-weight:900;text-transform:uppercase}
 .cd-hero h1{font-size:clamp(42px,6vw,76px);line-height:1.02;margin:20px 0 18px}.cd-hero p{color:#dbeafe;font-size:20px;line-height:1.75;max-width:820px}
 .cd-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.cd-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--cor-secundaria);color:#11151B!important;text-decoration:none;border-radius:16px;padding:15px 20px;font-weight:900;box-shadow:0 16px 34px rgba(0,0,0,.20);transition:.25s}.cd-btn:hover{transform:translateY(-3px)}.cd-btn.secondary{background:rgba(255,255,255,.12);color:white!important;border:1px solid rgba(255,255,255,.22)}
 .cd-card-hero{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);border-radius:34px;padding:30px;box-shadow:0 32px 80px rgba(0,0,0,.25)}.cd-card-hero strong{display:block;font-size:60px;color:var(--cor-secundaria)}

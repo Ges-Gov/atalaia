@@ -160,7 +160,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
     padding:80px 0;
 }
 .evento-detalhe-hero span{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-weight:900;
     text-transform:uppercase;
     letter-spacing:.8px;

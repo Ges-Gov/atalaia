@@ -1,12 +1,12 @@
 <?php require_once "includes/header.php"; ?>
 
 <style>
-.lr-page{background:radial-gradient(circle at top left,rgba(212,170,0,.18),transparent 34%),radial-gradient(circle at top right,rgba(36,42,50,.16),transparent 36%),linear-gradient(180deg,#f7f4ef 0%,#f8fafc 42%,#fff 100%)}
+.lr-page{background:radial-gradient(circle at top left,color-mix(in srgb, var(--cor-secundaria) 18%, transparent),transparent 34%),radial-gradient(circle at top right,rgba(36,42,50,.16),transparent 36%),linear-gradient(180deg,#f7f4ef 0%,#f8fafc 42%,#fff 100%)}
 .lr-hero{position:relative;overflow:hidden;padding:96px 0 115px;background:linear-gradient(135deg,rgba(36,42,50,.98),rgba(17,21,28,.96)),url('/assets/img/freguesia-1.jpg') center/cover no-repeat;color:white}
-.lr-hero:before{content:"";position:absolute;width:540px;height:540px;right:-170px;top:-220px;border-radius:50%;background:rgba(212,170,0,.13)}
+.lr-hero:before{content:"";position:absolute;width:540px;height:540px;right:-170px;top:-220px;border-radius:50%;background:color-mix(in srgb, var(--cor-secundaria) 13%, transparent)}
 .lr-hero:after{content:"";position:absolute;width:430px;height:430px;left:-170px;bottom:-230px;border-radius:50%;background:rgba(255,255,255,.06)}
 .lr-hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.2fr) 360px;gap:42px;align-items:center}
-.lr-kicker{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.36);color:#F0D060;font-weight:900;letter-spacing:.8px;text-transform:uppercase;font-size:13px}
+.lr-kicker{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);font-weight:900;letter-spacing:.8px;text-transform:uppercase;font-size:13px}
 .lr-hero h1{margin:20px 0 18px;font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-1.8px}
 .lr-hero p{color:#dbeafe;font-size:20px;line-height:1.8;max-width:780px;margin:0}
 .lr-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
@@ -33,7 +33,7 @@
 .lr-steps{display:grid;gap:14px;margin-top:20px}.lr-step{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start;background:#f8fafc;border:1px solid #eef2f7;border-radius:20px;padding:16px}
 .lr-step b{width:48px;height:48px;border-radius:16px;background:var(--cor-principal);color:white;display:grid;place-items:center}.lr-step strong{display:block;color:#11151B;margin-bottom:5px}.lr-step span{display:block;color:#64748b;line-height:1.6;font-weight:700}
 .lr-cta{position:relative;overflow:hidden;border-radius:30px;padding:34px;background:linear-gradient(135deg,var(--cor-principal),#11151B);color:white;box-shadow:0 22px 60px rgba(0,0,0,.16);margin-bottom:40px}
-.lr-cta:after{content:"";position:absolute;right:-80px;bottom:-110px;width:250px;height:250px;border-radius:50%;background:rgba(212,170,0,.14)}
+.lr-cta:after{content:"";position:absolute;right:-80px;bottom:-110px;width:250px;height:250px;border-radius:50%;background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent)}
 .lr-cta h2,.lr-cta p,.lr-cta .lr-actions{position:relative;z-index:2}.lr-cta h2{margin:0 0 12px;font-size:32px}.lr-cta p{margin:0;color:#dbeafe;line-height:1.75;max-width:850px}
 @media(max-width:950px){.lr-hero-grid,.lr-info-strip,.lr-grid{grid-template-columns:1fr}.lr-orb{width:250px;min-height:250px}.lr-section-head{flex-direction:column;align-items:flex-start}}
 @media(max-width:650px){.lr-hero{padding:70px 0 90px}.lr-shell{margin-top:-48px}.lr-panel,.lr-cta{padding:22px;border-radius:24px}}

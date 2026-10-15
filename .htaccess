@@ -1,0 +1,2 @@
+# Nunca servir o repositório git (o site no servidor é um clone git)
+RedirectMatch 404 ^/\.git

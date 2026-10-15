@@ -76,7 +76,7 @@ try {
     <style>
         :root {
             --cor-principal: <?= htmlspecialchars(siteConfig('cor_principal', '#242A30')) ?>;
-            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', '#D4AA00')) ?>;
+            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', 'var(--cor-secundaria)')) ?>;
 <?= temaVariaveisCss() ?>            --tema-admin-escuro: <?= htmlspecialchars(temaConfig('admin_escuro', '#11151B')) ?>;
         }
     </style>
@@ -259,7 +259,7 @@ try {
                     <?= htmlspecialchars($adminNome ?? 'Administrador') ?>
                 </span>
 
-                <span style="background:#fef3c7;color:#92400e;padding:9px 13px;border-radius:999px;font-weight:900;text-transform:uppercase;">
+                <span style="background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);padding:9px 13px;border-radius:999px;font-weight:900;text-transform:uppercase;">
                     <?= htmlspecialchars($adminTipo ?? 'admin') ?>
                 </span>
             </div>

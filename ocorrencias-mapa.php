@@ -52,7 +52,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 <style>
 .ocorrencias-map-page{
     background:
-        radial-gradient(circle at top left, rgba(212,170,0,.18), transparent 34%),
+        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 18%, transparent), transparent 34%),
         radial-gradient(circle at bottom right, rgba(36,42,50,.12), transparent 32%),
         #f8fafc;
     padding:34px 24px 50px;
@@ -89,7 +89,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     border-radius:50%;
     left:42%;
     bottom:-150px;
-    background:rgba(212,170,0,.16);
+    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
     filter:blur(2px);
 }
 
@@ -106,9 +106,9 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgba(212,170,0,.15);
-    border:1px solid rgba(212,170,0,.35);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding:8px 13px;
     border-radius:999px;
     font-size:13px;
@@ -152,7 +152,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     font-weight:900;
     border-radius:15px;
     padding:13px 18px;
-    background:var(--cor-secundaria,#D4AA00);
+    background:var(--cor-secundaria,var(--cor-secundaria));
     color:#11151B;
     box-shadow:0 14px 32px rgba(0,0,0,.18);
     transition:.25s ease;
@@ -272,7 +272,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     border-radius:50%;
     right:-80px;
     top:-80px;
-    background:rgba(212,170,0,.20);
+    background:color-mix(in srgb, var(--cor-secundaria) 20%, transparent);
 }
 
 .ocorrencias-sidebar h1{
@@ -655,7 +655,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 .ocorrencias-progress-fill{
     height:100%;
     border-radius:999px;
-    background:linear-gradient(90deg,#242A30,#D4AA00);
+    background:linear-gradient(90deg,#242A30,var(--cor-secundaria));
 }
 
 .ocorrencias-mini-grid{

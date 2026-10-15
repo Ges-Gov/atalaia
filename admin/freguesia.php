@@ -36,12 +36,14 @@ if (!$pagina) {
             'A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia pertence ao concelho do Montijo, distrito de Setúbal. Tem 13,65 km² e 5379 habitantes (Censos 2021). Foi constituída pela Lei n.º 11-A/2013, de 28 de janeiro, que agregou as freguesias da Atalaia e do Alto Estanqueiro-Jardia.',
             'História e memória',
             'A cerca de quatro quilómetros da sede do município, a Atalaia beneficiou desde sempre da proximidade da Estrada Real que ligava Lisboa a Badajoz, por Aldeia Galega. Já no início do século XVI, as populações locais e dos arredores vinham aqui em peregrinação.',
-            'Identidade',
+            'Terra de gente amistosa',
             'O culto de Nossa Senhora da Atalaia, vivido por romeiros e festeiros, é o grande traço de identidade da freguesia.',
-            'Património',
+            'Património e natureza',
             'A Igreja de Nossa Senhora da Atalaia e os seus três cruzeiros foram classificados em 2009 como Imóveis de Interesse Público. Junto à escadaria do Santuário fica o Museu Agrícola da Atalaia.',
             'Localidades da freguesia',
-            'Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia\nAlto Estanqueiro|Onde fica a dependência da Junta\nJardia|Lugar de tradição hortícola',
+            'Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia
+Alto Estanqueiro|Onde fica a dependência da Junta
+Jardia|Lugar de tradição hortícola',
             'A freguesia em imagens',
             'Ver pontos de interesse',
             '/pontos.php',
@@ -170,7 +172,7 @@ require_once "includes/header.php";
 .freguesia-admin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:28px;padding:32px;margin-bottom:24px;box-shadow:0 20px 45px rgba(0,0,0,.14);display:flex;justify-content:space-between;gap:24px;align-items:center;overflow:hidden;position:relative;}
 .freguesia-admin-hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-150px;top:-200px;background:rgba(255,255,255,.06);}
 .freguesia-admin-hero>*{position:relative;z-index:2;}
-.freguesia-admin-hero span{color:#D4AA00;text-transform:uppercase;font-size:13px;font-weight:900;letter-spacing:.8px;}
+.freguesia-admin-hero span{color:var(--cor-secundaria);text-transform:uppercase;font-size:13px;font-weight:900;letter-spacing:.8px;}
 .freguesia-admin-hero h1{margin:8px 0;font-size:36px;}
 .freguesia-admin-hero p{margin:0;color:#dbeafe;}
 .freguesia-admin-card{background:white;border-radius:24px;padding:26px;box-shadow:0 16px 40px rgba(0,0,0,.08);border:1px solid #eef2f7;margin-bottom:22px;}

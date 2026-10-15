@@ -46,7 +46,7 @@ $todasImagens = array_map(fn($img) => imagemGaleriaUrl($img['ficheiro']), $image
     text-align:center;
 }
 .galeria-publica-hero span{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-weight:900;
     text-transform:uppercase;
     letter-spacing:.8px;

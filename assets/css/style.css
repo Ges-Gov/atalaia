@@ -51,7 +51,7 @@ body {
 
 :root {
     --cor-principal: #242A30;
-    --cor-secundaria: #D4AA00;
+    --cor-secundaria: var(--cor-secundaria);
 }
 
 html, body {
@@ -587,8 +587,8 @@ body {
 .hero-overlay span {
     display: inline-block;
     background: #11151B;
-    border: 1px solid rgba(212,170,0,.45);
-    color: #F0D060;
+    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 45%, transparent);
+    color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding: 8px 14px;
     border-radius: 999px;
     font-weight: 700;
@@ -695,17 +695,28 @@ body {
 
 @media (max-width: 850px) {
     .hero-slider {
-        height: 78vh;
-        min-height: 560px;
+        height: auto;
+        min-height: 480px;
     }
 
     .hero-overlay {
         left: 16px;
         right: 16px;
-        bottom: 120px;
+        bottom: 100px;
         max-width: none;
         width: auto;
         box-sizing: border-box;
+    }
+
+    .hero-overlay span {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .hero-overlay h1 {
+        font-size: clamp(24px, 7vw, 38px);
+        margin: 0 0 10px;
     }
 
     .hero-actions {
@@ -719,11 +730,13 @@ body {
         box-sizing: border-box;
         text-align: center;
         white-space: normal;
-        padding: 14px 16px;
+        padding: 12px 16px;
     }
 
     .hero-overlay p {
-        font-size: 17px;
+        font-size: 15px;
+        line-height: 1.4;
+        margin: 0 0 16px;
     }
 
     .slider-arrow {
@@ -732,7 +745,13 @@ body {
 
     .slider-dots {
         left: 24px;
-        bottom: 35px;
+        bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-overlay p {
+        display: none;
     }
 }
 
@@ -3520,8 +3539,8 @@ body {
 }
 
 .tipo-documento {
-    background: #fef3c7;
-    color: #92400e;
+    background: color-mix(in srgb, var(--cor-secundaria) 18%, #fff);
+    color: color-mix(in srgb, var(--cor-secundaria) 45%, #000);
 }
 
 
@@ -3548,7 +3567,7 @@ body {
 }
 
 .trans-hero-pro span {
-    color: #D4AA00;
+    color: var(--cor-secundaria);
     text-transform: uppercase;
     font-size: 13px;
     font-weight: 900;
@@ -3886,7 +3905,7 @@ body {
 }
 
 .minha-area-hero a:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     text-decoration:underline;
 }
 
@@ -4791,8 +4810,8 @@ body {
 }
 
 .mini-badge.evento{
-    background:#fef3c7;
-    color:#92400e;
+    background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);
+    color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);
 }
 
 .premium-news-card h4,
@@ -5147,8 +5166,8 @@ body {
 
 .agenda-event-badge{
     display:inline-block;
-    background:#fef3c7;
-    color:#92400e;
+    background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);
+    color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);
     padding:6px 10px;
     border-radius:999px;
     font-size:11px;
@@ -8897,6 +8916,143 @@ a:hover{
 }
 
 
+/* Slider da página inicial em telemóvel: botões lado a lado, sem setas */
+@media (max-width: 850px) {
+    .hero-slider .hero-overlay {
+        bottom: 84px;
+    }
+
+    .hero-slider .hero-overlay span {
+        display: block;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 11px;
+        padding: 5px 11px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        width: fit-content;
+    }
+
+    .hero-slider .hero-overlay h2 {
+        font-size: clamp(24px, 7vw, 38px);
+        line-height: 1.1;
+        margin: 0 0 10px;
+    }
+
+    .hero-slider .hero-actions {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin-top: 4px;
+    }
+
+    .hero-slider .hero-actions a {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 12px;
+        line-height: 1.25;
+    }
+
+    .hero-slider .hero-actions a.hero-btn-outline {
+        background: rgba(17, 21, 27, .35);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, .55);
+        box-shadow: none;
+    }
+
+    /* Em telemóvel muda-se de slide a deslizar com o dedo (app.js) */
+    .hero-slider .slider-arrow {
+        display: none;
+    }
+
+    .hero-slider .slider-dots {
+        left: 16px;
+        bottom: 36px;
+    }
+}
+
+/* Submenu de Recursos Humanos em telemóvel: abre por baixo, ao tocar */
+@media (max-width: 850px) {
+    .main-nav {
+        box-sizing: border-box;
+    }
+
+    .dropdown-submenu-content {
+        position: static;
+        min-width: 0;
+        box-shadow: none;
+        background: transparent;
+        padding: 0 0 4px 14px;
+        margin-left: 6px;
+        border-left: 2px solid color-mix(in srgb, var(--cor-principal) 35%, transparent);
+        border-radius: 0;
+    }
+
+    .dropdown-submenu:hover .dropdown-submenu-content {
+        display: none;
+    }
+
+    .dropdown-submenu.open .dropdown-submenu-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-submenu.open > .submenu-main {
+        font-weight: 800;
+    }
+}
+
+/* Deslizar o slider com o dedo: o browser fica só com o scroll vertical */
+.hero-slider {
+    touch-action: pan-y;
+}
+
+/* Barra de baixo do rodapé: direitos à esquerda, «Powered by GesGov» ao centro, área reservada à direita */
+.rm-footer-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.rm-footer-bottom > :last-child {
+    justify-self: end;
+}
+
+.rm-footer-powered {
+    font-size: 14px;
+    opacity: .85;
+    white-space: nowrap;
+}
+
+.rm-footer-powered a {
+    display: inline;
+    color: inherit;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.rm-footer-powered a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 650px) {
+    .rm-footer-bottom {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .rm-footer-bottom > :last-child {
+        justify-self: center;
+    }
+}
+
 
 /* CABEÇALHO LIMPO (07/10/2026) — sem barra de contactos no topo nem faixa de pesquisa:
    o slider fica logo a seguir ao menu. A pesquisa abre pela lupa, à esquerda de «Início»
@@ -9062,138 +9218,6 @@ a:hover{
         flex:1 1 auto;
         min-width:0;
         margin-right:24px;
-    }
-}
-
-/* SLIDER NO TELEMÓVEL (08/10/2026): o texto do slide está ancorado ao fundo e cresce para cima;
-   com títulos/parágrafos compridos passava o topo do slider e ficava atrás do cabeçalho.
-   Mais compacto e com o parágrafo limitado a 4 linhas, cabe sempre. Deslizar: touch-action. */
-.hero-slider{
-    touch-action:pan-y;
-}
-
-@media (max-width: 850px){
-    .hero-overlay{
-        bottom:96px;
-    }
-
-    .hero-overlay span{
-        margin-bottom:12px;
-        padding:6px 12px;
-        font-size:13px;
-    }
-
-    .hero-overlay h1{
-        font-size:clamp(28px, 8vw, 34px);
-        line-height:1.08;
-        margin-bottom:12px;
-    }
-
-    .hero-overlay p{
-        font-size:15px;
-        line-height:1.5;
-        margin-bottom:18px;
-        display:-webkit-box;
-        -webkit-line-clamp:4;
-        -webkit-box-orient:vertical;
-        overflow:hidden;
-    }
-
-    .hero-btn{
-        padding:12px 16px;
-    }
-}
-
-/* (copiado do ciborro a 08/10/2026 — o demo/atalaia vinham de antes destas correções) */
-/* Slider da página inicial em telemóvel: botões lado a lado, sem setas */
-@media (max-width: 850px) {
-    .hero-slider .hero-overlay {
-        bottom: 84px;
-    }
-
-    .hero-slider .hero-overlay span {
-        display: block;
-        max-width: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 11px;
-        padding: 5px 11px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-        width: fit-content;
-    }
-
-    .hero-slider .hero-overlay h2 {
-        font-size: clamp(24px, 7vw, 38px);
-        line-height: 1.1;
-        margin: 0 0 10px;
-    }
-
-    .hero-slider .hero-actions {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 10px;
-        margin-top: 4px;
-    }
-
-    .hero-slider .hero-actions a {
-        flex: 1 1 0;
-        width: auto;
-        min-width: 0;
-        justify-content: center;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 12px;
-        line-height: 1.25;
-    }
-
-    .hero-slider .hero-actions a.hero-btn-outline {
-        background: rgba(17, 21, 27, .35);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, .55);
-        box-shadow: none;
-    }
-
-    /* Em telemóvel muda-se de slide a deslizar com o dedo (app.js) */
-    .hero-slider .slider-arrow {
-        display: none;
-    }
-
-    .hero-slider .slider-dots {
-        left: 16px;
-        bottom: 36px;
-    }
-}
-
-/* Submenu de Recursos Humanos em telemóvel: abre por baixo, ao tocar */
-@media (max-width: 850px) {
-    .main-nav {
-        box-sizing: border-box;
-    }
-
-    .dropdown-submenu-content {
-        position: static;
-        min-width: 0;
-        box-shadow: none;
-        background: transparent;
-        padding: 0 0 4px 14px;
-        margin-left: 6px;
-        border-left: 2px solid color-mix(in srgb, var(--cor-principal) 35%, transparent);
-        border-radius: 0;
-    }
-
-    .dropdown-submenu:hover .dropdown-submenu-content {
-        display: none;
-    }
-
-    .dropdown-submenu.open .dropdown-submenu-content {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .dropdown-submenu.open > .submenu-main {
-        font-weight: 800;
     }
 }
 

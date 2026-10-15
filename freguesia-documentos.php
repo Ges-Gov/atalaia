@@ -380,7 +380,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
 }
 
 .doc-download-link:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 
 .docs-empty{

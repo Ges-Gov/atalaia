@@ -108,7 +108,7 @@ function labelEstadoMarcacao($estado) {
 .agenda-exec-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:32px;padding:32px;margin-bottom:24px;box-shadow:0 24px 70px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;position:relative;overflow:hidden}
 .agenda-exec-hero::after{content:"";position:absolute;width:420px;height:420px;right:-170px;top:-200px;border-radius:50%;background:rgba(255,255,255,.07)}
 .agenda-exec-hero>*{position:relative;z-index:2}
-.agenda-exec-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;font-size:12px}
+.agenda-exec-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;font-size:12px}
 .agenda-exec-hero h2{margin:14px 0 8px;font-size:40px;line-height:1.05}
 .agenda-exec-hero p{margin:0;color:#dbeafe;line-height:1.7}
 .agenda-live-pill{display:inline-flex;align-items:center;gap:9px;background:#dcfce7;color:#166534;padding:11px 15px;border-radius:999px;font-weight:900;text-transform:uppercase;box-shadow:0 16px 36px rgba(0,0,0,.12)}

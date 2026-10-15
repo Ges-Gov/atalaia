@@ -87,6 +87,7 @@
 
         <div class="rm-footer-bottom">
             <span><?= htmlspecialchars(siteConfig('footer', '© ' . date('Y') . ' ' . siteConfig('nome_site', 'Junta de Freguesia'))) ?></span>
+            <span class="rm-footer-powered">Powered by <a href="https://www.gesgov.pt" target="_blank" rel="noopener">GesGov</a></span>
             <a href="/admin/login.php" style="color:inherit;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
                 <i class="bi bi-lock-fill"></i> Área reservada
             </a>

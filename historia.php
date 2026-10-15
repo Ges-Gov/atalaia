@@ -24,7 +24,7 @@ $heraldica = [
     'hero_kicker' => 'Heráldica',
     'titulo' => 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia',
     'texto_intro' => 'Escudo de ouro, com uma buzina de vermelho cordada de azul; em campanha, charrua de vermelho com relha, podão, maço e cadeia de negro; bordadura de azul carregada de contas de rosário. Coroa mural de prata de três torres. Listel branco com a legenda em letras negras: GRANHO.',
-    'imagem' => 'heraldica-granho.webp',
+    'imagem' => 'logo-aaej.png',
     'fonte_texto' => '',
     'fonte_url' => ''
 ];
@@ -43,7 +43,7 @@ try {
 
 $heraldicaImg = !empty($heraldica['imagem'])
     ? "/uploads/heraldica/" . htmlspecialchars($heraldica['imagem'])
-    : "/assets/img/heraldica-granho.webp";
+    : "/assets/img/logo-aaej.png";
 
 /* Se houver vários brasões individuais (união de freguesias), mostra-os
    empilhados em vez do símbolo único combinado. */
@@ -117,9 +117,9 @@ function textoSeguro($texto) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(212,170,0,.14);
-    border: 1px solid rgba(212,170,0,.38);
-    color: #D4AA00;
+    background: color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);
+    color: var(--cor-secundaria);
     border-radius: 999px;
     padding: 10px 16px;
     font-size: 13px;
@@ -380,12 +380,12 @@ function textoSeguro($texto) {
     height: 18px;
     border-radius: 50%;
     background: var(--cor-secundaria);
-    box-shadow: 0 0 0 5px rgba(212,170,0,.18);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--cor-secundaria) 18%, transparent);
 }
 
 .timeline-item h3 {
     margin: 0 0 10px;
-    color: #F0D060;
+    color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     font-size: 24px;
 }
 
@@ -458,6 +458,25 @@ function textoSeguro($texto) {
 }
 
 @media(max-width:700px) {
+
+    .historia-hero {
+        min-height: 480px;
+    }
+
+    .historia-hero-content {
+        padding: 60px 0 90px;
+    }
+
+    .historia-hero h1 {
+        font-size: clamp(28px, 8vw, 40px);
+        letter-spacing: -1px;
+    }
+
+    .historia-hero p {
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0 0 20px;
+    }
 
     .historia-main {
         margin-top: -45px;
@@ -573,7 +592,7 @@ function textoSeguro($texto) {
             <div>
                 <div class="historia-side-icon"><i class="bi bi-geo-alt-fill"></i></div>
                 <span class="historia-side-kicker">Identidade da freguesia</span>
-                <span class="historia-side-name">Atalaia e Alto Estanqueiro-Jardia · Setúbal</span>
+                <span class="historia-side-name">Atalaia e Alto Estanqueiro-Jardia · Montijo</span>
             </div>
 
             <p style="color:#dbeafe;line-height:1.8;margin-top:24px;">

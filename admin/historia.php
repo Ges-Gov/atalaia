@@ -106,7 +106,7 @@ require_once "includes/header.php";
 }
 
 .historia-admin-hero span{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:13px;
     font-weight:900;
     text-transform:uppercase;

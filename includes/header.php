@@ -56,7 +56,7 @@ if (!empty($_SESSION['cidadao_id'])) {
     <style>
         :root {
             --cor-principal: <?= htmlspecialchars(siteConfig('cor_principal', '#242A30')) ?> !important;
-            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', '#D4AA00')) ?> !important;
+            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', 'var(--cor-secundaria)')) ?> !important;
 <?= temaVariaveisCss() ?>
         }
     </style>
@@ -177,19 +177,16 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 
 <div class="dropdown-submenu">
-    <a href="/recursos-humanos.php" class="submenu-main">
+    <a href="/recursos-humanos.php" class="submenu-main" aria-expanded="false">
         Recursos Humanos ▸
     </a>
-
-
-
-<a href="/livro-reclamacoes.php">Livro de Reclamações</a>
-
     <div class="dropdown-submenu-content">
         <a href="/recursos-humanos.php?categoria=mapa_pessoal">Mapa de Pessoal</a>
 <a href="/procedimentos-concursais.php">Procedimentos Concursais</a>
     </div>
 </div>
+
+<a href="/livro-reclamacoes.php">Livro de Reclamações</a>
 
 
 <a href="/contratacao-publica.php">Contratação Pública</a>

@@ -36,12 +36,13 @@ function txt($v){ return nl2br(htmlspecialchars($v ?? '')); }
 ?>
 
 <style>
-.contact-hero{background:radial-gradient(circle at 15% 18%,rgba(212,170,0,.24),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:92px 0 108px;position:relative;overflow:hidden}
+.contact-hero{background:radial-gradient(circle at 15% 18%,color-mix(in srgb, var(--cor-secundaria) 24%, transparent),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:92px 0 108px;position:relative;overflow:hidden}
 .contact-hero::after{content:"";position:absolute;right:-250px;top:-280px;width:620px;height:620px;background:rgba(255,255,255,.07);border-radius:50%}
 .contact-hero .container{position:relative;z-index:2}
-.contact-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.38);color:#F0D060;padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.contact-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .contact-hero h1{font-size:clamp(42px,5vw,72px);margin:18px 0 14px;line-height:1.02;max-width:980px}
 .contact-hero p{max-width:880px;color:#dbeafe;font-size:20px;line-height:1.75;margin:0}
+@media(max-width:700px){.contact-hero h1{font-size:clamp(26px,7vw,38px);letter-spacing:-1px}.contact-hero p{font-size:15px;line-height:1.5}}
 .contact-shell{margin-top:-52px;position:relative;z-index:5}
 .contact-top-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-bottom:24px}
 .contact-main-card,.contact-hours,.contact-section,.contact-map{background:white;border:1px solid #e5e7eb;border-radius:30px;padding:28px;box-shadow:0 18px 50px rgba(15,23,42,.08)}
@@ -53,7 +54,7 @@ function txt($v){ return nl2br(htmlspecialchars($v ?? '')); }
 .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .contact-card{background:linear-gradient(180deg,#fff,#f8fafc);border:1px solid #e5e7eb;border-radius:26px;padding:22px;transition:.22s ease}
 .contact-card:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,23,42,.10)}
-.contact-card.destaque{border-color:rgba(212,170,0,.55);box-shadow:0 18px 45px rgba(212,170,0,.10)}
+.contact-card.destaque{border-color:color-mix(in srgb, var(--cor-secundaria) 55%, transparent);box-shadow:0 18px 45px color-mix(in srgb, var(--cor-secundaria) 10%, transparent)}
 .contact-icon{width:62px;height:62px;border-radius:20px;background:linear-gradient(135deg,#242A30,#11151B);color:white;display:grid;place-items:center;font-size:28px;margin-bottom:14px}
 .contact-card h4{margin:0 0 8px;color:#11151B;font-size:21px}
 .contact-badge{display:inline-flex;background:#eef2ff;color:#242A30;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900;margin-bottom:12px}

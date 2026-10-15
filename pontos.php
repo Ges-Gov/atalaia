@@ -78,9 +78,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgba(212,170,0,.15);
-    border:1px solid rgba(212,170,0,.42);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -152,7 +152,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .pontos-floating-stat strong{
     display:block;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -290,7 +290,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     height:100%;
     display:grid;
     place-items:center;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:74px;
     font-weight:900;
 }
@@ -385,7 +385,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 }
 
 .ponto-link-insane:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 
 .ponto-link-insane:hover::after{
@@ -456,11 +456,22 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 @media(max-width:760px){
     .pontos-hero-insane{
-        min-height:580px;
+        min-height:420px;
     }
 
     .pontos-hero-inner{
-        padding:70px 0 120px;
+        padding:50px 0 90px;
+    }
+
+    .pontos-hero-insane h1{
+        font-size:clamp(28px,8vw,40px);
+        letter-spacing:-1px;
+    }
+
+    .pontos-hero-insane p{
+        font-size:15px;
+        line-height:1.5;
+        margin:0 0 20px;
     }
 
     .pontos-main{
@@ -625,7 +636,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 </a>
 
                                
-                                <span class="ponto-mini-tag">AAEJ</span>
+                                <span class="ponto-mini-tag"><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
                             </div>
 
                         </div>

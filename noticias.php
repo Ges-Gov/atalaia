@@ -50,7 +50,7 @@ $heroImagem = !empty($noticias[0]['imagem'])
     inset:0;
     background:
         radial-gradient(circle at right top, rgba(255,255,255,.11), transparent 34%),
-        radial-gradient(circle at left bottom, rgba(212,170,0,.11), transparent 28%);
+        radial-gradient(circle at left bottom, color-mix(in srgb, var(--cor-secundaria) 11%, transparent), transparent 28%);
 }
 
 .noticias-hero-clean::after{
@@ -70,9 +70,9 @@ $heroImagem = !empty($noticias[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:rgba(212,170,0,.14);
-    border:1px solid rgba(212,170,0,.42);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding:9px 15px;
     border-radius:999px;
     font-size:13px;
@@ -227,7 +227,7 @@ $heroImagem = !empty($noticias[0]['imagem'])
     display:grid;
     place-items:center;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:54px;
     font-weight:900;
 }
@@ -282,7 +282,7 @@ $heroImagem = !empty($noticias[0]['imagem'])
 }
 
 .noticia-clean-link:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 
 .noticia-clean-link:hover::after{
@@ -339,7 +339,18 @@ $heroImagem = !empty($noticias[0]['imagem'])
 
 @media(max-width:760px){
     .noticias-hero-clean{
-        min-height:420px;
+        min-height:360px;
+    }
+
+    .noticias-hero-clean h1{
+        font-size:clamp(28px,8vw,40px);
+        letter-spacing:-1px;
+    }
+
+    .noticias-hero-clean p{
+        font-size:15px;
+        line-height:1.5;
+        margin:0 0 20px;
     }
 
     .noticias-clean-grid{

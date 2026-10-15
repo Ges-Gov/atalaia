@@ -7,7 +7,7 @@ $heraldica = [
     'hero_subtitulo' => 'Brasão, bandeira e elementos simbólicos da Freguesia de Atalaia e Alto Estanqueiro-Jardia.',
     'titulo' => 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia',
     'texto_intro' => 'Escudo de ouro, com uma buzina de vermelho cordada de azul; em campanha, charrua de vermelho com relha, podão, maço e cadeia de negro; bordadura de azul carregada de contas de rosário. Coroa mural de prata de três torres. Listel branco com a legenda em letras negras: GRANHO.',
-    'imagem' => 'heraldica-granho.webp',
+    'imagem' => 'logo-aaej.png',
     'fonte_texto' => '',
     'fonte_url' => ''
 ];
@@ -28,13 +28,13 @@ function hTxt($txt) {
     return nl2br(htmlspecialchars($txt ?? ''));
 }
 
-$img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($heraldica['imagem']) : "/assets/img/heraldica-granho.webp";
+$img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($heraldica['imagem']) : "/assets/img/logo-aaej.png";
 ?>
 
 <style>
 .heraldica-hero{
     background:
-        radial-gradient(circle at 15% 18%, rgba(212,170,0,.26), transparent 30%),
+        radial-gradient(circle at 15% 18%, color-mix(in srgb, var(--cor-secundaria) 26%, transparent), transparent 30%),
         radial-gradient(circle at 90% 12%, rgba(255,255,255,.12), transparent 30%),
         linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);
     color:white;
@@ -55,9 +55,9 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
 .heraldica-hero .container{position:relative;z-index:2;}
 .heraldica-kicker{
     display:inline-flex;
-    background:rgba(212,170,0,.16);
-    border:1px solid rgba(212,170,0,.38);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding:9px 14px;
     border-radius:999px;
     font-weight:900;
@@ -76,6 +76,10 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
     font-size:20px;
     line-height:1.75;
     margin:0;
+}
+@media(max-width:700px){
+    .heraldica-hero h1{font-size:clamp(26px,7vw,38px);letter-spacing:-1px;}
+    .heraldica-hero p{font-size:15px;line-height:1.5;}
 }
 .heraldica-shell{margin-top:-52px;position:relative;z-index:5;}
 .heraldica-main{

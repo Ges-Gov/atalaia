@@ -95,9 +95,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgba(212,170,0,.15);
-    border:1px solid rgba(212,170,0,.42);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -172,7 +172,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-hero-stat strong{
     display:block;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -261,7 +261,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-limite-card strong{
     display:block;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     margin-bottom:5px;
 }
 
@@ -426,7 +426,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mini-sem-imagem-insane{
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     display:grid;
     place-items:center;
     font-weight:900;
@@ -538,7 +538,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 .custom-marker.eco span,.custom-marker.assoc span,.custom-marker.evento span{color:#fff}
 .custom-marker span{
     transform:rotate(45deg);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:19px;
 }
 
@@ -570,7 +570,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:grid;
     place-items:center;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-weight:900;
     font-size:22px;
 }
@@ -688,11 +688,22 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 @media(max-width:760px){
     .mapa-hero-insane{
-        min-height:560px;
+        min-height:400px;
     }
 
     .mapa-hero-inner{
-        padding:70px 0 120px;
+        padding:50px 0 90px;
+    }
+
+    .mapa-hero-insane h1{
+        font-size:clamp(28px,8vw,40px);
+        letter-spacing:-1px;
+    }
+
+    .mapa-hero-insane p{
+        font-size:15px;
+        line-height:1.5;
+        margin:0 0 20px;
     }
 
     .mapa-main{
@@ -963,7 +974,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const imagem = ponto.imagem
             ? `<img src="/assets/img/${escapeHtml(ponto.imagem)}" class="popup-img">`
-            : `<div class="popup-no-img">AAEJ</div>`;
+            : `<div class="popup-no-img"><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></div>`;
 
         const popup = `
             <div class="popup-pro-insane">
@@ -1094,11 +1105,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const limiteLayer = L.geoJSON(limiteFreguesia, {
         style: {
-            color: '#D4AA00',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--cor-secundaria').trim() || '#4CAF50',
             weight: 4,
             opacity: 1,
             dashArray: '10,7',
-            fillColor: '#242A30',
+            fillColor: getComputedStyle(document.documentElement).getPropertyValue('--cor-principal').trim() || '#242A30',
             fillOpacity: 0.08
         }
     }).addTo(mapa);

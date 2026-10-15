@@ -28,7 +28,7 @@ $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
     height:58px;
     border-radius:14px;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     display:grid;
     place-items:center;
     font-weight:900;

@@ -19,7 +19,7 @@ $associacoes = $pdo->query("SELECT * FROM associacoes ORDER BY nome ASC")->fetch
     height:54px;
     border-radius:12px;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     display:grid;
     place-items:center;
     font-weight:900;

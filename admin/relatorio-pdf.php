@@ -395,5 +395,5 @@ $dompdf->loadHtml($html, 'UTF-8');
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
-$dompdf->stream("relatorio-granho.pdf", ["Attachment" => false]);
+$dompdf->stream("relatorio-atalaia.pdf", ["Attachment" => false]);
 exit;

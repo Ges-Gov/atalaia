@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ========================================================= */
 .req-page-premium{
     background:
-        radial-gradient(circle at top left, rgba(212,170,0,.16), transparent 34%),
+        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 16%, transparent), transparent 34%),
         radial-gradient(circle at top right, rgba(36,42,50,.14), transparent 30%),
         #f7f4ef;
 }
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     position:absolute;
     inset:0;
     background:
-        radial-gradient(circle at 85% 15%, rgba(212,170,0,.25), transparent 26%),
+        radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--cor-secundaria) 25%, transparent), transparent 26%),
         linear-gradient(90deg, rgba(0,0,0,.18), transparent);
     pointer-events:none;
 }
@@ -213,8 +213,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgba(212,170,0,.14);
-    border:1px solid rgba(212,170,0,.38);
+    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);
     color:#ffe8a3;
     border-radius:999px;
     padding:9px 14px;
@@ -413,7 +413,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .req-modelo-card:hover{
     transform:translateY(-5px);
     box-shadow:0 24px 54px rgba(15,23,42,.12);
-    border-color:rgba(212,170,0,.55);
+    border-color:color-mix(in srgb, var(--cor-secundaria) 55%, transparent);
 }
 
 .req-modelo-icon{

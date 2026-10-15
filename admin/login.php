@@ -113,6 +113,8 @@ if ($admin) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
+<?php $__cores = ['cor_principal' => '#242A30', 'cor_secundaria' => '#C8A02E']; try { $__cores = array_merge($__cores, array_filter((array)$pdo->query("SELECT cor_principal, cor_secundaria FROM configuracoes_site LIMIT 1")->fetch(PDO::FETCH_ASSOC))); } catch (Throwable $e) {} ?>:root{--cor-principal:<?= htmlspecialchars($__cores['cor_principal']) ?>;--cor-secundaria:<?= htmlspecialchars($__cores['cor_secundaria']) ?>;}
+
         * {
             box-sizing: border-box;
         }
@@ -122,9 +124,9 @@ if ($admin) {
             min-height: 100vh;
             font-family: Arial, sans-serif;
             background:
-                radial-gradient(circle at top right, rgba(212,170,0,.22), transparent 35%),
+                radial-gradient(circle at top right, color-mix(in srgb, var(--cor-secundaria) 22%, transparent), transparent 35%),
                 radial-gradient(circle at bottom left, rgba(255,255,255,.10), transparent 32%),
-                linear-gradient(135deg, rgba(36,42,50,.72), rgba(17,21,28,.80)),
+                linear-gradient(135deg, rgba(36,42,50,.94), rgba(17,21,28,.95)),
                 url("../assets/img/freguesia-1.jpg") center/cover no-repeat;
             display: flex;
             align-items: center;
@@ -149,7 +151,7 @@ if ($admin) {
 
         .login-kicker {
             display: inline-block;
-            color: #D4AA00;
+            color: var(--cor-secundaria);
             text-transform: uppercase;
             font-weight: 900;
             letter-spacing: 1px;
@@ -221,7 +223,7 @@ if ($admin) {
             width: 64px;
             height: 64px;
             border-radius: 20px;
-            background: #D4AA00;
+            background: var(--cor-secundaria);
             color: #11151B;
             display: grid;
             place-items: center;
@@ -290,8 +292,8 @@ if ($admin) {
 
         .login-card input:focus {
             background: rgba(255,255,255,.20);
-            border-color: #D4AA00;
-            box-shadow: 0 0 0 4px rgba(212,170,0,.18);
+            border-color: var(--cor-secundaria);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-secundaria) 18%, transparent);
         }
 
         .password-wrap {
@@ -328,7 +330,7 @@ if ($admin) {
             height: 56px;
             border: 0;
             border-radius: 18px;
-            background: #D4AA00;
+            background: var(--cor-secundaria);
             color: #11151B;
             font-weight: 900;
             font-size: 16px;
@@ -369,11 +371,11 @@ if ($admin) {
         }
 
         .back-link:hover {
-            color: #D4AA00;
+            color: var(--cor-secundaria);
         }
 
         .login-clock {
-            color: #D4AA00;
+            color: var(--cor-secundaria);
             font-weight: 900;
             font-size: 13px;
         }

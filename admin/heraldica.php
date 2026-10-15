@@ -17,7 +17,7 @@ function getHeraldicaConfig($pdo) {
             INSERT INTO heraldica_pagina
             (hero_titulo, hero_subtitulo, titulo, texto_intro, imagem)
             VALUES
-            ('Heráldica', 'Brasão, bandeira e elementos simbólicos da Freguesia de Atalaia e Alto Estanqueiro-Jardia.', 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia', 'Texto introdutório.', 'heraldica-granho.webp')
+            ('Heráldica', 'Brasão, bandeira e elementos simbólicos da Freguesia de Atalaia e Alto Estanqueiro-Jardia.', 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia', 'Texto introdutório.', 'logo-aaej.png')
         ");
         $stmt = $pdo->query("SELECT * FROM heraldica_pagina ORDER BY id ASC LIMIT 1");
         $config = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -126,7 +126,7 @@ foreach($elementos as $e){ if($e['ativo']) $ativos++; }
 <style>
 .heraldica-admin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .heraldica-admin-hero h2{margin:8px 0;font-size:34px}.heraldica-admin-hero p{margin:0;color:#dbeafe}
-.heraldica-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.heraldica-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .heraldica-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
 .heraldica-kpi,.heraldica-card-admin{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .heraldica-kpi strong{font-size:32px;color:#11151B;display:block}.heraldica-kpi span{color:#64748b;font-weight:900}

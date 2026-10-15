@@ -50,6 +50,10 @@ $faqs = $pdo->query("SELECT * FROM faqs WHERE ativo = 1 ORDER BY ordem ASC, id A
     line-height:1.75;
     margin:0;
 }
+@media(max-width:700px){
+    .faq-hero h1{font-size:clamp(26px,7vw,38px);letter-spacing:-1px;}
+    .faq-hero p{font-size:15px;line-height:1.5;}
+}
 .faq-shell{margin-top:-52px;position:relative;z-index:5;}
 .faq-list{
     max-width:880px;

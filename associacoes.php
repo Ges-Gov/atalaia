@@ -102,9 +102,9 @@ function getAssociacaoIcon($nome)
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgba(212,170,0,.15);
-    border:1px solid rgba(212,170,0,.42);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -142,7 +142,7 @@ function getAssociacaoIcon($nome)
 
 .assoc-hero-stat strong{
     display:block;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -306,7 +306,7 @@ function getAssociacaoIcon($nome)
     height:100%;
     display:grid;
     place-items:center;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:74px;
     font-weight:900;
 }
@@ -417,7 +417,7 @@ function getAssociacaoIcon($nome)
 }
 
 .assoc-contact-btn:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 
 .assoc-pagination{
@@ -478,11 +478,22 @@ function getAssociacaoIcon($nome)
 
 @media(max-width:760px){
     .associacoes-hero-insane{
-        min-height:560px;
+        min-height:400px;
     }
 
     .associacoes-hero-inner{
-        padding:70px 0 120px;
+        padding:50px 0 90px;
+    }
+
+    .associacoes-hero-insane h1{
+        font-size:clamp(28px,8vw,40px);
+        letter-spacing:-1px;
+    }
+
+    .associacoes-hero-insane p{
+        font-size:15px;
+        line-height:1.5;
+        margin:0 0 20px;
     }
 
     .assoc-main{

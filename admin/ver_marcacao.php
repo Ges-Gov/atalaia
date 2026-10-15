@@ -165,7 +165,7 @@ $estadoAtualLabel = estadoMarcacaoLabel($marcacao['estado']);
 .exec-marcacao-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;position:relative;overflow:hidden}
 .exec-marcacao-hero::after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-150px;top:-170px;background:rgba(255,255,255,.07)}
 .exec-marcacao-hero>*{position:relative;z-index:2}
-.exec-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;text-transform:uppercase;letter-spacing:.7px;font-weight:900;font-size:12px}
+.exec-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;text-transform:uppercase;letter-spacing:.7px;font-weight:900;font-size:12px}
 .exec-marcacao-hero h2{margin:14px 0 8px;font-size:36px;line-height:1.08}
 .exec-marcacao-hero p{margin:0;color:#dbeafe;line-height:1.7}
 .exec-status-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.17);border-radius:24px;padding:20px;backdrop-filter:blur(12px)}
@@ -184,7 +184,7 @@ $estadoAtualLabel = estadoMarcacaoLabel($marcacao['estado']);
 .exec-card input,.exec-card select,.exec-card textarea{width:100%;box-sizing:border-box;border:1px solid #dbe4ee;background:#f8fafc;color:#11151B;border-radius:15px;min-height:48px;padding:0 14px;font-weight:800;outline:none}
 .exec-card textarea{min-height:120px;padding:14px;line-height:1.6}
 .exec-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid #eef2f7}
-.exec-note{background:linear-gradient(135deg,rgba(212,170,0,.16),rgba(36,42,50,.07));border:1px solid rgba(212,170,0,.28);border-radius:18px;padding:16px;color:#334155;line-height:1.6;font-weight:700;margin-top:18px}
+.exec-note{background:linear-gradient(135deg,color-mix(in srgb, var(--cor-secundaria) 16%, transparent),rgba(36,42,50,.07));border:1px solid color-mix(in srgb, var(--cor-secundaria) 28%, transparent);border-radius:18px;padding:16px;color:#334155;line-height:1.6;font-weight:700;margin-top:18px}
 .exec-timeline{display:grid;gap:12px}
 .exec-step{display:grid;grid-template-columns:42px 1fr;gap:13px;align-items:start}
 .exec-step i{width:42px;height:42px;border-radius:15px;background:#242A30;color:white;display:grid;place-items:center;font-style:normal;font-weight:900}

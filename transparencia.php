@@ -60,7 +60,7 @@ $ultimosResolvidos = safeFetch($pdo, "
 /* TRANSPARÊNCIA PREMIUM - apenas visual */
 .transparencia-premium-page{
     background:
-        radial-gradient(circle at top left, rgba(212,170,0,.18), transparent 34%),
+        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 18%, transparent), transparent 34%),
         radial-gradient(circle at top right, rgba(36,42,50,.16), transparent 36%),
         linear-gradient(180deg,#f7f4ef 0%,#f8fafc 42%,#ffffff 100%);
 }
@@ -88,7 +88,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     height:520px;
     right:-160px;
     top:-210px;
-    background:rgba(212,170,0,.13);
+    background:color-mix(in srgb, var(--cor-secundaria) 13%, transparent);
     filter:blur(2px);
 }
 
@@ -115,9 +115,9 @@ $ultimosResolvidos = safeFetch($pdo, "
     gap:8px;
     padding:9px 14px;
     border-radius:999px;
-    background:rgba(212,170,0,.16);
-    border:1px solid rgba(212,170,0,.36);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     font-weight:900;
     letter-spacing:.8px;
     text-transform:uppercase;
@@ -474,7 +474,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     height:100%;
     background:linear-gradient(90deg,var(--cor-principal),var(--cor-secundaria));
     border-radius:999px;
-    box-shadow:0 0 18px rgba(212,170,0,.35);
+    box-shadow:0 0 18px color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
 }
 
 .trans-status-grid{
@@ -590,7 +590,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     width:250px;
     height:250px;
     border-radius:50%;
-    background:rgba(212,170,0,.14);
+    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
 }
 
 .trans-cta-card h2{
@@ -662,7 +662,18 @@ $ultimosResolvidos = safeFetch($pdo, "
 
 @media(max-width:650px){
     .trans-premium-hero{
-        padding:70px 0 90px;
+        padding:50px 0 70px;
+    }
+
+    .trans-hero-content h1{
+        font-size:clamp(26px,7vw,38px);
+        letter-spacing:-1px;
+    }
+
+    .trans-hero-content p{
+        font-size:15px;
+        line-height:1.5;
+        margin:0 0 20px;
     }
 
     .trans-live-strip,

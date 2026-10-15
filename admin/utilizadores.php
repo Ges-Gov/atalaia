@@ -182,7 +182,7 @@ foreach ($fregueses as $f) {
     box-shadow:0 20px 45px rgba(0,0,0,.14);
 }
 .users-admin-hero span{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     text-transform:uppercase;
     font-weight:900;
     letter-spacing:.8px;
@@ -262,8 +262,8 @@ foreach ($fregueses as $f) {
     color:#1d4ed8;
 }
 .user-type-badge.operador{
-    background:#fef3c7;
-    color:#92400e;
+    background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);
+    color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);
 }
 .user-type-badge.vogal{
     background:#ede9fe;

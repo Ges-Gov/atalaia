@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     overflow:hidden;
     padding:92px 0 110px;
     background:
-        radial-gradient(circle at 15% 20%, rgba(212,170,0,.28), transparent 30%),
+        radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--cor-secundaria) 28%, transparent), transparent 30%),
         radial-gradient(circle at 85% 10%, rgba(255,255,255,.12), transparent 28%),
         linear-gradient(135deg, var(--cor-principal), #11151B 62%, #071c2e);
     color:white;
@@ -166,9 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:rgba(212,170,0,.16);
-    border:1px solid rgba(212,170,0,.36);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding:9px 14px;
     border-radius:999px;
     font-weight:900;
@@ -315,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .marcacoes-card-head{
     padding:30px 32px 22px;
     background:
-        linear-gradient(135deg, rgba(36,42,50,.08), rgba(212,170,0,.08)),
+        linear-gradient(135deg, rgba(36,42,50,.08), color-mix(in srgb, var(--cor-secundaria) 8%, transparent)),
         white;
     border-bottom:1px solid #eef2f7;
 }
@@ -532,8 +532,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 .marcacoes-note{
-    background:linear-gradient(135deg, rgba(212,170,0,.16), rgba(36,42,50,.07));
-    border:1px solid rgba(212,170,0,.28);
+    background:linear-gradient(135deg, color-mix(in srgb, var(--cor-secundaria) 16%, transparent), rgba(36,42,50,.07));
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 28%, transparent);
     border-radius:20px;
     padding:17px;
     color:#334155;

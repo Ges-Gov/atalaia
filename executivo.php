@@ -74,9 +74,9 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:rgba(212,170,0,.14);
-    border:1px solid rgba(212,170,0,.40);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 40%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -115,7 +115,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
 .executivo-hero-stat strong{
     display:block;
     font-size:40px;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     line-height:1;
     margin-bottom:7px;
 }
@@ -177,7 +177,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     height:100%;
     display:grid;
     place-items:center;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
     font-size:120px;
     font-weight:900;
 }
@@ -231,7 +231,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
 }
 .executivo-pelouros-premium{
     background:#f8fafc;
-    border-left:5px solid #D4AA00;
+    border-left:5px solid var(--cor-secundaria);
     border-radius:18px;
     padding:18px;
     color:#334155;
@@ -251,7 +251,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     justify-content:center;
     gap:10px;
     width:max-content;
-    background:linear-gradient(135deg,#242A30,#D4AA00);
+    background:linear-gradient(135deg,#242A30,var(--cor-secundaria));
     color:white;
     text-decoration:none;
     padding:16px 24px;
@@ -329,7 +329,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     place-items:center;
     font-size:86px;
     font-weight:900;
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 .executivo-card-body-premium{
     padding:26px;
@@ -349,6 +349,17 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     line-height:1.8;
     margin:0 0 18px;
 }
+.executivo-partido{
+    display:inline-block;
+    margin:0 0 10px;
+    padding:4px 11px;
+    border-radius:999px;
+    background:#f1f5f9;
+    color:#334155;
+    font-size:12px;
+    font-weight:800;
+}
+
 .executivo-email-link{
     display:inline-flex;
     align-items:center;
@@ -360,7 +371,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     word-break:break-word;
 }
 .executivo-email-link:hover{
-    color:#D4AA00;
+    color:var(--cor-secundaria);
 }
 .executivo-empty-premium{
     background:white;
@@ -378,7 +389,9 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     .executivo-hero-inner{grid-template-columns:1fr;}
 }
 @media(max-width:760px){
-    .executivo-hero-inner{padding:65px 0 110px;}
+    .executivo-hero-inner{padding:45px 0 85px;}
+    .executivo-hero-premium h1{font-size:clamp(26px,7vw,38px);letter-spacing:-1px;}
+    .executivo-hero-premium p{font-size:15px;line-height:1.5;margin:0 0 20px;}
     .executivo-main{margin-top:-52px;}
     .executivo-presidente-info-premium{padding:28px;}
     .executivo-presidente-photo-premium{height:420px;}
@@ -444,6 +457,10 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
                         <?= htmlspecialchars($presidente['cargo']) ?>
                     </strong>
 
+                    <?php if (!empty($presidente['partido'])): ?>
+                        <span class="executivo-partido"><?= htmlspecialchars($presidente['partido']) ?></span>
+                    <?php endif; ?>
+
                     <?php if (!empty($presidente['pelouros'])): ?>
                         <div class="executivo-pelouros-premium">
                             <?= nl2br(htmlspecialchars($presidente['pelouros'])) ?>
@@ -501,6 +518,10 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
                             </span>
 
                             <h3><?= htmlspecialchars($m['nome']) ?></h3>
+
+                            <?php if (!empty($m['partido'])): ?>
+                                <span class="executivo-partido"><?= htmlspecialchars($m['partido']) ?></span>
+                            <?php endif; ?>
 
                             <?php if (!empty($m['pelouros'])): ?>
                                 <p>

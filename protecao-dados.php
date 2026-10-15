@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .dpo-page{background:linear-gradient(180deg,#f8fafc 0%,#fff 55%,#f7f4ef 100%)}
 .dpo-hero{padding:92px 0 112px;background:linear-gradient(135deg,rgba(36,42,50,.98),rgba(17,21,28,.94)),url('/assets/img/freguesia-1.jpg') center/cover no-repeat;color:white}
 .dpo-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.dpo-kicker{display:inline-flex;gap:8px;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.38);color:#F0D060;border-radius:999px;padding:10px 15px;font-size:13px;font-weight:900;text-transform:uppercase}
+.dpo-kicker{display:inline-flex;gap:8px;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 15px;font-size:13px;font-weight:900;text-transform:uppercase}
 .dpo-hero h1{font-size:clamp(40px,6vw,72px);line-height:1.02;margin:20px 0 18px}
 .dpo-hero p{color:#dbeafe;font-size:20px;line-height:1.75;max-width:820px}
 .dpo-card-hero{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);border-radius:34px;padding:30px;box-shadow:0 32px 80px rgba(0,0,0,.25)}
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .dpo-form input,.dpo-form textarea{width:100%;box-sizing:border-box;border:1px solid #dbe4ee;background:#f8fafc;border-radius:16px;min-height:52px;padding:0 14px;font-weight:800;color:#11151B}
 .dpo-form textarea{min-height:210px;padding:14px;line-height:1.65}
 .dpo-check{display:flex;gap:10px;align-items:flex-start;color:#11151B;font-weight:800}.dpo-check input{width:auto;min-height:auto;margin-top:4px}
-.dpo-btn{border:0;background:var(--cor-secundaria);color:#11151B;border-radius:16px;padding:16px 22px;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 14px 30px rgba(212,170,0,.3);transition:.25s}.dpo-btn:hover{transform:translateY(-3px)}
+.dpo-btn{border:0;background:var(--cor-secundaria);color:#11151B;border-radius:16px;padding:16px 22px;font-weight:900;font-size:16px;cursor:pointer;box-shadow:0 14px 30px color-mix(in srgb, var(--cor-secundaria) 30%, transparent);transition:.25s}.dpo-btn:hover{transform:translateY(-3px)}
 .dpo-alert{background:#fee2e2;color:#991b1b;border-radius:16px;padding:14px;font-weight:900}
 .dpo-rights{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.dpo-right{background:white;border:1px solid #eef2f7;border-radius:24px;padding:22px;box-shadow:0 14px 34px rgba(0,0,0,.06)}
 .dpo-right h3{margin:0 0 8px;color:#11151B}.dpo-right p{margin:0;color:#64748b;line-height:1.65;font-weight:700}

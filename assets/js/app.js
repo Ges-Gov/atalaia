@@ -325,7 +325,6 @@ if (input && preview) {
     });
 }
 
-
 // Slider: deslizar com o dedo (usa as setas existentes, por isso serve qualquer versão do slider).
 // Num telemóvel real o browser pode ficar com o gesto e mandar "touchcancel" em vez de "touchend":
 // por isso guarda-se a última posição no touchmove e decide-se em ambos os casos.

@@ -27,13 +27,13 @@ if (session_status() === PHP_SESSION_NONE) {
     padding:18px;
     border:none;
     border-radius:14px;
-    background:#D4AA00;
+    background:var(--cor-secundaria);
     color:#11151B;
     font-size:18px;
     font-weight:800;
     cursor:pointer;
     transition:.25s;
-    box-shadow:0 10px 25px rgba(212,170,0,.35);
+    box-shadow:0 10px 25px color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
 }
 
 .btn-enviar-pedido:hover{

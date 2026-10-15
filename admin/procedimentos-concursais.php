@@ -236,7 +236,7 @@ require_once "includes/header.php";
 <style>
 .cp-admin-hero{background:linear-gradient(135deg,var(--cor-principal),#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .cp-admin-hero h2{margin:8px 0;font-size:34px}.cp-admin-hero p{margin:0;color:#dbeafe}
-.cp-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.cp-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .cp-grid-admin{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px;align-items:start}
 .cp-card-admin{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:22px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .cp-card-admin h3{margin:0 0 16px;color:#11151B;font-size:24px}

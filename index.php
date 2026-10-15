@@ -240,9 +240,9 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:rgba(212,170,0,.17);
-    border:1px solid rgba(212,170,0,.42);
-    color:#F0D060;
+    background:color-mix(in srgb, var(--cor-secundaria) 17%, transparent);
+    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
+    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
     padding:9px 15px;
     border-radius:999px;
     font-weight:900;
@@ -366,8 +366,8 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
 
     <section class="home-video-hero">
         <?php if (!empty($videoFicheiro)): ?>
-            <div class="home-video-fallback" style="position:absolute;inset:0;z-index:1;background:var(--cor-principal) url('/assets/img/granho-1782232182.jpg') center/cover;"></div>
-            <video autoplay muted loop playsinline preload="auto" poster="/assets/img/granho-1782232182.jpg" style="z-index:2;">
+            <div class="home-video-fallback" style="position:absolute;inset:0;z-index:1;background:var(--cor-principal) url('/assets/img/freguesia-1.jpg') center/cover;"></div>
+            <video autoplay muted loop playsinline preload="auto" poster="/assets/img/freguesia-1.jpg" style="z-index:2;">
                 <source src="/<?= htmlspecialchars($videoFicheiro) ?>" type="video/mp4">
             </video>
         <?php elseif (!empty($youtubeEmbed)): ?>
@@ -417,7 +417,7 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
                 style="background-image: url('/assets/img/<?= htmlspecialchars($slide['imagem']) ?>');"
             >
                 <div class="hero-overlay">
-                    <span>Atalaia e Alto Estanqueiro-Jardia · Setúbal</span>
+                    <span>Atalaia e Alto Estanqueiro-Jardia · Montijo</span>
                     <?php if ($i === 0): ?>
                         <h1><?= htmlspecialchars($slide['titulo']) ?></h1>
                     <?php else: ?>
@@ -449,7 +449,7 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
     <?php else: ?>
         <div class="hero-slide active" style="background:var(--cor-principal);">
             <div class="hero-overlay">
-                <span>Atalaia e Alto Estanqueiro-Jardia · Setúbal</span>
+                <span>Atalaia e Alto Estanqueiro-Jardia · Montijo</span>
                 <h1><?= htmlspecialchars($home['hero_titulo']) ?></h1>
                 <p><?= htmlspecialchars($home['hero_subtitulo']) ?></p>
             </div>

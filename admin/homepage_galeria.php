@@ -155,7 +155,7 @@ require_once "includes/header.php";
 .galeria-hero-admin{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:28px;padding:30px;margin-bottom:24px;display:flex;justify-content:space-between;gap:22px;align-items:center;box-shadow:0 20px 45px rgba(0,0,0,.14);overflow:hidden;position:relative;}
 .galeria-hero-admin::after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-120px;top:-180px;background:rgba(255,255,255,.06);}
 .galeria-hero-admin>*{position:relative;z-index:2;}
-.galeria-hero-admin span{color:#D4AA00;text-transform:uppercase;font-weight:900;letter-spacing:.8px;font-size:13px;}
+.galeria-hero-admin span{color:var(--cor-secundaria);text-transform:uppercase;font-weight:900;letter-spacing:.8px;font-size:13px;}
 .galeria-hero-admin h1{margin:8px 0;font-size:34px;}
 .galeria-hero-admin p{margin:0;color:#dbeafe;}
 .galeria-hero-stats{display:flex;gap:12px;}

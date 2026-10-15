@@ -25,7 +25,7 @@ $baseGovUrl = !empty($cfg['botao_link'])
 .cp-info-hero{position:relative;min-height:480px;display:flex;align-items:center;color:white;overflow:hidden;background:linear-gradient(90deg,rgba(17,21,28,.93),rgba(17,21,28,.50)),linear-gradient(0deg,rgba(0,0,0,.28),transparent),url('/assets/img/freguesia-2.jpg') center/cover no-repeat;}
 .cp-info-hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(0deg,#f8fafc,transparent);}
 .cp-info-inner{position:relative;z-index:2;max-width:820px;padding:90px 0 110px;}
-.cp-info-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.38);color:#F0D060;border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px;}
+.cp-info-kicker{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px;}
 .cp-info-hero h1{font-size:clamp(38px,5.5vw,64px);line-height:1.05;margin:0 0 20px;letter-spacing:-1.2px;}
 .cp-info-hero p{font-size:19px;line-height:1.75;color:#dbeafe;margin:0 0 26px;max-width:720px;}
 .cp-info-btn{display:inline-flex;align-items:center;gap:10px;background:var(--cor-secundaria);color:#11151B!important;text-decoration:none;border-radius:16px;padding:16px 26px;font-weight:900;box-shadow:0 18px 45px rgba(0,0,0,.25);transition:.25s ease;}

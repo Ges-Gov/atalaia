@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="POST" enctype="multipart/form-data" class="comercio-admin-form">
     <input type="text" name="nome" value="<?= htmlspecialchars($comercio['nome']) ?>" required>
 
-    <input type="text" name="tipo" value="<?= htmlspecialchars($comercio['tipo'] ?? '') ?>" placeholder="Tipo">
+    <input type="text" name="tipo" list="tiposComercio" value="<?= htmlspecialchars($comercio['tipo'] ?? '') ?>" placeholder="Tipo: Restaurante, Café, Bar, Mercearia..."><datalist id="tiposComercio"><option value="Restaurante"><option value="Café"><option value="Bar"><option value="Restaurante / Café"><option value="Pastelaria"><option value="Padaria"><option value="Mercearia"><option value="Supermercado"><option value="Talho"><option value="Farmácia"><option value="Alojamento Local"><option value="Hotel"><option value="Turismo Rural"><option value="Cabeleireiro"><option value="Oficina automóvel"></datalist>
 
     <input type="text" name="telefone" value="<?= htmlspecialchars($comercio['telefone'] ?? '') ?>" placeholder="Telefone">
 

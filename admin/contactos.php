@@ -110,7 +110,7 @@ foreach ($contactos as $c) {
 <style>
 .contactadmin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .contactadmin-hero h2{margin:8px 0;font-size:34px}.contactadmin-hero p{margin:0;color:#dbeafe}
-.contact-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.35);color:#F0D060;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.contact-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .contact-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .contact-kpi,.contact-card-admin{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .contact-kpi strong{font-size:32px;color:#11151B;display:block}.contact-kpi span{color:#64748b;font-weight:900}
@@ -126,7 +126,7 @@ foreach ($contactos as $c) {
 .contact-row{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:14px;display:grid;grid-template-columns:54px 1fr auto;gap:14px;align-items:center;margin-bottom:12px}
 .contact-icon-admin{width:54px;height:54px;border-radius:16px;background:#242A30;color:white;display:grid;place-items:center;font-size:24px}
 .contact-row h4{margin:0 0 5px;color:#11151B}.contact-row p{margin:0;color:#64748b;font-weight:800;font-size:13px}
-.badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eef2ff;color:#242A30;font-size:11px;font-weight:900;margin-right:5px}.badge.off{background:#fee2e2;color:#991b1b}.badge.gold{background:#fef3c7;color:#92400e}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eef2ff;color:#242A30;font-size:11px;font-weight:900;margin-right:5px}.badge.off{background:#fee2e2;color:#991b1b}.badge.gold{background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);color:color-mix(in srgb, var(--cor-secundaria) 45%, #000)}
 @media(max-width:1100px){.contact-grid-admin,.contactadmin-hero{grid-template-columns:1fr}.contact-kpis{grid-template-columns:1fr 1fr}.contact-row{grid-template-columns:1fr}}
 @media(max-width:700px){.contact-kpis,.contact-form-grid{grid-template-columns:1fr}}
 </style>

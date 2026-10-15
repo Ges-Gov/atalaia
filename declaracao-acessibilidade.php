@@ -2,7 +2,7 @@
 <style>
 .legal-hero{background:linear-gradient(135deg,var(--cor-principal),#11151B 70%,#071c2e);color:#fff;padding:80px 0 96px}
 .legal-hero .container{max-width:900px}
-.legal-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.38);color:#F0D060;padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
+.legal-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
 .legal-hero h1{font-size:clamp(34px,5vw,58px);margin:16px 0 10px;line-height:1.05}
 .legal-hero p{color:#dbeafe;font-size:18px;margin:0}
 .legal-shell{max-width:900px;margin:-46px auto 60px;position:relative;z-index:3;padding:0 16px}
@@ -14,7 +14,7 @@
 .legal-card a{color:var(--cor-principal);font-weight:800}
 .legal-meta{color:#64748b;font-size:14px;margin-top:8px}
 .legal-badge{display:inline-block;background:#dcfce7;color:#166534;border-radius:999px;padding:6px 14px;font-weight:900;font-size:14px}
-.legal-note{background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:14px 16px;color:#92400e;font-weight:700;font-size:14px}
+.legal-note{background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:14px 16px;color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);font-weight:700;font-size:14px}
 </style>
 
 <section class="legal-hero">

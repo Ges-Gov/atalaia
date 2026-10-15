@@ -63,7 +63,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
 .sessoes-hero{background:linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:84px 0 96px;position:relative;overflow:hidden}
 .sessoes-hero:after{content:"";position:absolute;width:540px;height:540px;border-radius:50%;right:-220px;top:-250px;background:rgba(255,255,255,.07)}
 .sessoes-hero .container{position:relative;z-index:2}
-.sess-kicker{display:inline-flex;background:rgba(212,170,0,.16);border:1px solid rgba(212,170,0,.36);color:#F0D060;padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.sess-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .sessoes-hero h1{font-size:clamp(42px,5vw,70px);margin:18px 0 14px;line-height:1.02}
 .sessoes-hero p{max-width:790px;color:#dbeafe;font-size:20px;line-height:1.75;margin:0}
 .sess-shell{margin-top:-48px;position:relative;z-index:5}

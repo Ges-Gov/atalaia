@@ -1,4 +1,9 @@
 <?php
+/*
+ * Plataforma de sites de Juntas de Freguesia — © 2026 GesGov. Todos os direitos reservados.
+ * Licença GG-ATALAIA-005E52FF — uso exclusivo de: União das Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
+ * Proibida a cópia, modificação, redistribuição ou venda sem autorização escrita da GesGov.
+ */
 // Output buffering: permite que header("Location: ...") funcione mesmo depois
 // de a página começar a ser impressa (evita "headers already sent").
 // Incondicional — o buffer padrão de 4KB esvaziava ao ser excedido.
@@ -37,6 +42,10 @@ if (!empty($_SESSION['cidadao_id'])) {
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="author" content="GesGov">
+    <meta name="generator" content="Plataforma Juntas GesGov">
+    <meta name="copyright" content="© 2026 GesGov — software licenciado (GG-ATALAIA-005E52FF)">
+    <!-- Software © 2026 GesGov — todos os direitos reservados — licença GG-ATALAIA-005E52FF -->
     <?php
         // Título e descrição para SEO: usa os da página (se definidos), senão os do site.
         $tituloPagina = !empty($meta_titulo)

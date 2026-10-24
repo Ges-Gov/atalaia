@@ -200,12 +200,12 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 <a href="/contratacao-publica.php">Contratação Pública</a>
 
-<a href="/canal-denuncias.php">Canal de Denúncias</a>
+<!-- Canal de Denúncias temporariamente oculto do menu Junta Virtual (23/10/2026; a página continua a existir): <a href="/canal-denuncias.php">Canal de Denúncias</a> -->
 
 <a href="/protecao-dados.php">Proteção de Dados</a>
 
 
-                         <a href="/transparencia.php">Transparência</a>
+                         <!-- Transparência temporariamente oculto do menu Junta Virtual (23/10/2026; a página continua a existir): <a href="/transparencia.php">Transparência</a> -->
                         <!-- Balcão Virtual temporariamente oculto (ainda não disponível ao público): <a href="/minha-area.php">Balcão Virtual</a> -->
                         <!--<a href="/ocorrencias-mapa.php">Mapa de Ocorrências</a>-->
                        

@@ -160,6 +160,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     width:100%;
     height:100%;
     object-fit:cover;
+    object-position:50% 0%; /* fotos de pessoas: a cabeça nunca fica cortada */
     display:block;
     transition:.5s ease;
 }
@@ -310,6 +311,7 @@ $totalVogais = max(0, $totalMembros - (!empty($presidente) ? 1 : 0));
     width:100%;
     height:100%;
     object-fit:cover;
+    object-position:50% 0%; /* fotos de pessoas: a cabeça nunca fica cortada */
     display:block;
     transition:.45s ease;
 }

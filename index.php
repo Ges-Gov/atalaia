@@ -151,6 +151,13 @@ $presidenteHome = $pdo->query("
     ORDER BY ordem ASC, id DESC
     LIMIT 1
 ")->fetch(PDO::FETCH_ASSOC);
+// sem nenhum «Presidente» no executivo (ex.: o site de demonstração, com um Diretor Executivo), usa a pessoa
+// cujo nome está na mensagem da página inicial — a secção deixa de desaparecer sem aviso
+if (!$presidenteHome && trim((string)($home['presidente_nome'] ?? '')) !== '') {
+    $st = $pdo->prepare("SELECT * FROM executivo_membros WHERE ativo = 1 AND nome = ? ORDER BY ordem ASC, id DESC LIMIT 1");
+    $st->execute([trim((string)$home['presidente_nome'])]);
+    $presidenteHome = $st->fetch(PDO::FETCH_ASSOC);
+}
 
 $associacoesCount = $pdo->query("SELECT COUNT(*) FROM associacoes")->fetchColumn();
 $pontosCount = $pdo->query("SELECT COUNT(*) FROM pontos_interesse")->fetchColumn();

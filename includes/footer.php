@@ -81,7 +81,7 @@ if (isset($pdo)) {
                     <p class="rodape__lema"><?= htmlspecialchars(siteConfig('slogan')) ?></p>
                 <?php endif; ?>
                 <?php if ($rodapeFreguesia !== ''): ?>
-                    <p class="rodape__texto">Autarquia local da freguesia de <?= htmlspecialchars($rodapeFreguesia) ?>, ao serviço da população, do território e da sua identidade.</p>
+                    <p class="rodape__texto"><?= te('rodape.institucional.inicio') ?> <?= htmlspecialchars($rodapeFreguesia) ?><?= te('rodape.institucional.fim') ?></p>
                 <?php endif; ?>
             </div>
 

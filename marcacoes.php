@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     overflow:hidden;
     padding:92px 0 110px;
     background:
-        radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--cor-secundaria) 28%, transparent), transparent 30%),
+        radial-gradient(circle at 15% 20%, rgb(var(--ouro-rgb, 240 180 41) / .28), transparent 30%),
         radial-gradient(circle at 85% 10%, rgba(255,255,255,.12), transparent 28%),
         linear-gradient(135deg, var(--cor-principal), #11151B 62%, #071c2e);
     color:white;
@@ -166,9 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     display:inline-flex;
     align-items:center;
     gap:8px;
-    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .16);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);
+    color:var(--ouro-claro, #f8d77a);
     padding:9px 14px;
     border-radius:999px;
     font-weight:900;
@@ -315,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .marcacoes-card-head{
     padding:30px 32px 22px;
     background:
-        linear-gradient(135deg, rgba(36,42,50,.08), color-mix(in srgb, var(--cor-secundaria) 8%, transparent)),
+        linear-gradient(135deg, rgba(36,42,50,.08), rgb(var(--ouro-rgb, 240 180 41) / .08)),
         white;
     border-bottom:1px solid #eef2f7;
 }
@@ -532,8 +532,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 .marcacoes-note{
-    background:linear-gradient(135deg, color-mix(in srgb, var(--cor-secundaria) 16%, transparent), rgba(36,42,50,.07));
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 28%, transparent);
+    background:linear-gradient(135deg, rgb(var(--ouro-rgb, 240 180 41) / .16), rgba(36,42,50,.07));
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .28);
     border-radius:20px;
     padding:17px;
     color:#334155;
@@ -617,21 +617,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="marcacoes-hero-premium">
     <div class="container marcacoes-hero-grid">
         <div class="marcacoes-hero-content">
-            <span class="marcacoes-eyebrow"><i class="bi bi-calendar-event"></i> Balcão Virtual</span>
-            <h1>Marcação de Atendimento</h1>
-            <p>Agende o seu atendimento na Junta de Freguesia de forma simples, organizada e com confirmação por email.</p>
+            <span class="marcacoes-eyebrow"><i class="bi bi-calendar-event"></i> <?= te('marcacoes.hero.kicker') ?></span>
+            <h1><?= te('marcacoes.hero.titulo') ?></h1>
+            <p><?= te('marcacoes.hero.texto') ?></p>
 
             <div class="marcacoes-hero-actions">
-                <a href="#formMarcacao" class="hero-btn">Pedir marcação</a>
-                <a href="/consultar-pedido.php" class="hero-btn">Consultar pedidos</a>
+                <a href="#formMarcacao" class="hero-btn"><?= te('marcacoes.hero.botao1') ?></a>
+                <a href="/consultar-pedido.php" class="hero-btn"><?= te('marcacoes.hero.botao2') ?></a>
             </div>
         </div>
 
         <div class="marcacoes-status-card">
             <div class="marcacoes-status-top">
                 <div>
-                    <strong>Atendimento digital ativo</strong>
-                    <small>Pedidos encaminhados para análise da Junta</small>
+                    <strong><?= te('marcacoes.hero.cartao_titulo') ?></strong>
+                    <small><?= te('marcacoes.hero.cartao_texto') ?></small>
                 </div>
                 <i class="marcacoes-live-dot"></i>
             </div>
@@ -639,23 +639,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="marcacoes-mini-grid">
                 <div>
                     <span><i class="bi bi-pencil-square"></i></span>
-                    <strong>Pedido online</strong>
-                    <small>Sem deslocações iniciais</small>
+                    <strong><?= te('marcacoes.destaques.d1_titulo') ?></strong>
+                    <small><?= te('marcacoes.destaques.d1_texto') ?></small>
                 </div>
                 <div>
                     <span><i class="bi bi-envelope-paper"></i></span>
-                    <strong>Confirmação</strong>
-                    <small>Resposta por email</small>
+                    <strong><?= te('marcacoes.destaques.d2_titulo') ?></strong>
+                    <small><?= te('marcacoes.destaques.d2_texto') ?></small>
                 </div>
                 <div>
                     <span><i class="bi bi-clock"></i></span>
-                    <strong>Horários definidos</strong>
-                    <small>Escolha a vaga pretendida</small>
+                    <strong><?= te('marcacoes.destaques.d3_titulo') ?></strong>
+                    <small><?= te('marcacoes.destaques.d3_texto') ?></small>
                 </div>
                 <div>
                     <span><i class="bi bi-shield-lock"></i></span>
-                    <strong>Área cidadão</strong>
-                    <small>Dados preenchidos se entrar</small>
+                    <strong><?= te('marcacoes.destaques.d4_titulo') ?></strong>
+                    <small><?= te('marcacoes.destaques.d4_texto') ?></small>
                 </div>
             </div>
         </div>
@@ -667,23 +667,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="marcacoes-card">
             <div class="marcacoes-card-head">
-                <span class="section-kicker">Agendamento online</span>
-                <h2>Agendar atendimento</h2>
-                <p>Preencha os dados abaixo. Os campos assinalados são obrigatórios e a marcação fica sujeita a validação.</p>
+                <span class="section-kicker"><?= te('marcacoes.formulario.kicker') ?></span>
+                <h2><?= te('marcacoes.formulario.titulo') ?></h2>
+                <p><?= te('marcacoes.formulario.intro') ?></p>
             </div>
 
             <div class="marcacoes-form-wrap">
                 <?php if ($cidadaoLogado): ?>
                     <div class="marcacoes-alert success">
                         <span><i class="bi bi-check-lg"></i></span>
-                        <div>Está autenticado como <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.</div>
+                        <div><?= te('marcacoes.formulario.autenticado') ?> <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.</div>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($sucesso): ?>
                     <div class="marcacoes-alert success">
                         <span><i class="bi bi-check-lg"></i></span>
-                        <div>Pedido de marcação enviado com sucesso. Receberá uma confirmação por email.</div>
+                        <div><?= te('marcacoes.formulario.sucesso') ?></div>
                     </div>
                 <?php endif; ?>
 
@@ -698,30 +698,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
                     <div class="marcacoes-field">
-                        <label>Nome completo *</label>
-                        <input type="text" name="nome" placeholder="Nome completo *" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <label><?= te('marcacoes.formulario.nome') ?></label>
+                        <input type="text" name="nome" placeholder="<?= te('marcacoes.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Email *</label>
-                        <input type="email" name="email" placeholder="Email *" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <label><?= te('marcacoes.formulario.email') ?></label>
+                        <input type="email" name="email" placeholder="<?= te('marcacoes.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Telefone</label>
-                        <input type="text" name="telefone" placeholder="Telefone" value="<?= htmlspecialchars($telefoneForm) ?>">
+                        <label><?= te('marcacoes.formulario.telefone') ?></label>
+                        <input type="text" name="telefone" placeholder="<?= te('marcacoes.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Tipo de atendimento *</label>
+                        <label><?= te('marcacoes.formulario.tipo') ?></label>
                         <select name="tipo_atendimento" required>
-                            <option value="presencial">Presencial</option>
-                            <option value="virtual">Virtual</option>
+                            <option value="presencial"><?= te('marcacoes.formulario.tipo_presencial') ?></option>
+                            <option value="virtual"><?= te('marcacoes.formulario.tipo_virtual') ?></option>
                         </select>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Assunto *</label>
+                        <label><?= te('marcacoes.formulario.assunto') ?></label>
                         <select name="assunto" required>
                             <option value="Recursos Humanos">Recursos Humanos</option>
 <option value="Urbanismo e Habitação">Urbanismo e Habitação</option>
@@ -737,14 +737,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Data pretendida *</label>
+                        <label><?= te('marcacoes.formulario.data') ?></label>
                         <input type="date" name="data_marcacao" min="<?= date('Y-m-d') ?>" required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label>Hora pretendida *</label>
+                        <label><?= te('marcacoes.formulario.hora') ?></label>
                         <select name="hora_marcacao" required>
-                            <option value="">Escolha a hora *</option>
+                            <option value=""><?= te('marcacoes.formulario.hora_opcao') ?></option>
                             <option value="09:00">09:00</option>
                             <option value="09:30">09:30</option>
                             <option value="10:00">10:00</option>
@@ -760,56 +760,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="marcacoes-field full">
-                        <label>Mensagem / observações</label>
-                        <textarea name="mensagem" placeholder="Mensagem / observações"></textarea>
+                        <label><?= te('marcacoes.formulario.mensagem') ?></label>
+                        <textarea name="mensagem" placeholder="<?= te('marcacoes.formulario.ph_mensagem') ?>"></textarea>
                     </div>
 
                     <div class="marcacoes-submit-row">
-                        <small>Ao submeter, o pedido é enviado para validação e poderá receber resposta por email.</small>
-                        <button class="hero-btn" type="submit">Pedir marcação</button>
+                        <small><?= te('marcacoes.formulario.nota') ?></small>
+                        <button class="hero-btn" type="submit"><?= te('marcacoes.formulario.botao') ?></button>
                     </div>
                 </form>
             </div>
         </div>
 
         <aside class="marcacoes-side-card">
-            <span class="section-kicker">Processo simples</span>
-            <h2>Como funciona?</h2>
+            <span class="section-kicker"><?= te('marcacoes.passos.kicker') ?></span>
+            <h2><?= te('marcacoes.passos.titulo') ?></h2>
 
             <div class="marcacoes-timeline">
                 <div class="marcacoes-step">
                     <strong>1</strong>
                     <div>
-                        <h3>Escolha o atendimento</h3>
-                        <p>Indique o assunto, a data e a hora pretendida.</p>
+                        <h3><?= te('marcacoes.passos.p1_titulo') ?></h3>
+                        <p><?= te('marcacoes.passos.p1_texto') ?></p>
                     </div>
                 </div>
 
                 <div class="marcacoes-step">
                     <strong>2</strong>
                     <div>
-                        <h3>Análise pela Junta</h3>
-                        <p>O pedido entra no backoffice para validação interna.</p>
+                        <h3><?= te('marcacoes.passos.p2_titulo') ?></h3>
+                        <p><?= te('marcacoes.passos.p2_texto') ?></p>
                     </div>
                 </div>
 
                 <div class="marcacoes-step">
                     <strong>3</strong>
                     <div>
-                        <h3>Confirmação por email</h3>
-                        <p>Recebe confirmação ou resposta relativamente à marcação.</p>
+                        <h3><?= te('marcacoes.passos.p3_titulo') ?></h3>
+                        <p><?= te('marcacoes.passos.p3_texto') ?></p>
                     </div>
                 </div>
             </div>
 
             <div class="marcacoes-note">
-                A marcação só fica confirmada depois da validação da Junta de Freguesia.
+                <?= te('marcacoes.sidebar.aviso') ?>
             </div>
 
             <div class="marcacoes-contact-strip">
-                <div><span><i class="bi bi-geo-alt"></i></span> Atendimento presencial mediante confirmação</div>
-                <div><span><i class="bi bi-envelope"></i></span> Confirmação enviada para o email indicado</div>
-                <div><span>⏱️</span> Evite deslocações desnecessárias</div>
+                <div><span><i class="bi bi-geo-alt"></i></span> <?= te('marcacoes.sidebar.nota1') ?></div>
+                <div><span><i class="bi bi-envelope"></i></span> <?= te('marcacoes.sidebar.nota2') ?></div>
+                <div><span>⏱️</span> <?= te('marcacoes.sidebar.nota3') ?></div>
             </div>
         </aside>
 

@@ -1,0 +1,632 @@
+{
+  "_nota": "Redesign 26/10/2026 — Atalaia e Alto Estanqueiro-Jardia no modelo novo. SÓ ACRESCENTA (a Junta publica no backoffice: notícias, eventos, pontos, associações e comércio não são tocados). Acerta o prefixo AAEJ, a página inicial (galeria e «Descobrir»), os álbuns dos pontos na apresentação e a sigla da lista de cada eleito. Resultados de 2025: MAI organId=6. Correr: php deploy/acrescentar_conteudo.php deploy/atalaia_redesign.json [--simular]",
+  "atualizar": [
+    {
+      "tabela": "tema_config",
+      "valores": {
+        "valor": "AAEJ"
+      },
+      "onde": [
+        "chave",
+        "prefixo_pedidos"
+      ]
+    },
+    {
+      "tabela": "homepage_config",
+      "valores": {
+        "mostrar_galeria": 1,
+        "mostrar_descobrir": 1
+      }
+    },
+    {
+      "tabela": "galeria_albuns",
+      "valores": {
+        "na_apresentacao": 1
+      },
+      "onde": [
+        "origem",
+        "ponto"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "executivo_membros",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "Pedro Miguel Guerreiro da Franca Araújo"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "executivo_membros",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "Vanessa Sofia Leite de Castro"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "executivo_membros",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "Augusto Marques Cardoso"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "David Costa"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "Luís Pinho"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "CH"
+      },
+      "onde": [
+        "nome",
+        "Carla Mestre"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PS"
+      },
+      "onde": [
+        "nome",
+        "Bruno Silva"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PS"
+      },
+      "onde": [
+        "nome",
+        "Adelino Silva"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PS"
+      },
+      "onde": [
+        "nome",
+        "Adelino da Silva"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "MVC"
+      },
+      "onde": [
+        "nome",
+        "Inga Oliveira"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "MVC"
+      },
+      "onde": [
+        "nome",
+        "Ingeburga Oliveira"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "MVC"
+      },
+      "onde": [
+        "nome",
+        "Dora Horta"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PPD/PSD.IL"
+      },
+      "onde": [
+        "nome",
+        "Patrícia Machado"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PPD/PSD.IL"
+      },
+      "onde": [
+        "nome",
+        "Rui Joaquim"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "assembleia_composicao",
+      "valores": {
+        "partido": "PPD/PSD.IL"
+      },
+      "onde": [
+        "nome",
+        "Rui César Gonçalves Joaquim"
+      ],
+      "so_se_existir": true
+    }
+  ],
+  "inserir": [
+    {
+      "tabela": "tema_config",
+      "chave": "chave",
+      "linhas": [
+        {
+          "chave": "prefixo_pedidos",
+          "valor": "AAEJ"
+        }
+      ]
+    },
+    {
+      "tabela": "freguesia_memoria",
+      "chave": "titulo",
+      "linhas": [
+        {
+          "secao": "tempo",
+          "titulo": "A Atalaia e a Estrada Real",
+          "subtitulo": "Um monte sobre o estuário do Tejo",
+          "texto": "A povoação e o Santuário da Atalaia assentam num monte sobranceiro ao estuário do Tejo, a cerca de quatro quilómetros da sede do concelho. A proximidade da Estrada Real, que ligava Lisboa a Badajoz por Aldeia Galega, fez passar por aqui monarcas e outras personagens ilustres. Ao movimento de viajantes juntou-se o das peregrinações, que já no início do século XVI se dirigiam a este local.",
+          "icone": "bi-signpost-split",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Resenha histórica",
+          "fonte_url": "https://www.mun-montijo.pt/municipio/freguesias/uniao-das-freguesias-de-atalaia-e-alto-estanqueiro-jardia",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "secao": "tempo",
+          "titulo": "Alto Estanqueiro e Jardia",
+          "subtitulo": "Terra de cavaleiros e de hortas",
+          "texto": "Os lugares de Alto Estanqueiro e Jardia pertenceram à jurisdição dos cavaleiros da Ordem de Santiago, sediados em Palmela, e no reinado de D. Afonso V faziam parte da chamada «coutada velha». A Jardia já existia em 1866 e, até meados do século XX, o território era feito de terrenos agrícolas que abasteciam o concelho com produtos hortícolas. O desenvolvimento urbano começou na segunda metade desse século, com a proximidade das ligações rodoviárias e ferroviárias.",
+          "icone": "bi-journal-text",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Resenha histórica",
+          "fonte_url": "https://www.mun-montijo.pt/municipio/freguesias/uniao-das-freguesias-de-atalaia-e-alto-estanqueiro-jardia",
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "secao": "tempo",
+          "titulo": "De duas freguesias a uma união",
+          "subtitulo": "1985 e 2013",
+          "texto": "A freguesia da Atalaia e a do Alto Estanqueiro-Jardia foram criadas em 4 de outubro de 1985 (Leis n.º 134/85 e n.º 82/85). A Lei n.º 11-A/2013, de 28 de janeiro, agregou-as na atual União das Freguesias. Segundo os Censos, tinha 5085 habitantes em 2011 e 5379 em 2021, numa área de cerca de 13,65 km².",
+          "icone": "bi-diagram-3",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Diário da República (Lei 82/85) e Câmara do Montijo; população (INE) via aldeiasportuguesas.pt",
+          "fonte_url": "https://diariodarepublica.pt/dr/detalhe/lei/82-1985-261736",
+          "ordem": 3,
+          "ativo": 1
+        },
+        {
+          "secao": "fe",
+          "titulo": "Igreja de Nossa Senhora da Atalaia",
+          "subtitulo": "Devoção documentada desde 1409",
+          "texto": "A devoção a Nossa Senhora da Atalaia está documentada desde, pelo menos, 1409, embora nada reste do edifício original. A nave única é revestida por painéis de azulejos azuis e brancos do século XVIII com cenas da vida de Nossa Senhora, e o retábulo-mor é de estilo joanino. Do alto do adro vê-se o estuário do Tejo até Lisboa. Segundo a tradição, a atual sacristia corresponde à antiga ermida.",
+          "icone": "bi-building",
+          "imagem": "igreja_atalaia.jpg",
+          "imagem_legenda": "A Igreja de Nossa Senhora da Atalaia",
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Património arquitetónico da Atalaia",
+          "fonte_url": "https://www.mun-montijo.pt/conhecer/o-que-visitar/patrimonio/patrimonio-arquitetonico-e-edificado/atalaia",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "secao": "fe",
+          "titulo": "O Cruzeiro-Mor",
+          "subtitulo": "Pedra de lioz de 1551",
+          "texto": "O Cruzeiro-Mor, no Largo da Igreja, data do século XVI (1551) e é de pedra de lioz, com cúpula e quatro colunas. No capitel vê-se o Redentor crucificado de um lado e Nossa Senhora da Piedade do outro, esta hoje decapitada, dano que a Câmara atribui aos excessos políticos que se seguiram à implantação da República. Dois cruzeiros mais modestos delimitavam o antigo espaço sagrado, um a poente e outro a nascente.",
+          "icone": "bi-plus-lg",
+          "imagem": "cruzeiro_mor.jpg",
+          "imagem_legenda": "O Cruzeiro-Mor, no Largo da Igreja",
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Património arquitetónico da Atalaia",
+          "fonte_url": "https://www.mun-montijo.pt/conhecer/o-que-visitar/patrimonio/patrimonio-arquitetonico-e-edificado/atalaia",
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "secao": "tradicao",
+          "titulo": "A Festa Grande",
+          "subtitulo": "Festas em honra de Nossa Senhora da Atalaia",
+          "texto": "As festas em honra da Padroeira realizam-se no final de agosto e eram chamadas «Festa Grande»; o culto é um dos mais importantes da Península de Setúbal. Os círios chegam em procissão, como os da Quinta do Anjo, da Azoia, da Carregueira, dos Olhos de Água e o Círio Novo, e no domingo uma procissão reúne todos os círios e coletividades, com arrematação de bandeiras. Em 2026 as festas começaram a 28 de agosto.",
+          "icone": "bi-stars",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Câmara do Montijo - Programa das Festas 2015 e página de património; notícia da Junta de 27/08/2026",
+          "fonte_url": "https://www.mun-montijo.pt/cmmontijo/uploads/writer_file/document/2126/Programa_Festas_Atalaia_2015.pdf",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "secao": "tradicao",
+          "titulo": "Saudação à Senhora",
+          "subtitulo": "A comunidade do Alto Estanqueiro na romaria",
+          "texto": "No domingo da Festa Grande, antes da procissão, as coletividades prestam a «Saudação à Senhora» no Santuário. No programa de 2015 constam, entre outros, o Rancho «Os Águias» do Alto Estanqueiro e o Rancho Folclórico Juventude Atalaiense. Também no Alto Estanqueiro há festa própria, que em 2026 decorreu de 25 a 27 de setembro.",
+          "icone": "bi-people",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Câmara do Montijo - Programa das Festas de Atalaia 2015; Junta (Festas do Alto Estanqueiro)",
+          "fonte_url": "https://www.mun-montijo.pt/cmmontijo/uploads/writer_file/document/2126/Programa_Festas_Atalaia_2015.pdf",
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "secao": "tradicao",
+          "titulo": "Museu Agrícola da Atalaia",
+          "subtitulo": "A memória da lavoura",
+          "texto": "O Museu Agrícola funciona na Quinta Nova da Atalaia, com vestígios do século XVIII e antiga propriedade da família Santos Fernandes. Abriu ao público em 1997 e foi requalificado em 2009. Mostra um lagar de azeite em funcionamento, o lagar de vinho e a adega, uma destilaria, um pomar de citrinos e uma horta pedagógica. A entrada é gratuita.",
+          "icone": "bi-basket",
+          "imagem": "museu_agricola_atalaia.jpg",
+          "imagem_legenda": "O Museu Agrícola da Atalaia",
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Museu Agrícola da Atalaia",
+          "fonte_url": "https://www.mun-montijo.pt/viver/cultura/museus/museu-agricola-da-atalaia",
+          "ordem": 3,
+          "ativo": 1
+        },
+        {
+          "secao": "lenda",
+          "titulo": "A Fonte Santa e a aroeira",
+          "subtitulo": "A origem da imagem da Senhora",
+          "texto": "Segundo o relato do Santuário Mariano, de Frei Agostinho de Santa Maria (1711), a imagem de Nossa Senhora apareceu numa aroeira junto a uma fonte, a que chamavam «fonte santa». Foi colocada num suporte ao lado da árvore e, sempre que a levavam para a igreja, regressava ao mesmo lugar. Por isso os devotos fizeram uma segunda imagem para a igreja.",
+          "icone": "bi-droplet",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Lendarium (APL 1445), a partir de Fr. Agostinho de Santa Maria, Santuário Mariano, 1711",
+          "fonte_url": "https://lendarium.org/en/apl/wandering-images/the-miraculous-image-of-our-lady-of-atalaya",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "secao": "tempo",
+          "titulo": "Os altos e baixos do Santuário",
+          "subtitulo": "1808, 1843 e 1912",
+          "texto": "A rainha D. Maria II foi a última figura régia a passar pela Igreja da Atalaia, a 5 de outubro de 1843, com D. Fernando e os filhos. Em 1808, as invasões francesas saquearam a igreja e, em 1912, populares entraram de noite no templo e mutilaram imagens. Apesar disso, o culto à Senhora da Atalaia manteve-se vivo até hoje.",
+          "icone": "bi-hourglass-split",
+          "imagem": null,
+          "imagem_legenda": null,
+          "imagem_credito": null,
+          "fonte_nome": "Câmara Municipal do Montijo - Resenha histórica",
+          "fonte_url": "https://www.mun-montijo.pt/municipio/freguesias/uniao-das-freguesias-de-atalaia-e-alto-estanqueiro-jardia",
+          "ordem": 4,
+          "ativo": 1
+        }
+      ]
+    },
+    {
+      "tabela": "links_uteis",
+      "chave": "nome",
+      "linhas": [
+        {
+          "nome": "Município do Montijo",
+          "url": "https://www.mun-montijo.pt/",
+          "logo": "links/cmmontijo.png",
+          "patrocinado": 0,
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "nome": "Área Metropolitana de Lisboa",
+          "url": "https://www.aml.pt/",
+          "logo": "links/aml.png",
+          "patrocinado": 0,
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "nome": "CCDR Lisboa e Vale do Tejo",
+          "url": "https://www.ccdr-lvt.pt/",
+          "logo": "links/ccdr-lvt.png",
+          "patrocinado": 0,
+          "ordem": 3,
+          "ativo": 1
+        },
+        {
+          "nome": "Turismo de Lisboa",
+          "url": "https://www.visitlisboa.com/pt-pt",
+          "logo": "links/turismo-lisboa.png",
+          "patrocinado": 0,
+          "ordem": 4,
+          "ativo": 1
+        },
+        {
+          "nome": "gov.pt — Serviços públicos",
+          "url": "https://www.gov.pt/",
+          "logo": "links/govpt.png",
+          "patrocinado": 0,
+          "ordem": 5,
+          "ativo": 1
+        },
+        {
+          "nome": "SNS 24",
+          "url": "https://www.sns24.gov.pt/",
+          "logo": "links/sns24.png",
+          "patrocinado": 0,
+          "ordem": 6,
+          "ativo": 1
+        },
+        {
+          "nome": "SNS — Serviço Nacional de Saúde",
+          "url": "https://www.sns.gov.pt/",
+          "logo": "links/sns.png",
+          "patrocinado": 0,
+          "ordem": 7,
+          "ativo": 1
+        },
+        {
+          "nome": "ANAFRE — Associação Nacional de Freguesias",
+          "url": "https://www.anafre.pt/",
+          "logo": "links/anafre.png",
+          "patrocinado": 0,
+          "ordem": 8,
+          "ativo": 1
+        },
+        {
+          "nome": "Proteção Civil (ANEPC)",
+          "url": "https://prociv.gov.pt/",
+          "logo": "links/prociv.png",
+          "patrocinado": 0,
+          "ordem": 9,
+          "ativo": 1
+        },
+        {
+          "nome": "Livro de Reclamações Eletrónico",
+          "url": "https://www.livroreclamacoes.pt/",
+          "logo": "links/livro.png",
+          "patrocinado": 0,
+          "ordem": 10,
+          "ativo": 1
+        }
+      ]
+    },
+    {
+      "tabela": "cartoes_site",
+      "chave": "titulo",
+      "linhas": [
+        {
+          "grupo": "apoios",
+          "titulo": "Saúde",
+          "texto": "SNS 24 (808 24 24 24) e Centro de Saúde do Montijo; a Junta organiza também consultas gratuitas na sua dependência do Alto Estanqueiro-Jardia.",
+          "icone": "bi-heart-pulse",
+          "imagem": "cartoes/cartao-saude-estetoscopio.jpg",
+          "link": "/contactos.php",
+          "acao": "Ver contactos",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "grupo": "apoios",
+          "titulo": "Ação social e idosos",
+          "texto": "A Junta cede uma carrinha com condutor, uma vez por mês, para apoiar a Cáritas Paroquial e o Banco Alimentar, e a Ação Social está a cargo da Secretária do Executivo.",
+          "icone": "bi-people",
+          "imagem": "cartoes/cartao-acao-social-maos.jpg",
+          "link": "/contactos.php",
+          "acao": "Ver contactos",
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "grupo": "apoios",
+          "titulo": "Educação",
+          "texto": "A freguesia tem a EB1 Novos Trilhos, a EB1 do Alto Estanqueiro, a EB1 da Jardia e o Jardim de Infância do Alto Estanqueiro-Jardia, e a Junta tem o pelouro da Educação e Ensino.",
+          "icone": "bi-mortarboard",
+          "imagem": null,
+          "link": "/contactos.php",
+          "acao": "Ver contactos",
+          "ordem": 3,
+          "ativo": 1
+        },
+        {
+          "grupo": "descobrir",
+          "titulo": "Santuário da Atalaia",
+          "texto": "Igreja com azulejos do século XVIII, retábulo joanino e vista sobre o estuário do Tejo.",
+          "icone": "bi-bank",
+          "imagem": "igreja_atalaia.jpg",
+          "link": "/pontos.php",
+          "etiqueta": "Património",
+          "ordem": 1,
+          "ativo": 1
+        },
+        {
+          "grupo": "descobrir",
+          "titulo": "Cruzeiro-Mor de 1551",
+          "texto": "Cruzeiro de pedra de lioz no Largo da Igreja, com o Redentor e Nossa Senhora da Piedade no capitel.",
+          "icone": "bi-plus-lg",
+          "imagem": "cruzeiro_mor.jpg",
+          "link": "/pontos.php",
+          "etiqueta": "Património",
+          "ordem": 2,
+          "ativo": 1
+        },
+        {
+          "grupo": "descobrir",
+          "titulo": "Museu Agrícola da Atalaia",
+          "texto": "Lagar de azeite, adega, destilaria, pomar e horta pedagógica, com entrada gratuita.",
+          "icone": "bi-basket",
+          "imagem": "museu_agricola_atalaia.jpg",
+          "link": "/pontos.php",
+          "etiqueta": "Museu",
+          "ordem": 3,
+          "ativo": 1
+        },
+        {
+          "grupo": "descobrir",
+          "titulo": "Festas da Atalaia",
+          "texto": "A Festa Grande de final de agosto reúne círios, procissão e folclore em torno de Nossa Senhora da Atalaia.",
+          "icone": "bi-stars",
+          "imagem": null,
+          "link": "/freguesia.php",
+          "etiqueta": "Tradição",
+          "ordem": 4,
+          "ativo": 1
+        }
+      ]
+    },
+    {
+      "tabela": "assembleia_eleicao",
+      "chave": "mandato",
+      "linhas": [
+        {
+          "mandato": "2025–2029",
+          "data_eleicao": "2025-10-12",
+          "membros_total": 9,
+          "inscritos": 4647,
+          "votantes": 2492,
+          "fonte": "MAI — Resultados das Eleições Autárquicas 2025, Assembleia de Freguesia de Atalaia e Alto Estanqueiro-Jardia",
+          "fonte_url": "https://www.eleicoes.mai.gov.pt/autarquicas2025/",
+          "ativo": 1
+        }
+      ]
+    },
+    {
+      "tabela": "assembleia_eleicao_listas",
+      "chave": "sigla",
+      "linhas": [
+        {
+          "eleicao_id": {
+            "_id_de": [
+              "assembleia_eleicao",
+              "mandato",
+              "2025–2029"
+            ]
+          },
+          "sigla": "CH",
+          "nome": "Chega",
+          "votos_pct": 25.68,
+          "mandatos": 3,
+          "cor": "#3D5FB0",
+          "ordem": 1
+        },
+        {
+          "eleicao_id": {
+            "_id_de": [
+              "assembleia_eleicao",
+              "mandato",
+              "2025–2029"
+            ]
+          },
+          "sigla": "PS",
+          "nome": "Partido Socialista",
+          "votos_pct": 22.55,
+          "mandatos": 2,
+          "cor": "#D63D84",
+          "ordem": 2
+        },
+        {
+          "eleicao_id": {
+            "_id_de": [
+              "assembleia_eleicao",
+              "mandato",
+              "2025–2029"
+            ]
+          },
+          "sigla": "MVC",
+          "nome": "Movimento Montijo com Visão e Coração",
+          "votos_pct": 21.95,
+          "mandatos": 2,
+          "cor": "#0F7B6C",
+          "ordem": 3
+        },
+        {
+          "eleicao_id": {
+            "_id_de": [
+              "assembleia_eleicao",
+              "mandato",
+              "2025–2029"
+            ]
+          },
+          "sigla": "PPD/PSD.IL",
+          "nome": "Coligação PPD/PSD.IL — Montijo Merece Mais",
+          "votos_pct": 20.79,
+          "mandatos": 2,
+          "cor": "#F28C28",
+          "ordem": 4
+        },
+        {
+          "eleicao_id": {
+            "_id_de": [
+              "assembleia_eleicao",
+              "mandato",
+              "2025–2029"
+            ]
+          },
+          "sigla": "PCP-PEV",
+          "nome": "CDU — Coligação Democrática Unitária",
+          "votos_pct": 6.34,
+          "mandatos": 0,
+          "cor": "#C62828",
+          "ordem": 5
+        }
+      ]
+    },
+    {
+      "tabela": "textos_site",
+      "chave": "chave",
+      "linhas": [
+        {
+          "chave": "inicio.descobrir.texto",
+          "valor": "Santuário, cruzeiros, memória agrícola e as Festas da Atalaia para descobrir."
+        }
+      ]
+    }
+  ]
+}

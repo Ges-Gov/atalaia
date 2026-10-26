@@ -83,7 +83,7 @@ require_once __DIR__ . "/includes/header.php";
 .cp-hero{position:relative;min-height:560px;display:flex;align-items:center;color:white;overflow:hidden;background:linear-gradient(90deg,rgba(17,21,28,.93),rgba(17,21,28,.50)),linear-gradient(0deg,rgba(0,0,0,.28),transparent),url('/assets/img/freguesia-2.jpg') center/cover no-repeat;}
 .cp-hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(0deg,#f8fafc,transparent);}
 .cp-hero-inner{position:relative;z-index:2;max-width:900px;padding:90px 0 130px;}
-.cp-kicker{display:inline-flex;align-items:center;gap:8px;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px;}
+.cp-kicker{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px;}
 .cp-hero h1{font-size:clamp(42px,6vw,78px);line-height:1;margin:0 0 22px;letter-spacing:-1.5px;}
 .cp-hero p{font-size:21px;line-height:1.75;color:#dbeafe;margin:0;max-width:780px;}
 .cp-shell{position:relative;z-index:4;margin-top:-72px;}
@@ -126,8 +126,8 @@ require_once __DIR__ . "/includes/header.php";
     <section class="cp-hero">
         <div class="container">
             <div class="cp-hero-inner">
-                <span class="cp-kicker"><i class="bi bi-briefcase"></i> Recursos Humanos</span>
-                <h1>Procedimentos Concursais</h1>
+                <span class="cp-kicker"><i class="bi bi-briefcase"></i> <?= te('procedimentos_concursais.hero.kicker') ?></span>
+                <h1><?= te('procedimentos_concursais.hero.titulo') ?></h1>
                 <p>Consulte os procedimentos concursais em curso e concluídos para recrutamento de
                     pessoal desta freguesia — avisos, critérios de seleção, resultados e documentos
                     associados a cada procedimento.</p>
@@ -137,38 +137,38 @@ require_once __DIR__ . "/includes/header.php";
 
     <section class="container cp-shell">
         <div class="cp-stats">
-            <div class="cp-stat"><strong><?= $total ?></strong><span>procedimentos publicados</span></div>
-            <div class="cp-stat"><strong><?= $curso ?></strong><span>em curso</span></div>
-            <div class="cp-stat"><strong><?= $concluidos ?></strong><span>concluídos</span></div>
+            <div class="cp-stat"><strong><?= $total ?></strong><span><?= te('procedimentos_concursais.numeros.publicados') ?></span></div>
+            <div class="cp-stat"><strong><?= $curso ?></strong><span><?= te('procedimentos_concursais.numeros.em_curso') ?></span></div>
+            <div class="cp-stat"><strong><?= $concluidos ?></strong><span><?= te('procedimentos_concursais.numeros.concluidos') ?></span></div>
         </div>
 
         <form class="cp-filter" method="GET">
             <input type="text" name="q" value="<?= htmlspecialchars($pesquisa) ?>" placeholder="Pesquisar por título, referência ou descrição...">
             <select name="carreira">
-                <option value="">Todas as carreiras</option>
+                <option value=""><?= te('procedimentos_concursais.filtros.carreiras') ?></option>
                 <?php foreach($carreirasUsadas as $c): ?>
                     <option value="<?= htmlspecialchars($c) ?>" <?= $filtroCarreira===$c?'selected':'' ?>><?= htmlspecialchars($carreiras[$c] ?? $c) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="estado">
-                <option value="">Todos os estados</option>
+                <option value=""><?= te('procedimentos_concursais.filtros.estados') ?></option>
                 <?php foreach(['publicado','encerrado','arquivado'] as $e): ?>
                     <option value="<?= htmlspecialchars($e) ?>" <?= $filtroEstado===$e?'selected':'' ?>><?= htmlspecialchars($estados[$e]) ?></option>
                 <?php endforeach; ?>
             </select>
             <select name="ano">
-                <option value="">Todos os anos</option>
+                <option value=""><?= te('procedimentos_concursais.filtros.anos') ?></option>
                 <?php foreach($anos as $a): ?>
                     <option value="<?= htmlspecialchars($a) ?>" <?= $filtroAno==$a?'selected':'' ?>><?= htmlspecialchars($a) ?></option>
                 <?php endforeach; ?>
             </select>
-            <button class="cp-btn" type="submit">Filtrar</button>
-            <a class="cp-btn secondary" href="/procedimentos-concursais.php">Limpar</a>
+            <button class="cp-btn" type="submit"><?= te('procedimentos_concursais.filtros.botao') ?></button>
+            <a class="cp-btn secondary" href="/procedimentos-concursais.php"><?= te('procedimentos_concursais.filtros.limpar') ?></a>
         </form>
 
         <div class="cp-section-head">
-            <h2>Procedimentos publicados</h2>
-            <span class="cp-count"><?= count($procedimentos) ?> resultado(s)</span>
+            <h2><?= te('procedimentos_concursais.lista.titulo') ?></h2>
+            <span class="cp-count"><?= count($procedimentos) ?> <?= te('procedimentos_concursais.lista.contagem') ?></span>
         </div>
 
         <?php if(!empty($procedimentos)): ?>
@@ -188,12 +188,12 @@ require_once __DIR__ . "/includes/header.php";
                         </div>
                         <div class="cp-desc"><?= cpTxt(mb_substr($p['descricao'] ?? '', 0, 180)) ?></div>
                         <div class="cp-meta">
-                            <?php if(!empty($p['referencia'])): ?><span><i class="bi bi-hash"></i> Referência <?= htmlspecialchars($p['referencia']) ?></span><?php endif; ?>
-                            <?php if(!empty($p['vagas'])): ?><span><i class="bi bi-people"></i> <?= (int)$p['vagas'] ?> posto(s) de trabalho</span><?php endif; ?>
+                            <?php if(!empty($p['referencia'])): ?><span><i class="bi bi-hash"></i> <?= te('procedimentos_concursais.lista.referencia') ?> <?= htmlspecialchars($p['referencia']) ?></span><?php endif; ?>
+                            <?php if(!empty($p['vagas'])): ?><span><i class="bi bi-people"></i> <?= (int)$p['vagas'] ?> <?= te('procedimentos_concursais.lista.postos') ?></span><?php endif; ?>
                             <?php if(!empty($p['tipo_vinculo'])): ?><span><i class="bi bi-file-earmark-text"></i> <?= htmlspecialchars($tiposVinculo[$p['tipo_vinculo']] ?? $p['tipo_vinculo']) ?></span><?php endif; ?>
-                            <?php if(!empty($p['data_publicacao'])): ?><span><i class="bi bi-calendar-event"></i> Publicado em <?= date('d/m/Y', strtotime($p['data_publicacao'])) ?></span><?php endif; ?>
+                            <?php if(!empty($p['data_publicacao'])): ?><span><i class="bi bi-calendar-event"></i> <?= te('procedimentos_concursais.lista.publicado') ?> <?= date('d/m/Y', strtotime($p['data_publicacao'])) ?></span><?php endif; ?>
                             <?php if(!empty($p['inicio_candidaturas']) || !empty($p['fim_candidaturas'])): ?>
-                                <span><i class="bi bi-calendar-range"></i> Candidaturas
+                                <span><i class="bi bi-calendar-range"></i> <?= te('procedimentos_concursais.lista.candidaturas') ?>
                                     <?= !empty($p['inicio_candidaturas']) ? date('d/m/Y', strtotime($p['inicio_candidaturas'])) : '—' ?>
                                     a
                                     <?= !empty($p['fim_candidaturas']) ? date('d/m/Y', strtotime($p['fim_candidaturas'])) : '—' ?>
@@ -213,16 +213,16 @@ require_once __DIR__ . "/includes/header.php";
                                     <?php endforeach; ?>
                                 </div>
                             <?php elseif(!empty($p['ficheiro'])): ?>
-                                <a class="cp-download" href="/download.php?tipo=contratacao_publica&id=<?= (int) $p['id'] ?>" target="_blank">Ver / Descarregar</a>
+                                <a class="cp-download" href="/download.php?tipo=contratacao_publica&id=<?= (int) $p['id'] ?>" target="_blank"><?= te('procedimentos_concursais.lista.botao') ?></a>
                             <?php else: ?>
-                                <span class="cp-download" style="background:#94a3b8;">Sem ficheiro</span>
+                                <span class="cp-download" style="background:#94a3b8;"><?= te('procedimentos_concursais.lista.sem_ficheiro') ?></span>
                             <?php endif; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="cp-empty">Ainda não existem procedimentos publicados para os filtros selecionados.</div>
+            <div class="cp-empty"><?= te('procedimentos_concursais.vazio.texto') ?></div>
         <?php endif; ?>
     </section>
 </main>

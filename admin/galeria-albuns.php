@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_album'])) {
         $erro = "Dê um nome ao álbum.";
     } else {
         $stmt = $pdo->prepare("
-            INSERT INTO galeria_albuns (nome, descricao, origem, origem_id, ativo)
-            VALUES (?, ?, 'manual', NULL, 1)
+            INSERT INTO galeria_albuns (nome, descricao, origem, origem_id, ativo, na_apresentacao, ordem)
+            VALUES (?, ?, 'manual', NULL, 1, 1, (SELECT o FROM (SELECT COALESCE(MAX(ordem), 0) + 1 AS o FROM galeria_albuns) t))
         ");
         $stmt->execute([$nome, $descricao]);
 
@@ -45,15 +45,37 @@ if (isset($_GET['eliminar'])) {
     exit;
 }
 
+// Ordem dos álbuns e apresentação da página inicial (13/10/2026): arrastar/setas e interruptor,
+// guardados em segundo plano (admin/assets/ordenar.js). A ordem vale para a galeria do site e para
+// a apresentação de fotografias da página inicial (só álbuns com «Na apresentação» ligado).
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['acao'] ?? '', ['ordenar', 'apresentacao'], true)) {
+    header('Content-Type: application/json; charset=utf-8');
+    if ($_POST['acao'] === 'ordenar') {
+        $ids = array_values(array_unique(array_filter(array_map('intval', explode(',', (string)($_POST['ids'] ?? ''))))));
+        $existentes = array_map('intval', $pdo->query("SELECT id FROM galeria_albuns")->fetchAll(PDO::FETCH_COLUMN));
+        sort($existentes); $cmp = $ids; sort($cmp);
+        if ($cmp !== $existentes) { http_response_code(409); echo json_encode(['ok' => false, 'erro' => 'A lista mudou entretanto. Atualize a página.']); exit; }
+        $up = $pdo->prepare("UPDATE galeria_albuns SET ordem = ? WHERE id = ?");
+        foreach ($ids as $i => $aid) $up->execute([$i + 1, $aid]);
+    } else {
+        $pdo->prepare("UPDATE galeria_albuns SET na_apresentacao = ? WHERE id = ?")
+            ->execute([($_POST['valor'] ?? '') === '1' ? 1 : 0, (int)($_POST['id'] ?? 0)]);
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
 $albuns = $pdo->query("
     SELECT a.*, COUNT(gi.id) AS n_imagens
     FROM galeria_albuns a
     LEFT JOIN galeria_imagens gi ON gi.album_id = a.id
     GROUP BY a.id
-    ORDER BY a.origem = 'manual' DESC, a.ordem ASC, a.nome ASC
+    ORDER BY a.ordem ASC, a.id ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . "/includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Galeria»", ['galeria.hero.kicker','galeria.hero.texto_inicio','galeria.hero.texto_fim'], '/galeria.php');
 ?>
 
 <?php if (!empty($_GET['ok'])): ?>
@@ -82,18 +104,30 @@ require_once __DIR__ . "/includes/header.php";
     </form>
 </div>
 
+<p style="margin:0 0 14px;color:var(--adm-texto-2);font-size:14.5px"><i class="bi bi-arrows-move" aria-hidden="true"></i> Arraste pela pega <i class="bi bi-grip-vertical" aria-hidden="true"></i> ou use as setas para mudar a ordem dos álbuns (galeria do site e apresentação da página inicial). Ligue «Na apresentação» nos álbuns cujas fotografias devem passar na apresentação da página inicial. Fica tudo guardado automaticamente.</p>
+
 <div class="table-box">
-    <table>
-        <tr>
+    <table data-sem-filtro>
+        <thead><tr>
+            <th>Ordem</th>
             <th>Capa</th>
             <th>Álbum</th>
             <th>Origem</th>
             <th>Imagens</th>
+            <th>Na apresentação</th>
             <th>Ações</th>
-        </tr>
-
-        <?php foreach ($albuns as $a): ?>
-            <tr>
+        </tr></thead>
+        <tbody data-ordenar="galeria-albuns.php">
+        <?php foreach ($albuns as $k => $a): ?>
+            <tr data-id="<?= (int)$a['id'] ?>">
+                <td class="sl-ordem">
+                    <span class="sl-pega" title="Arrastar para mudar a ordem" aria-hidden="true"><i class="bi bi-grip-vertical"></i></span>
+                    <b class="sl-num"><?= $k + 1 ?>º</b>
+                    <span class="sl-setas">
+                        <button type="button" data-mover="-1" aria-label="Subir «<?= htmlspecialchars($a['nome']) ?>»"><i class="bi bi-chevron-up"></i></button>
+                        <button type="button" data-mover="1" aria-label="Descer «<?= htmlspecialchars($a['nome']) ?>»"><i class="bi bi-chevron-down"></i></button>
+                    </span>
+                </td>
                 <td>
                     <?php if (!empty($a['capa'])): ?>
                         <img src="<?= htmlspecialchars(imagemGaleriaUrl($a['capa'])) ?>" alt="" style="width:74px;height:52px;object-fit:cover;border-radius:8px;">
@@ -120,6 +154,15 @@ require_once __DIR__ . "/includes/header.php";
                 </td>
 
                 <td><?= (int)$a['n_imagens'] ?></td>
+                <td>
+                    <label class="sl-interruptor" title="As fotografias deste álbum passam na apresentação da página inicial">
+                        <input type="checkbox" data-alternar="apresentacao" data-txt-on="Sim" data-txt-off="Não"
+                               data-msg-on="Fotografias incluídas na apresentação da página inicial" data-msg-off="Fotografias retiradas da apresentação da página inicial"
+                               <?= !empty($a['na_apresentacao']) ? 'checked' : '' ?> aria-label="Incluir «<?= htmlspecialchars($a['nome']) ?>» na apresentação da página inicial">
+                        <span class="sl-interruptor__trilho" aria-hidden="true"></span>
+                        <span class="sl-interruptor__txt"><?= !empty($a['na_apresentacao']) ? 'Sim' : 'Não' ?></span>
+                    </label>
+                </td>
 
                 <td>
                     <a class="btn secondary" href="galeria-album.php?id=<?= (int)$a['id'] ?>">Gerir imagens</a>
@@ -130,9 +173,12 @@ require_once __DIR__ . "/includes/header.php";
         <?php endforeach; ?>
 
         <?php if (empty($albuns)): ?>
-            <tr><td colspan="5">Ainda não existem álbuns. Crie o primeiro acima.</td></tr>
+            <tr><td colspan="7">Ainda não existem álbuns. Crie o primeiro acima.</td></tr>
         <?php endif; ?>
+        </tbody>
     </table>
 </div>
+
+<script src="assets/ordenar.js?v=20261013a" defer></script>
 
 <?php require_once __DIR__ . "/includes/footer.php"; ?>

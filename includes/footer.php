@@ -1,100 +1,176 @@
 </main>
 
-<footer class="rm-footer">
+<?php
+/* Rodapé institucional (redesign 10/2026, do modelo novo) — CORE.
+   Fotografia do território por trás, com véu escuro forte (texto sempre legível).
+   A foto vem de tema_config.footer_imagem; se não houver, usa a 1.ª fotografia ativa do
+   slider da página inicial — nunca uma imagem fixa no código. Mantém todas as ligações
+   do rodapé anterior; redes sociais só as preenchidas em configuracoes_site. */
+$rodapeImagem = temaConfig('footer_imagem', '');
+if ($rodapeImagem === '' && isset($pdo)) {
+    try {
+        $rodapeImagem = (string) $pdo->query("SELECT imagem FROM slides_homepage WHERE ativo = 1 AND imagem <> '' ORDER BY COALESCE(ordem, 999999), id LIMIT 1")->fetchColumn();
+    } catch (Exception $e) { $rodapeImagem = ''; }
+}
+// as mesmas redes do menu (includes/redes.php, configuradas em Sistema › Configurações)
+$rodapeRedes = array_map(fn($r) => [$r['nome'], $r['url'], $r['icone']], function_exists('redesSociais') ? redesSociais() : []);
+$rodapeFreguesia = trim(preg_replace('/^(Junta de Freguesia|Uni[aã]o das Freguesias)\s+(de|do|da|dos|das)\s+/iu', '', (string) siteConfig('nome_site', '')));
+?>
+<?php
+/* Links úteis (10/2026, migração 040): logótipos de entidades e parceiros, geridos no admin
+   (Página Inicial → Links Úteis). Os marcados como "patrocinado" são publicidade paga: levam
+   a etiqueta "Patrocinado" (transparência) e rel="sponsored". Aparece em todas as páginas. */
+require_once __DIR__ . '/logos.php';   // versão branca dos logótipos para o modo escuro
+$linksUteis = [];
+if (isset($pdo)) {
+    try {
+        $linksUteis = $pdo->query("SELECT nome, url, logo, patrocinado FROM links_uteis WHERE ativo = 1 ORDER BY ordem ASC, id ASC")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) { $linksUteis = []; }   // migração 040 ainda não corrida
+}
+?>
+<?php if ($linksUteis): ?>
+<section class="links-uteis" aria-labelledby="linksUteisTitulo" data-spy="nao">
+    <div class="links-uteis__interior">
+        <h2 class="links-uteis__titulo" id="linksUteisTitulo"><?= te('rodape.links_uteis.titulo') ?></h2>
+        <ul class="links-uteis__lista">
+            <?php foreach ($linksUteis as $lu): ?>
+                <li>
+                    <a class="links-uteis__item" href="<?= htmlspecialchars($lu['url']) ?>" target="_blank"
+                       rel="noopener<?= $lu['patrocinado'] ? ' sponsored' : '' ?>"
+                       title="<?= htmlspecialchars($lu['nome']) ?>">
+                        <?php if (!empty($lu['logo'])): ?>
+                            <?php
+                            // Equilíbrio ótico: logótipos largos ficam mais largos e baixos, os quadrados
+                            // mais pequenos — todos com uma área parecida (largura = √proporção × base).
+                            $luDim = @getimagesize(__DIR__ . '/../assets/img/' . $lu['logo']);
+                            $luRatio = ($luDim && $luDim[1] > 0) ? $luDim[0] / $luDim[1] : 2;
+                            $luLarg = (int)round(min(190, max(56, sqrt($luRatio) * 66)));
+                            ?>
+                            <img class="links-uteis__logo" src="/assets/img/<?= htmlspecialchars($lu['logo']) ?>" alt="<?= htmlspecialchars($lu['nome']) ?> (abre numa nova janela)" loading="lazy" decoding="async" style="width:<?= $luLarg ?>px">
+                            <?php if ($luBranco = logoBrancoUrl($lu['logo'])): ?>
+                                <img class="links-uteis__logo links-uteis__logo--branco" src="<?= htmlspecialchars($luBranco) ?>" alt="" aria-hidden="true" loading="lazy" decoding="async" style="width:<?= $luLarg ?>px">
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="links-uteis__nome"><?= htmlspecialchars($lu['nome']) ?></span>
+                        <?php endif; ?>
+                        <?php if ($lu['patrocinado']): ?><span class="links-uteis__patrocinado"><?= te('rodape.links_uteis.patrocinado') ?></span><?php endif; ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</section>
+<?php endif; ?>
 
-    <div class="rm-footer-inner">
+<footer class="rodape"<?= $rodapeImagem !== '' ? ' style="--rodape-imagem:url(\'/assets/img/' . htmlspecialchars($rodapeImagem, ENT_QUOTES) . '\')"' : '' ?>>
+    <div class="rodape__interior">
 
-        <div class="rm-footer-brand">
-            <div class="rm-footer-logo">
-                <?php if (!empty(siteConfig('logo'))): ?>
-                    <img src="/assets/img/<?= htmlspecialchars(siteConfig('logo')) ?>" alt="">
-                <?php else: ?>
-                    <span><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
+        <div class="rodape__grelha">
+
+            <!-- 1. Identidade -->
+            <div class="rodape__col rodape__col--marca">
+                <div class="rodape__brasao">
+                    <?php if (!empty(siteConfig('logo'))): ?>
+                        <img src="/assets/img/<?= htmlspecialchars(siteConfig('logo')) ?>" alt="" loading="lazy">
+                    <?php else: ?>
+                        <span><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
+                    <?php endif; ?>
+                </div>
+                <h2 class="rodape__nome"><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></h2>
+                <?php if (siteConfig('slogan', '') !== ''): ?>
+                    <p class="rodape__lema"><?= htmlspecialchars(siteConfig('slogan')) ?></p>
+                <?php endif; ?>
+                <?php if ($rodapeFreguesia !== ''): ?>
+                    <p class="rodape__texto">Autarquia local da freguesia de <?= htmlspecialchars($rodapeFreguesia) ?>, ao serviço da população, do território e da sua identidade.</p>
                 <?php endif; ?>
             </div>
 
-            <div>
-                <h3><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></h3>
-                <p><?= htmlspecialchars(siteConfig('slogan', 'Sistema Inteligente de Gestão de Freguesia')) ?></p>
-            </div>
-        </div>
-
-        <div class="rm-footer-grid">
-
-            <div>
-                <h4>Contactos</h4>
-                <p><i class="bi bi-telephone-fill"></i> <?= htmlspecialchars(siteConfig('telefone', '')) ?></p>
-                <p><i class="bi bi-envelope-fill"></i> <?= htmlspecialchars(siteConfig('email', '')) ?></p>
-                <p><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars(siteConfig('morada', '')) ?></p>
-            </div>
-
-            <div>
-                <h4>Horário</h4>
-                <p><i class="bi bi-clock-fill"></i> <?= htmlspecialchars(siteConfig('horario', '09h00-17h00')) ?></p>
-            </div>
-
-            <div>
-                <h4>Junta Virtual</h4>
-                <a href="/pedidos.php">Pedidos à Junta</a>
-                <!-- Balcão Virtual temporariamente oculto: <a href="/minha-area.php">Balcão Virtual</a> -->
-                <a href="/requerimentos.php">Requerimentos</a>
-                <a href="/marcacoes.php">Marcações</a>
-                <a href="/livro-reclamacoes.php">Livro de Reclamações</a>
+            <!-- 2. Contactos e horário -->
+            <div class="rodape__col">
+                <h3 class="rodape__titulo">Contactos</h3>
+                <ul class="rodape__contactos">
+                    <?php if (siteConfig('telefone', '') !== ''): ?>
+                        <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-telephone-fill"></i></span>
+                            <a href="tel:<?= htmlspecialchars(preg_replace('/[^\d+]/', '', siteConfig('telefone'))) ?>"><?= htmlspecialchars(siteConfig('telefone')) ?></a></li>
+                    <?php endif; ?>
+                    <?php if (siteConfig('email', '') !== ''): ?>
+                        <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-envelope-fill"></i></span>
+                            <a href="mailto:<?= htmlspecialchars(siteConfig('email')) ?>"><?= str_replace('@', '<wbr>@', htmlspecialchars(siteConfig('email'))) ?></a></li>
+                    <?php endif; ?>
+                    <?php if (siteConfig('morada', '') !== ''): ?>
+                        <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-geo-alt-fill"></i></span>
+                            <span><?= htmlspecialchars(siteConfig('morada')) ?></span></li>
+                    <?php endif; ?>
+                </ul>
+                <div class="rodape__horario">
+                    <span class="rodape__horario-tag"><i class="bi bi-clock-fill" aria-hidden="true"></i> Horário de atendimento</span>
+                    <p><?= htmlspecialchars(siteConfig('horario', '09h00-17h00')) ?></p>
+                </div>
             </div>
 
-            <div>
-                <h4>Links úteis</h4>
-                <a href="/transparencia.php">Transparência</a>
-                <a href="/noticias.php">Notícias</a>
-                <a href="/eventos.php">Eventos</a>
-                <a href="/contactos.php">Contactos</a>
-                <a href="/faq.php">FAQ's</a>
-            </div>
-
-        </div>
-
-        <div class="rm-footer-newsletter">
-            <nav class="rm-footer-social" aria-label="Redes sociais">
-                <?php if (!empty(siteConfig('facebook'))): ?>
-                    <a href="<?= htmlspecialchars(siteConfig('facebook')) ?>" target="_blank" rel="noopener">Facebook</a>
-                <?php endif; ?>
-
-                <?php if (!empty(siteConfig('instagram'))): ?>
-                    <a href="<?= htmlspecialchars(siteConfig('instagram')) ?>" target="_blank" rel="noopener">Instagram</a>
-                <?php endif; ?>
+            <!-- 3. Junta Virtual e ligações (as mesmas do rodapé anterior) -->
+            <nav class="rodape__col" aria-label="Junta Virtual e ligações úteis">
+                <h3 class="rodape__titulo">Junta Virtual</h3>
+                <ul class="rodape__links">
+                    <li><a href="/pedidos.php">Pedidos à Junta</a></li>
+                    <?php /* Balcão Virtual temporariamente oculto: <li><a href="/minha-area.php">Balcão Virtual</a></li> */ ?>
+                    <li><a href="/requerimentos.php">Requerimentos</a></li>
+                    <li><a href="/marcacoes.php">Marcações</a></li>
+                    <li><a href="/livro-reclamacoes.php">Livro de Reclamações</a></li>
+                </ul>
+                <h3 class="rodape__titulo rodape__titulo--sub">Ligações úteis</h3>
+                <ul class="rodape__links rodape__links--linha">
+                    <li><a href="/transparencia.php">Transparência</a></li>
+                    <li><a href="/noticias.php">Notícias</a></li>
+                    <li><a href="/eventos.php">Eventos</a></li>
+                    <li><a href="/contactos.php">Contactos</a></li>
+                    <li><a href="/faq.php">FAQ's</a></li>
+                </ul>
             </nav>
 
-            <?php if (isset($_GET['newsletter']) && $_GET['newsletter'] === 'ok'): ?>
-                <span class="rm-footer-newsletter-ok"><i class="bi bi-check-circle-fill"></i> Obrigado por subscrever!</span>
-            <?php else: ?>
-                <form method="POST" action="/newsletter-subscrever.php">
-                    <span class="rm-footer-newsletter-tag"><i class="bi bi-envelope-paper-fill"></i> Newsletter</span>
-                    <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
-                    <input type="email" name="email" placeholder="O seu email" required>
-                    <button type="submit">Subscrever</button>
-                </form>
-            <?php endif; ?>
+            <!-- 4. Newsletter e redes sociais -->
+            <div class="rodape__col">
+                <h3 class="rodape__titulo">Newsletter</h3>
+                <p class="rodape__texto">Receba as notícias e avisos da Junta no seu email.</p>
+                <?php if (isset($_GET['newsletter']) && $_GET['newsletter'] === 'ok'): ?>
+                    <p class="rodape__ok" role="status"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Obrigado por subscrever!</p>
+                <?php else: ?>
+                    <form class="rodape__newsletter" method="POST" action="/newsletter-subscrever.php">
+                        <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                        <label class="sr-only" for="rodapeEmail">O seu email</label>
+                        <input id="rodapeEmail" type="email" name="email" placeholder="O seu email" autocomplete="email" required>
+                        <button type="submit">Subscrever</button>
+                    </form>
+                <?php endif; ?>
+
+                <?php if ($rodapeRedes): ?>
+                    <h3 class="rodape__titulo rodape__titulo--sub">Siga-nos</h3>
+                    <ul class="rodape__redes">
+                        <?php foreach ($rodapeRedes as [$redeNome, $redeUrl, $redeIco]): ?>
+                            <li><a href="<?= htmlspecialchars($redeUrl) ?>" target="_blank" rel="noopener" aria-label="<?= $redeNome ?> (abre numa nova janela)"><i class="bi <?= $redeIco ?>" aria-hidden="true"></i></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <nav class="rm-footer-legal" aria-label="Ligações legais e institucionais">
-            <a href="/politica-privacidade.php">Política de Privacidade</a>
-            <a href="/politica-cookies.php">Política de Cookies</a>
-            <a href="/protecao-dados.php">Proteção de Dados (DPO)</a>
-            <a href="/declaracao-acessibilidade.php">Acessibilidade</a>
-            <a href="/canal-denuncias.php">Canal de Denúncias</a>
-            <a href="/livro-reclamacoes.php">Livro de Reclamações</a>
-        </nav>
-
-        <div class="rm-footer-bottom">
-            <span><?= htmlspecialchars(siteConfig('footer', '© ' . date('Y') . ' ' . siteConfig('nome_site', 'Junta de Freguesia'))) ?></span>
-            <span class="rm-footer-powered">Powered by <a href="https://www.gesgov.pt" target="_blank" rel="noopener">GesGov</a></span>
-            <a href="/admin/login.php" style="color:inherit;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
-                <i class="bi bi-lock-fill"></i> Área reservada
-            </a>
+        <div class="rodape__fundo">
+            <nav class="rodape__legal" aria-label="Ligações legais e institucionais">
+                <a href="/politica-privacidade.php">Política de Privacidade</a>
+                <a href="/politica-cookies.php">Política de Cookies</a>
+                <a href="/protecao-dados.php">Proteção de Dados (DPO)</a>
+                <a href="/declaracao-acessibilidade.php">Acessibilidade</a>
+                <a href="/canal-denuncias.php">Canal de Denúncias</a>
+                <a href="/livro-reclamacoes.php">Livro de Reclamações</a>
+            </nav>
+            <div class="rodape__creditos">
+                <span><?= htmlspecialchars(siteConfig('footer', '© ' . date('Y') . ' ' . siteConfig('nome_site', 'Junta de Freguesia'))) ?></span>
+                <span>Powered by <a href="https://www.gesgov.pt" target="_blank" rel="noopener">GesGov</a></span>
+                <a class="rodape__reservada" href="/admin/login.php"><i class="bi bi-lock-fill" aria-hidden="true"></i> Área reservada</a>
+            </div>
         </div>
 
     </div>
-
 </footer>
 
 <?php if (temaConfig('tema_camada', '1') === '1'): ?>
@@ -488,6 +564,6 @@ if (is_file($iaConfigPath)) {
 </script>
 <?php endif; ?>
 
-<script src="/assets/js/app.js?v=20261008d"></script>
+<script src="/assets/js/app.js?v=20261020h"></script>
 </body>
 </html>

@@ -76,6 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pdo->prepare("UPDATE noticias SET titulo = ?, descricao = ?, imagem = ?, imagem_foco_x = ?, imagem_foco_y = ?, data = ?, categoria = ? WHERE id = ?")
         ->execute([$titulo, $descricao, $imagem, $focoX, $focoY, $data, $categoria, $id]);
+    if (!empty($_POST['destaque'])) {   // só uma notícia em destaque
+        $pdo->prepare("UPDATE noticias SET destaque = (id = ?)")->execute([$id]);
+    } else {
+        $pdo->prepare("UPDATE noticias SET destaque = 0 WHERE id = ?")->execute([$id]);
+    }
 
     if (!empty($_FILES['galeria']['name'][0])) {
         $stmtImg = $pdo->prepare("INSERT INTO noticias_imagens (noticia_id, ficheiro, ordem) VALUES (?, ?, ?)");
@@ -133,6 +138,7 @@ $fbShare = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($urlNotic
             <option value="<?= htmlspecialchars($cat) ?>" <?= ($noticia['categoria'] ?? '') === $cat ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
         <?php endforeach; ?>
     </select>
+    <label class="check" style="margin-top:10px"><input type="checkbox" name="destaque" value="1"<?= !empty($noticia['destaque']) ? ' checked' : '' ?>> Destaque na página inicial — aparece no cartão grande das notícias (só uma de cada vez; sem nenhuma, fica a mais recente)</label>
 
     <label>Imagem de capa (principal)</label>
     <?php if (!empty($noticia['imagem'])): ?>

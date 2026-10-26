@@ -13,12 +13,13 @@ function getHeraldicaConfig($pdo) {
     $config = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$config) {
-        $pdo->query("
+        require_once __DIR__ . "/../includes/config.php";   // nomeFreguesia(): nada de nomes escritos no código
+        $pdo->prepare("
             INSERT INTO heraldica_pagina
             (hero_titulo, hero_subtitulo, titulo, texto_intro, imagem)
             VALUES
-            ('Heráldica', 'Brasão, bandeira e elementos simbólicos da Freguesia de Atalaia e Alto Estanqueiro-Jardia.', 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia', 'Texto introdutório.', 'logo-aaej.png')
-        ");
+            ('Heráldica', ?, ?, 'Texto introdutório.', 'heraldica-granho.webp')
+        ")->execute(['Brasão, bandeira e elementos simbólicos da Freguesia ' . deFreguesia() . '.', 'Brasão da Freguesia ' . deFreguesia()]);
         $stmt = $pdo->query("SELECT * FROM heraldica_pagina ORDER BY id ASC LIMIT 1");
         $config = $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -79,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$titulo) {
             $erro = "O título do elemento é obrigatório.";
+        } elseif (!empty($erro)) {
+            // erro na imagem: não grava
         } else {
             if ($id > 0) {
                 $stmt = $pdo->prepare("UPDATE heraldica_elementos SET titulo=?, descricao=?, icone=?, ordem=?, ativo=?, atualizado_em=NOW() WHERE id=?");
@@ -126,7 +129,7 @@ foreach($elementos as $e){ if($e['ativo']) $ativos++; }
 <style>
 .heraldica-admin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .heraldica-admin-hero h2{margin:8px 0;font-size:34px}.heraldica-admin-hero p{margin:0;color:#dbeafe}
-.heraldica-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.heraldica-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .35);color:var(--ouro-claro, #f8d77a);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .heraldica-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
 .heraldica-kpi,.heraldica-card-admin{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .heraldica-kpi strong{font-size:32px;color:#11151B;display:block}.heraldica-kpi span{color:#64748b;font-weight:900}
@@ -202,7 +205,7 @@ foreach($elementos as $e){ if($e['ativo']) $ativos++; }
     <div class="heraldica-card-admin">
         <h3><?= $editar ? 'Editar elemento' : 'Novo elemento' ?></h3>
 
-        <form method="POST" class="heraldica-form">
+        <form method="POST" enctype="multipart/form-data" class="heraldica-form">
             <input type="hidden" name="acao" value="elemento">
             <input type="hidden" name="id" value="<?= htmlspecialchars($editar['id'] ?? 0) ?>">
 
@@ -214,6 +217,15 @@ foreach($elementos as $e){ if($e['ativo']) $ativos++; }
             </div>
 
             <div><label>Descrição</label><textarea name="descricao"><?= htmlspecialchars($editar['descricao'] ?? '') ?></textarea></div>
+
+            <div>
+                <label for="imgElem">Imagem (opcional — só para uniões de freguesias)</label>
+                <?php if (!empty($editar['imagem'])): ?>
+                    <p style="display:flex;align-items:center;gap:12px"><img src="/uploads/heraldica/<?= htmlspecialchars($editar['imagem']) ?>" alt="" style="width:70px;height:70px;object-fit:contain"> <label class="check"><input type="checkbox" name="tirar_imagem_elemento"> Tirar a imagem</label></p>
+                <?php endif; ?>
+                <input type="file" id="imgElem" name="imagem_elemento" accept="image/*">
+                <small>Brasão de cada freguesia que forma a união. Atenção: se algum elemento tiver imagem, a página História mostra estas imagens em vez do brasão principal.</small>
+            </div>
 
             <div class="heraldica-checks">
                 <label><input type="checkbox" name="ativo" <?= !isset($editar['ativo']) || !empty($editar['ativo']) ? 'checked' : '' ?>> Ativo</label>

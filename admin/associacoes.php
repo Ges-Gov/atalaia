@@ -2,6 +2,8 @@
 $adminPageTitle = "Associações";
 $adminActive = "associacoes";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Associações»", ['associacoes.hero.kicker','associacoes.hero.titulo','associacoes.hero.texto'], '/associacoes.php');
 
 $associacoes = $pdo->query("SELECT * FROM associacoes ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -19,7 +21,7 @@ $associacoes = $pdo->query("SELECT * FROM associacoes ORDER BY nome ASC")->fetch
     height:54px;
     border-radius:12px;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     display:grid;
     place-items:center;
     font-weight:900;
@@ -50,8 +52,8 @@ $associacoes = $pdo->query("SELECT * FROM associacoes ORDER BY nome ASC")->fetch
                     <?php endif; ?>
                 </td>
                 <td><?= htmlspecialchars($a['nome']) ?></td>
-                <td><?= htmlspecialchars($a['email']) ?></td>
-                <td><?= htmlspecialchars($a['telefone']) ?></td>
+                <td><?= htmlspecialchars($a['email'] ?? '') ?></td>
+                <td><?= htmlspecialchars($a['telefone'] ?? '') ?></td>
                 <td>
                     <a class="btn secondary" href="editar_associacao.php?id=<?= $a['id'] ?>">Editar</a>
                     <a class="btn danger" href="eliminar_associacao.php?id=<?= $a['id'] ?>" onclick="return confirm('Eliminar esta associação?')">Eliminar</a>

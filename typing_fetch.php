@@ -1,7 +1,8 @@
 <?php
-require_once "includes/db.php";
+require_once "includes/chat_acesso.php";
 
-$pedidoId = $_GET['pedido_id'] ?? 0;
+$pedidoId = (int) ($_GET['pedido_id'] ?? 0);
+chatExigirAcesso($pdo, $pedidoId);
 $ver = $_GET['ver'] ?? '';
 
 $tipoMostrar = $ver === 'admin' ? 'cidadao' : 'admin';

@@ -26,6 +26,8 @@ $cfgMembros = [
 $erro = membrosAdminProcessar($pdo, $cfgMembros);
 
 require_once __DIR__ . "/includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Executivo»", ['executivo.hero.kicker','executivo.hero.titulo','executivo.hero.texto'], '/executivo.php');
 
 membrosAdminRender($pdo, $cfgMembros, $erro);
 

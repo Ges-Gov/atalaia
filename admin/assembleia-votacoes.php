@@ -94,7 +94,7 @@ $votacoes = $pdo->query("SELECT v.*, s.titulo sessao_titulo, s.data_sessao FROM 
 <style>
 .vote-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .vote-hero h2{margin:8px 0;font-size:34px}.vote-hero p{margin:0;color:#dbeafe}
-.vote-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.vote-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .35);color:var(--ouro-claro, #f8d77a);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .vote-grid{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start}
 .vote-card{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .vote-card h3{margin:0 0 16px;color:#11151B;font-size:24px}

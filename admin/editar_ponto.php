@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $pdo->prepare("
         UPDATE pontos_interesse
-        SET nome = ?, localizacao = ?, descricao = ?, imagem = ?, latitude = ?, longitude = ?
+        SET nome = ?, localizacao = ?, descricao = ?, imagem = ?, latitude = ?, longitude = ?, destaque = ?
         WHERE id = ?
     ");
 
@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imagem,
         $latitude,
         $longitude,
+        isset($_POST['destaque']) ? 1 : 0,   // migração 039: aparece primeiro na página inicial
         $id
     ]);
 
@@ -120,6 +121,8 @@ $fotosAlbum = imagensDaOrigem($pdo, 'ponto', $id);
     >
 
     <textarea name="descricao" placeholder="Descrição"><?= htmlspecialchars($ponto['descricao'] ?? '') ?></textarea>
+
+    <label class="check" style="margin-top:4px"><input type="checkbox" name="destaque" value="1" <?= !empty($ponto['destaque']) ? 'checked' : '' ?>> Em destaque — aparece primeiro na página inicial (no quadro grande)</label>
 
     <?php if (!empty($ponto['imagem'])): ?>
         <p><strong>Imagem atual:</strong></p>

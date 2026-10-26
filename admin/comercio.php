@@ -2,6 +2,8 @@
 $adminPageTitle = "Economia Local";
 $adminActive = "comercio";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Economia Local»", ['comercio.hero.kicker','comercio.hero.titulo','comercio.hero.texto'], '/comercio.php');
 
 $comercio = $pdo->query("SELECT * FROM comercio_local ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -19,7 +21,7 @@ $comercio = $pdo->query("SELECT * FROM comercio_local ORDER BY nome ASC")->fetch
     height:56px;
     border-radius:14px;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     display:grid;
     place-items:center;
     font-weight:900;
@@ -52,7 +54,7 @@ $comercio = $pdo->query("SELECT * FROM comercio_local ORDER BY nome ASC")->fetch
                 </td>
                 <td><?= htmlspecialchars($c['nome']) ?></td>
                 <td><?= htmlspecialchars($c['tipo']) ?></td>
-                <td><?= htmlspecialchars($c['telefone']) ?></td>
+                <td><?= htmlspecialchars($c['telefone'] ?? '') ?></td>
                 <td>
                     <a class="btn secondary" href="editar_comercio.php?id=<?= $c['id'] ?>">Editar</a>
                     <a class="btn danger" href="eliminar_comercio.php?id=<?= $c['id'] ?>" onclick="return confirm('Eliminar este comércio?')">Eliminar</a>

@@ -2,6 +2,8 @@
 $adminPageTitle = "Notícias";
 $adminActive = "noticias";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Notícias»", ['noticias.hero.kicker','noticias.hero.titulo','noticias.hero.texto'], '/noticias.php');
 
 $noticias = $pdo->query("SELECT * FROM noticias ORDER BY data DESC")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -45,7 +47,7 @@ $fbNovaUrl = htmlspecialchars('https://www.facebook.com/sharer/sharer.php?u=' . 
 
         <?php foreach ($noticias as $n): ?>
             <tr>
-                <td><?= htmlspecialchars($n['titulo']) ?></td>
+                <td><?= htmlspecialchars($n['titulo']) ?><?php if (!empty($n['destaque'])): ?> <span class="badge" style="background:var(--cor-principal,#355F3A);color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap"><i class="bi bi-star-fill"></i> Destaque na página inicial</span><?php endif; ?></td>
                 <td><?= date('d/m/Y H:i', strtotime($n['data'])) ?></td>
                 <td>
                     <a class="btn secondary" href="editar_noticia.php?id=<?= $n['id'] ?>">Editar</a>

@@ -99,10 +99,10 @@ require_once "includes/header.php";
         <div class="pedido-consulta-topo content-box">
 
             <div>
-                <span class="section-kicker">Área do Cidadão</span>
+                <span class="section-kicker"><?= te('pedido_detalhe.hero.kicker') ?></span>
                 <h2><?= htmlspecialchars($pedido['assunto']) ?></h2>
                 <p>
-                    Acompanhe o estado do seu pedido e converse diretamente com a Junta.
+                    <?= te('pedido_detalhe.hero.texto') ?>
                 </p>
             </div>
 
@@ -117,29 +117,29 @@ require_once "includes/header.php";
         <div class="pedido-consulta-grid">
 
             <div>
-                <strong>Código</strong>
+                <strong><?= te('pedido_detalhe.conteudo.codigo') ?></strong>
                 <span><?= htmlspecialchars($pedido['codigo']) ?></span>
             </div>
 
             <div>
-                <strong>Categoria</strong>
+                <strong><?= te('pedido_detalhe.conteudo.categoria') ?></strong>
                 <span><?= htmlspecialchars($pedido['categoria'] ?? '-') ?></span>
             </div>
 
             <div>
-                <strong>Data</strong>
+                <strong><?= te('pedido_detalhe.conteudo.data') ?></strong>
                 <span><?= date('d/m/Y H:i', strtotime($pedido['criado_em'])) ?></span>
             </div>
 
             <div>
-                <strong>Estado</strong>
+                <strong><?= te('pedido_detalhe.conteudo.estado') ?></strong>
                 <span><?= htmlspecialchars(str_replace('_', ' ', $pedido['estado'])) ?></span>
             </div>
 
         </div>
 
         <div class="content-box" style="margin-bottom:25px;">
-            <h2>Mensagem inicial</h2>
+            <h2><?= te('pedido_detalhe.conteudo.mensagem') ?></h2>
 
             <div class="resposta-junta-box">
                 <?= nl2br(htmlspecialchars($pedido['mensagem'])) ?>
@@ -147,7 +147,7 @@ require_once "includes/header.php";
 
             <?php if (!empty($pedido['resposta'])): ?>
                 <div style="margin-top:22px;">
-                    <h3>Resposta da Junta</h3>
+                    <h3><?= te('pedido_detalhe.conteudo.resposta') ?></h3>
                     <div class="resposta-junta-box">
                         <?= nl2br(htmlspecialchars($pedido['resposta'])) ?>
                     </div>
@@ -158,12 +158,12 @@ require_once "includes/header.php";
         <div class="content-box">
             <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
                 <div>
-                    <span class="section-kicker">Conversação</span>
-                    <h2 style="margin:6px 0 0;">Chat com a Junta</h2>
+                    <span class="section-kicker"><?= te('pedido_detalhe.chat.kicker') ?></span>
+                    <h2 style="margin:6px 0 0;"><?= te('pedido_detalhe.chat.titulo') ?></h2>
                 </div>
 
                 <a class="btn secondary" href="/minha-area.php">
-                    Voltar à Área do Cidadão
+                    <?= te('pedido_detalhe.chat.voltar') ?>
                 </a>
             </div>
 
@@ -191,7 +191,7 @@ require_once "includes/header.php";
                 <?php else: ?>
 
                     <div class="resposta-junta-box">
-                        Ainda não existem mensagens neste pedido.
+                        <?= te('pedido_detalhe.chat.vazio') ?>
                     </div>
 
                 <?php endif; ?>
@@ -205,12 +205,12 @@ require_once "includes/header.php";
                 <textarea
                     id="msgInput"
                     name="mensagem"
-                    placeholder="Escreva uma mensagem para a Junta..."
+                    placeholder="<?= te('pedido_detalhe.chat.ph_mensagem') ?>"
                     required
                 ></textarea>
 
                 <button class="btn btn-submit-pro" type="submit">
-                    <span>Enviar mensagem</span>
+                    <span><?= te('pedido_detalhe.chat.botao') ?></span>
                 </button>
 
             </form>

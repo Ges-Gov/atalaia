@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ========================================================= */
 .req-page-premium{
     background:
-        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 16%, transparent), transparent 34%),
+        radial-gradient(circle at top left, rgb(var(--ouro-rgb, 240 180 41) / .16), transparent 34%),
         radial-gradient(circle at top right, rgba(36,42,50,.14), transparent 30%),
         #f7f4ef;
 }
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     position:absolute;
     inset:0;
     background:
-        radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--cor-secundaria) 25%, transparent), transparent 26%),
+        radial-gradient(circle at 85% 15%, rgb(var(--ouro-rgb, 240 180 41) / .25), transparent 26%),
         linear-gradient(90deg, rgba(0,0,0,.18), transparent);
     pointer-events:none;
 }
@@ -213,9 +213,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);
-    color:#ffe8a3;
+    background:rgb(var(--ouro-rgb, 240 180 41) / .14);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);
+    color:var(--ouro-claro, #ffe8a3);
     border-radius:999px;
     padding:9px 14px;
     text-transform:uppercase;
@@ -413,7 +413,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .req-modelo-card:hover{
     transform:translateY(-5px);
     box-shadow:0 24px 54px rgba(15,23,42,.12);
-    border-color:color-mix(in srgb, var(--cor-secundaria) 55%, transparent);
+    border-color:rgb(var(--ouro-rgb, 240 180 41) / .55);
 }
 
 .req-modelo-icon{
@@ -422,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     border-radius:17px;
     display:grid;
     place-items:center;
-    background:#fff3bf;
+    background:var(--ouro-fundo, #fff3bf);
     color:#8a5a00;
     font-size:25px;
     flex-shrink:0;
@@ -580,6 +580,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color:#11151B;
     line-height:1.5;
     cursor:pointer;
+}
+/* 15/10/2026: faltavam as chavetas de fecho destas 3 regras — o browser lia todo o resto do estilo da página
+   (painel lateral, botão de envio, regras do telemóvel…) como aninhado dentro do consentimento e ignorava-o */
 .req-consent-check input{
     width:18px;
     height:18px;
@@ -588,11 +591,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding:0;
     flex-shrink:0;
     accent-color:var(--cor-secundaria);
+}
 .req-consent-text{
     margin:12px 0 0;
     color:#64748b;
     font-size:13px;
     line-height:1.7;
+}
 
 .req-file-note{
     grid-column:span 2;
@@ -756,6 +761,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         grid-column:span 1;
     }
 
+    /* no telemóvel, todos os campos a toda a largura: um «span 2» que sobrasse criava uma 2.ª coluna implícita
+       e o formulário ficava em duas colunas apertadas e desiguais (26/10/2026) */
+    .req-form-premium.form-publico > *{
+        grid-column:1 / -1 !important;
+    }
+
     .req-card{
         padding:24px 20px;
         border-radius:24px;
@@ -779,25 +790,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <section class="req-hero-premium">
         <div class="container req-hero-inner">
             <div>
-                <span class="req-kicker"><i class="bi bi-envelope-paper"></i> Balcão Virtual</span>
-                <h1>Requerimentos Online</h1>
-                <p>Submeta pedidos de documentos, declarações, certidões e outros requerimentos sem deslocações desnecessárias, com acompanhamento pela Junta de Freguesia.</p>
+                <span class="req-kicker"><i class="bi bi-envelope-paper"></i> <?= te('requerimentos.hero.kicker') ?></span>
+                <h1><?= te('requerimentos.hero.titulo') ?></h1>
+                <p><?= te('requerimentos.hero.texto') ?></p>
 
                 <div class="req-hero-actions">
-                    <a href="#novo-requerimento" class="req-btn-light">Submeter requerimento</a>
+                    <a href="#novo-requerimento" class="req-btn-light"><?= te('requerimentos.hero.botao1') ?></a>
                     <?php if (!empty($modelos)): ?>
-                        <a href="#modelos-requerimentos" class="req-btn-outline">Ver modelos disponíveis</a>
+                        <a href="#modelos-requerimentos" class="req-btn-outline"><?= te('requerimentos.hero.botao2') ?></a>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="req-hero-panel">
-                <strong>Serviços digitais disponíveis</strong>
+                <strong><?= te('requerimentos.hero.cartao_titulo') ?></strong>
                 <div class="req-hero-mini-grid">
-                    <div><span><i class="bi bi-house-door"></i></span><small>Atestados de residência</small></div>
-                    <div><span><i class="bi bi-file-earmark-text"></i></span><small>Declarações e certidões</small></div>
-                    <div><span><i class="bi bi-paperclip"></i></span><small>Anexos digitais</small></div>
-                    <div><span><i class="bi bi-envelope"></i></span><small>Resposta por email</small></div>
+                    <div><span><i class="bi bi-house-door"></i></span><small><?= te('requerimentos.hero.servico1') ?></small></div>
+                    <div><span><i class="bi bi-file-earmark-text"></i></span><small><?= te('requerimentos.hero.servico2') ?></small></div>
+                    <div><span><i class="bi bi-paperclip"></i></span><small><?= te('requerimentos.hero.servico3') ?></small></div>
+                    <div><span><i class="bi bi-envelope"></i></span><small><?= te('requerimentos.hero.servico4') ?></small></div>
                 </div>
             </div>
         </div>
@@ -811,9 +822,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="req-card" id="modelos-requerimentos">
                         <div class="req-card-head">
                             <div>
-                                <span class="section-kicker">Downloads</span>
-                                <h2>Modelos de requerimentos</h2>
-                                <p>Descarregue o modelo adequado antes de submeter o seu pedido, sempre que seja necessário anexar documentação formal.</p>
+                                <span class="section-kicker"><?= te('requerimentos.modelos.kicker') ?></span>
+                                <h2><?= te('requerimentos.modelos.titulo') ?></h2>
+                                <p><?= te('requerimentos.modelos.texto') ?></p>
                             </div>
                             <div class="req-icon-bubble"><i class="bi bi-folder"></i></div>
                         </div>
@@ -836,7 +847,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             target="_blank"
                                             class="btn secondary"
                                         >
-                                            Descarregar
+                                            <?= te('requerimentos.modelos.botao') ?>
                                         </a>
                                     </div>
                                 </div>
@@ -848,25 +859,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="req-card" id="novo-requerimento">
                     <div class="req-card-head">
                         <div>
-                            <span class="section-kicker">Pedido Online</span>
-                            <h2>Novo requerimento</h2>
-                            <p>Preencha os dados, escolha o tipo de requerimento e anexe documentos sempre que necessário.</p>
+                            <span class="section-kicker"><?= te('requerimentos.formulario.kicker') ?></span>
+                            <h2><?= te('requerimentos.formulario.titulo') ?></h2>
+                            <p><?= te('requerimentos.formulario.intro') ?></p>
                         </div>
                         <div class="req-icon-bubble"><i class="bi bi-pencil-square"></i></div>
                     </div>
 
                     <?php if ($cidadaoLogado): ?>
                         <div class="req-alert success">
-                            Está autenticado como <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.
-                            Este requerimento ficará associado à sua área pessoal.
+                            <?= te('requerimentos.formulario.autenticado') ?> <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.
+                            <?= te('requerimentos.formulario.autenticado_nota') ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if ($sucesso): ?>
                         <div class="req-alert success">
-                            Requerimento submetido com sucesso.<br>
-                            <strong>Código:</strong> <?= htmlspecialchars($codigoReq) ?><br>
-                            Guarde este código para acompanhamento.
+                            <?= te('requerimentos.formulario.sucesso') ?><br>
+                            <strong><?= te('requerimentos.formulario.sucesso_codigo') ?></strong> <?= htmlspecialchars($codigoReq) ?><br>
+                            <?= te('requerimentos.formulario.sucesso_nota') ?>
                         </div>
                     <?php endif; ?>
 
@@ -877,14 +888,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="POST" enctype="multipart/form-data" class="form-publico req-form-premium">
                         <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
-                        <input type="text" name="nome" placeholder="Nome completo *" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <input type="text" name="nome" placeholder="<?= te('requerimentos.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
 
-                        <input type="email" name="email" placeholder="Email *" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <input type="email" name="email" placeholder="<?= te('requerimentos.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
 
-                        <input type="text" name="telefone" placeholder="Telefone" value="<?= htmlspecialchars($telefoneForm) ?>">
+                        <input type="text" name="telefone" placeholder="<?= te('requerimentos.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
 
                         <select name="tipo" required>
-                            <option value="">Tipo de requerimento *</option>
+                            <option value=""><?= te('requerimentos.formulario.tipo') ?></option>
                             <option value="Atestado de residência">Atestado de residência</option>
                             <option value="Declaração / comprovativo">Declaração / comprovativo</option>
                             <option value="Pedido de certidão">Pedido de certidão</option>
@@ -893,27 +904,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="Outro requerimento">Outro requerimento</option>
                         </select>
 
-                        <input type="text" name="assunto" placeholder="Assunto *" required>
+                        <input type="text" name="assunto" placeholder="<?= te('requerimentos.formulario.ph_assunto') ?>" required>
 
-                        <textarea name="mensagem" placeholder="Descreva o seu pedido"></textarea>
+                        <textarea name="mensagem" placeholder="<?= te('requerimentos.formulario.ph_mensagem') ?>"></textarea>
 
-                        <label>Anexar documentos</label>
+                        <label><?= te('requerimentos.formulario.anexos_titulo') ?></label>
 
                         <div class="upload-pro req-upload-zone">
                             <input type="file" name="ficheiros[]" id="ficheirosReq" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx">
                             <label for="ficheirosReq">
                                 <span><i class="bi bi-paperclip"></i></span>
-                                <strong>Escolher ficheiros</strong>
-                                <small id="ficheirosReqTexto">PDF, imagens ou documentos Word</small>
+                                <strong><?= te('requerimentos.formulario.anexos_botao') ?></strong>
+                                <small id="ficheirosReqTexto"><?= te('requerimentos.formulario.anexos_tipos') ?></small>
                             </label>
                         </div>
 
-                        <div class="req-file-note">Pode anexar vários ficheiros. Formatos aceites: PDF, JPG, PNG, WEBP, DOC e DOCX.</div>
+                        <div class="req-file-note"><?= te('requerimentos.formulario.anexos_ajuda') ?></div>
 
                         <div class="req-consent">
                             <label class="req-consent-check">
                                 <input type="checkbox" name="consentimento" value="1" required>
-                                <span>Li e aceito a política de privacidade e o tratamento dos meus dados pessoais para efeitos deste requerimento. *</span>
+                                <span><?= te('requerimentos.formulario.consentimento') ?></span>
                             </label>
                             <p class="req-consent-text">
                                 A <?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?> compromete-se a garantir a segurança e confidencialidade dos seus dados pessoais. No cumprimento do Regulamento Geral de Proteção de Dados (UE) 2016/679, os dados fornecidos neste formulário são utilizados única e exclusivamente para responder e dar seguimento ao requerimento submetido. Os dados são registados e conservados nos sistemas da Junta de Freguesia apenas durante o período necessário ao tratamento do pedido e ao cumprimento das obrigações legais aplicáveis, não sendo transmitidos a terceiros para fins distintos. Pode solicitar o acesso, a atualização ou a eliminação dos seus dados a qualquer momento, contactando diretamente a Junta de Freguesia.
@@ -922,8 +933,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
                         <div class="req-submit-row">
-                            <button class="btn" type="submit">Submeter requerimento</button>
-                            <small>Receberá confirmação por email após a submissão.</small>
+                            <button class="hero-btn" type="submit"><?= te('requerimentos.formulario.botao') ?> <i class="bi bi-send-fill" aria-hidden="true"></i></button>
+                            <small><?= te('requerimentos.formulario.nota') ?></small>
                         </div>
                     </form>
                 </div>
@@ -931,45 +942,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <aside class="req-side">
                 <div class="req-side-card">
-                    <h2>Como funciona?</h2>
+                    <h2><?= te('requerimentos.passos.titulo') ?></h2>
 
                     <div class="req-flow">
                         <div class="req-step-pro">
                             <strong>1</strong>
-                            <p>Descarrega o modelo adequado, se necessário.</p>
+                            <p><?= te('requerimentos.passos.p1') ?></p>
                         </div>
 
                         <div class="req-step-pro">
                             <strong>2</strong>
-                            <p>Escolhe o tipo de requerimento e descreve o pedido.</p>
+                            <p><?= te('requerimentos.passos.p2') ?></p>
                         </div>
 
                         <div class="req-step-pro">
                             <strong>3</strong>
-                            <p>Anexa documentos se forem necessários.</p>
+                            <p><?= te('requerimentos.passos.p3') ?></p>
                         </div>
 
                         <div class="req-step-pro">
                             <strong>4</strong>
-                            <p>A Junta analisa o requerimento no backoffice.</p>
+                            <p><?= te('requerimentos.passos.p4') ?></p>
                         </div>
 
                         <div class="req-step-pro">
                             <strong>5</strong>
-                            <p>Recebe resposta ou atualização por email.</p>
+                            <p><?= te('requerimentos.passos.p5') ?></p>
                         </div>
                     </div>
                 </div>
 
                 <div class="req-side-card dark">
-                    <span class="req-kicker"><i class="bi bi-check-circle-fill"></i> Apoio ao cidadão</span>
-                    <h2>Antes de submeter</h2>
-                    <p>Confirme se anexou todos os documentos necessários para evitar atrasos na análise do pedido.</p>
+                    <span class="req-kicker"><i class="bi bi-check-circle-fill"></i> <?= te('requerimentos.ajuda.kicker') ?></span>
+                    <h2><?= te('requerimentos.ajuda.titulo') ?></h2>
+                    <p><?= te('requerimentos.ajuda.texto') ?></p>
 
                     <div class="req-help-list">
-                        <div><span><i class="bi bi-person-vcard"></i></span> Identificação ou comprovativos</div>
-                        <div><span><i class="bi bi-geo-alt"></i></span> Morada ou dados do pedido</div>
-                        <div><span><i class="bi bi-envelope"></i></span> Email correto para resposta</div>
+                        <div><span><i class="bi bi-person-vcard"></i></span> <?= te('requerimentos.ajuda.item1') ?></div>
+                        <div><span><i class="bi bi-geo-alt"></i></span> <?= te('requerimentos.ajuda.item2') ?></div>
+                        <div><span><i class="bi bi-envelope"></i></span> <?= te('requerimentos.ajuda.item3') ?></div>
                     </div>
                 </div>
             </aside>

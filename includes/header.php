@@ -1,7 +1,7 @@
 <?php
 /*
  * Plataforma de sites de Juntas de Freguesia — © 2026 GesGov. Todos os direitos reservados.
- * Licença GG-ATALAIA-005E52FF — uso exclusivo de: União das Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
+ * Licença GG-ATALAIA-005E52FF — uso exclusivo de: Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
  * Proibida a cópia, modificação, redistribuição ou venda sem autorização escrita da GesGov.
  */
 // Output buffering: permite que header("Location: ...") funcione mesmo depois
@@ -15,6 +15,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/tema.php";
+require_once __DIR__ . "/seo.php";     // dados estruturados schema.org (redesign 10/2026, do modelo novo)
+require_once __DIR__ . "/redes.php";   // redes sociais preenchidas no admin (redesign 10/2026)
+$redesMenu = redesSociais();
 
 $paginaAtual = basename($_SERVER['PHP_SELF']);
 $notificacoesHeader = 0;
@@ -58,20 +61,52 @@ if (!empty($_SESSION['cidadao_id'])) {
     <title><?= htmlspecialchars($tituloPagina) ?></title>
     <meta name="description" content="<?= htmlspecialchars($descricaoPagina) ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php if (!empty($heroPreloadImage)): ?>
-    <link rel="preload" as="image" href="/assets/img/<?= htmlspecialchars($heroPreloadImage) ?>">
-    <?php endif; ?>
+
+    <script>
+        // Modo claro/escuro (redesign 10/2026): aplicado antes de o CSS pintar, para não haver "flash".
+        // O tema CLARO é o principal; o escuro só aparece se o visitante o escolher no botão lua/sol
+        // (escolha guardada em localStorage). Não segue o modo do sistema operativo.
+        (function () {
+            var d = document.documentElement, escolha = null;
+            try { escolha = localStorage.getItem('jf-tema'); } catch (e) {}
+            function aplicar() {
+                d.setAttribute('data-tema', escolha === 'escuro' ? 'escuro' : 'claro');
+            }
+            aplicar();
+            // Brasão: entrada suave só na 1.ª página de cada visita (CSS .brasao-entrada)
+            try {
+                var semMov = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (!sessionStorage.getItem('jf-brasao') && !semMov) {
+                    d.classList.add('brasao-entrada');
+                    sessionStorage.setItem('jf-brasao', '1');
+                }
+            } catch (e) {}
+            window.jfDefinirTema = function (t) {
+                escolha = t;
+                try { t ? localStorage.setItem('jf-tema', t) : localStorage.removeItem('jf-tema'); } catch (e) {}
+                aplicar();
+            };
+        })();
+    </script>
 
     <style>
         :root {
             --cor-principal: <?= htmlspecialchars(siteConfig('cor_principal', '#242A30')) ?> !important;
-            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', 'var(--cor-secundaria)')) ?> !important;
+            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', '#C8A02E')) ?> !important;
 <?= temaVariaveisCss() ?>
+        }
+        :root[data-tema="escuro"] {
+<?= temaVariaveisEscuroCss() ?>
         }
     </style>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261008v">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261022b">
+    <link rel="stylesheet" href="/assets/css/tema-escuro.css?v=20261020s">
+    <link rel="stylesheet" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
+    <link rel="stylesheet" href="/assets/css/compat-redesign.css?v=20261020r">
+    <link rel="stylesheet" href="/assets/vendor/bootstrap-icons/bootstrap-icons.min.css?v=1.11.3"><?php /* ícones servidos pelo próprio site (antes da CDN jsdelivr) */ ?>
 
 <?php $faviconFich = temaConfig('favicon', '') !== '' ? temaConfig('favicon') : siteConfig('logo', ''); ?>
 <?php if ($faviconFich !== ''): ?>
@@ -82,13 +117,51 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 <?php $sepBgImg = function_exists('fundoSeparadorImg') ? fundoSeparadorImg($paginaAtual ?? '') : ''; ?>
 <?php if ($sepBgImg !== ''): ?>
+    <?php
+    // Proporção da imagem (largura/altura) para o banner ter a forma da foto: assim vê-se a
+    // imagem quase inteira e só se corta o necessário para encher o ecrã (redesign 10/2026).
+    $sepDim = @getimagesize(__DIR__ . '/..' . $sepBgImg);
+    $sepRatio = ($sepDim && $sepDim[1] > 0) ? round($sepDim[0] / $sepDim[1], 4) : 1.5;
+    // ponto de foco da foto: o modelo novo guarda-o na BD (fundoSeparadorFoco); aqui fica ao centro
+    $sepFoco = function_exists('fundoSeparadorFoco') ? fundoSeparadorFoco($paginaAtual ?? '') : [50, 50];
+    ?>
     <style>
-        /* Imagem de fundo do separador (definida no backoffice), com véu escuro para o texto ficar legível */
+        /* Imagem de fundo do separador (definida no backoffice), com véu escuro para o texto ficar legível.
+           Altura = largura do ecrã ÷ proporção da foto, com limites: até 52% do ecrã e nunca menos do
+           que o texto do banner precisa. "cover" corta só o que sobra, a partir do ponto de foco. */
+        :root{ --sep-ratio: <?= $sepRatio ?>; }
         section[class*="hero"]{
-            background-image: linear-gradient(rgba(17,21,27,.72), rgba(17,21,27,.82)), url('<?= htmlspecialchars($sepBgImg) ?>') !important;
+            background-image: linear-gradient(rgba(17,21,27,.62), rgba(17,21,27,.78)), url('<?= htmlspecialchars($sepBgImg) ?>') !important;
             background-size: cover !important;
-            background-position: center !important;
+            background-position: <?= implode('% ', $sepFoco) ?>% !important;
             background-repeat: no-repeat !important;
+        }
+        section[class*="hero"]:not(.hero-slider):not(.home-video-hero){
+            min-height: clamp(300px, min(calc(100vw / var(--sep-ratio)), 52vh), 680px) !important;
+            padding-top: clamp(56px, 7vh, 86px) !important;
+            padding-bottom: clamp(56px, 7vh, 86px) !important;
+            box-sizing: border-box;
+            display: grid !important;
+            align-content: center;
+        }
+        /* banner que sobe para trás do menu de vidro: o espaço de cima inclui a altura do menu */
+        section[class*="hero"].hero-sob-header:not(.hero-slider):not(.home-video-hero){
+            padding-top: calc(var(--altura-header, 90px) + clamp(28px, 4vh, 56px)) !important;
+            min-height: clamp(340px, min(calc(100vw / var(--sep-ratio)), 52vh + var(--altura-header, 90px) * .5), 720px) !important;
+        }
+        /* asterisco de campo obrigatório dentro do banner: vermelho claro, legível sobre a foto escurecida */
+        section[class*="hero"] .req{ color: #fca5a5 !important; }
+        /* círculos decorativos das páginas ficavam "cortados" por cima da fotografia */
+        section[class*="hero"]:not(.hero-slider):not(.home-video-hero)::before,
+        section[class*="hero"]:not(.hero-slider):not(.home-video-hero)::after{
+            display: none !important;
+        }
+        @media (max-width: 850px){
+            section[class*="hero"]:not(.hero-slider):not(.home-video-hero){
+                min-height: clamp(260px, min(calc(100vw / var(--sep-ratio) + 120px), 56vh), 520px) !important;
+                padding-top: 44px !important;
+                padding-bottom: 44px !important;
+            }
         }
     </style>
 <?php endif; ?>
@@ -106,6 +179,7 @@ if (!empty($_SESSION['cidadao_id'])) {
     <meta name="twitter:image" content="<?= htmlspecialchars($meta_imagem ?? '') ?>">
 <?php endif; ?>
 
+<?php /* SEO: a Junta como organização (schema.org) em todas as páginas — includes/seo.php */ seoOrganizacao(); ?>
 </head>
 
 <body<?= $sepBgImg !== '' ? ' class="tem-fundo-separador"' : '' ?>>
@@ -115,6 +189,8 @@ if (!empty($_SESSION['cidadao_id'])) {
 .skip-link:focus{left:0}
 </style>
 <a class="skip-link" href="#conteudo-principal">Saltar para o conteúdo principal</a>
+
+<?php require_once __DIR__ . "/alertas.php"; /* avisos à população: no topo, antes do menu (redesign) */ ?>
 
 <header class="site-header">
 
@@ -145,8 +221,8 @@ if (!empty($_SESSION['cidadao_id'])) {
             </a>
 
             <nav class="main-nav" id="mainNav">
-                <button type="button" class="nav-search-toggle js-search-toggle" aria-label="Pesquisar no site"
-                        aria-controls="globalSearchPanel" aria-expanded="false"><i class="bi bi-search"></i></button>
+                <button type="button" class="nav-search-toggle js-spotlight" aria-label="Pesquisar no site (Ctrl+K)"
+                        aria-haspopup="dialog" aria-expanded="false" aria-keyshortcuts="Control+K"><i class="bi bi-search" aria-hidden="true"></i></button>
                 <a href="/index.php">Início</a>
 
                 <div class="nav-dropdown">
@@ -233,7 +309,24 @@ if (!empty($_SESSION['cidadao_id'])) {
                 </div>
 
                 <a href="/contactos.php">Contactos</a>
+
+                <?php if ($redesMenu): ?>
+                    <?php /* No telemóvel as redes aparecem dentro do painel do menu */ ?>
+                    <div class="menu-redes menu-redes--painel" aria-label="Redes sociais">
+                        <?php foreach ($redesMenu as $r): ?>
+                            <a href="<?= htmlspecialchars($r['url']) ?>" target="_blank" rel="noopener" aria-label="<?= $r['nome'] ?> (abre numa nova janela)"><i class="bi <?= $r['icone'] ?>" aria-hidden="true"></i><span><?= $r['nome'] ?></span></a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </nav>
+
+            <?php if ($redesMenu): ?>
+                <ul class="menu-redes menu-redes--barra" aria-label="Redes sociais">
+                    <?php foreach ($redesMenu as $r): ?>
+                        <li><a href="<?= htmlspecialchars($r['url']) ?>" target="_blank" rel="noopener" aria-label="<?= $r['nome'] ?> (abre numa nova janela)" title="<?= $r['nome'] ?>"><i class="bi <?= $r['icone'] ?>" aria-hidden="true"></i></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
 
             <?php if (!empty($_SESSION['cidadao_id'])): ?>
                 <div class="notif-header" id="notifHeader">
@@ -257,40 +350,21 @@ if (!empty($_SESSION['cidadao_id'])) {
                 </div>
             <?php endif; ?>
 
-            <button type="button" class="mobile-search-toggle js-search-toggle" aria-label="Pesquisar no site"
-                    aria-controls="globalSearchPanel" aria-expanded="false"><i class="bi bi-search"></i></button>
+            <button type="button" class="mobile-search-toggle js-spotlight" aria-label="Pesquisar no site"
+                    aria-haspopup="dialog" aria-expanded="false"><i class="bi bi-search" aria-hidden="true"></i></button>
+
+            <button type="button" class="tema-toggle" id="temaToggle" aria-pressed="false" aria-label="Modo escuro" title="Modo escuro">
+                <i class="bi bi-moon-stars-fill tema-toggle__lua" aria-hidden="true"></i>
+                <i class="bi bi-sun-fill tema-toggle__sol" aria-hidden="true"></i>
+            </button>
 
             <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><i class="bi bi-list"></i></button>
 
         </div>
     </div>
 
-    <!-- Pesquisa: abre pela lupa do menu, por cima do conteúdo (não ocupa espaço na página) -->
-    <div class="global-search-panel" id="globalSearchPanel" hidden>
-        <div class="container">
-
-            <div class="global-search-wrapper global-search-wide">
-
-                <label for="globalSearchInput" class="global-search-label">Pesquisar no site</label>
-
-                <div class="global-search-box">
-                    <span class="global-search-icon"><i class="bi bi-search"></i></span>
-
-                    <input
-                        type="text"
-                        id="globalSearchInput"
-                        placeholder="Pesquisar notícias, documentos, eventos, serviços..."
-                        autocomplete="off">
-
-                    <button type="button" class="global-search-close js-search-close" aria-label="Fechar pesquisa"><i class="bi bi-x-lg"></i></button>
-                </div>
-
-                <div id="globalSearchResults" class="global-search-results"></div>
-
-            </div>
-
-        </div>
-    </div>
+    <?php /* A pesquisa é a "Spotlight" (Ctrl+K): janela criada pelo assets/js/app.js, com
+             resultados de ajax/spotlight.php. Substituiu o antigo painel #globalSearchPanel (redesign 10/2026). */ ?>
 
 </header>
 
@@ -332,82 +406,6 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const globalSearchInput = document.getElementById("globalSearchInput");
-    const globalSearchResults = document.getElementById("globalSearchResults");
-
-    // Painel da pesquisa: abre pela lupa (menu no computador, junto ao ☰ no telemóvel)
-    const searchPanel = document.getElementById("globalSearchPanel");
-    const searchToggles = document.querySelectorAll(".js-search-toggle");
-
-    function abrirPesquisa(aberta) {
-        if (!searchPanel) return;
-        searchPanel.hidden = !aberta;
-        document.body.classList.toggle("search-open", aberta);
-        searchToggles.forEach(function (b) { b.setAttribute("aria-expanded", aberta ? "true" : "false"); });
-        if (aberta && globalSearchInput) {
-            globalSearchInput.focus();
-        }
-    }
-
-    searchToggles.forEach(function (b) {
-        b.addEventListener("click", function (e) {
-            e.stopPropagation();
-            abrirPesquisa(searchPanel.hidden);
-        });
-    });
-
-    document.querySelectorAll(".js-search-close").forEach(function (b) {
-        b.addEventListener("click", function () { abrirPesquisa(false); });
-    });
-
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && searchPanel && !searchPanel.hidden) {
-            abrirPesquisa(false);
-        }
-    });
-
-    document.addEventListener("click", function (e) {
-        if (searchPanel && !searchPanel.hidden && !e.target.closest("#globalSearchPanel") && !e.target.closest(".js-search-toggle")) {
-            abrirPesquisa(false);
-        }
-    });
-
-
-    if (globalSearchInput && globalSearchResults) {
-        globalSearchInput.addEventListener("input", async function () {
-            const q = this.value.trim();
-
-            if (q.length < 2) {
-                globalSearchResults.innerHTML = "";
-                globalSearchResults.style.display = "none";
-                return;
-            }
-
-            try {
-                const response = await fetch("/ajax/pesquisa_global.php?q=" + encodeURIComponent(q));
-                const html = await response.text();
-
-                globalSearchResults.innerHTML = html;
-                globalSearchResults.style.display = "block";
-            } catch (e) {
-                globalSearchResults.innerHTML = '<div class="search-empty">Erro ao pesquisar.</div>';
-                globalSearchResults.style.display = "block";
-            }
-        });
-
-        document.addEventListener("click", function (e) {
-            if (!e.target.closest(".global-search-wrapper")) {
-                globalSearchResults.style.display = "none";
-            }
-        });
-
-        globalSearchInput.addEventListener("focus", function () {
-            if (globalSearchResults.innerHTML.trim() !== "") {
-                globalSearchResults.style.display = "block";
-            }
-        });
-    }
-
     const notifBtn = document.getElementById("notifBtn");
     const notifDropdown = document.getElementById("notifDropdown");
     const notifCount = document.getElementById("notifCount");
@@ -467,5 +465,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
-
-<?php require_once __DIR__ . "/alertas.php"; ?>

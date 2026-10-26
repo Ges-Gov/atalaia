@@ -152,6 +152,7 @@ $modelos = $pdo->query("
                     </a>
                 </td>
                 <td>
+                    <a class="btn secondary" href="modelos-requerimentos.php?editar=<?= $m['id'] ?>">Editar</a>
                     <a class="btn secondary" href="modelos-requerimentos.php?toggle=<?= $m['id'] ?>">
                         <?= $m['ativo'] ? 'Desativar' : 'Ativar' ?>
                     </a>

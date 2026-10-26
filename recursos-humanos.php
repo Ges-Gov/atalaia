@@ -3,7 +3,7 @@
 $cfg=['hero_kicker'=>'Recursos Humanos','hero_titulo'=>'Recursos Humanos','hero_subtitulo'=>'Transparência, organização e valorização profissional ao serviço da freguesia.','intro_titulo'=>'Gestão de pessoas com transparência','intro_texto'=>'Nesta área são disponibilizadas informações e documentos relacionados com mapa de pessoal, recrutamento, concursos, avaliação, formação, organograma, regulamentos e legislação aplicável à Administração Pública.','destaque_1_titulo'=>'Documentos','destaque_1_valor'=>'Downloads públicos','destaque_2_titulo'=>'Concursos','destaque_2_valor'=>'Avisos e resultados','destaque_3_titulo'=>'Formação','destaque_3_valor'=>'Capacitação interna'];
 try{$r=$pdo->query("SELECT * FROM recursos_humanos_config WHERE ativo=1 ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC); if($r)$cfg=array_merge($cfg,$r);}catch(Exception $e){}
 $docs=[];try{$docs=$pdo->query("SELECT * FROM recursos_humanos_documentos WHERE ativo=1 ORDER BY destaque DESC, ordem ASC, data_documento DESC, titulo ASC")->fetchAll(PDO::FETCH_ASSOC);}catch(Exception $e){}
-$cats=['mapa_pessoal'=>['Mapa de Pessoal','Documento com a caracterização dos postos de trabalho e número de efetivos.','<i class="bi bi-people-fill"></i>'],'horario_trabalho'=>['Mapa de Horário de Trabalho','Horários de trabalho em vigor nos serviços da Junta de Freguesia.','<i class="bi bi-clock-fill"></i>'],'recrutamento_concursos'=>['Recrutamento e Concursos','Avisos, atas, critérios de seleção e resultados de procedimentos concursais.','<i class="bi bi-megaphone-fill"></i>'],'avaliacao_siadap'=>['Plano de Gestão e Avaliação','Informações sobre SIADAP e regulamentos internos de avaliação.','<i class="bi bi-bar-chart-fill"></i>'],'plano_formacao'=>['Plano de Formação','Plano anual de capacitação e desenvolvimento dos colaboradores.','<i class="bi bi-mortarboard-fill"></i>'],'organigrama'=>['Organograma','Estrutura hierárquica e composição organizacional.','<i class="bi bi-bank2"></i>'],'transparencia_legislacao'=>['Transparência e Legislação','Regulamentos de pessoal e legislação aplicável.','<i class="bi bi-clipboard-check-fill"></i>'],'outros'=>['Outros Documentos','Documentos adicionais de recursos humanos.','<i class="bi bi-folder2-open"></i>']];
+$cats=['mapa_pessoal'=>['Mapa de Pessoal','Documento com a caracterização dos postos de trabalho e número de efetivos.','<i class="bi bi-people-fill"></i>'],'recrutamento_concursos'=>['Recrutamento e Concursos','Avisos, atas, critérios de seleção e resultados de procedimentos concursais.','<i class="bi bi-megaphone-fill"></i>'],'avaliacao_siadap'=>['Plano de Gestão e Avaliação','Informações sobre SIADAP e regulamentos internos de avaliação.','<i class="bi bi-bar-chart-fill"></i>'],'plano_formacao'=>['Plano de Formação','Plano anual de capacitação e desenvolvimento dos colaboradores.','<i class="bi bi-mortarboard-fill"></i>'],'organigrama'=>['Organograma','Estrutura hierárquica e composição organizacional.','<i class="bi bi-bank2"></i>'],'transparencia_legislacao'=>['Transparência e Legislação','Regulamentos de pessoal e legislação aplicável.','<i class="bi bi-clipboard-check-fill"></i>'],'outros'=>['Outros Documentos','Documentos adicionais de recursos humanos.','<i class="bi bi-folder2-open"></i>']];
 
 $categoriaFiltro = $_GET['categoria'] ?? '';
 $emCategoria = $categoriaFiltro !== '' && isset($cats[$categoriaFiltro]);
@@ -41,10 +41,10 @@ function rhListaDocs(array $lista): void
 }
 ?>
 <style>
-.rh-hero{background:radial-gradient(circle at 15% 18%,color-mix(in srgb, var(--cor-secundaria) 25%, transparent),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:96px 0 112px;position:relative;overflow:hidden}
+.rh-hero{background:radial-gradient(circle at 15% 18%,rgb(var(--ouro-rgb, 240 180 41) / .25),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:96px 0 112px;position:relative;overflow:hidden}
 .rh-hero:after{content:"";position:absolute;right:-250px;top:-280px;width:620px;height:620px;background:rgba(255,255,255,.07);border-radius:50%}
 .rh-hero .container{position:relative;z-index:2}
-.rh-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.rh-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .rh-hero h1{font-size:clamp(42px,5vw,76px);margin:18px 0 14px;line-height:1.02}
 .rh-hero p{max-width:900px;color:#dbeafe;font-size:20px;line-height:1.75;margin:0}
 .rh-shell{margin-top:-52px;position:relative;z-index:5}
@@ -94,7 +94,7 @@ function rhListaDocs(array $lista): void
     <div class="rh-panel">
         <div class="rh-panel-head">
             <span><?= count($lista) ?> documento<?= count($lista) === 1 ? '' : 's' ?></span>
-            <a class="rh-voltar" href="/recursos-humanos.php"><i class="bi bi-arrow-left"></i> Recursos Humanos</a>
+            <a class="rh-voltar" href="/recursos-humanos.php"><i class="bi bi-arrow-left"></i> <?= te('recursos_humanos.navegacao.voltar') ?></a>
         </div>
         <?php rhListaDocs($lista); ?>
     </div>
@@ -102,7 +102,7 @@ function rhListaDocs(array $lista): void
 <?php else: ?>
 <section class="rh-hero"><div class="container"><span class="rh-kicker"><?= htmlspecialchars($cfg['hero_kicker']) ?></span><h1><?= htmlspecialchars($cfg['hero_titulo']) ?></h1><p><?= htmlspecialchars($cfg['hero_subtitulo']) ?></p></div></section>
 <section class="section rh-shell"><div class="container">
-    <div class="rh-stats"><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_1_titulo']) ?></span><strong><?= htmlspecialchars($cfg['destaque_1_valor']) ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_2_titulo']) ?></span><strong><?= htmlspecialchars($cfg['destaque_2_valor']) ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_3_titulo']) ?></span><strong><?= htmlspecialchars($cfg['destaque_3_valor']) ?></strong></div></div>
+    <div class="rh-stats"><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_1_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_1_valor'] ?? '') ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_2_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_2_valor'] ?? '') ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_3_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_3_valor'] ?? '') ?></strong></div></div>
     <div class="rh-intro"><h2><?= htmlspecialchars($cfg['intro_titulo']) ?></h2><p><?= rh($cfg['intro_texto']) ?></p></div>
     <div class="rh-quick"><?php foreach($cats as $k=>$m): ?><a class="rh-quick-card" href="/recursos-humanos.php?categoria=<?= urlencode($k) ?>"><b><?= $m[2] ?></b><strong><?= htmlspecialchars($m[0]) ?></strong><span><?= htmlspecialchars($m[1]) ?></span></a><?php endforeach; ?></div>
     <?php foreach($cats as $k=>$m): ?>

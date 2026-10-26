@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $ext = strtolower(pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION));
 
-        $imagem = "ponto_" . time() . "." . $ext;
+        $imagem = $ext !== '' ? "ponto_" . time() . "." . $ext : '';
 
         // Confirmar que a escrita correu bem: se falhar (permissões da pasta no
         // servidor) não guardamos o nome, senão a BD ficaria a apontar para um
@@ -40,9 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             descricao,
             imagem,
             latitude,
-            longitude
+            longitude,
+            destaque
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmt->execute([
@@ -51,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descricao,
         $imagem,
         $latitude,
-        $longitude
+        $longitude,
+        isset($_POST['destaque']) ? 1 : 0   // migração 039: aparece primeiro na página inicial
     ]);
 
     // Fotos adicionais: vão para a galeria, num álbum com o NOME DO PONTO.
@@ -101,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-group">
         <label>Descrição</label>
         <textarea name="descricao" rows="6"></textarea>
+
+    <label class="check" style="margin-top:4px"><input type="checkbox" name="destaque" value="1" > Em destaque — aparece primeiro na página inicial (no quadro grande)</label>
     </div>
 
     <div class="form-group">

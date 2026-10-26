@@ -46,8 +46,8 @@ $notificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <section class="page-hero">
     <div class="container">
-        <h1>Notificações</h1>
-        <p>Acompanhe avisos, alertas e comunicações da Junta de Freguesia.</p>
+        <h1><?= te('notificacoes.hero.titulo') ?></h1>
+        <p><?= te('notificacoes.hero.subtitulo') ?></p>
     </div>
 </section>
 
@@ -55,7 +55,7 @@ $notificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
 
         <div class="content-box">
-            <h2>As minhas notificações</h2>
+            <h2><?= te('notificacoes.conteudo.titulo') ?></h2>
 
             <?php if (!empty($notificacoes)): ?>
                 <div class="notificacoes-lista">
@@ -70,7 +70,7 @@ $notificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?= htmlspecialchars($n['titulo']) ?>
 
                                     <?php if (!$n['lida']): ?>
-                                        <span class="badge-novo">Nova</span>
+                                        <span class="badge-novo"><?= te('notificacoes.conteudo.etiqueta_nova') ?></span>
                                     <?php endif; ?>
                                 </h3>
 
@@ -81,14 +81,14 @@ $notificacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             <?php if (!$n['lida']): ?>
                                 <a class="btn secondary" href="notificacoes.php?ler=<?= $n['id'] ?>">
-                                    Marcar como lida
+                                    <?= te('notificacoes.conteudo.marcar_lida') ?>
                                 </a>
                             <?php endif; ?>
                         </article>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p>Ainda não existem notificações.</p>
+                <p><?= te('notificacoes.vazio.texto') ?></p>
             <?php endif; ?>
         </div>
 

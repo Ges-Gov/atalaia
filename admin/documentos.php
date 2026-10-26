@@ -2,6 +2,8 @@
 $adminPageTitle = "Documentos";
 $adminActive = "documentos";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Documentos da Freguesia»", ['freguesia_documentos.hero.titulo','freguesia_documentos.hero.texto'], '/freguesia-documentos.php');
 
 $documentos = $pdo->query("SELECT * FROM documentos ORDER BY criado_em DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>

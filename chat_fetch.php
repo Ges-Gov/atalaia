@@ -1,7 +1,8 @@
 <?php
-require_once "includes/db.php";
+require_once "includes/chat_acesso.php";
 
-$pedidoId = $_GET['pedido_id'] ?? 0;
+$pedidoId = (int) ($_GET['pedido_id'] ?? 0);
+chatExigirAcesso($pdo, $pedidoId);   // só o dono do pedido ou a Junta
 
 $stmt = $pdo->prepare("
     SELECT * FROM pedido_mensagens

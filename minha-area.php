@@ -52,8 +52,8 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
 
 <section class="page-hero">
     <div class="container">
-        <h1>Área do Cidadão</h1>
-        <p>Bem-vindo, <?= htmlspecialchars($_SESSION['cidadao_nome']) ?>. Acompanhe os seus serviços digitais num só lugar.</p>
+        <h1><?= te('minha_area.hero.titulo') ?></h1>
+        <p>Bem-vindo, <?= htmlspecialchars($_SESSION['cidadao_nome']) ?>. <?= te('minha_area.hero.subtitulo') ?></p>
     </div>
 </section>
 
@@ -62,11 +62,11 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
 
         <div class="minha-area-hero">
             <div>
-                <span>Junta Virtual</span>
-                <h2>A sua Junta no bolso</h2>
+                <span><?= te('minha_area.intro.kicker') ?></span>
+                <h2><?= te('minha_area.intro.titulo') ?></h2>
                 <p>
-                    Consulte pedidos, acompanhe respostas, faça marcações, submeta requerimentos,
-                    veja notificações e aceda aos serviços online da Junta de Freguesia.
+                    <?= te('minha_area.intro.texto') ?>
+
                 </p>
 
                 
@@ -84,17 +84,17 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
 
     <a href="pedidos.php" class="btn-pedido">
         <i class="fa-solid fa-pen-to-square"></i>
-        Registar ocorrência
+        <?= te('minha_area.acoes.registar') ?>
     </a>
 
     <a href="consultar-pedido.php" class="btn-consultar">
         <i class="fa-solid fa-magnifying-glass"></i>
-        Consultar ocorrência
+        <?= te('minha_area.acoes.consultar') ?>
     </a>
 
     <a href="/cidadao-logout.php" class="btn-logout">
     <i class="fa-solid fa-right-from-bracket"></i>
-    Terminar sessão
+    <?= te('minha_area.acoes.sair') ?>
 </a>
 
 </div>
@@ -118,22 +118,22 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
             <div class="minha-area-mini-stats">
                 <div>
                     <strong><?= (int)$totalPedidos ?></strong>
-                    <small>Pedidos</small>
+                    <small><?= te('minha_area.resumo.pedidos') ?></small>
                 </div>
 
                 <div>
                     <strong><?= (int)$totalRequerimentos ?></strong>
-                    <small>Requerimentos</small>
+                    <small><?= te('minha_area.resumo.requerimentos') ?></small>
                 </div>
 
                 <div>
                     <strong><?= (int)$totalMarcacoes ?></strong>
-                    <small>Marcações</small>
+                    <small><?= te('minha_area.resumo.marcacoes') ?></small>
                 </div>
 
                 <div>
                     <strong><?= (int)$notificacoesNovas ?></strong>
-                    <small>Notificações</small>
+                    <small><?= te('minha_area.resumo.notificacoes') ?></small>
                 </div>
             </div>
         </div>
@@ -142,92 +142,92 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
 
             <a href="/pedidos.php" class="quick-action-card destaque">
                 <span><i class="bi bi-envelope-paper"></i></span>
-                <strong>Nova ocorrência</strong>
-                <small>Comunicar uma situação, problema ou ocorrência à Junta.</small>
+                <strong><?= te('minha_area.servicos.s1_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s1_texto') ?></small>
             </a>
 
             <a href="/consultar-pedido.php" class="quick-action-card">
                 <span><i class="bi bi-search"></i></span>
-                <strong>Consultar ocorrência</strong>
-                <small>Acompanhar o estado da ocorrência através do código recebido.</small>
+                <strong><?= te('minha_area.servicos.s2_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s2_texto') ?></small>
             </a>
 
             <a href="/requerimentos.php" class="quick-action-card">
                 <span><i class="bi bi-file-earmark-text"></i></span>
-                <strong>Requerimentos online</strong>
-                <small>Submeter requerimentos e documentos digitais.</small>
+                <strong><?= te('minha_area.servicos.s3_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s3_texto') ?></small>
             </a>
 
             <a href="/marcacoes.php" class="quick-action-card">
                 <span><i class="bi bi-calendar-event"></i></span>
-                <strong>Marcação de atendimento</strong>
-                <small>Agendar atendimento presencial ou apoio da Junta.</small>
+                <strong><?= te('minha_area.servicos.s4_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s4_texto') ?></small>
             </a>
 
             <a href="/documentos-automaticos.php" class="quick-action-card">
                 <span><i class="bi bi-lightning-charge"></i></span>
-                <strong>Documentos automáticos</strong>
-                <small>Gerar documentos e pedidos de forma rápida.</small>
+                <strong><?= te('minha_area.servicos.s5_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s5_texto') ?></small>
             </a>
 
             <a href="/atestado-residencia.php" class="quick-action-card">
                 <span><i class="bi bi-house-door"></i></span>
-                <strong>Atestado automático</strong>
-                <small>Iniciar pedido de atestado de residência.</small>
+                <strong><?= te('minha_area.servicos.s6_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s6_texto') ?></small>
             </a>
 
             <a href="/notificacoes.php" class="quick-action-card destaque">
                 <span><i class="bi bi-bell"></i></span>
                 <strong>
-                    Notificações
+                    <?= te('minha_area.servicos.s7_titulo') ?>
                     <?php if ($notificacoesNovas > 0): ?>
                         <em><?= (int)$notificacoesNovas ?></em>
                     <?php endif; ?>
                 </strong>
-                <small>Avisos, respostas e comunicações importantes.</small>
+                <small><?= te('minha_area.servicos.s7_texto') ?></small>
             </a>
 
             <a href="/ocorrencias-mapa.php" class="quick-action-card">
                 <span><i class="bi bi-map"></i></span>
-                <strong>Mapa de ocorrências</strong>
-                <small>Consultar situações públicas registadas no mapa.</small>
+                <strong><?= te('minha_area.servicos.s8_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s8_texto') ?></small>
             </a>
 
             <a href="/transparencia.php" class="quick-action-card">
                 <span><i class="bi bi-bar-chart"></i></span>
-                <strong>Transparência</strong>
-                <small>Consultar informação pública e dados institucionais.</small>
+                <strong><?= te('minha_area.servicos.s9_titulo') ?></strong>
+                <small><?= te('minha_area.servicos.s9_texto') ?></small>
             </a>
 
         </div>
 
         <div class="content-box app-area-actions" style="margin-top:30px;">
-            <h2>Resumo da minha atividade</h2>
-            <p>Visão geral dos seus serviços digitais associados a esta conta.</p>
+            <h2><?= te('minha_area.atividade.titulo') ?></h2>
+            <p><?= te('minha_area.atividade.intro') ?></p>
 
             <div class="quick-actions-grid" style="margin-top:20px;">
                 <div class="quick-action-card">
                     <span><i class="bi bi-envelope-paper"></i></span>
                     <strong><?= (int)$totalPedidos ?> pedido(s)</strong>
-                    <small>Total de pedidos submetidos por si.</small>
+                    <small><?= te('minha_area.atividade.pedidos_texto') ?></small>
                 </div>
 
                 <div class="quick-action-card">
                     <span><i class="bi bi-file-earmark-text"></i></span>
                     <strong><?= (int)$totalRequerimentos ?> requerimento(s)</strong>
-                    <small>Total de requerimentos associados à sua conta.</small>
+                    <small><?= te('minha_area.atividade.requerimentos_texto') ?></small>
                 </div>
 
                 <div class="quick-action-card">
                     <span><i class="bi bi-calendar-event"></i></span>
                     <strong><?= (int)$totalMarcacoes ?> marcação(ões)</strong>
-                    <small>Marcações de atendimento registadas.</small>
+                    <small><?= te('minha_area.atividade.marcacoes_texto') ?></small>
                 </div>
 
                 <div class="quick-action-card">
                     <span><i class="bi bi-bell"></i></span>
                     <strong><?= (int)$notificacoesNovas ?> nova(s)</strong>
-                    <small>Notificações ainda por ler.</small>
+                    <small><?= te('minha_area.atividade.notificacoes_texto') ?></small>
                 </div>
             </div>
         </div>
@@ -235,11 +235,11 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
         <div class="content-box" style="margin-top:30px;">
             <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;">
                 <div>
-                    <h2>Últimos pedidos</h2>
-                    <p>Acompanhe os pedidos mais recentes enviados à Junta.</p>
+                    <h2><?= te('minha_area.pedidos.titulo') ?></h2>
+                    <p><?= te('minha_area.pedidos.intro') ?></p>
                 </div>
 
-                <a class="btn" href="/pedidos.php">Novo pedido</a>
+                <a class="btn" href="/pedidos.php"><?= te('minha_area.pedidos.botao_novo') ?></a>
             </div>
 
             <?php if (!empty($ultimosPedidos)): ?>
@@ -288,7 +288,7 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
 
                             <div style="display:flex;align-items:center;">
                                 <a class="btn" href="/pedido-detalhe.php?id=<?= (int)$p['id'] ?>">
-                                    Ver / Conversar
+                                    <?= te('minha_area.pedidos.botao_ver') ?>
                                 </a>
                             </div>
 
@@ -301,8 +301,8 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
             <?php else: ?>
 
                 <div style="margin-top:20px;">
-                    <p>Ainda não submeteu pedidos com esta conta.</p>
-                    <a class="btn" href="/pedidos.php">Fazer o primeiro pedido</a>
+                    <p><?= te('minha_area.pedidos.vazio') ?></p>
+                    <a class="btn" href="/pedidos.php"><?= te('minha_area.pedidos.vazio_botao') ?></a>
                 </div>
 
             <?php endif; ?>

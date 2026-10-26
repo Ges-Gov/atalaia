@@ -1,7 +1,7 @@
 <?php
 /*
  * Plataforma de sites de Juntas de Freguesia — © 2026 GesGov. Todos os direitos reservados.
- * Licença GG-ATALAIA-005E52FF — uso exclusivo de: União das Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
+ * Licença GG-ATALAIA-005E52FF — uso exclusivo de: Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
  * Proibida a cópia, modificação, redistribuição ou venda sem autorização escrita da GesGov.
  */
 session_start();

@@ -52,7 +52,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 <style>
 .ocorrencias-map-page{
     background:
-        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 18%, transparent), transparent 34%),
+        radial-gradient(circle at top left, rgb(var(--ouro-rgb, 240 180 41) / .18), transparent 34%),
         radial-gradient(circle at bottom right, rgba(36,42,50,.12), transparent 32%),
         #f8fafc;
     padding:34px 24px 50px;
@@ -89,7 +89,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     border-radius:50%;
     left:42%;
     bottom:-150px;
-    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .16);
     filter:blur(2px);
 }
 
@@ -106,9 +106,9 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .35);
+    color:var(--ouro-claro, #f8d77a);
     padding:8px 13px;
     border-radius:999px;
     font-size:13px;
@@ -152,7 +152,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     font-weight:900;
     border-radius:15px;
     padding:13px 18px;
-    background:var(--cor-secundaria,var(--cor-secundaria));
+    background:var(--cor-secundaria,var(--ouro, #C8A02E));
     color:#11151B;
     box-shadow:0 14px 32px rgba(0,0,0,.18);
     transition:.25s ease;
@@ -272,7 +272,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     border-radius:50%;
     right:-80px;
     top:-80px;
-    background:color-mix(in srgb, var(--cor-secundaria) 20%, transparent);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .20);
 }
 
 .ocorrencias-sidebar h1{
@@ -655,7 +655,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 .ocorrencias-progress-fill{
     height:100%;
     border-radius:999px;
-    background:linear-gradient(90deg,#242A30,var(--cor-secundaria));
+    background:linear-gradient(90deg,#242A30,var(--ouro, #C8A02E));
 }
 
 .ocorrencias-mini-grid{
@@ -754,16 +754,16 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     <div class="ocorrencias-map-hero">
         <div class="ocorrencias-hero-inner">
             <div>
-                <span class="ocorrencias-kicker">● Centro operacional digital</span>
-                <h1>Ocorrências da Freguesia em tempo real.</h1>
+                <span class="ocorrencias-kicker"><?= te('ocorrencias_mapa.hero.kicker') ?></span>
+                <h1><?= te('ocorrencias_mapa.hero.titulo') ?></h1>
                 <p>
-                    Consulte no mapa público as ocorrências comunicadas, acompanhe estados,
-                    filtre por categoria e visualize a distribuição dentro do território da freguesia.
+                    <?= te('ocorrencias_mapa.hero.texto') ?>
+
                 </p>
 
                 <div class="ocorrencias-hero-actions">
-                    <a href="/pedidos.php" class="btn">⊕ Reportar ocorrência</a>
-                    <a href="#mapaOcorrencias" class="btn ghost">Ver mapa</a>
+                    <a href="/pedidos.php" class="btn"><?= te('ocorrencias_mapa.hero.botao1') ?></a>
+                    <a href="#mapaOcorrencias" class="btn ghost"><?= te('ocorrencias_mapa.hero.botao2') ?></a>
                 </div>
             </div>
 
@@ -771,22 +771,22 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
                 <div class="ocorrencias-kpi-card">
                     <span><i class="bi bi-geo-alt"></i></span>
                     <strong><?= $totalOcorrencias ?></strong>
-                    <small>Ocorrências públicas no mapa</small>
+                    <small><?= te('ocorrencias_mapa.hero.cartao_titulo') ?></small>
                 </div>
                 <div class="ocorrencias-kpi-card">
                     <span><i class="bi bi-hourglass-split"></i></span>
                     <strong><?= $totalPendentes ?></strong>
-                    <small>Pendentes</small>
+                    <small><?= te('ocorrencias_mapa.hero.n_pendentes') ?></small>
                 </div>
                 <div class="ocorrencias-kpi-card">
                     <span><i class="bi bi-search"></i></span>
                     <strong><?= $totalAnalise ?></strong>
-                    <small>Em análise</small>
+                    <small><?= te('ocorrencias_mapa.hero.n_analise') ?></small>
                 </div>
                 <div class="ocorrencias-kpi-card">
                     <span><i class="bi bi-check-circle-fill"></i></span>
                     <strong><?= $totalResolvidas ?></strong>
-                    <small>Resolvidas</small>
+                    <small><?= te('ocorrencias_mapa.hero.n_resolvidas') ?></small>
                 </div>
             </div>
         </div>
@@ -796,35 +796,35 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 
         <aside class="ocorrencias-sidebar">
             <div class="ocorrencias-sidebar-head">
-                <h1>Ocorrências no Mapa</h1>
-                <p>Filtra, consulta e acompanha os pedidos públicos georreferenciados.</p>
+                <h1><?= te('ocorrencias_mapa.mapa.titulo') ?></h1>
+                <p><?= te('ocorrencias_mapa.mapa.texto') ?></p>
             </div>
 
             <div class="ocorrencias-legenda">
-                <span><i class="dot dot-pendente"></i> Pendente</span>
-                <span><i class="dot dot-analise"></i> Em análise</span>
-                <span><i class="dot dot-resolvido"></i> Resolvido</span>
-                <span><i class="dot dot-arquivado"></i> Arquivado</span>
+                <span><i class="dot dot-pendente"></i> <?= te('ocorrencias_mapa.mapa.estado_pendente') ?></span>
+                <span><i class="dot dot-analise"></i> <?= te('ocorrencias_mapa.mapa.estado_analise') ?></span>
+                <span><i class="dot dot-resolvido"></i> <?= te('ocorrencias_mapa.mapa.estado_resolvido') ?></span>
+                <span><i class="dot dot-arquivado"></i> <?= te('ocorrencias_mapa.mapa.estado_arquivado') ?></span>
             </div>
 
             <a href="/pedidos.php" class="btn">
-                ⊕ Nova Ocorrência
+                <?= te('ocorrencias_mapa.mapa.botao') ?>
             </a>
 
             <div class="ocorrencias-filter-box">
-                <h2>Filtros inteligentes</h2>
+                <h2><?= te('ocorrencias_mapa.filtros.titulo') ?></h2>
 
-                <input type="text" id="pesquisaOcorrencias" placeholder="Pesquisar por assunto, código, local...">
+                <input type="text" id="pesquisaOcorrencias" placeholder="<?= te('ocorrencias_mapa.filtros.ph_pesquisa') ?>">
 
                 <select id="filtroCategoria">
-                    <option value="">Todas as categorias</option>
+                    <option value=""><?= te('ocorrencias_mapa.filtros.categorias') ?></option>
                     <?php foreach ($categorias as $cat): ?>
                         <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
                     <?php endforeach; ?>
                 </select>
 
                 <select id="filtroEstado">
-                    <option value="">Todos os estados</option>
+                    <option value=""><?= te('ocorrencias_mapa.filtros.estados') ?></option>
                     <option value="pendente">Pendente</option>
                     <option value="em_analise">Em análise</option>
                     <option value="resolvido">Resolvido</option>
@@ -832,12 +832,12 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
                 </select>
 
                 <button type="button" class="btn secondary" id="limparFiltrosMapa">
-                    Limpar filtros
+                    <?= te('ocorrencias_mapa.filtros.limpar') ?>
                 </button>
             </div>
 
             <div class="ocorrencias-sidebar-list-title">
-                <strong>Feed público</strong>
+                <strong><?= te('ocorrencias_mapa.sidebar.feed_titulo') ?></strong>
                 <small id="contadorOcorrencias"><?= count($pedidos) ?></small>
             </div>
 
@@ -846,16 +846,16 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 
         <div class="ocorrencias-map-wrap">
             <div class="map-legend">
-                <strong>Legenda</strong>
-                <span><i class="dot dot-pendente"></i> Pendente</span>
-                <span><i class="dot dot-analise"></i> Em análise</span>
-                <span><i class="dot dot-resolvido"></i> Resolvido</span>
-                <span><i class="dot dot-arquivado"></i> Arquivado</span>
+                <strong><?= te('ocorrencias_mapa.sidebar.legenda_titulo') ?></strong>
+                <span><i class="dot dot-pendente"></i> <?= te('ocorrencias_mapa.sidebar.legenda_pendente') ?></span>
+                <span><i class="dot dot-analise"></i> <?= te('ocorrencias_mapa.sidebar.legenda_analise') ?></span>
+                <span><i class="dot dot-resolvido"></i> <?= te('ocorrencias_mapa.sidebar.legenda_resolvido') ?></span>
+                <span><i class="dot dot-arquivado"></i> <?= te('ocorrencias_mapa.sidebar.legenda_arquivado') ?></span>
             </div>
 
             <div class="mapa-floating-card">
-                <strong>Território da freguesia</strong>
-                <p>O contorno vermelho assinala a zona de referência da freguesia. Clique nos pontos para consultar detalhes.</p>
+                <strong><?= te('ocorrencias_mapa.sidebar.territorio_titulo') ?></strong>
+                <p><?= te('ocorrencias_mapa.sidebar.territorio_texto') ?></p>
             </div>
 
             <div id="mapaOcorrencias"></div>
@@ -865,11 +865,11 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 
     <div class="ocorrencias-stats-section">
         <div class="ocorrencias-stat-panel">
-            <h2>Resumo operacional</h2>
+            <h2><?= te('ocorrencias_mapa.resumo.titulo') ?></h2>
 
             <div class="ocorrencias-progress-row">
                 <div class="ocorrencias-progress-label">
-                    <span>Taxa de resolução</span>
+                    <span><?= te('ocorrencias_mapa.resumo.taxa') ?></span>
                     <span><?= $percentagemResolvidas ?>%</span>
                 </div>
                 <div class="ocorrencias-progress-track">
@@ -880,25 +880,25 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
             <div class="ocorrencias-mini-grid">
                 <div class="ocorrencias-mini-card">
                     <strong><?= $totalPendentes ?></strong>
-                    <span>Pedidos a aguardar análise</span>
+                    <span><?= te('ocorrencias_mapa.resumo.aguardar') ?></span>
                 </div>
                 <div class="ocorrencias-mini-card">
                     <strong><?= $totalAnalise ?></strong>
-                    <span>Pedidos em tratamento</span>
+                    <span><?= te('ocorrencias_mapa.resumo.tratamento') ?></span>
                 </div>
             </div>
         </div>
 
         <div class="ocorrencias-stat-panel">
-            <h2>Transparência pública</h2>
+            <h2><?= te('ocorrencias_mapa.resumo.transparencia') ?></h2>
             <div class="ocorrencias-mini-grid">
                 <div class="ocorrencias-mini-card">
                     <strong><?= count($categorias) ?></strong>
-                    <span>Categorias disponíveis</span>
+                    <span><?= te('ocorrencias_mapa.resumo.categorias') ?></span>
                 </div>
                 <div class="ocorrencias-mini-card">
                     <strong><?= $totalArquivadas ?></strong>
-                    <span>Ocorrências arquivadas</span>
+                    <span><?= te('ocorrencias_mapa.resumo.arquivadas') ?></span>
                 </div>
             </div>
         </div>
@@ -1026,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", function () {
     limiteLayer.bindPopup(`
         <div class="popup-pro limite-popup">
             <h3>Limite da Freguesia</h3>
-            <p>Atalaia e Alto Estanqueiro-Jardia, Montijo</p>
+            <p><?= htmlspecialchars(localFreguesia(', ')) ?></p>
         </div>
     `);
 
@@ -1108,7 +1108,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (bounds.length > 0) {
             mapa.fitBounds(bounds, { padding: [45, 45], maxZoom: 15 });
         } else {
-            mapa.fitBounds(limiteLayer.getBounds(), { padding: [45, 45] });
+            if (limiteLayer.getBounds().isValid()) mapa.fitBounds(limiteLayer.getBounds(), { padding: [45, 45] });
         }
 
         limiteLayer.bringToFront();
@@ -1128,7 +1128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     aplicarFiltros();
 
     if (ocorrencias.length === 0) {
-        mapa.fitBounds(limiteLayer.getBounds(), { padding: [45, 45] });
+        if (limiteLayer.getBounds().isValid()) mapa.fitBounds(limiteLayer.getBounds(), { padding: [45, 45] });
     }
 
     setTimeout(function () {

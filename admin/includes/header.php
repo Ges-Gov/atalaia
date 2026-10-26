@@ -1,7 +1,7 @@
 <?php
 /*
  * Plataforma de sites de Juntas de Freguesia — © 2026 GesGov. Todos os direitos reservados.
- * Licença GG-ATALAIA-005E52FF — uso exclusivo de: União das Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
+ * Licença GG-ATALAIA-005E52FF — uso exclusivo de: Freguesias de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.
  * Proibida a cópia, modificação, redistribuição ou venda sem autorização escrita da GesGov.
  */
 // Output buffering: permite redirects (header Location) depois de output iniciado.
@@ -68,8 +68,40 @@ try {
 } catch (Throwable $e) {
     $badgeFaturacao = 0;
 }
-?>
+$badgeMensagens = 0;
+try { $badgeMensagens = (int)$pdo->query("SELECT COUNT(*) FROM contactos_mensagens WHERE lida = 0")->fetchColumn(); } catch (Throwable $e) {}
+$badgeReservas = 0;
+try { $badgeReservas = (int)$pdo->query("SELECT COUNT(*) FROM reservas_espacos WHERE estado = 'pendente'")->fetchColumn(); } catch (Throwable $e) {}
 
+// Menu lateral: definido em menu.php; aqui só se desenha
+require_once __DIR__ . "/menu.php";
+[$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas'));
+[$menuVisivel, $menuAtual, $menuGrupoAtual] = menuAdminPreparar($menuAdmin, (string)$adminActive);
+
+$adminPapeis = ['admin' => 'Administrador', 'operador' => 'Operador', 'vogal' => 'Vogal',
+                'presidente_assembleia' => 'Presidente da Assembleia', 'admin_denuncias' => 'Canal de Denúncias'];
+$adminPapel = $adminPapeis[$adminTipo ?? 'admin'] ?? ucfirst((string)($adminTipo ?? 'admin'));
+$adminIniciais = (function (string $n): string {
+    $p = preg_split('/\s+/', trim($n)) ?: ['A'];
+    return mb_strtoupper(mb_substr($p[0], 0, 1) . (count($p) > 1 ? mb_substr(end($p), 0, 1) : ''));
+})((string)($adminNome ?? 'Administrador'));
+
+$adminSubtitulo = $adminSubtitulo ?? ($menuAtual['dica'] ?? (isOperador() ? 'Área operacional — acesso limitado às ocorrências' : 'Gestão do site da freguesia'));
+$adminVerSite = $adminVerSite ?? ($menuAtual['site'] ?? null);
+
+/* Desenha uma entrada do menu (link) */
+$menuLink = function (array $i, bool $topo = false): string {
+    $b = (int)($i['badge'] ?? 0);
+    return '<a class="adm-item' . ($topo ? ' adm-item--topo' : '') . (!empty($i['ativo']) ? ' is-ativo' : '') . '" href="' . htmlspecialchars($i['href']) . '"'
+        . (!empty($i['ativo']) ? ' aria-current="page"' : '')
+        . ' data-dica="' . htmlspecialchars($i['dica'] ?? '') . '" aria-description="' . htmlspecialchars($i['dica'] ?? '') . '"'
+        . ' data-procura="' . htmlspecialchars(mb_strtolower($i['rotulo'] . ' ' . ($i['dica'] ?? ''))) . '">'
+        . '<i class="bi ' . htmlspecialchars($i['icone']) . '" aria-hidden="true"></i>'
+        . '<span class="adm-item__rotulo">' . htmlspecialchars($i['rotulo']) . '</span>'
+        . ($b > 0 ? '<span class="adm-badge" aria-label="' . $b . ' por tratar">' . $b . '</span>' : '')
+        . '</a>';
+};
+?>
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -80,204 +112,129 @@ try {
     <meta name="copyright" content="© 2026 GesGov — software licenciado (GG-ATALAIA-005E52FF)">
     <!-- Software © 2026 GesGov — todos os direitos reservados — licença GG-ATALAIA-005E52FF -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($adminPageTitle) ?> | Admin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title><?= htmlspecialchars($adminPageTitle) ?> | Backoffice</title>
+    <script>
+    // antes de pintar: menu recolhido (desktop) conforme a última escolha — evita o "salto"
+    try { if (localStorage.getItem('adm-menu-recolhido') === '1') document.documentElement.classList.add('adm-recolhido'); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/assets/vendor/bootstrap-icons/bootstrap-icons.min.css?v=1.11.3">
     <style>
         :root {
             --cor-principal: <?= htmlspecialchars(siteConfig('cor_principal', '#242A30')) ?>;
-            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', 'var(--cor-secundaria)')) ?>;
+            --cor-secundaria: <?= htmlspecialchars(siteConfig('cor_secundaria', '#C8A02E')) ?>;
 <?= temaVariaveisCss() ?>            --tema-admin-escuro: <?= htmlspecialchars(temaConfig('admin_escuro', '#11151B')) ?>;
         }
     </style>
 
-    <link rel="stylesheet" href="assets/admin.css?v=20260918a">
+    <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="assets/fonte.css?v=20261013a">
+    <link rel="stylesheet" href="assets/admin.css?v=20261012b">
+    <link rel="stylesheet" href="assets/admin-ui.css?v=20261022a">
+    <script src="assets/admin-ui.js?v=20261013a" defer></script>
 </head>
 
 <body>
 
-<button class="admin-mobile-btn" onclick="document.body.classList.toggle('admin-menu-open')"><i class="bi bi-list"></i></button>
-<div class="admin-mobile-bg" onclick="document.body.classList.remove('admin-menu-open')"></div>
+<a class="adm-saltar" href="#admConteudo">Saltar para o conteúdo</a>
+
+<div class="adm-barra-movel">
+    <button type="button" class="adm-barra-movel__menu" data-adm-abrir-menu aria-controls="admSidebar" aria-expanded="false" aria-label="Abrir o menu"><i class="bi bi-list" aria-hidden="true"></i></button>
+    <strong><?= htmlspecialchars($adminPageTitle) ?></strong>
+</div>
+<div class="adm-veu" data-adm-fechar-menu></div>
 
 <div class="admin-layout">
 
-    <aside class="admin-sidebar">
-        <div class="admin-logo">
-            <?php if (!empty($adminLogo)): ?>
-                <img class="admin-logo-img" src="/assets/img/<?= htmlspecialchars($adminLogo) ?>" alt="Brasão da freguesia">
-            <?php else: ?>
-                <span><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
-            <?php endif; ?>
-            <div>
-                <strong><?= htmlspecialchars(siteConfig('nome_site', 'Backoffice')) ?></strong>
-                <small>Backoffice</small>
-            </div>
-        </div>
-
-        <nav class="admin-menu">
-            <?php if (isOperador()): ?>
-                <a class="<?= $adminActive == 'pedidos' ? 'active' : '' ?>" href="pedidos.php">Ocorrências</a>
-            <?php elseif (isVogal()): ?>
-                <a class="<?= $adminActive == 'area_vogais' ? 'active' : '' ?>" href="../area-vogais.php"><i class="bi bi-check2-square"></i> Área dos Vogais</a>
-            <?php elseif (isPresidenteAssembleia()): ?>
-                <a class="<?= $adminActive == 'assembleia_composicao' ? 'active' : '' ?>" href="assembleia-composicao.php"><i class="bi bi-people"></i> Composição Assembleia</a>
-                <a class="<?= $adminActive == 'assembleia_funcionamento' ? 'active' : '' ?>" href="assembleia-funcionamento.php"><i class="bi bi-gear"></i> Funcionamento Assembleia</a>
-                <a class="<?= $adminActive == 'assembleia_competencias' ? 'active' : '' ?>" href="assembleia-competencias.php"><i class="bi bi-card-checklist"></i> Competências Assembleia</a>
-                <a class="<?= $adminActive == 'assembleia_documentos' ? 'active' : '' ?>" href="assembleia-documentos.php"><i class="bi bi-folder2-open"></i> Docs Assembleia</a>
-                <a class="<?= $adminActive == 'assembleia_sessoes' ? 'active' : '' ?>" href="assembleia-sessoes.php"><i class="bi bi-bank"></i> Sessões Assembleia</a>
-                <a class="<?= $adminActive == 'assembleia_votacoes' ? 'active' : '' ?>" href="assembleia-votacoes.php"><i class="bi bi-ui-checks"></i> Votações Assembleia</a>
-
-            <?php elseif (isAdminDenuncias()): ?>
-                <a class="<?= $adminActive == 'denuncias' ? 'active' : '' ?>" href="denuncias.php"><i class="bi bi-exclamation-triangle"></i> Canal de Denúncias</a>
-
-<?php else: ?>
-
-    <?php
-    // Grupos colapsáveis na mesma ordem do site público.
-    // O grupo da página atual abre automaticamente.
-    $gFreguesia  = ['executivo','heraldica','noticias','eventos','pontos','documentos','associacoes','comercio','faqs'];
-    $gHome       = ['slides','homepage','galeria-albuns'];
-    $gVirtual    = ['pedidos','ocorrencias_config','marcacoes','requerimentos','balcao_documentos','faturacao','modelos_requerimentos','recursos_humanos','procedimentos_concursais','contratacao_publica','denuncias','notificacoes','alertas'];
-    $gAssembleia = ['assembleia_composicao','assembleia_funcionamento','assembleia_competencias','assembleia_documentos','assembleia_sessoes'];
-    $gNewsletter = ['newsletter','newsletter_subscritores'];
-    $gSistema    = ['utilizadores','configuracoes','separadores-fundo','perfis','estatisticas'];
-    $abrir = function($keys) use ($adminActive) { return in_array($adminActive, $keys, true) ? 'open' : ''; };
-    ?>
-
-    <a class="<?= $adminActive == 'dashboard' ? 'active' : '' ?>" href="dashboard.php"><i class="bi bi-house-door"></i> Dashboard</a>
-
-    <?php if (podeAceder('home')): ?>
-    <div class="admin-group <?= $abrir($gHome) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-window-stack"></i> Página Inicial</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'slides' ? 'active' : '' ?>" href="slides.php"><i class="bi bi-film"></i> Slides</a>
-            <a href="homepage_destaque.php"><i class="bi bi-camera-reels"></i> Destaque Homepage</a>
-            <a class="<?= $adminActive == 'galeria-albuns' ? 'active' : '' ?>" href="galeria-albuns.php"><i class="bi bi-images"></i> Galeria de Fotos</a>
-            <a class="<?= $adminActive == 'homepage' ? 'active' : '' ?>" href="homepage.php"><i class="bi bi-pencil-square"></i> Textos Homepage</a>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <?php if (podeAceder('freguesia')): ?>
-    <div class="admin-group <?= $abrir($gFreguesia) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-bank"></i> A Freguesia</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'executivo' ? 'active' : '' ?>" href="executivo.php"><i class="bi bi-people"></i> Executivo</a>
-            <a href="freguesia.php"><i class="bi bi-bank"></i> Página Freguesia</a>
-            <a href="historia.php"><i class="bi bi-journal-text"></i> História e Heráldica</a>
-            <a class="<?= $adminActive == 'heraldica' ? 'active' : '' ?>" href="heraldica.php"><i class="bi bi-shield"></i> Heráldica</a>
-            <a class="<?= $adminActive == 'noticias' ? 'active' : '' ?>" href="noticias.php"><i class="bi bi-newspaper"></i> Notícias</a>
-            <a class="<?= $adminActive == 'pontos' ? 'active' : '' ?>" href="pontos.php"><i class="bi bi-geo-alt"></i> Pontos de Interesse</a>
-            <a class="<?= $adminActive == 'associacoes' ? 'active' : '' ?>" href="associacoes.php"><i class="bi bi-people-fill"></i> Associações</a>
-            <a class="<?= $adminActive == 'comercio' ? 'active' : '' ?>" href="comercio.php"><i class="bi bi-shop"></i> Economia Local</a>
-            <a class="<?= $adminActive == 'eventos' ? 'active' : '' ?>" href="eventos.php"><i class="bi bi-calendar-event"></i> Eventos</a>
-            <a class="<?= $adminActive == 'documentos' ? 'active' : '' ?>" href="documentos.php"><i class="bi bi-collection"></i> Documentos Públicos</a>
-            <a class="<?= $adminActive == 'faqs' ? 'active' : '' ?>" href="faqs.php"><i class="bi bi-question-circle"></i> FAQ's</a>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <?php if (podeAceder('virtual')): ?>
-    <div class="admin-group <?= $abrir($gVirtual) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-laptop"></i> Junta Virtual</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'pedidos' ? 'active' : '' ?>" href="pedidos.php" style="display:flex;align-items:center;justify-content:space-between;">
-                <span><i class="bi bi-megaphone"></i> Ocorrências</span>
-                <?php if ($badgePedidos > 0): ?><span class="menu-badge"><?= $badgePedidos ?></span><?php endif; ?>
+    <aside class="admin-sidebar adm-sidebar" id="admSidebar" aria-label="Menu do backoffice">
+        <div class="adm-marca">
+            <a class="adm-marca__link" href="dashboard.php" title="Ir para o painel">
+                <?php if (!empty($adminLogo)): ?>
+                    <img class="adm-marca__logo" src="/assets/img/<?= htmlspecialchars($adminLogo) ?>" alt="">
+                <?php else: ?>
+                    <span class="adm-marca__logo adm-marca__logo--txt"><?= htmlspecialchars(temaConfig('logo_iniciais', 'JF')) ?></span>
+                <?php endif; ?>
+                <span class="adm-marca__texto">
+                    <strong><?= htmlspecialchars(siteConfig('nome_site', 'Backoffice')) ?></strong>
+                    <small>Backoffice</small>
+                </span>
             </a>
-            <a class="<?= $adminActive == 'marcacoes' ? 'active' : '' ?>" href="marcacoes.php"><i class="bi bi-calendar-check"></i> Marcações</a>
-            <a class="<?= $adminActive == 'requerimentos' ? 'active' : '' ?>" href="requerimentos.php" style="display:flex;align-items:center;justify-content:space-between;">
-                <span><i class="bi bi-file-earmark-text"></i> Requerimentos (Balcão Virtual)</span>
-                <?php if ($badgeRequerimentos > 0): ?><span class="menu-badge"><?= $badgeRequerimentos ?></span><?php endif; ?>
-            </a>
-            <a class="<?= $adminActive == 'balcao_documentos' ? 'active' : '' ?>" href="balcao-documentos.php"><i class="bi bi-journal-check"></i> Documentos do Balcão</a>
-            <a class="<?= $adminActive == 'faturacao' ? 'active' : '' ?>" href="faturacao.php" style="display:flex;align-items:center;justify-content:space-between;">
-                <span><i class="bi bi-receipt"></i> Faturação</span>
-                <?php if ($badgeFaturacao > 0): ?><span class="menu-badge"><?= $badgeFaturacao ?></span><?php endif; ?>
-            </a>
-            <a class="<?= $adminActive == 'modelos_requerimentos' ? 'active' : '' ?>" href="modelos-requerimentos.php"><i class="bi bi-folder2-open"></i> Modelos de Requerimentos</a>
-            <a class="<?= $adminActive == 'recursos_humanos' ? 'active' : '' ?>" href="recursos-humanos.php"><i class="bi bi-people"></i> Recursos Humanos</a>
-            <a class="<?= $adminActive == 'procedimentos_concursais' ? 'active' : '' ?>" href="procedimentos-concursais.php"><i class="bi bi-megaphone"></i> Procedimentos Concursais</a>
-            <a class="<?= $adminActive == 'contratacao_publica' ? 'active' : '' ?>" href="contratacao-publica.php"><i class="bi bi-briefcase"></i> Contratação Pública</a>
-            <?php /* Canal de Denúncias agora exclusivo do tipo "Administrador Canal de Denúncias" */ ?>
-            <a class="<?= $adminActive == 'notificacoes' ? 'active' : '' ?>" href="notificacoes.php"><i class="bi bi-bell"></i> Notificações</a>
-            <a class="<?= $adminActive == 'alertas' ? 'active' : '' ?>" href="alertas.php"><i class="bi bi-exclamation-octagon"></i> Alertas</a>
+            <button type="button" class="adm-recolher" data-adm-recolher aria-label="Recolher o menu" data-dica="Recolher o menu (fica só com ícones)"><i class="bi bi-chevron-double-left" aria-hidden="true"></i></button>
         </div>
-    </div>
-    <?php endif; ?>
 
-    <?php if (podeAceder('assembleia')): ?>
-    <div class="admin-group <?= $abrir($gAssembleia) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-bank2"></i> Assembleia de Freguesia</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'assembleia_composicao' ? 'active' : '' ?>" href="assembleia-composicao.php"><i class="bi bi-people"></i> Composição</a>
-            <a class="<?= $adminActive == 'assembleia_funcionamento' ? 'active' : '' ?>" href="assembleia-funcionamento.php"><i class="bi bi-gear"></i> Funcionamento</a>
-            <a class="<?= $adminActive == 'assembleia_competencias' ? 'active' : '' ?>" href="assembleia-competencias.php"><i class="bi bi-card-checklist"></i> Atribuições e Competências</a>
-            <a class="<?= $adminActive == 'assembleia_documentos' ? 'active' : '' ?>" href="assembleia-documentos.php"><i class="bi bi-folder2-open"></i> Documentos</a>
-            <a class="<?= $adminActive == 'assembleia_sessoes' ? 'active' : '' ?>" href="assembleia-sessoes.php"><i class="bi bi-bank"></i> Sessões da Assembleia</a>
+        <div class="adm-procura" role="search">
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <input type="search" id="admProcura" placeholder="Procurar no menu…" autocomplete="off" aria-label="Procurar no menu" aria-describedby="admProcuraAjuda">
+            <kbd aria-hidden="true">/</kbd>
+            <span id="admProcuraAjuda" class="adm-sr">Escreva para filtrar as opções do menu. Enter abre a primeira.</span>
         </div>
-    </div>
-    <?php endif; ?>
 
-    <a class="<?= $adminActive == 'contactos' ? 'active' : '' ?>" href="contactos.php"><i class="bi bi-telephone"></i> Contactos</a>
-
-    <div class="admin-group <?= $abrir($gNewsletter) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-envelope-paper"></i> Newsletter</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'newsletter' ? 'active' : '' ?>" href="newsletter.php"><i class="bi bi-envelope-paper"></i> Newsletter</a>
-            <a class="<?= $adminActive == 'newsletter_subscritores' ? 'active' : '' ?>" href="newsletter-subscritores.php"><i class="bi bi-people"></i> Subscritores da Newsletter</a>
-        </div>
-    </div>
-
-    <?php if (podeAceder('sistema')): ?>
-    <div class="admin-group <?= $abrir($gSistema) ?>">
-        <button type="button" class="admin-group-toggle"><span><i class="bi bi-gear-wide-connected"></i> Sistema</span><span class="chev">▾</span></button>
-        <div class="admin-group-items">
-            <a class="<?= $adminActive == 'utilizadores' ? 'active' : '' ?>" href="utilizadores.php"><i class="bi bi-person-badge"></i> Utilizadores</a>
-            <a class="<?= $adminActive == 'configuracoes' ? 'active' : '' ?>" href="configuracoes.php"><i class="bi bi-gear"></i> Configurações</a>
-            <?php if (isGesGov()): /* Perfis: reservado à GesGov (ver migrations/007_perfis.sql) */ ?>
-                <a class="<?= $adminActive == 'perfis' ? 'active' : '' ?>" href="perfis.php"><i class="bi bi-shield-lock"></i> Perfis</a>
-            <?php endif; ?>
-            <a class="<?= $adminActive == 'separadores-fundo' ? 'active' : '' ?>" href="separadores-fundo.php"><i class="bi bi-image"></i> Fundos dos Separadores</a>
-            <a class="<?= $adminActive == 'estatisticas' ? 'active' : '' ?>" href="estatisticas.php"><i class="bi bi-bar-chart"></i> Estatísticas</a>
-        </div>
-    </div>
-    <?php endif; ?>
-
-<?php endif; ?>
-
+        <nav class="admin-menu adm-menu" aria-label="Secções do backoffice">
+            <?php foreach ($menuVisivel as $e): ?>
+                <?php if (!isset($e['itens'])): ?>
+                    <?= $menuLink($e, true) ?>
+                <?php else: $gid = 'admGrupo-' . $e['grupo']; ?>
+                    <div class="adm-grupo<?= $e['aberto'] ? ' is-aberto' : '' ?>" data-grupo="<?= htmlspecialchars($e['grupo']) ?>">
+                        <button type="button" class="adm-grupo__botao" aria-expanded="<?= $e['aberto'] ? 'true' : 'false' ?>" aria-controls="<?= $gid ?>"
+                                data-dica="<?= htmlspecialchars($e['dica']) ?>" data-rotulo="<?= htmlspecialchars($e['rotulo']) ?>">
+                            <span class="adm-grupo__icone" aria-hidden="true"><i class="bi <?= htmlspecialchars($e['icone']) ?>"></i></span>
+                            <span class="adm-grupo__rotulo"><?= htmlspecialchars($e['rotulo']) ?></span>
+                            <?php if ($e['badge'] > 0): ?><span class="adm-badge adm-badge--grupo" aria-label="<?= (int)$e['badge'] ?> por tratar"><?= (int)$e['badge'] ?></span><?php endif; ?>
+                            <i class="bi bi-chevron-down adm-grupo__seta" aria-hidden="true"></i>
+                        </button>
+                        <div class="adm-grupo__painel" id="<?= $gid ?>">
+                            <div class="adm-grupo__itens">
+                                <?php foreach ($e['itens'] as $i): ?>
+                                    <?php if (isset($i['sub'])): ?>
+                                        <span class="adm-sub"><?= htmlspecialchars($i['sub']) ?></span>
+                                    <?php else: ?>
+                                        <?= $menuLink($i) ?>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <p class="adm-procura__vazio" hidden>Nada encontrado. Experimente outra palavra (ex.: «notícia», «foto», «contactos»).</p>
         </nav>
 
-        <a class="logout" href="logout.php">Sair</a>
+        <div class="adm-rodape">
+            <a class="adm-ver-site" href="/" target="_blank" rel="noopener" data-dica="Abrir o site público num separador novo">
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i><span class="adm-item__rotulo">Ver o site</span>
+            </a>
+            <div class="adm-utilizador">
+                <span class="adm-utilizador__avatar" aria-hidden="true"><?= htmlspecialchars($adminIniciais) ?></span>
+                <span class="adm-utilizador__texto">
+                    <strong><?= htmlspecialchars($adminNome ?? 'Administrador') ?></strong>
+                    <small><?= htmlspecialchars($adminPapel) ?></small>
+                </span>
+                <a class="adm-sair logout" href="logout.php" aria-label="Terminar sessão" data-dica="Terminar sessão (sair do backoffice)"><i class="bi bi-box-arrow-right" aria-hidden="true"></i></a>
+            </div>
+        </div>
     </aside>
 
-    <main class="admin-main">
-        <header class="admin-topbar">
-            <div>
+    <main class="admin-main" id="admConteudo" tabindex="-1">
+        <header class="admin-topbar adm-topo">
+            <div class="adm-topo__texto">
+                <nav class="adm-migalhas" aria-label="Localização">
+                    <a href="dashboard.php"><i class="bi bi-house-door" aria-hidden="true"></i><span class="adm-sr">Painel</span></a>
+                    <?php if ($menuGrupoAtual): ?><i class="bi bi-chevron-right" aria-hidden="true"></i><span><?= htmlspecialchars($menuGrupoAtual) ?></span><?php endif; ?>
+                    <?php if ($menuAtual && ($menuAtual['rotulo'] ?? '') !== $adminPageTitle): ?><i class="bi bi-chevron-right" aria-hidden="true"></i><a href="<?= htmlspecialchars($menuAtual['href']) ?>"><?= htmlspecialchars($menuAtual['rotulo']) ?></a><?php endif; ?>
+                </nav>
                 <h1><?= htmlspecialchars($adminPageTitle) ?></h1>
-                <p>
-                    <?php if (isOperador()): ?>
-                        Área operacional — acesso limitado às ocorrências
-                    <?php else: ?>
-                        Gestão dinâmica do site da freguesia
-                    <?php endif; ?>
-                </p>
+                <p><?= htmlspecialchars($adminSubtitulo) ?></p>
             </div>
-
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                <span style="background:#eef2ff;color:#242A30;padding:9px 13px;border-radius:999px;font-weight:900;">
-                    <?= htmlspecialchars($adminNome ?? 'Administrador') ?>
-                </span>
-
-                <span style="background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);padding:9px 13px;border-radius:999px;font-weight:900;text-transform:uppercase;">
-                    <?= htmlspecialchars($adminTipo ?? 'admin') ?>
-                </span>
+            <div class="adm-topo__acoes">
+                <?php if ($adminVerSite): ?>
+                    <a class="adm-botao adm-botao--suave" href="<?= htmlspecialchars($adminVerSite) ?>" target="_blank" rel="noopener"><i class="bi bi-eye" aria-hidden="true"></i> Ver no site</a>
+                <?php endif; ?>
             </div>
         </header>
 
-<script>
-document.querySelectorAll('.admin-group-toggle').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-        btn.closest('.admin-group').classList.toggle('open');
-    });
-});
-</script>
+<?php /* Aviso de uma só vez, deixado por uma página antes de redirecionar (ex.: coordenadas obtidas da morada) */
+if (!empty($_SESSION['aviso_admin'])): ?>
+    <div class="admin-aviso adm-aviso adm-aviso--ok" role="status">
+        <i class="bi bi-info-circle" aria-hidden="true"></i> <?= htmlspecialchars($_SESSION['aviso_admin']) ?>
+    </div>
+<?php unset($_SESSION['aviso_admin']); endif; ?>

@@ -1,6 +1,6 @@
 <?php
 require_once "includes/auth.php";
-require_once "../includes/db.php";
+require_once "../includes/config.php";   // db + nomeFreguesia()/nomeConcelho()
 
 $erro = "";
 $ok = isset($_GET["ok"]) ? "Conteúdo da página Freguesia atualizado com sucesso." : "";
@@ -8,49 +8,18 @@ $ok = isset($_GET["ok"]) ? "Conteúdo da página Freguesia atualizado com sucess
 $pagina = $pdo->query("SELECT * FROM pagina_freguesia ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 
 if (!$pagina) {
-    $pdo->exec("
-        INSERT INTO pagina_freguesia (
-            hero_kicker,
-            hero_titulo,
-            hero_subtitulo,
-            intro_titulo,
-            intro_texto,
-            historia_titulo,
-            historia_texto,
-            identidade_titulo,
-            identidade_texto,
-            patrimonio_titulo,
-            patrimonio_texto,
-            localidades_titulo,
-            localidades_texto,
-            galeria_titulo,
-            botao1_texto,
-            botao1_link,
-            botao2_texto,
-            botao2_link
-        ) VALUES (
-            'A Freguesia',
-            'Atalaia e Alto Estanqueiro-Jardia',
-            'Num monte sobranceiro ao estuário do Tejo, entre o Santuário da Atalaia e os campos do Alto Estanqueiro e da Jardia.',
-            'Uma freguesia do Montijo',
-            'A União das Freguesias de Atalaia e Alto Estanqueiro-Jardia pertence ao concelho do Montijo, distrito de Setúbal. Tem 13,65 km² e 5379 habitantes (Censos 2021). Foi constituída pela Lei n.º 11-A/2013, de 28 de janeiro, que agregou as freguesias da Atalaia e do Alto Estanqueiro-Jardia.',
-            'História e memória',
-            'A cerca de quatro quilómetros da sede do município, a Atalaia beneficiou desde sempre da proximidade da Estrada Real que ligava Lisboa a Badajoz, por Aldeia Galega. Já no início do século XVI, as populações locais e dos arredores vinham aqui em peregrinação.',
-            'Terra de gente amistosa',
-            'O culto de Nossa Senhora da Atalaia, vivido por romeiros e festeiros, é o grande traço de identidade da freguesia.',
-            'Património e natureza',
-            'A Igreja de Nossa Senhora da Atalaia e os seus três cruzeiros foram classificados em 2009 como Imóveis de Interesse Público. Junto à escadaria do Santuário fica o Museu Agrícola da Atalaia.',
-            'Localidades da freguesia',
-            'Atalaia|Sede da freguesia, junto ao Santuário de Nossa Senhora da Atalaia
-Alto Estanqueiro|Onde fica a dependência da Junta
-Jardia|Lugar de tradição hortícola',
-            'A freguesia em imagens',
-            'Ver pontos de interesse',
-            '/pontos.php',
-            'Explorar no mapa',
-            '/mapa.php'
-        )
-    ");
+    // linha inicial neutra (13/10/2026): os textos reais vêm do backoffice ou da recolha automática
+    $pdo->prepare("
+        INSERT INTO pagina_freguesia (hero_kicker, hero_titulo, hero_subtitulo, intro_titulo, intro_texto,
+            historia_titulo, historia_texto, identidade_titulo, identidade_texto, patrimonio_titulo, patrimonio_texto,
+            localidades_titulo, localidades_texto, galeria_titulo, botao1_texto, botao1_link, botao2_texto, botao2_link)
+        VALUES (?, ?, ?, ?, '', ?, '', ?, '', ?, '', ?, ?, ?, ?, ?, ?, ?)
+    ")->execute([
+        'A Freguesia', nomeFreguesia(), 'Conheça a freguesia ' . deFreguesia() . (freguesiaSedeConcelho() ? ', sede do concelho.' : ', no concelho ' . deConcelho() . '.'),
+        'Uma freguesia com identidade própria', 'História e memória', 'Identidade', 'Património e natureza',
+        'Localidades da freguesia', nomeFreguesia() . '|Sede da freguesia', nomeFreguesia() . ' em imagens',
+        'Ver pontos de interesse', '/pontos.php', 'Explorar no mapa', '/mapa.php',
+    ]);
 
     $pagina = $pdo->query("SELECT * FROM pagina_freguesia ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 }
@@ -172,7 +141,7 @@ require_once "includes/header.php";
 .freguesia-admin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:28px;padding:32px;margin-bottom:24px;box-shadow:0 20px 45px rgba(0,0,0,.14);display:flex;justify-content:space-between;gap:24px;align-items:center;overflow:hidden;position:relative;}
 .freguesia-admin-hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-150px;top:-200px;background:rgba(255,255,255,.06);}
 .freguesia-admin-hero>*{position:relative;z-index:2;}
-.freguesia-admin-hero span{color:var(--cor-secundaria);text-transform:uppercase;font-size:13px;font-weight:900;letter-spacing:.8px;}
+.freguesia-admin-hero span{color:var(--ouro, #C8A02E);text-transform:uppercase;font-size:13px;font-weight:900;letter-spacing:.8px;}
 .freguesia-admin-hero h1{margin:8px 0;font-size:36px;}
 .freguesia-admin-hero p{margin:0;color:#dbeafe;}
 .freguesia-admin-card{background:white;border-radius:24px;padding:26px;box-shadow:0 16px 40px rgba(0,0,0,.08);border:1px solid #eef2f7;margin-bottom:22px;}
@@ -231,12 +200,10 @@ require_once "includes/header.php";
                 </div>
 
                 <div class="freguesia-full">
-                    <label>Imagem de fundo do hero</label>
-                    <input type="file" name="hero_imagem" accept="image/*">
-
-                    <?php if (!empty($pagina["hero_imagem"])): ?>
-                        <img class="freguesia-preview" src="../assets/img/<?= htmlspecialchars($pagina["hero_imagem"]) ?>" alt="">
-                    <?php endif; ?>
+                    <?php /* 13/10/2026: o banner do site usa a fotografia de «Fundos das páginas» (a antiga
+                       «Imagem de fundo do hero» não aparecia). Aqui escolhe-se essa fotografia e a posição. */
+                    require_once __DIR__ . "/includes/banner_editor.php";
+                    bannerEditor('freguesia', (string)($pagina["hero_titulo"] ?? ''), (string)($pagina["hero_kicker"] ?? '')); ?>
                 </div>
             </div>
         </div>

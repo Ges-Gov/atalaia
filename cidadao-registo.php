@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="cidadao-registo-hero">
     <div class="container">
         <div>
-            <span>Junta Virtual</span>
-            <h1>Registo de Cidadão</h1>
-            <p>Crie a sua conta para aceder ao Balcão Virtual e acompanhar os seus pedidos online.</p>
+            <span><?= te('cidadao_registo.hero.kicker') ?></span>
+            <h1><?= te('cidadao_registo.hero.titulo') ?></h1>
+            <p><?= te('cidadao_registo.hero.subtitulo') ?></p>
         </div>
 
         <div class="cidadao-registo-icon"><i class="bi bi-pencil-square"></i></div>
@@ -73,17 +73,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="cidadao-registo-card">
 
-                <span class="section-kicker">Criar conta</span>
-                <h2>Aceda aos serviços digitais</h2>
-                <p>Registe-se para submeter pedidos, receber notificações e acompanhar processos.</p>
+                <span class="section-kicker"><?= te('cidadao_registo.formulario.kicker') ?></span>
+                <h2><?= te('cidadao_registo.formulario.titulo') ?></h2>
+                <p><?= te('cidadao_registo.formulario.intro') ?></p>
 
                 <?php if ($sucesso): ?>
                     <div class="alerta-sucesso registo-alert">
-                        Conta criada com sucesso. Enviámos um email de confirmação.
+                        <?= te('cidadao_registo.formulario.sucesso') ?>
                     </div>
 
                     <a class="btn btn-registo-full" href="/cidadao-login.php">
-                        Iniciar sessão
+                        <?= te('cidadao_registo.formulario.sucesso_botao') ?>
                     </a>
                 <?php endif; ?>
 
@@ -98,35 +98,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="registo-input-group">
                             <span><i class="bi bi-person"></i></span>
-                            <input type="text" name="nome" placeholder="Nome completo *" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>" required>
+                            <input type="text" name="nome" placeholder="<?= te('cidadao_registo.formulario.ph_nome') ?>" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>" required>
                         </div>
 
                         <div class="registo-input-group">
                             <span><i class="bi bi-envelope"></i></span>
-                            <input type="email" name="email" placeholder="Email *" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                            <input type="email" name="email" placeholder="<?= te('cidadao_registo.formulario.ph_email') ?>" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                         </div>
 
                         <div class="registo-input-group">
                             <span><i class="bi bi-telephone"></i></span>
-                            <input type="text" name="telefone" placeholder="Telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
+                            <input type="text" name="telefone" placeholder="<?= te('cidadao_registo.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
                         </div>
 
                         <div class="registo-input-group password-group">
                             <span><i class="bi bi-lock"></i></span>
-                            <input type="password" name="password" id="registoPassword" placeholder="Password *" required>
+                            <input type="password" name="password" id="registoPassword" minlength="8" autocomplete="new-password" placeholder="<?= te('cidadao_registo.formulario.ph_password') ?>" required>
 
-                            <button type="button" class="toggle-password" id="toggleRegistoPassword">
+                            <button type="button" class="toggle-password" id="toggleRegistoPassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="registoPassword">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
 
                         <button class="btn btn-registo-full" type="submit">
-                            Criar conta
+                            <?= te('cidadao_registo.formulario.botao') ?>
                         </button>
 
                         <div class="cidadao-registo-links">
                             <a href="/cidadao-login.php">
-                                Já tenho conta
+                                <?= te('cidadao_registo.formulario.ja_tenho') ?>
                             </a>
                         </div>
 
@@ -137,28 +137,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <aside class="cidadao-registo-side">
 
-                <span class="section-kicker">Balcão Virtual</span>
+                <span class="section-kicker"><?= te('cidadao_registo.ajuda.kicker') ?></span>
 
-                <h2>Uma ligação direta à sua freguesia</h2>
+                <h2><?= te('cidadao_registo.ajuda.titulo') ?></h2>
 
                 <div class="registo-benefit">
-                    <strong><i class="bi bi-envelope-paper"></i> Pedidos online</strong>
-                    <span>Submeta pedidos e ocorrências diretamente à Junta.</span>
+                    <strong><i class="bi bi-envelope-paper"></i> <?= te('cidadao_registo.ajuda.i1_titulo') ?></strong>
+                    <span><?= te('cidadao_registo.ajuda.i1_texto') ?></span>
                 </div>
 
                 <div class="registo-benefit">
-                    <strong><i class="bi bi-search"></i> Acompanhamento</strong>
-                    <span>Consulte estados, respostas e atualizações.</span>
+                    <strong><i class="bi bi-search"></i> <?= te('cidadao_registo.ajuda.i2_titulo') ?></strong>
+                    <span><?= te('cidadao_registo.ajuda.i2_texto') ?></span>
                 </div>
 
                 <div class="registo-benefit">
-                    <strong><i class="bi bi-bell"></i> Notificações</strong>
-                    <span>Receba avisos importantes sobre os seus processos.</span>
+                    <strong><i class="bi bi-bell"></i> <?= te('cidadao_registo.ajuda.i3_titulo') ?></strong>
+                    <span><?= te('cidadao_registo.ajuda.i3_texto') ?></span>
                 </div>
 
                 <div class="registo-benefit">
-                    <strong><i class="bi bi-shield-lock"></i> Segurança</strong>
-                    <span>Acesso reservado e protegido para cada cidadão.</span>
+                    <strong><i class="bi bi-shield-lock"></i> <?= te('cidadao_registo.ajuda.i4_titulo') ?></strong>
+                    <span><?= te('cidadao_registo.ajuda.i4_texto') ?></span>
                 </div>
 
             </aside>
@@ -176,7 +176,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btn && input) {
         btn.addEventListener("click", function () {
             input.type = input.type === "password" ? "text" : "password";
-            btn.innerHTML = input.type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+            btn.innerHTML = input.type === "password" ? '<i class="bi bi-eye" aria-hidden="true"></i>' : '<i class="bi bi-eye-slash" aria-hidden="true"></i>';
+            btn.setAttribute("aria-pressed", input.type === "text" ? "true" : "false");
+            btn.setAttribute("aria-label", input.type === "text" ? "Esconder palavra-passe" : "Mostrar palavra-passe");
         });
     }
 });

@@ -31,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("INSERT INTO noticias (titulo, descricao, imagem, imagem_foco_x, imagem_foco_y, data, categoria) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$titulo, $descricao, $imagem, $focoX, $focoY, $data, $categoria]);
     $noticiaId = (int)$pdo->lastInsertId();
+    if (!empty($_POST['destaque'])) {   // só uma notícia em destaque
+        $pdo->prepare("UPDATE noticias SET destaque = (id = ?)")->execute([$noticiaId]);
+    }
 
     // Fotos adicionais (galeria)
     if (!empty($_FILES['galeria']['name'][0])) {
@@ -76,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
         <?php endforeach; ?>
     </select>
+    <label class="check" style="margin-top:10px"><input type="checkbox" name="destaque" value="1"> Destaque na página inicial — aparece no cartão grande das notícias (só uma de cada vez; sem nenhuma, fica a mais recente)</label>
     <p class="hint">Ajuda a organizar por tema (para no futuro filtrar por assunto em mailing/relatórios).</p>
 
     <label>Imagem de capa (principal)</label>

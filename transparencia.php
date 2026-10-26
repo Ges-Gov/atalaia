@@ -42,15 +42,17 @@ $categorias = safeFetch($pdo, "
 $pedidosMes = safeFetch($pdo, "
     SELECT DATE_FORMAT(criado_em, '%m/%Y') AS mes, COUNT(*) AS total
     FROM pedidos_junta
-    GROUP BY YEAR(criado_em), MONTH(criado_em)
-    ORDER BY YEAR(criado_em), MONTH(criado_em)
-    LIMIT 12
+    WHERE criado_em >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+    GROUP BY mes
+    ORDER BY MIN(criado_em)
 ");
+// (antes: GROUP BY YEAR()/MONTH() — o MySQL recusava a consulta (ONLY_FULL_GROUP_BY) e o gráfico ficava vazio)
 
 $ultimosResolvidos = safeFetch($pdo, "
     SELECT codigo, assunto, categoria, localizacao, atualizado_em
     FROM pedidos_junta
-    WHERE estado = 'resolvido'
+    WHERE estado = 'resolvido' AND publico = 1   -- 15/10/2026: só os que o admin autorizou a mostrar («mostrar no mapa
+                                                 -- público»); antes saíam o assunto e a localização de qualquer pedido
     ORDER BY atualizado_em DESC
     LIMIT 5
 ");
@@ -60,7 +62,7 @@ $ultimosResolvidos = safeFetch($pdo, "
 /* TRANSPARÊNCIA PREMIUM - apenas visual */
 .transparencia-premium-page{
     background:
-        radial-gradient(circle at top left, color-mix(in srgb, var(--cor-secundaria) 18%, transparent), transparent 34%),
+        radial-gradient(circle at top left, rgb(var(--ouro-rgb, 240 180 41) / .18), transparent 34%),
         radial-gradient(circle at top right, rgba(36,42,50,.16), transparent 36%),
         linear-gradient(180deg,#f7f4ef 0%,#f8fafc 42%,#ffffff 100%);
 }
@@ -88,7 +90,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     height:520px;
     right:-160px;
     top:-210px;
-    background:color-mix(in srgb, var(--cor-secundaria) 13%, transparent);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .13);
     filter:blur(2px);
 }
 
@@ -115,9 +117,9 @@ $ultimosResolvidos = safeFetch($pdo, "
     gap:8px;
     padding:9px 14px;
     border-radius:999px;
-    background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .16);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);
+    color:var(--ouro-claro, #f8d77a);
     font-weight:900;
     letter-spacing:.8px;
     text-transform:uppercase;
@@ -369,7 +371,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     font-weight:900;
 }
 
-.trans-card.warning span{background:#fff3bf;}
+.trans-card.warning span{background:var(--ouro-fundo, #fff3bf);}
 .trans-card.warning strong{color:#f59f00;}
 .trans-card.info span{background:#dbeafe;}
 .trans-card.info strong{color:#2563eb;}
@@ -474,7 +476,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     height:100%;
     background:linear-gradient(90deg,var(--cor-principal),var(--cor-secundaria));
     border-radius:999px;
-    box-shadow:0 0 18px color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
+    box-shadow:0 0 18px rgb(var(--ouro-rgb, 240 180 41) / .35);
 }
 
 .trans-status-grid{
@@ -590,7 +592,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     width:250px;
     height:250px;
     border-radius:50%;
-    background:color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .14);
 }
 
 .trans-cta-card h2{
@@ -702,16 +704,16 @@ $ultimosResolvidos = safeFetch($pdo, "
     <section class="trans-premium-hero">
         <div class="container trans-hero-grid">
             <div class="trans-hero-content">
-                <span class="trans-kicker"><i class="bi bi-bar-chart-fill"></i> Portal da Transparência</span>
-                <h1>Atalaia e Alto Estanqueiro-Jardia em números.</h1>
+                <span class="trans-kicker"><i class="bi bi-bar-chart-fill"></i> <?= te('transparencia.hero.kicker') ?></span>
+                <h1><?= te('transparencia.hero.titulo') ?></h1>
                 <p>
-                    Indicadores públicos sobre pedidos, ocorrências, requerimentos e marcações,
-                    apresentados de forma clara para aproximar a Junta dos cidadãos.
+                    <?= te('transparencia.hero.subtitulo') ?>
+
                 </p>
 
                 <div class="trans-hero-actions">
-                    <a class="hero-btn" href="/ocorrencias-mapa.php">Ver mapa público</a>
-                    <a class="hero-btn" href="/pedidos.php">Submeter pedido</a>
+                    <a class="hero-btn" href="/ocorrencias-mapa.php"><?= te('transparencia.hero.botao1') ?></a>
+                    <a class="hero-btn" href="/pedidos.php"><?= te('transparencia.hero.botao2') ?></a>
                 </div>
             </div>
 
@@ -720,8 +722,8 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-score-card">
                     <div>
                         <strong><?= $taxaResolucao ?>%</strong>
-                        <span>Taxa de resolução</span>
-                        <small>Percentagem de pedidos já tratados pela Junta.</small>
+                        <span><?= te('transparencia.hero.taxa_titulo') ?></span>
+                        <small><?= te('transparencia.hero.taxa_texto') ?></small>
                     </div>
                 </div>
                 <div class="trans-orb-badge two"><b><?= (int)$resolvidos ?></b> resolvidos</div>
@@ -737,7 +739,7 @@ $ultimosResolvidos = safeFetch($pdo, "
                     <div class="trans-live-icon"><i class="bi bi-envelope-fill"></i></div>
                     <div>
                         <strong><?= (int)$total ?></strong>
-                        <span>Pedidos recebidos</span>
+                        <span><?= te('transparencia.hero.n1') ?></span>
                     </div>
                 </div>
 
@@ -745,7 +747,7 @@ $ultimosResolvidos = safeFetch($pdo, "
                     <div class="trans-live-icon"><i class="bi bi-check-circle-fill"></i></div>
                     <div>
                         <strong><?= (int)$resolvidos ?></strong>
-                        <span>Pedidos resolvidos</span>
+                        <span><?= te('transparencia.hero.n2') ?></span>
                     </div>
                 </div>
 
@@ -753,7 +755,7 @@ $ultimosResolvidos = safeFetch($pdo, "
                     <div class="trans-live-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
                     <div>
                         <strong><?= (int)$totalRequerimentos ?></strong>
-                        <span>Requerimentos online</span>
+                        <span><?= te('transparencia.hero.n3') ?></span>
                     </div>
                 </div>
 
@@ -761,18 +763,18 @@ $ultimosResolvidos = safeFetch($pdo, "
                     <div class="trans-live-icon"><i class="bi bi-calendar-event-fill"></i></div>
                     <div>
                         <strong><?= (int)$totalMarcacoes ?></strong>
-                        <span>Marcações registadas</span>
+                        <span><?= te('transparencia.hero.n4') ?></span>
                     </div>
                 </div>
             </div>
 
             <div class="trans-section-head">
                 <div>
-                    <span>Indicadores principais</span>
-                    <h2>Painel público da atividade</h2>
+                    <span><?= te('transparencia.indicadores.kicker') ?></span>
+                    <h2><?= te('transparencia.indicadores.titulo') ?></h2>
                 </div>
                 <p>
-                    Uma visão simples e transparente sobre o estado dos pedidos e serviços digitais da freguesia.
+                    <?= te('transparencia.indicadores.intro') ?>
                 </p>
             </div>
 
@@ -780,37 +782,37 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-card">
                     <span><i class="bi bi-envelope-fill"></i></span>
                     <strong><?= (int)$total ?></strong>
-                    <p>Pedidos recebidos</p>
+                    <p><?= te('transparencia.indicadores.c1') ?></p>
                 </div>
 
                 <div class="trans-card warning">
                     <span><i class="bi bi-hourglass-split"></i></span>
                     <strong><?= (int)$pendentes ?></strong>
-                    <p>Pendentes</p>
+                    <p><?= te('transparencia.indicadores.c2') ?></p>
                 </div>
 
                 <div class="trans-card info">
                     <span><i class="bi bi-search"></i></span>
                     <strong><?= (int)$analise ?></strong>
-                    <p>Em análise</p>
+                    <p><?= te('transparencia.indicadores.c3') ?></p>
                 </div>
 
                 <div class="trans-card success">
                     <span><i class="bi bi-check-circle-fill"></i></span>
                     <strong><?= (int)$resolvidos ?></strong>
-                    <p>Resolvidos</p>
+                    <p><?= te('transparencia.indicadores.c4') ?></p>
                 </div>
 
                 <div class="trans-card">
                     <span><i class="bi bi-file-earmark-text-fill"></i></span>
                     <strong><?= (int)$totalRequerimentos ?></strong>
-                    <p>Requerimentos</p>
+                    <p><?= te('transparencia.indicadores.c5') ?></p>
                 </div>
 
                 <div class="trans-card muted">
                     <span><i class="bi bi-calendar-event-fill"></i></span>
                     <strong><?= (int)$totalMarcacoes ?></strong>
-                    <p>Marcações</p>
+                    <p><?= te('transparencia.indicadores.c6') ?></p>
                 </div>
             </div>
 
@@ -818,10 +820,10 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-panel">
                     <div class="trans-panel-head">
                         <div>
-                            <h2>Evolução mensal dos pedidos</h2>
-                            <p>Volume de comunicações registadas nos últimos meses.</p>
+                            <h2><?= te('transparencia.graficos.mensal_titulo') ?></h2>
+                            <p><?= te('transparencia.graficos.mensal_texto') ?></p>
                         </div>
-                        <span class="trans-panel-badge">Últimos 12 meses</span>
+                        <span class="trans-panel-badge"><?= te('transparencia.graficos.mensal_etiqueta') ?></span>
                     </div>
                     <div class="trans-chart-box">
                         <canvas id="graficoPedidosMes"></canvas>
@@ -831,10 +833,10 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-panel">
                     <div class="trans-panel-head">
                         <div>
-                            <h2>Estado dos pedidos</h2>
-                            <p>Distribuição atual por fase de tratamento.</p>
+                            <h2><?= te('transparencia.graficos.estado_titulo') ?></h2>
+                            <p><?= te('transparencia.graficos.estado_texto') ?></p>
                         </div>
-                        <span class="trans-panel-badge">Tempo real</span>
+                        <span class="trans-panel-badge"><?= te('transparencia.graficos.estado_etiqueta') ?></span>
                     </div>
                     <div class="trans-chart-box">
                         <canvas id="graficoEstados"></canvas>
@@ -843,19 +845,19 @@ $ultimosResolvidos = safeFetch($pdo, "
                     <div class="trans-status-grid">
                         <div class="trans-status-pill">
                             <strong><?= $taxaPendentes ?>%</strong>
-                            <span>Pendentes</span>
+                            <span><?= te('transparencia.graficos.legenda_pendentes') ?></span>
                         </div>
                         <div class="trans-status-pill">
                             <strong><?= $taxaAnalise ?>%</strong>
-                            <span>Em análise</span>
+                            <span><?= te('transparencia.graficos.legenda_analise') ?></span>
                         </div>
                         <div class="trans-status-pill">
                             <strong><?= $taxaResolucao ?>%</strong>
-                            <span>Resolvidos</span>
+                            <span><?= te('transparencia.graficos.legenda_resolvidos') ?></span>
                         </div>
                         <div class="trans-status-pill">
                             <strong><?= $taxaArquivados ?>%</strong>
-                            <span>Arquivados</span>
+                            <span><?= te('transparencia.graficos.legenda_arquivados') ?></span>
                         </div>
                     </div>
                 </div>
@@ -865,10 +867,10 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-panel">
                     <div class="trans-panel-head">
                         <div>
-                            <h2>Categorias mais reportadas</h2>
-                            <p>Áreas com maior número de pedidos registados pelos cidadãos.</p>
+                            <h2><?= te('transparencia.categorias.titulo') ?></h2>
+                            <p><?= te('transparencia.categorias.texto') ?></p>
                         </div>
-                        <span class="trans-panel-badge">Top 6</span>
+                        <span class="trans-panel-badge"><?= te('transparencia.categorias.etiqueta') ?></span>
                     </div>
 
                     <div class="trans-category-list">
@@ -888,7 +890,7 @@ $ultimosResolvidos = safeFetch($pdo, "
                         <?php endforeach; ?>
 
                         <?php if (empty($categorias)): ?>
-                            <div class="trans-empty">Ainda não existem dados suficientes.</div>
+                            <div class="trans-empty"><?= te('transparencia.categorias.vazio') ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -896,10 +898,10 @@ $ultimosResolvidos = safeFetch($pdo, "
                 <div class="trans-panel">
                     <div class="trans-panel-head">
                         <div>
-                            <h2>Últimos pedidos resolvidos</h2>
-                            <p>Atividade recente concluída pela Junta.</p>
+                            <h2><?= te('transparencia.resolvidos.titulo') ?></h2>
+                            <p><?= te('transparencia.resolvidos.texto') ?></p>
                         </div>
-                        <span class="trans-panel-badge">Concluídos</span>
+                        <span class="trans-panel-badge"><?= te('transparencia.resolvidos.etiqueta') ?></span>
                     </div>
 
                     <?php if (!empty($ultimosResolvidos)): ?>
@@ -916,29 +918,29 @@ $ultimosResolvidos = safeFetch($pdo, "
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <div class="trans-empty">Ainda não existem pedidos resolvidos.</div>
+                        <div class="trans-empty"><?= te('transparencia.resolvidos.vazio') ?></div>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="trans-cta-grid">
                 <div class="trans-cta-card">
-                    <h2>Mapa público de ocorrências</h2>
+                    <h2><?= te('transparencia.mapa.titulo') ?></h2>
                     <p>
-                        Consulte as ocorrências públicas reportadas pelos cidadãos, com filtros por estado,
-                        categoria e localização.
+                        <?= te('transparencia.mapa.texto') ?>
+
                     </p>
-                    <a class="hero-btn" href="/ocorrencias-mapa.php">Ver mapa de ocorrências</a>
-                    <a class="hero-btn" href="/pedidos.php">Submeter pedido</a>
+                    <a class="hero-btn" href="/ocorrencias-mapa.php"><?= te('transparencia.mapa.botao1') ?></a>
+                    <a class="hero-btn" href="/pedidos.php"><?= te('transparencia.mapa.botao2') ?></a>
                 </div>
 
                 <div class="trans-cta-card light">
-                    <h2>Compromisso com a transparência</h2>
+                    <h2><?= te('transparencia.cta.titulo') ?></h2>
                     <p>
-                        Esta página apresenta indicadores automáticos sobre os pedidos submetidos pelos cidadãos,
-                        permitindo acompanhar a atividade da Junta de Freguesia de forma simples, clara e transparente.
+                        <?= te('transparencia.cta.texto') ?>
+
                     </p>
-                    <a class="hero-btn" href="/contactos.php">Contactar Junta</a>
+                    <a class="hero-btn" href="/contactos.php"><?= te('transparencia.cta.botao') ?></a>
                 </div>
             </div>
 

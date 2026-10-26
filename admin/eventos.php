@@ -2,6 +2,8 @@
 $adminPageTitle = "Eventos";
 $adminActive = "eventos";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Eventos»", ['eventos.hero.kicker','eventos.hero.titulo','eventos.hero.texto'], '/eventos.php');
 
 $eventos = $pdo->query("SELECT * FROM eventos ORDER BY data_evento ASC")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -28,7 +30,7 @@ $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
     height:58px;
     border-radius:14px;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     display:grid;
     place-items:center;
     font-weight:900;

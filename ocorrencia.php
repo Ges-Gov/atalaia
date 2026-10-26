@@ -29,18 +29,18 @@ if (!$ocorrencia) {
     <div class="container">
 
         <div class="content-box">
-            <h2>Detalhes</h2>
+            <h2><?= te('ocorrencia.conteudo.titulo') ?></h2>
 
-            <p><strong>Estado:</strong> <?= htmlspecialchars(str_replace('_',' ',$ocorrencia['estado'])) ?></p>
+            <p><strong><?= te('ocorrencia.conteudo.estado') ?></strong> <?= htmlspecialchars(str_replace('_',' ',$ocorrencia['estado'])) ?></p>
 
-            <p><strong>Localização:</strong><br>
+            <p><strong><?= te('ocorrencia.conteudo.localizacao') ?></strong><br>
                 <?= htmlspecialchars($ocorrencia['localizacao']) ?>
             </p>
 
-            <p><strong>Descrição:</strong></p>
+            <p><strong><?= te('ocorrencia.conteudo.descricao') ?></strong></p>
             <p><?= nl2br(htmlspecialchars($ocorrencia['mensagem'])) ?></p>
 
-            <p><strong>Código:</strong> <?= htmlspecialchars($ocorrencia['codigo']) ?></p>
+            <p><strong><?= te('ocorrencia.conteudo.codigo') ?></strong> <?= htmlspecialchars($ocorrencia['codigo']) ?></p>
         </div>
 
     </div>

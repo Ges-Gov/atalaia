@@ -5,6 +5,14 @@ require_once "includes/mail_helper.php";
 require_once __DIR__ . "/includes/db.php";
 
 require_once __DIR__ . "/dompdf/autoload.inc.php";
+// nomes da Junta e do concelho vindos das Configurações (redesign 10/2026: deixam de estar escritos no código)
+require_once __DIR__ . "/includes/config.php";
+$fgJunta = htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia'));
+$fgNome = htmlspecialchars(nomeFreguesia());
+$fgConcelho = htmlspecialchars(nomeConcelho() !== '' ? nomeConcelho() : nomeFreguesia());
+$fgDeNome = htmlspecialchars(deFreguesia());       // «de Pombalinho», «do Torrão»
+$fgDeConcelho = htmlspecialchars(deConcelho());   // «de Sousel», «da Golegã»
+
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -116,8 +124,8 @@ body{
 <body>
 
 <div class="topo">
-    <h1>Junta de Freguesia de Atalaia e Alto Estanqueiro-Jardia</h1>
-    <p>Concelho do Montijo</p>
+    <h1>' . $fgJunta . '</h1>
+    <p>Concelho ' . $fgDeConcelho . '</p>
 </div>
 
 <div class="titulo">
@@ -155,7 +163,7 @@ body{
 
 <div class="assinatura">
 
-    Atalaia, ' . $dataAtual . '
+    ' . $fgNome . ', ' . $dataAtual . '
 
     <br><br><br>
 

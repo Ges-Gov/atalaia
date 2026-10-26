@@ -63,7 +63,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
 .sessoes-hero{background:linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:84px 0 96px;position:relative;overflow:hidden}
 .sessoes-hero:after{content:"";position:absolute;width:540px;height:540px;border-radius:50%;right:-220px;top:-250px;background:rgba(255,255,255,.07)}
 .sessoes-hero .container{position:relative;z-index:2}
-.sess-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 36%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.sess-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .sessoes-hero h1{font-size:clamp(42px,5vw,70px);margin:18px 0 14px;line-height:1.02}
 .sessoes-hero p{max-width:790px;color:#dbeafe;font-size:20px;line-height:1.75;margin:0}
 .sess-shell{margin-top:-48px;position:relative;z-index:5}
@@ -101,9 +101,9 @@ function getDocumentosSessao($pdo, $sessaoId) {
 
 <section class="sessoes-hero">
     <div class="container">
-        <span class="sess-kicker"><i class="bi bi-bank2"></i> Assembleia Digital</span>
-        <h1>Sessões da Assembleia</h1>
-        <p>Consulte as próximas sessões da Assembleia de Freguesia, ordem de trabalhos, documentos associados e histórico das reuniões.</p>
+        <span class="sess-kicker"><i class="bi bi-bank2"></i> <?= te('assembleia_sessoes.hero.kicker') ?></span>
+        <h1><?= te('assembleia_sessoes.hero.titulo') ?></h1>
+        <p><?= te('assembleia_sessoes.hero.texto') ?></p>
     </div>
 </section>
 
@@ -113,7 +113,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
         <?php if ($proxima): ?>
             <div class="sess-next">
                 <div>
-                    <span class="sess-kicker">Próxima sessão</span>
+                    <span class="sess-kicker"><?= te('assembleia_sessoes.proxima.kicker') ?></span>
                     <h2><?= htmlspecialchars($proxima['titulo']) ?></h2>
 
                     <?php if (!empty($proxima['descricao'])): ?>
@@ -128,7 +128,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
                     </div>
 
                     <?php if (!empty($proxima['ordem_trabalhos'])): ?>
-                        <div class="ordem-box"><strong>Ordem de trabalhos:</strong><br><?= nl2br(htmlspecialchars($proxima['ordem_trabalhos'])) ?></div>
+                        <div class="ordem-box"><strong><?= te('assembleia_sessoes.proxima.ordem') ?></strong><br><?= nl2br(htmlspecialchars($proxima['ordem_trabalhos'])) ?></div>
                     <?php endif; ?>
 
                     <?php $docsProxima = getDocumentosSessao($pdo, $proxima['id']); ?>
@@ -161,7 +161,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
                 </div>
 
                 <div class="countdown-box">
-                    <strong>Contagem decrescente</strong>
+                    <strong><?= te('assembleia_sessoes.proxima.contagem') ?></strong>
                     <div class="countdown-grid" id="sessCountdown" data-date="<?= htmlspecialchars($proxima['data_sessao'] . ' ' . $proxima['hora_sessao']) ?>">
                         <div><b id="cdDias">0</b><small>Dias</small></div>
                         <div><b id="cdHoras">0</b><small>Horas</small></div>
@@ -171,11 +171,11 @@ function getDocumentosSessao($pdo, $sessaoId) {
                 </div>
             </div>
         <?php else: ?>
-            <div class="sess-next"><div><span class="sess-kicker">Próxima sessão</span><h2>Sem sessões agendadas</h2><p>De momento não existem sessões futuras publicadas.</p></div><div class="countdown-box"><strong>A aguardar publicação</strong></div></div>
+            <div class="sess-next"><div><span class="sess-kicker"><?= te('assembleia_sessoes.proxima.kicker') ?></span><h2><?= te('assembleia_sessoes.proxima.vazio_titulo') ?></h2><p><?= te('assembleia_sessoes.proxima.vazio_texto') ?></p></div><div class="countdown-box"><strong><?= te('assembleia_sessoes.proxima.vazio_estado') ?></strong></div></div>
         <?php endif; ?>
 
         <div class="sess-section-card">
-            <div class="sess-section-head"><h2>Próximas sessões</h2></div>
+            <div class="sess-section-head"><h2><?= te('assembleia_sessoes.lista.proximas') ?></h2></div>
 
             <?php if (!empty($futuras)): ?>
                 <div class="sess-grid">
@@ -217,7 +217,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
 
                         <article class="sess-card">
                             <div class="sess-card-top">
-                                <div class="sess-date"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= date('M', strtotime($s['data_sessao'])) ?></small></div></div>
+                                <div class="sess-date"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
                                 <span class="sess-status"><?= sessaoEstadoIcon($s['estado']) ?> <?= sessaoEstadoLabel($s['estado']) ?></span>
                             </div>
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
@@ -229,12 +229,12 @@ function getDocumentosSessao($pdo, $sessaoId) {
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="empty-sess">Ainda não existem próximas sessões publicadas.</div>
+                <div class="empty-sess"><?= te('assembleia_sessoes.lista.proximas_vazio') ?></div>
             <?php endif; ?>
         </div>
 
         <div class="sess-section-card">
-            <div class="sess-section-head"><h2>Histórico de sessões</h2></div>
+            <div class="sess-section-head"><h2><?= te('assembleia_sessoes.lista.historico') ?></h2></div>
 
             <?php if (!empty($historico)): ?>
                 <div class="sess-grid">
@@ -242,7 +242,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
                         <?php $docs = getDocumentosSessao($pdo, $s['id']); ?>
                         <article class="sess-card">
                             <div class="sess-card-top">
-                                <div class="sess-date" style="background:#475569;"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= date('M', strtotime($s['data_sessao'])) ?></small></div></div>
+                                <div class="sess-date" style="background:#475569;"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
                                 <span class="sess-status"><?= sessaoEstadoIcon($s['estado']) ?> <?= sessaoEstadoLabel($s['estado']) ?></span>
                             </div>
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
@@ -253,7 +253,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="empty-sess">Ainda não existem sessões anteriores publicadas.</div>
+                <div class="empty-sess"><?= te('assembleia_sessoes.lista.historico_vazio') ?></div>
             <?php endif; ?>
         </div>
     </div>

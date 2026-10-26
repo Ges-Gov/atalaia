@@ -34,6 +34,37 @@ $eventosMapa = $pdo->query("
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 $totalPontos = count($pontos) + count($economia) + count($assoc) + count($eventosMapa);
+
+/* Filtros no topo do mapa (14/10/2026): iguais aos do mapa dos Contactos — cada categoria liga/desliga
+   e a seta abre os subfiltros. [rótulo, cor, ícone]; as cores dos pinos são as mesmas. */
+$tiposMapa = [
+    'ponto'  => [tx('mapa.explorar.filtro_pontos'), 'var(--cor-principal)', 'bi-geo-alt-fill'],
+    'assoc'  => [tx('mapa.explorar.filtro_assoc'), '#b4436c', 'bi-people-fill'],
+    'eco'    => [tx('mapa.explorar.filtro_eco'), '#2563eb', 'bi-shop'],
+    'evento' => [tx('mapa.explorar.filtro_eventos'), '#7c3aed', 'bi-calendar-event-fill'],
+];
+$subPonto = function (string $n): string {
+    if (preg_match('/igreja|capela|convento|ermida|santu[aá]rio/iu', $n)) return 'Património religioso';
+    if (preg_match('/museu|pelourinho|pra[cç]a de touros|anta|castelo|fonte|monumento|marco/iu', $n)) return 'Monumentos e museus';
+    if (preg_match('/serra|jardim|parque|barragem|ribeira|miradouro|percurso|largo/iu', $n)) return 'Natureza e lazer';
+    return 'Equipamentos';
+};
+$subComercio = function (string $t): string {
+    if (preg_match('/aloj|casa de campo|turismo|hosped|residencial|quinta|monte/iu', $t)) return 'Alojamento';
+    if (preg_match('/restaur|churrasq|tasca|pizz/iu', $t)) return 'Restaurantes';
+    if (preg_match('/caf[eé]|snack|bar|pastel/iu', $t)) return 'Cafés e pastelarias';
+    return 'Lojas e serviços';
+};
+foreach ($pontos as &$x) $x['sub'] = $subPonto((string)$x['nome']); unset($x);
+foreach ($economia as &$x) $x['sub'] = $subComercio((string)($x['tipo'] ?? '')); unset($x);
+foreach ($assoc as &$x) $x['sub'] = trim((string)($x['categoria'] ?? '')) ?: 'Outras'; unset($x);
+foreach ($eventosMapa as &$x) $x['sub'] = trim((string)($x['categoria'] ?? '')) ?: 'Outros'; unset($x);
+$nTipo = ['ponto' => count($pontos), 'assoc' => count($assoc), 'eco' => count($economia), 'evento' => count($eventosMapa)];
+$subsMapa = [];
+foreach (['ponto' => $pontos, 'assoc' => $assoc, 'eco' => $economia, 'evento' => $eventosMapa] as $t => $lista) {
+    foreach ($lista as $x) $subsMapa[$t][$x['sub']] = ($subsMapa[$t][$x['sub']] ?? 0) + 1;
+    if (!empty($subsMapa[$t])) ksort($subsMapa[$t]);
+}
 $heroImagem = !empty($pontos[0]['imagem'])
     ? "/assets/img/" . $pontos[0]['imagem']
     : "/assets/img/freguesia-1.jpg";
@@ -95,9 +126,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
+    color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -172,7 +203,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-hero-stat strong{
     display:block;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -238,6 +269,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
     font-size:14px;
 }
 
+.mapa-mfiltros{margin:0 auto 10px}
+.ponto-card-insane.fora-filtro{display:none !important}
+
 .mapa-limite-card{
     background:linear-gradient(135deg,#242A30,#11151B);
     color:white;
@@ -261,7 +295,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-limite-card strong{
     display:block;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     margin-bottom:5px;
 }
 
@@ -359,7 +393,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     flex:0 0 auto;
 }
 
-.map-filtro-chip[data-tipo="ponto"] .dot{background:#856611}
+.map-filtro-chip[data-tipo="ponto"] .dot{background:var(--ouro-texto, #856611)}
 .map-filtro-chip[data-tipo="eco"] .dot{background:#b45309}
 .map-filtro-chip[data-tipo="assoc"] .dot{background:#0f766e}
 .map-filtro-chip[data-tipo="evento"] .dot{background:#7c3aed}
@@ -426,7 +460,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mini-sem-imagem-insane{
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     display:grid;
     place-items:center;
     font-weight:900;
@@ -524,7 +558,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     width:42px;
     height:42px;
     border-radius:16px 16px 16px 4px;
-    background:linear-gradient(135deg,#242A30,#755E00);
+    background:linear-gradient(135deg,color-mix(in srgb,var(--cor-principal) 70%,#000),var(--cor-principal));
     transform:rotate(-45deg);
     border:3px solid white;
     box-shadow:0 12px 28px rgba(36,42,50,.35);
@@ -532,13 +566,13 @@ $heroImagem = !empty($pontos[0]['imagem'])
     place-items:center;
 }
 
-.custom-marker.eco{background:linear-gradient(135deg,#b45309,#f59e0b)}
-.custom-marker.assoc{background:linear-gradient(135deg,#0f766e,#14b8a6)}
-.custom-marker.evento{background:linear-gradient(135deg,#7c3aed,#c084fc)}
+.custom-marker.eco{background:linear-gradient(135deg,#1d4ed8,#2563eb)}
+.custom-marker.assoc{background:linear-gradient(135deg,#8f2f52,#b4436c)}
+.custom-marker.evento{background:linear-gradient(135deg,#6d28d9,#7c3aed)}
 .custom-marker.eco span,.custom-marker.assoc span,.custom-marker.evento span{color:#fff}
 .custom-marker span{
     transform:rotate(45deg);
-    color:var(--cor-secundaria);
+    color:#fff;
     font-size:19px;
 }
 
@@ -570,7 +604,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:grid;
     place-items:center;
     background:linear-gradient(135deg,#242A30,#11151B);
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-weight:900;
     font-size:22px;
 }
@@ -786,22 +820,22 @@ $heroImagem = !empty($pontos[0]['imagem'])
         <div class="container">
             <div class="mapa-hero-inner">
                 <div>
-                    <span class="mapa-kicker">Mapa Interativo</span>
-                    <h1>Explore a freguesia</h1>
+                    <span class="mapa-kicker"><?= te('mapa.hero.kicker') ?></span>
+                    <h1><?= te('mapa.hero.titulo') ?></h1>
                     <p>
-                        Descubra pontos de interesse, património, locais marcantes
-                        e o limite da freguesia num mapa interativo premium.
+                        <?= te('mapa.hero.subtitulo') ?>
+
                     </p>
 
                     <div class="mapa-hero-actions">
-                        <a href="#mapa-interativo" class="mapa-hero-btn primary">Abrir mapa</a>
-                        <button type="button" id="modoExplorarHero" class="mapa-hero-btn secondary">Modo explorar</button>
+                        <a href="#mapa-interativo" class="mapa-hero-btn primary"><?= te('mapa.hero.botao1') ?></a>
+                        <button type="button" id="modoExplorarHero" class="mapa-hero-btn secondary"><?= te('mapa.hero.botao2') ?></button>
                     </div>
                 </div>
 
                 <aside class="mapa-hero-stat">
                     <strong><?= (int)$totalPontos ?></strong>
-                    <span>pontos no mapa</span>
+                    <span><?= te('mapa.hero.contador') ?></span>
                 </aside>
             </div>
         </div>
@@ -809,18 +843,45 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
     <section class="container mapa-main" id="mapa-interativo">
 
+        <?php /* Filtros no topo do mapa (14/10/2026) — iguais aos do mapa dos Contactos */ ?>
+        <div class="ct-mfiltros mapa-mfiltros" role="group" aria-label="Filtrar o mapa">
+            <?php foreach ($tiposMapa as $t => [$rot, $cor, $ic]): if (empty($nTipo[$t])) continue; $subsT = $subsMapa[$t] ?? []; ?>
+            <div class="ct-mfiltro" style="--c:<?= $cor ?>" data-grupo-mapa="<?= $t ?>">
+                <button type="button" class="ct-mfiltro__btn" data-filtro-mapa="<?= $t ?>" aria-pressed="true">
+                    <span class="ct-mfiltro__icone" aria-hidden="true"><i class="bi <?= $ic ?>"></i></span>
+                    <span><?= htmlspecialchars($rot) ?></span> <b data-conta-mapa="<?= $t ?>"><?= $nTipo[$t] ?></b>
+                </button>
+                <?php if (count($subsT) > 1): ?>
+                <button type="button" class="ct-mfiltro__mais" aria-expanded="false" aria-controls="mapaSub-<?= $t ?>" aria-label="Mais filtros de <?= htmlspecialchars($rot) ?>"><i class="bi bi-chevron-down" aria-hidden="true"></i></button>
+                <div class="ct-msub" id="mapaSub-<?= $t ?>" role="group" aria-label="Tipos de <?= htmlspecialchars(mb_strtolower($rot)) ?>" hidden>
+                    <p class="ct-msub__titulo"><?= htmlspecialchars($rot) ?></p>
+                    <?php foreach ($subsT as $s => $q): ?>
+                    <label class="ct-msub__op"><input type="checkbox" data-sub-mapa="<?= $t ?>" value="<?= htmlspecialchars($s) ?>" checked><span><?= htmlspecialchars($s) ?></span><b><?= $q ?></b></label>
+                    <?php endforeach; ?>
+                    <div class="ct-msub__acoes">
+                        <button type="button" data-sub-todos="<?= $t ?>">Todos</button>
+                        <button type="button" data-sub-nenhum="<?= $t ?>">Nenhum</button>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+            <button type="button" class="ct-mfiltros__repor" data-mapa-repor hidden><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Mostrar tudo</button>
+        </div>
+        <p class="ct-mfiltros__estado" data-mapa-estado aria-live="polite"></p>
+
         <div class="mapa-shell">
 
             <aside class="mapa-sidebar-insane">
                 <div class="sidebar-head">
-                    <span>Explorar freguesia</span>
-                    <h2>Pontos de Interesse</h2>
-                    <p>Pesquise, selecione um local e navegue diretamente no mapa.</p>
+                    <span><?= te('mapa.explorar.kicker') ?></span>
+                    <h2><?= te('mapa.explorar.titulo') ?></h2>
+                    <p><?= te('mapa.explorar.intro') ?></p>
                 </div>
 
                 <div class="mapa-limite-card">
-                    <strong>Limite da Freguesia</strong>
-                    <span>Área aproximada de Atalaia e Alto Estanqueiro-Jardia, concelho do Montijo.</span>
+                    <strong><?= te('mapa.explorar.limite_titulo') ?></strong>
+                    <span><?= te('mapa.explorar.limite_texto') ?></span>
                 </div>
 
                 <div class="map-search-wrap">
@@ -828,22 +889,15 @@ $heroImagem = !empty($pontos[0]['imagem'])
                     <input 
                         type="text" 
                         id="mapSearch" 
-                        placeholder="Pesquisar ponto ou localização..."
+                        placeholder="<?= te('mapa.explorar.ph_pesquisa') ?>"
                         class="map-search"
                     >
                 </div>
 
                 <div class="map-toolbar">
-                    <button type="button" class="map-tool-btn" id="btnTodos">Ver todos</button>
+                    <button type="button" class="map-tool-btn" id="btnTodos"><?= te('mapa.explorar.botao_todos') ?></button>
                     <button type="button" class="map-tool-btn" id="btnLimite">Limite</button>
                     <button type="button" class="map-tool-btn" id="btnExplorar">Explorar</button>
-                </div>
-
-                <div class="map-filtros">
-                    <button type="button" class="map-filtro-chip ativo" data-tipo="ponto"><span class="dot"></span> Pontos de Interesse</button>
-                    <button type="button" class="map-filtro-chip ativo" data-tipo="assoc"><span class="dot"></span> Associações</button>
-                    <button type="button" class="map-filtro-chip ativo" data-tipo="eco"><span class="dot"></span> Economia Local</button>
-                    <button type="button" class="map-filtro-chip ativo" data-tipo="evento"><span class="dot"></span> Eventos</button>
                 </div>
 
                 <div id="listaPontos" class="lista-pontos-insane">
@@ -861,7 +915,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
                             <div>
                                 <strong><?= htmlspecialchars($p['nome']) ?></strong>
-                                <span><?= htmlspecialchars($p['localizacao'] ?? 'Atalaia e Alto Estanqueiro-Jardia') ?></span>
+                                <span><?= htmlspecialchars($p['localizacao'] ?? nomeFreguesia()) ?></span>
                             </div>
 
                             <div class="card-arrow">›</div>
@@ -874,12 +928,12 @@ $heroImagem = !empty($pontos[0]['imagem'])
                 <div class="map-overlay-top">
                     <div class="map-live-pill">
                         <span class="live-dot"></span>
-                        Mapa operacional ativo
+                        <?= te('mapa.mapa.estado') ?>
                     </div>
 
                     <div class="map-floating-actions">
-                        <button type="button" id="btnCenter">Centrar</button>
-                        <button type="button" id="btnZoom">Zoom +</button>
+                        <button type="button" id="btnCenter"><?= te('mapa.mapa.botao_centrar') ?></button>
+                        <button type="button" id="btnZoom"><?= te('mapa.mapa.botao_zoom') ?></button>
                     </div>
                 </div>
 
@@ -890,18 +944,18 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
         <div class="map-footer-info">
             <div class="map-info-card">
-                <strong><i class="bi bi-geo-alt-fill"></i> Pontos de interesse</strong>
-                <span>Locais com relevância cultural, patrimonial, natural ou turística.</span>
+                <strong><i class="bi bi-geo-alt-fill"></i> <?= te('mapa.info.c1_titulo') ?></strong>
+                <span><?= te('mapa.info.c1_texto') ?></span>
             </div>
 
             <div class="map-info-card">
-                <strong><i class="bi bi-compass-fill"></i> Navegação rápida</strong>
-                <span>Clique num card lateral para abrir o marcador diretamente no mapa.</span>
+                <strong><i class="bi bi-compass-fill"></i> <?= te('mapa.info.c2_titulo') ?></strong>
+                <span><?= te('mapa.info.c2_texto') ?></span>
             </div>
 
             <div class="map-info-card">
-                <strong><i class="bi bi-car-front-fill"></i> Como chegar</strong>
-                <span>Os popups incluem ligação direta para navegação no Google Maps.</span>
+                <strong><i class="bi bi-car-front-fill"></i> <?= te('mapa.info.c3_titulo') ?></strong>
+                <span><?= te('mapa.info.c3_texto') ?></span>
             </div>
         </div>
 
@@ -954,6 +1008,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const markers = [];
     const bounds = [];
+    const registados = [];   // {m, tipo, sub} — para os filtros do topo
+    const registar = (mk, tipo, sub) => { registados.push({ m: mk, tipo: tipo, sub: sub || '' }); return mk; };
 
     // Uma layer group por categoria — permite ligar/desligar cada tipo de
     // marcador no mapa (filtro), sem afetar os outros nem a lista lateral.
@@ -974,14 +1030,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const imagem = ponto.imagem
             ? `<img src="/assets/img/${escapeHtml(ponto.imagem)}" class="popup-img">`
-            : `<div class="popup-no-img"><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></div>`;
+            : `<div class="popup-no-img"><?= htmlspecialchars(nomeFreguesia()) ?></div>`;
 
         const popup = `
             <div class="popup-pro-insane">
                 ${imagem}
                 <div class="popup-content">
                     <h3>${escapeHtml(ponto.nome)}</h3>
-                    <small><i class="bi bi-geo-alt-fill"></i> ${escapeHtml(ponto.localizacao ?? 'Atalaia e Alto Estanqueiro-Jardia')}</small>
+                    <small><i class="bi bi-geo-alt-fill"></i> ${escapeHtml(ponto.localizacao ?? <?= json_encode(nomeFreguesia()) ?>)}</small>
                     <p>${escapeHtml((ponto.descricao ?? '').substring(0, 180))}</p>
                     <div class="popup-actions">
                         <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank">Como chegar</a>
@@ -991,7 +1047,8 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(gruposPorTipo.ponto).bindPopup(popup);
+        const marker = registar(L.marker([lat, lng], { icon: customIcon, title: ponto.nome || "", alt: ponto.nome || "" }).addTo(gruposPorTipo.ponto).bindPopup(popup), 'ponto', ponto.sub);
+        marker._indiceLista = index;
         markers[index] = marker;
     });
 
@@ -1025,7 +1082,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>`;
-        L.marker([lat, lng], { icon: ecoIcon }).addTo(gruposPorTipo.eco).bindPopup(popup);
+        registar(L.marker([lat, lng], { icon: ecoIcon, title: item.nome || "", alt: item.nome || "" }).addTo(gruposPorTipo.eco).bindPopup(popup), 'eco', item.sub);
     });
 
     (assoc || []).forEach(function(item) {
@@ -1047,7 +1104,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>`;
-        L.marker([lat, lng], { icon: assocIcon }).addTo(gruposPorTipo.assoc).bindPopup(popup);
+        registar(L.marker([lat, lng], { icon: assocIcon, title: item.nome || "", alt: item.nome || "" }).addTo(gruposPorTipo.assoc).bindPopup(popup), 'assoc', item.sub);
     });
 
     const eventoIcon = L.divIcon({
@@ -1078,25 +1135,93 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>`;
-        L.marker([lat, lng], { icon: eventoIcon }).addTo(gruposPorTipo.evento).bindPopup(popup);
+        registar(L.marker([lat, lng], { icon: eventoIcon, title: item.titulo || "", alt: item.titulo || "" }).addTo(gruposPorTipo.evento).bindPopup(popup), 'evento', item.sub);
     });
 
-    // Filtros por categoria: cada chip liga/desliga a layer group correspondente.
-    document.querySelectorAll(".map-filtro-chip").forEach(function(chip) {
-        chip.addEventListener("click", function () {
-            const tipo = chip.dataset.tipo;
-            const grupo = gruposPorTipo[tipo];
-            if (!grupo) return;
-
-            if (mapa.hasLayer(grupo)) {
-                mapa.removeLayer(grupo);
-                chip.classList.remove("ativo");
-            } else {
-                mapa.addLayer(grupo);
-                chip.classList.add("ativo");
+    /* Filtros no topo do mapa (14/10/2026): categoria (liga/desliga) + subfiltros (tipos).
+       Um local aparece se a categoria estiver ligada E o seu tipo estiver marcado. */
+    (function () {
+        const reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const ligado = {}, desmarcado = {};
+        Object.keys(gruposPorTipo).forEach(t => { ligado[t] = true; desmarcado[t] = {}; });
+        const estadoEl = document.querySelector('[data-mapa-estado]');
+        const visivel = r => ligado[r.tipo] && !desmarcado[r.tipo][r.sub];
+        function aplicar(enquadrar) {
+            let n = 0; const porTipo = {}, pts = [];
+            registados.forEach(r => {
+                const v = visivel(r), g = gruposPorTipo[r.tipo];
+                if (v) { n++; porTipo[r.tipo] = (porTipo[r.tipo] || 0) + 1; pts.push(r.m.getLatLng()); }
+                if (v && !g.hasLayer(r.m)) g.addLayer(r.m);
+                else if (!v && g.hasLayer(r.m)) { r.m.closePopup(); g.removeLayer(r.m); }
+                if (r.m._indiceLista !== undefined) {
+                    const card = document.querySelector('.ponto-card-insane[data-index="' + r.m._indiceLista + '"]');
+                    if (card) card.classList.toggle('fora-filtro', !v);
+                }
+            });
+            document.querySelectorAll('[data-grupo-mapa]').forEach(g => {
+                const t = g.dataset.grupoMapa, totalT = registados.filter(r => r.tipo === t).length, vis = porTipo[t] || 0;
+                g.querySelector('[data-filtro-mapa]').setAttribute('aria-pressed', ligado[t] && vis ? 'true' : 'false');
+                g.classList.toggle('ct-mfiltro--parcial', ligado[t] && vis > 0 && vis < totalT);
+                g.querySelector('[data-conta-mapa]').textContent = ligado[t] && vis > 0 && vis < totalT ? vis + '/' + totalT : totalT;
+            });
+            const total = registados.length;
+            document.querySelectorAll('[data-mapa-repor]').forEach(b => { b.hidden = n === total; });
+            if (estadoEl) estadoEl.textContent = n === total ? '' : 'A mostrar ' + n + ' de ' + total + ' locais';
+            if (enquadrar && pts.length) mapa.flyToBounds(L.latLngBounds(pts), { padding: [60, 60], maxZoom: 16, duration: reduz ? 0 : .8 });
+        }
+        function marcarSubs(t, valor) {
+            desmarcado[t] = {};
+            document.querySelectorAll('[data-sub-mapa="' + t + '"]').forEach(c => { c.checked = valor; if (!valor) desmarcado[t][c.value] = true; });
+        }
+        document.querySelectorAll('[data-filtro-mapa]').forEach(b => b.addEventListener('click', () => {
+            const t = b.dataset.filtroMapa, on = b.getAttribute('aria-pressed') !== 'true';
+            ligado[t] = on;
+            if (on && registados.every(r => r.tipo !== t || desmarcado[t][r.sub])) marcarSubs(t, true);
+            aplicar(true);
+        }));
+        document.querySelectorAll('[data-sub-mapa]').forEach(c => c.addEventListener('change', () => {
+            const t = c.dataset.subMapa;
+            if (c.checked) { delete desmarcado[t][c.value]; ligado[t] = true; } else desmarcado[t][c.value] = true;
+            aplicar(true);
+        }));
+        document.querySelectorAll('[data-sub-todos], [data-sub-nenhum]').forEach(b => b.addEventListener('click', () => {
+            const t = b.dataset.subTodos || b.dataset.subNenhum, todos = !!b.dataset.subTodos;
+            marcarSubs(t, todos); if (todos) ligado[t] = true;
+            aplicar(true);
+        }));
+        document.querySelectorAll('[data-mapa-repor]').forEach(b => b.addEventListener('click', () => {
+            Object.keys(gruposPorTipo).forEach(t => { ligado[t] = true; marcarSubs(t, true); });
+            fecharSubs(); aplicar(true);
+        }));
+        // painéis de subfiltros: um aberto de cada vez; fecham com Esc ou ao clicar fora
+        function fecharSubs(exceto) {
+            document.querySelectorAll('.ct-mfiltro__mais[aria-expanded="true"]').forEach(b => {
+                if (b === exceto) return;
+                b.setAttribute('aria-expanded', 'false');
+                document.getElementById(b.getAttribute('aria-controls')).hidden = true;
+            });
+        }
+        document.querySelectorAll('.ct-mfiltro__mais').forEach(b => b.addEventListener('click', e => {
+            e.stopPropagation();
+            const painel = document.getElementById(b.getAttribute('aria-controls')), abrir = b.getAttribute('aria-expanded') !== 'true';
+            fecharSubs(b);
+            b.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+            painel.hidden = !abrir;
+            if (abrir) {
+                painel.style.marginLeft = '0px';
+                const r = painel.getBoundingClientRect(), folga = 12;
+                if (r.left < folga) painel.style.marginLeft = (folga - r.left) + 'px';
+                else if (r.right > innerWidth - folga) painel.style.marginLeft = (innerWidth - folga - r.right) + 'px';
+                const primeiro = painel.querySelector('input'); if (primeiro) primeiro.focus();
             }
+        }));
+        document.addEventListener('click', e => { if (!e.target.closest('.ct-msub')) fecharSubs(); });
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            const aberto = document.querySelector('.ct-mfiltro__mais[aria-expanded="true"]');
+            if (aberto) { fecharSubs(); aberto.focus(); }
         });
-    });
+    })();
 
     // Limite da freguesia: vem de assets/geo/freguesia.geojson (um ficheiro por site).
     // Antes estava aqui embutido, com centenas de coordenadas — era isso que obrigava
@@ -1105,11 +1230,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const limiteLayer = L.geoJSON(limiteFreguesia, {
         style: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--cor-secundaria').trim() || '#4CAF50',
+            color: <?= json_encode(temaPaletaMarca()['--ouro'] ?? '#C8A02E') ?>,   // linha do limite: cor de destaque da marca
             weight: 4,
             opacity: 1,
             dashArray: '10,7',
-            fillColor: getComputedStyle(document.documentElement).getPropertyValue('--cor-principal').trim() || '#242A30',
+            fillColor: '#242A30',
             fillOpacity: 0.08
         }
     }).addTo(mapa);
@@ -1117,12 +1242,12 @@ document.addEventListener("DOMContentLoaded", function () {
     limiteLayer.bindPopup(`
         <div class="popup-content limite-popup">
             <h3>Limite da Freguesia</h3>
-            <p>Atalaia e Alto Estanqueiro-Jardia, Montijo</p>
+            <p><?= htmlspecialchars(localFreguesia(', ')) ?></p>
         </div>
     `);
 
     function fitLimite() {
-        mapa.fitBounds(limiteLayer.getBounds(), {
+        if (limiteLayer.getBounds().isValid()) mapa.fitBounds(limiteLayer.getBounds(), {
             padding: [35, 35]
         });
     }

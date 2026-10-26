@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $html = "
             <h2>Recuperação de password</h2>
-            <p>Olá {$cidadao['nome']},</p>
+            <p>Olá " . htmlspecialchars($cidadao['nome']) . ",</p>
             <p>Recebemos um pedido para recuperar a sua password.</p>
             <p>Clique no link abaixo para definir uma nova password:</p>
             <p><a href='{$link}'>Repor password</a></p>
@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="recuperar-hero-premium">
     <div class="container">
         <div>
-            <span>Junta Virtual</span>
-            <h1>Recuperar Password</h1>
-            <p>Receba um link seguro para definir uma nova password de acesso ao Balcão Virtual.</p>
+            <span><?= te('recuperar_password.hero.kicker') ?></span>
+            <h1><?= te('recuperar_password.hero.titulo') ?></h1>
+            <p><?= te('recuperar_password.hero.subtitulo') ?></p>
         </div>
 
         <div class="recuperar-hero-icon"><i class="bi bi-shield-lock"></i></div>
@@ -62,13 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="recuperar-wrapper">
 
             <div class="recuperar-card">
-                <span class="section-kicker">Acesso seguro</span>
-                <h2>Repor acesso à conta</h2>
-                <p>Introduza o email associado à sua conta. Se existir, enviaremos instruções para recuperar a password.</p>
+                <span class="section-kicker"><?= te('recuperar_password.formulario.kicker') ?></span>
+                <h2><?= te('recuperar_password.formulario.titulo') ?></h2>
+                <p><?= te('recuperar_password.formulario.intro') ?></p>
 
                 <?php if ($sucesso): ?>
                     <div class="alerta-sucesso recuperar-alert">
-                        Se o email existir, receberá uma mensagem com instruções para recuperar a password.
+                        <?= te('recuperar_password.formulario.enviado') ?>
                     </div>
                 <?php endif; ?>
 
@@ -84,44 +84,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input 
                             type="email" 
                             name="email" 
-                            placeholder="O seu email"
+                            placeholder="<?= te('recuperar_password.formulario.ph_email') ?>"
                             value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                             required
                         >
                     </div>
 
                     <button class="btn recuperar-btn" type="submit">
-                        Enviar link de recuperação
+                        <?= te('recuperar_password.formulario.botao') ?>
                     </button>
 
                     <div class="recuperar-links">
-                        <a href="/cidadao-login.php">Voltar ao login</a>
-                        <a href="/cidadao-registo.php">Criar conta</a>
+                        <a href="/cidadao-login.php"><?= te('recuperar_password.formulario.voltar') ?></a>
+                        <a href="/cidadao-registo.php"><?= te('recuperar_password.formulario.criar_conta') ?></a>
                     </div>
                 </form>
             </div>
 
             <aside class="recuperar-side">
-                <span class="section-kicker">Segurança</span>
-                <h2>Como funciona?</h2>
+                <span class="section-kicker"><?= te('recuperar_password.passos.kicker') ?></span>
+                <h2><?= te('recuperar_password.passos.titulo') ?></h2>
 
                 <div class="recuperar-step">
                     <strong>1</strong>
-                    <span>Introduza o email da sua conta.</span>
+                    <span><?= te('recuperar_password.passos.p1') ?></span>
                 </div>
 
                 <div class="recuperar-step">
                     <strong>2</strong>
-                    <span>Recebe um link seguro por email.</span>
+                    <span><?= te('recuperar_password.passos.p2') ?></span>
                 </div>
 
                 <div class="recuperar-step">
                     <strong>3</strong>
-                    <span>Define uma nova password.</span>
+                    <span><?= te('recuperar_password.passos.p3') ?></span>
                 </div>
 
                 <div class="recuperar-note">
-                    O link de recuperação expira automaticamente por segurança.
+                    <?= te('recuperar_password.passos.nota') ?>
                 </div>
             </aside>
 

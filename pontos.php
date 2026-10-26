@@ -78,9 +78,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
+    color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -152,7 +152,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .pontos-floating-stat strong{
     display:block;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -290,7 +290,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     height:100%;
     display:grid;
     place-items:center;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:74px;
     font-weight:900;
 }
@@ -385,7 +385,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 }
 
 .ponto-link-insane:hover{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
 }
 
 .ponto-link-insane:hover::after{
@@ -546,22 +546,22 @@ $heroImagem = !empty($pontos[0]['imagem'])
         <div class="container">
             <div class="pontos-hero-inner">
                 <div>
-                    <span class="pontos-kicker">Património e Cultura</span>
-                    <h1>Pontos de Interesse</h1>
+                    <span class="pontos-kicker"><?= te('pontos.hero.kicker') ?></span>
+                    <h1><?= te('pontos.hero.titulo') ?></h1>
                     <p>
-                        Descubra o património, os espaços naturais, a cultura
-                        e os locais mais marcantes da freguesia.
+                        <?= te('pontos.hero.texto') ?>
+
                     </p>
 
                     <div class="pontos-hero-actions">
-                        <a href="#lista-pontos" class="pontos-hero-btn primary">Explorar locais</a>
-                        <a href="/mapa.php" class="pontos-hero-btn secondary">Ver no mapa</a>
+                        <a href="#lista-pontos" class="pontos-hero-btn primary"><?= te('pontos.hero.botao1') ?></a>
+                        <a href="/mapa.php" class="pontos-hero-btn secondary"><?= te('pontos.hero.botao2') ?></a>
                     </div>
                 </div>
 
                 <aside class="pontos-floating-stat">
                     <strong><?= (int)$totalPontos ?></strong>
-                    <span>locais para descobrir</span>
+                    <span><?= te('pontos.hero.contagem') ?></span>
                 </aside>
             </div>
         </div>
@@ -571,10 +571,10 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
         <div class="pontos-intro-panel">
             <div class="pontos-tabs">
-                <span class="active"><i class="bi bi-geo-alt-fill"></i> Todos</span>
-                <span><i class="bi bi-bank2"></i> Património</span>
-                <span><i class="bi bi-tree-fill"></i> Natureza</span>
-                <span><i class="bi bi-stars"></i> Cultura</span>
+                <span class="active"><i class="bi bi-geo-alt-fill"></i> <?= te('pontos.filtros.todos') ?></span>
+                <span><i class="bi bi-bank2"></i> <?= te('pontos.filtros.patrimonio') ?></span>
+                <span><i class="bi bi-tree-fill"></i> <?= te('pontos.filtros.natureza') ?></span>
+                <span><i class="bi bi-stars"></i> <?= te('pontos.filtros.cultura') ?></span>
             </div>
 
             <div class="pontos-count">
@@ -584,11 +584,11 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
         <div class="pontos-section-head">
             <div>
-                <span class="pontos-kicker">Explorar</span>
-                <h2>Todos os pontos de interesse</h2>
+                <span class="pontos-kicker"><?= te('pontos.lista.kicker') ?></span>
+                <h2><?= te('pontos.lista.titulo') ?></h2>
             </div>
 
-            <p>Uma seleção de locais com identidade, história e valor comunitário.</p>
+            <p><?= te('pontos.lista.texto') ?></p>
         </div>
 
         <?php if (!empty($pontos)): ?>
@@ -600,7 +600,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
                     <article class="ponto-card-insane">
 
                         <div class="ponto-image-insane">
-                            <span class="ponto-category-float">Local</span>
+                            <span class="ponto-category-float"><?= te('pontos.lista.categoria') ?></span>
 
                             <?php if (!empty($p['imagem'])): ?>
                                 <img src="/assets/img/<?= htmlspecialchars($p['imagem']) ?>" alt="<?= htmlspecialchars($p['nome']) ?>">
@@ -632,11 +632,11 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 
 <a href="/ponto.php?id=<?= $p['id'] ?>" class="ponto-link-insane">
-    Ver local
+    <?= te('pontos.lista.botao') ?>
 </a>
 
                                
-                                <span class="ponto-mini-tag"><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
+                                <span class="ponto-mini-tag"><?= te('pontos.lista.localidade') ?></span>
                             </div>
 
                         </div>
@@ -670,7 +670,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
         <?php else: ?>
 
             <div class="pontos-empty">
-                Ainda não existem pontos de interesse publicados.
+                <?= te('pontos.vazio.texto') ?>
             </div>
 
         <?php endif; ?>

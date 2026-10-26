@@ -106,7 +106,7 @@ require_once "includes/header.php";
 }
 
 .historia-admin-hero span{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:13px;
     font-weight:900;
     text-transform:uppercase;
@@ -263,12 +263,9 @@ require_once "includes/header.php";
                 </div>
 
                 <div class="historia-full">
-                    <label>Imagem do hero</label>
-                    <input type="file" name="hero_imagem">
-
-                    <?php if (!empty($pagina["hero_imagem"])): ?>
-                        <img src="../assets/img/<?= htmlspecialchars($pagina["hero_imagem"]) ?>" class="historia-preview">
-                    <?php endif; ?>
+                    <?php /* 13/10/2026: banner do site = fotografia de «Fundos das páginas»; aqui escolhe-se e posiciona-se */
+                    require_once __DIR__ . "/includes/banner_editor.php";
+                    bannerEditor('historia', (string)($pagina["hero_titulo"] ?? ''), (string)($pagina["hero_kicker"] ?? '')); ?>
                 </div>
 
             </div>

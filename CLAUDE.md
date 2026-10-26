@@ -135,3 +135,17 @@ backoffice real é `new.aaej.pt/admin`. Em 15/10/2026 o código foi também atua
   imagens dos emails ficariam presos ao `nip.io`. Quando houver domínio definitivo: alias + SSL no
   FastPanel, `UPDATE configuracoes_site SET dominio='https://…'` e ligar a newsletter no backoffice.
 - Por fazer: mudar a password do `admin` (herdada dos outros sites).
+
+## Modelo novo (26/10/2026) — à espera do FTP
+
+- Código passado para o modelo novo (o do Sousel) no ramo `redesign`/`main`; conteúdo em `deploy/atalaia_redesign.json`
+  (gerado por `gera_atal_redesign.py` no scratchpad da sessão). **Só acrescenta**: a Junta publica notícias no backoffice (32 em
+  26/10, contra 7 na BD local) — o carregador não toca em notícias, eventos, pontos, associações nem comércio; as atualizações de
+  pessoas usam `so_se_existir`.
+- Corrige o que a Junta reportou: fotos repetidas no carrossel das fichas (`fotosSemRepetidas()` em `includes/galeria.php`),
+  formulário de requerimentos em duas colunas apertadas no telemóvel, e a mensagem do Presidente (aparece no Executivo e na página inicial).
+- Resultados de 2025 (MAI `organId=6`, territoryId 2563): CH 3 · PS 2 · MVC 2 · PPD/PSD.IL 2 · CDU 0. As listas oficiais
+  (edital) não foram encontradas online — os membros batem com as notícias da tomada de posse e dos pelouros.
+- ⚠️ Envio: a conta FTP `gesgov@new.aaej.pt` dá «421 Home directory not available» desde que a pasta passou a `juf.aaej.pt`
+  — o informático tem de a apontar para a pasta nova. Depois: ficheiros alterados desde `5362908` (nunca a `.htaccess` da raiz),
+  migrações e carregador por script temporário (o servidor não tem SSH).

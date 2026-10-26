@@ -11,6 +11,7 @@ if ($_POST) {
     $subtitulo = trim($_POST['subtitulo'] ?? '');
     $link_destino = trim($_POST['link_destino'] ?? '');
     $ativo = isset($_POST['ativo']) ? 1 : 0;
+    [$tipo, $videoUrl, $videoAjuste, $videoFormato, $erroVideo] = slideVideoDoPost();
 
     // Antes gravava-se o ficheiro com o NOME ORIGINAL vindo do browser e sem validar
     // a extensão: dois "foto.jpg" sobrepunham-se, e um "x.php" ficava executável em
@@ -19,6 +20,10 @@ if ($_POST) {
 
     if ($erroImg !== '') {
         $erro = $erroImg;
+    }
+
+    if ($erroVideo !== '') {
+        $erro = $erroVideo;
     }
 
     if ($titulo === '') {
@@ -30,10 +35,10 @@ if ($_POST) {
     // mesma, a apontar para uma imagem inexistente.
     if ($erro === '') {
         $stmt = $pdo->prepare("
-            INSERT INTO slides_homepage (titulo, subtitulo, imagem, link_destino, ativo)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO slides_homepage (titulo, subtitulo, imagem, link_destino, ativo, tipo, video_url, video_ajuste, video_formato)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$titulo, $subtitulo, $imagem, $link_destino, $ativo]);
+        $stmt->execute([$titulo, $subtitulo, $imagem, $link_destino, $ativo, $tipo, $videoUrl, $videoAjuste, $videoFormato]);
         reordenarSlides($pdo, (int)$pdo->lastInsertId(), posicaoSlidePedida());
 
         header("Location: slides.php");
@@ -42,31 +47,23 @@ if ($_POST) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <title>Adicionar Slide</title>
-    <style>
-        body{font-family:Arial,sans-serif;background:#f4f7fb;margin:0;padding:40px;color:#11151B;}
-        .box{max-width:900px;margin:auto;background:#fff;border-radius:24px;padding:32px;box-shadow:0 18px 45px rgba(0,0,0,.08);}
-        h1{margin-top:0;color:#242A30;}
-        label{display:block;font-weight:800;margin:18px 0 8px;}
-        input,textarea{width:100%;box-sizing:border-box;border:1px solid #dbe3ea;border-radius:14px;padding:14px 16px;font-size:15px;outline:none;}
-        textarea{min-height:120px;resize:vertical;}
-        input:focus,textarea:focus{border-color:#242A30;box-shadow:0 0 0 4px rgba(36,42,50,.10);}
-        .actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;}
-        .btn{border:0;border-radius:14px;padding:13px 18px;background:#242A30;color:#fff;font-weight:900;text-decoration:none;cursor:pointer;}
-        .btn.secondary{background:#64748b;}
-        .erro{background:#fee2e2;color:#991b1b;padding:13px 16px;border-radius:14px;font-weight:800;margin-bottom:18px;}
-        .check{display:flex;align-items:center;gap:10px;margin-top:18px;font-weight:800;}
-        .check input{width:auto;}
-        small{color:#64748b;font-weight:700;}
-    </style>
-</head>
-<body>
-<div class="box">
-    <h1>Adicionar Slide</h1>
+<?php
+// Página dentro do layout do backoffice (12/10/2026) — antes era uma página solta, sem menu
+$adminPageTitle = "Adicionar slide";
+$adminActive = "slides";
+require_once "includes/header.php";
+?>
+<style>
+    .slide-form .erro{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px 16px;border-radius:12px;font-weight:600;margin-bottom:18px;}
+    .slide-form .actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;}
+    .slide-form .check{display:flex;align-items:center;gap:10px;margin-top:6px;}
+    .slide-form .slide-tipo{border:1px solid var(--adm-borda);border-radius:14px;padding:12px 16px 4px;margin:4px 0 18px;display:flex;gap:22px;flex-wrap:wrap}
+    .slide-form .slide-tipo legend{font-weight:600;font-size:14px;padding:0 6px}
+    .slide-form .slide-video{background:var(--adm-superficie-2);border:1px solid var(--adm-borda);border-radius:14px;padding:16px 18px 6px;margin:-6px 0 20px}
+    .slide-form .slide-video[hidden]{display:none}
+    .slide-form .slide-video > label:not(.check){display:block;margin:14px 0 6px}
+</style>
+<div class="slide-form">
 
     <?php if ($erro): ?>
         <div class="erro"><?= htmlspecialchars($erro) ?></div>
@@ -82,6 +79,8 @@ if ($_POST) {
         <label>Ordem de apresentação</label>
         <input type="number" name="ordem" min="1" max="<?= (int)$pdo->query("SELECT COUNT(*) FROM slides_homepage")->fetchColumn() + 1 ?>" value="" placeholder="Vazio = fica em último">
         <small>1 = primeiro slide, 2 = segundo, e assim por diante. Os outros slides ajustam-se sozinhos.</small>
+
+        <?php slideVideoCampos($_POST ? ['tipo' => $_POST['tipo'] ?? 'imagem', 'video_url' => $_POST['video_url'] ?? ''] : []); ?>
 
         <label>Imagem</label>
         <input type="file" name="imagem" accept="image/*">
@@ -101,5 +100,4 @@ if ($_POST) {
         </div>
     </form>
 </div>
-</body>
-</html>
+<?php require_once "includes/footer.php"; ?>

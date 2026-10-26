@@ -134,13 +134,15 @@ require_once __DIR__ . "/includes/header.php";
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;">
             <?php foreach ($imagens as $img): ?>
                 <?php $eCapa = ($album['capa'] === $img['ficheiro']); ?>
-                <div style="border:2px solid <?= $eCapa ? 'var(--cor-principal,#242A30)' : '#e5e7eb' ?>;border-radius:14px;padding:10px;background:#fff;">
-                    <img src="<?= htmlspecialchars(imagemGaleriaUrl($img['ficheiro'])) ?>" alt=""
+                <div class="ga-cartao" data-id="<?= (int)$img['id'] ?>" style="border:2px solid <?= $eCapa ? 'var(--cor-principal,#242A30)' : '#e5e7eb' ?>;border-radius:14px;padding:10px;background:#fff;">
+                    <img class="ga-pega" src="<?= htmlspecialchars(imagemGaleriaUrl($img['ficheiro'])) ?>" alt="" draggable="false"
+                         title="Arraste para mudar a ordem"
                          style="width:100%;height:120px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px;">
 
-                    <small style="display:block;color:#64748b;margin-bottom:8px;">
-                        <?= htmlspecialchars($img['titulo'] ?? '') ?>
-                    </small>
+                    <label for="leg<?= (int)$img['id'] ?>" style="font-size:13px;margin:0 0 4px;display:block">Legenda</label>
+                    <input form="formLegendas" type="text" id="leg<?= (int)$img['id'] ?>" name="legenda[<?= (int)$img['id'] ?>]" value="<?= htmlspecialchars($img['titulo'] ?? '') ?>" maxlength="255" style="margin-bottom:8px;min-height:40px;font-size:14px">
+                    <label for="ord<?= (int)$img['id'] ?>" style="font-size:13px;margin:0 0 4px;display:block">Ordem</label>
+                    <input form="formLegendas" type="number" id="ord<?= (int)$img['id'] ?>" name="ordem[<?= (int)$img['id'] ?>]" value="<?= (int)($img['ordem'] ?? 0) ?>" min="0" style="margin-bottom:10px;min-height:40px;font-size:14px;width:100px">
 
                     <?php if ($eCapa): ?>
                         <span class="btn secondary" style="pointer-events:none;opacity:.75;">Capa</span>
@@ -153,6 +155,7 @@ require_once __DIR__ . "/includes/header.php";
                 </div>
             <?php endforeach; ?>
         </div>
+        <p style="margin-top:18px"><button class="btn" form="formLegendas" name="guardar_legendas" value="1"><i class="bi bi-check2"></i> Guardar legendas e ordem</button></p>
     <?php endif; ?>
 </div>
 

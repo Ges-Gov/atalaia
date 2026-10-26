@@ -110,7 +110,7 @@ foreach ($contactos as $c) {
 <style>
 .contactadmin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:30px;padding:30px;margin-bottom:24px;box-shadow:0 22px 60px rgba(15,23,42,.18);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .contactadmin-hero h2{margin:8px 0;font-size:34px}.contactadmin-hero p{margin:0;color:#dbeafe}
-.contact-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 35%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
+.contact-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .35);color:var(--ouro-claro, #f8d77a);padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900;text-transform:uppercase}
 .contact-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .contact-kpi,.contact-card-admin{background:white;border:1px solid #e5e7eb;border-radius:24px;padding:20px;box-shadow:0 14px 34px rgba(15,23,42,.06)}
 .contact-kpi strong{font-size:32px;color:#11151B;display:block}.contact-kpi span{color:#64748b;font-weight:900}
@@ -126,7 +126,7 @@ foreach ($contactos as $c) {
 .contact-row{background:#f8fafc;border:1px solid #e5e7eb;border-radius:18px;padding:14px;display:grid;grid-template-columns:54px 1fr auto;gap:14px;align-items:center;margin-bottom:12px}
 .contact-icon-admin{width:54px;height:54px;border-radius:16px;background:#242A30;color:white;display:grid;place-items:center;font-size:24px}
 .contact-row h4{margin:0 0 5px;color:#11151B}.contact-row p{margin:0;color:#64748b;font-weight:800;font-size:13px}
-.badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eef2ff;color:#242A30;font-size:11px;font-weight:900;margin-right:5px}.badge.off{background:#fee2e2;color:#991b1b}.badge.gold{background:color-mix(in srgb, var(--cor-secundaria) 18%, #fff);color:color-mix(in srgb, var(--cor-secundaria) 45%, #000)}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eef2ff;color:#242A30;font-size:11px;font-weight:900;margin-right:5px}.badge.off{background:#fee2e2;color:#991b1b}.badge.gold{background:var(--ouro-fundo, #fef3c7);color:var(--ouro-texto, #92400e)}
 @media(max-width:1100px){.contact-grid-admin,.contactadmin-hero{grid-template-columns:1fr}.contact-kpis{grid-template-columns:1fr 1fr}.contact-row{grid-template-columns:1fr}}
 @media(max-width:700px){.contact-kpis,.contact-form-grid{grid-template-columns:1fr}}
 </style>
@@ -172,7 +172,7 @@ foreach ($contactos as $c) {
 <div class="contact-grid-admin">
     <div class="contact-card-admin">
         <h3><?= $editar ? 'Editar contacto' : 'Novo contacto' ?></h3>
-        <form method="POST" class="contact-form">
+        <form method="POST" class="contact-form" enctype="multipart/form-data">
             <input type="hidden" name="acao" value="contacto">
             <input type="hidden" name="id" value="<?= htmlspecialchars($editar['id'] ?? 0) ?>">
             <div><label>Nome *</label><input type="text" name="nome" value="<?= htmlspecialchars($editar['nome'] ?? '') ?>" required></div>
@@ -187,6 +187,14 @@ foreach ($contactos as $c) {
             <div><label>Morada</label><textarea name="morada"><?= htmlspecialchars($editar['morada'] ?? '') ?></textarea></div>
             <div><label>Horário</label><textarea name="horario"><?= htmlspecialchars($editar['horario'] ?? '') ?></textarea></div>
             <div><label>Descrição</label><textarea name="descricao"><?= htmlspecialchars($editar['descricao'] ?? '') ?></textarea></div>
+            <div>
+                <label>Fotografia de capa do cartão <small style="font-weight:400;color:#64748b;">(opcional — de preferência uma foto real do local; horizontal, pelo menos 1200 px)</small></label>
+                <?php if (!empty($editar['imagem'])): ?>
+                    <p style="display:flex;gap:12px;align-items:center;margin:4px 0 8px;"><img src="/assets/img/<?= htmlspecialchars($editar['imagem']) ?>" alt="" style="width:160px;height:90px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;">
+                    <label style="display:flex;gap:6px;align-items:center;font-weight:500;"><input type="checkbox" name="remover_imagem" value="1" style="width:auto;margin:0;"> Retirar a fotografia</label></p>
+                <?php endif; ?>
+                <input type="file" name="imagem" accept="image/jpeg,image/png,image/webp">
+            </div>
             <div><label>Ordem</label><input type="number" name="ordem" value="<?= htmlspecialchars($editar['ordem'] ?? 0) ?>"></div>
             <div class="contact-checks">
                 <label><input type="checkbox" name="destaque" <?= !empty($editar['destaque']) ? 'checked' : '' ?>> Destaque</label>

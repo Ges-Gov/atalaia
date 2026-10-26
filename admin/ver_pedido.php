@@ -167,9 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_ocorrencia'])
         if (!empty($pedido['email'])) {
             $html = "
                 <h2>Atualização do pedido</h2>
-                <p>Olá {$pedido['nome']},</p>
+                <p>Olá " . htmlspecialchars((string)$pedido['nome']) . ",</p>
                 <p>O estado do seu pedido foi atualizado:</p>
-                <p><strong>{$novoAssunto}</strong></p>
+                <p><strong>" . htmlspecialchars((string)$novoAssunto) . "</strong></p>
                 <p><strong>Novo estado:</strong> " . strtoupper(str_replace('_', ' ', $novoEstado)) . "</p>
             ";
             enviarEmailSistema($pedido['email'], "Atualização do pedido", $html);
@@ -205,8 +205,8 @@ if (isset($_POST['mensagem_admin'])) {
         if (!empty($pedido['email'])) {
             $html = "
                 <h2>Nova resposta da Junta</h2>
-                <p><strong>Pedido:</strong> {$pedido['codigo']}</p>
-                <p><strong>Assunto:</strong> {$pedido['assunto']}</p>
+                <p><strong>Pedido:</strong> " . htmlspecialchars((string)$pedido['codigo']) . "</p>
+                <p><strong>Assunto:</strong> " . htmlspecialchars((string)$pedido['assunto']) . "</p>
                 <p><strong>Mensagem:</strong><br>" . nl2br(htmlspecialchars($mensagem)) . "</p>
                 <br>
                 <p>Consulte o pedido no Balcão Virtual.</p>
@@ -414,7 +414,7 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
 .vp-timeline-icone { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; z-index: 1; }
 .vp-timeline-icone.tipo-criacao { background: #ecfdf5; color: #047857; }
 .vp-timeline-icone.tipo-atribuicao { background: #eef2ff; color: #4338ca; }
-.vp-timeline-icone.tipo-estado { background: #fef3c7; color: #92400e; }
+.vp-timeline-icone.tipo-estado { background: var(--ouro-fundo, #fef3c7); color: var(--ouro-texto, #92400e); }
 .vp-timeline-icone.tipo-reclassificacao { background: #f0f9ff; color: #0369a1; }
 .vp-timeline-conteudo { flex: 1; padding-top: 3px; }
 .vp-timeline-conteudo strong { display: block; font-size: 14px; }
@@ -424,7 +424,7 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
 /* Cartões de entradas nos painéis (tratamentos, notas, emails) — davam-se
    bem, só precisavam de um pouco mais de ritmo visual (ícone do autor). */
 .vp-entrada { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 14px; padding: 12px 16px; display: flex; gap: 12px; }
-.vp-entrada.vp-entrada-nota { background: #fffbeb; border-color: #fde68a; }
+.vp-entrada.vp-entrada-nota { background: #fffbeb; border-color: var(--ouro-fundo-2, #fde68a); }
 .vp-entrada-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--cor-principal); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; flex-shrink: 0; }
 .vp-entrada-corpo { flex: 1; }
 .vp-entrada-corpo strong { font-size: 13px; }

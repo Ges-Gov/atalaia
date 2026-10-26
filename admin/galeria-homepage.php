@@ -1,5 +1,5 @@
 <?php
-$adminPageTitle = "Galeria da Homepage";
+$adminPageTitle = "Galeria da página «A Freguesia»";
 $adminActive = "galeria-homepage";
 
 require_once __DIR__ . "/includes/auth.php";
@@ -88,10 +88,7 @@ $imagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 require_once __DIR__ . "/includes/header.php";
 ?>
 
-<div class="admin-topbar">
-    <h1>Galeria da Homepage</h1>
-    <p>Gerir as imagens da secção “Uma freguesia com identidade”.</p>
-</div>
+<p style="margin:-8px 0 20px;color:var(--adm-texto-2);max-width:80ch">Fotografias da secção «Galeria» da página <a href="/freguesia.php" target="_blank">A Freguesia</a>. (As fotografias da página inicial vêm dos álbuns da Galeria de fotos.)</p>
 
 <?php if (isset($_GET['ok'])): ?>
     <div class="alerta-sucesso">Alterações guardadas com sucesso.</div>

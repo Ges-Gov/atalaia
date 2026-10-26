@@ -115,7 +115,7 @@ $meta_url = $siteBaseUrl . "/evento.php?id=" . $id;
 
 $meta_imagem = !empty($evento['imagem'])
     ? $siteBaseUrl . "/assets/img/" . $evento['imagem']
-    : $siteBaseUrl . "/assets/img/logo.png";
+    : $siteBaseUrl . "/assets/img/" . (siteConfig('logo') ?: 'freguesia-1.jpg');
 
 require_once "includes/header.php";
 ?>
@@ -126,6 +126,8 @@ if (!$evento) {
     require_once "includes/footer.php";
     exit;
 }
+require_once __DIR__ . "/includes/calendario.php";
+seoEvento($evento);
 
 $outros = $pdo->prepare("
     SELECT * FROM eventos
@@ -138,7 +140,7 @@ $outrosEventos = $outros->fetchAll(PDO::FETCH_ASSOC);
 
 $imagem = !empty($evento['imagem']) ? "/assets/img/" . htmlspecialchars($evento['imagem']) : "";
 
-$fotosGaleriaEvento = imagensDaOrigem($pdo, 'evento', $id);
+$fotosGaleriaEvento = fotosSemRepetidas(imagensDaOrigem($pdo, 'evento', $id), $imagem);
 
 $todasImagensEvento = [];
 if ($imagem) $todasImagensEvento[] = $imagem;
@@ -160,7 +162,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
     padding:80px 0;
 }
 .evento-detalhe-hero span{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-weight:900;
     text-transform:uppercase;
     letter-spacing:.8px;
@@ -204,21 +206,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
     transition:.25s;
 }
 .evento-detalhe-img:hover{opacity:.92;}
-.lb-trigger{display:block;width:100%;padding:0;border:0;background:none;font:inherit;text-align:left;cursor:zoom-in;}
 /* LIGHTBOX */
-.lb-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;flex-direction:column;padding:60px 24px 24px;box-sizing:border-box;cursor:zoom-out;backdrop-filter:blur(4px);}
-.lb-overlay.open{display:flex;}
-.lb-img{max-width:92vw;max-height:80vh;object-fit:contain;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5);cursor:default;}
-.lb-close{position:fixed;top:18px;right:22px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;width:46px;height:46px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;backdrop-filter:blur(8px);padding:0;}
-.lb-close:hover{background:rgba(255,255,255,.28);}
-.lb-bar{margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;}
-.lb-download{display:inline-flex;align-items:center;gap:8px;background:white;color:#11151B;padding:12px 20px;border-radius:14px;text-decoration:none;font-weight:900;font-size:14px;transition:.2s;}
-.lb-download:hover{background:#f1f5f9;transform:translateY(-2px);}
-.lb-counter{color:rgba(255,255,255,.7);font-weight:800;font-size:14px;min-width:50px;text-align:center;}
-.lb-nav{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:white;width:46px;height:46px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;backdrop-filter:blur(8px);position:fixed;top:50%;transform:translateY(-50%);padding:0;line-height:1;}
-.lb-nav:hover{background:rgba(255,255,255,.28);}
-#lbPrev{left:16px;}
-#lbNext{right:16px;}
 /* Galeria de fotos do evento */
 .evento-galeria{margin:30px 0 6px;}
 .evento-galeria h3{color:#11151B;margin:0 0 16px;}
@@ -298,13 +286,16 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 
 <section class="evento-detalhe-hero">
     <div class="container">
-        <span><i class="bi bi-calendar-event-fill"></i> Evento<?= !empty($evento['categoria']) ? ' · ' . htmlspecialchars($evento['categoria']) : '' ?></span>
+        <span><i class="bi bi-calendar-event-fill"></i> <?= te('evento.hero.kicker') ?><?= !empty($evento['categoria']) ? ' · ' . htmlspecialchars($evento['categoria']) : '' ?></span>
         <h1><?= htmlspecialchars($evento['titulo']) ?></h1>
-        <?php if (!empty($evento['data_evento'])): ?>
+        <?php if (!empty($evento['data_evento'])): require_once __DIR__ . "/includes/calendario.php"; ?>
+            <?php $fmt = eventoDiaInteiro($evento) ? 'd/m/Y' : 'd/m/Y H:i'; /* sem hora: não mostrar "00:00" */ ?>
             <div class="evento-detalhe-data badge">
                 <i class="bi bi-calendar-event-fill"></i>
-                <?= date('d/m/Y H:i', strtotime($evento['data_evento'])) ?><?php if (!empty($evento['data_fim'])): ?> &ndash; <?= date('d/m/Y H:i', strtotime($evento['data_fim'])) ?><?php endif; ?>
+                <?= date($fmt, strtotime($evento['data_evento'])) ?><?php if (!empty($evento['data_fim'])): ?> &ndash; <?= date($fmt, strtotime($evento['data_fim'])) ?><?php endif; ?>
+                <?php if ($faltam = eventoFaltam($evento)): ?><span class="cal-faltam"><?= $faltam ?></span><?php endif; ?>
             </div>
+            <?= botoesCalendario($evento) ?>
         <?php endif; ?>
     </div>
 </section>
@@ -335,28 +326,28 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
             ?>
                 <div class="evento-inscricao-box">
                     <div class="evento-inscricao-head">
-                        <strong><i class="bi bi-clipboard2-check"></i> Inscrições</strong>
+                        <strong><i class="bi bi-clipboard2-check"></i> <?= te('evento.inscricoes.titulo') ?></strong>
                         <?php if ($restantesView !== null && !$esgotado): ?>
-                            <span><?= $restantesView ?> vaga(s) disponível(is)</span>
+                            <span><?= $restantesView ?> <?= te('evento.inscricoes.vagas') ?></span>
                         <?php endif; ?>
                     </div>
 
                     <?php if (isset($_GET['inscrito'])): ?>
-                        <div class="evento-inscricao-sucesso"><i class="bi bi-check-circle-fill"></i> Inscrição registada com sucesso! Vai receber um email de confirmação.</div>
+                        <div class="evento-inscricao-sucesso"><i class="bi bi-check-circle-fill"></i> <?= te('evento.inscricoes.sucesso') ?></div>
                     <?php elseif ($prazoPassou): ?>
-                        <p class="evento-inscricao-fechado">As inscrições para este evento já encerraram.</p>
+                        <p class="evento-inscricao-fechado"><?= te('evento.inscricoes.encerradas') ?></p>
                     <?php elseif ($esgotado): ?>
-                        <p class="evento-inscricao-fechado">Lamentamos, as vagas para este evento já se esgotaram.</p>
+                        <p class="evento-inscricao-fechado"><?= te('evento.inscricoes.esgotadas') ?></p>
                     <?php else: ?>
                         <?php if ($inscricaoErro): ?>
                             <div class="evento-inscricao-erro"><?= htmlspecialchars($inscricaoErro) ?></div>
                         <?php endif; ?>
                         <form method="POST" class="evento-inscricao-form" id="formInscricaoEvento">
                             <input type="hidden" name="inscrever_evento" value="1">
-                            <p class="evento-inscricao-nota">Preencha o nome e pelo menos um contacto (email ou telefone).</p>
+                            <p class="evento-inscricao-nota"><?= te('evento.inscricoes.nota') ?></p>
                             <div class="evento-inscricao-grid">
                                 <div class="evento-campo">
-                                    <label for="inscNome">Nome completo *</label>
+                                    <label for="inscNome"><?= te('evento.inscricoes.campo_nome') ?></label>
                                     <input type="text" id="inscNome" name="nome" required value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>">
                                 </div>
                                 <div class="evento-campo">
@@ -368,7 +359,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                                     <input type="tel" id="inscTelefone" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
                                 </div>
                                 <div class="evento-campo">
-                                    <label for="inscNumPessoas">Nº de pessoas</label>
+                                    <label for="inscNumPessoas"><?= te('evento.inscricoes.campo_pessoas') ?></label>
                                     <input type="number" id="inscNumPessoas" name="num_pessoas" min="1" <?= $restantesView !== null ? 'max="' . $restantesView . '"' : '' ?> value="<?= htmlspecialchars($_POST['num_pessoas'] ?? '1') ?>">
                                 </div>
 
@@ -389,10 +380,10 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                                 <?php endforeach; ?>
                             </div>
                             <div class="evento-campo">
-                                <label for="inscObservacoes">Observações (opcional)</label>
+                                <label for="inscObservacoes"><?= te('evento.inscricoes.campo_obs') ?></label>
                                 <textarea id="inscObservacoes" name="observacoes"><?= htmlspecialchars($_POST['observacoes'] ?? '') ?></textarea>
                             </div>
-                            <button type="submit" class="hero-btn"><i class="bi bi-send-fill"></i> Inscrever</button>
+                            <button type="submit" class="hero-btn"><i class="bi bi-send-fill"></i> <?= te('evento.inscricoes.botao') ?></button>
                         </form>
                         <script>
                         document.getElementById('formInscricaoEvento').addEventListener('submit', function (e) {
@@ -410,7 +401,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 
             <?php if (!empty($fotosGaleriaEvento)): ?>
                 <div class="evento-galeria" data-carrossel-substitui>
-                    <h3>Galeria de fotos</h3>
+                    <h3><?= te('evento.galeria.titulo') ?></h3>
                     <div class="evento-galeria-grid">
                         <?php foreach ($fotosGaleriaEvento as $gIdx => $g): ?>
                             <a class="evento-galeria-item" href="#" onclick="lbAbrir(todasImagensEvento, <?= $coverOffsetEvento + $gIdx ?>); return false;">
@@ -423,8 +414,8 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 
             <div class="evento-share-box">
                 <div class="evento-share-head">
-                    <strong>Partilhar este evento</strong>
-                    <span>Ajude a divulgar</span>
+                    <strong><?= te('evento.partilha.titulo') ?></strong>
+                    <span><?= te('evento.partilha.texto') ?></span>
                 </div>
                 <div class="evento-share-buttons">
                     <a class="share-btn share-facebook" href="<?= htmlspecialchars($facebookShareEvento) ?>" target="_blank" rel="noopener">
@@ -434,22 +425,22 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                         <i class="bi bi-whatsapp"></i> WhatsApp
                     </a>
                     <button type="button" class="share-btn share-copy" onclick="copiarLinkEvento()">
-                        <i class="bi bi-link-45deg"></i> Copiar link
+                        <i class="bi bi-link-45deg"></i> <?= te('evento.partilha.copiar') ?>
                     </button>
                     <a class="share-btn share-email" href="<?= htmlspecialchars($emailShareEvento) ?>">
                         <i class="bi bi-envelope-fill"></i> Email
                     </a>
                 </div>
-                <div class="share-toast" id="shareToastEvento">Link copiado com sucesso.</div>
+                <div class="share-toast" id="shareToastEvento"><?= te('evento.partilha.copiado') ?></div>
             </div>
 
             <div class="evento-detalhe-actions">
-                <a class="hero-btn" href="/eventos.php"><i class="bi bi-arrow-left"></i> Voltar aos eventos</a>
+                <a class="hero-btn" href="/eventos.php"><i class="bi bi-arrow-left"></i> <?= te('evento.navegacao.voltar') ?></a>
             </div>
 
             <?php if (!empty($outrosEventos)): ?>
                 <div class="evento-outros">
-                    <h3>Outros eventos</h3>
+                    <h3><?= te('evento.sidebar.titulo') ?></h3>
                     <?php foreach ($outrosEventos as $ev): ?>
                         <a class="evento-outros-item" href="/evento.php?id=<?= (int)$ev['id'] ?>">
                             <strong><?= htmlspecialchars($ev['titulo']) ?></strong>
@@ -463,71 +454,9 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
     </div>
 </section>
 
-<div class="lb-overlay" id="lbOverlay" onclick="lbClose(event)" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
-    <button class="lb-close" onclick="lbFechar()" aria-label="Fechar">&#x2715;</button>
-    <button class="lb-nav" id="lbPrev" onclick="lbMover(-1,event)" aria-label="Imagem anterior">&#8249;</button>
-    <button class="lb-nav" id="lbNext" onclick="lbMover(1,event)" aria-label="Imagem seguinte">&#8250;</button>
-    <img class="lb-img" id="lbImg" src="" alt="">
-    <div class="lb-bar">
-        <a class="lb-download" id="lbDownload" href="" download><i class="bi bi-download"></i> Descarregar</a>
-        <span class="lb-counter" id="lbCounter"></span>
-    </div>
-</div>
-
 <script>
 var todasImagensEvento = <?= json_encode($todasImagensEvento, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-var lbImagens = [];
-var lbIdx = 0;
-var lbUltimoFoco = null;
 
-function lbMostrar() {
-    document.getElementById('lbImg').src = lbImagens[lbIdx];
-    document.getElementById('lbDownload').href = lbImagens[lbIdx];
-    var multi = lbImagens.length > 1;
-    document.getElementById('lbCounter').textContent = multi ? (lbIdx+1)+' / '+lbImagens.length : '';
-    document.getElementById('lbPrev').style.display = multi ? 'flex' : 'none';
-    document.getElementById('lbNext').style.display = multi ? 'flex' : 'none';
-}
-function lbAbrir(imgs, idx) {
-    lbUltimoFoco = document.activeElement;
-    lbImagens = imgs; lbIdx = idx;
-    lbMostrar();
-    document.getElementById('lbOverlay').classList.add('open');
-    document.addEventListener('keydown', lbTecla);
-    document.querySelector('.lb-close').focus();
-}
-function lbMover(dir, e) {
-    if (e) e.stopPropagation();
-    lbIdx = (lbIdx + dir + lbImagens.length) % lbImagens.length;
-    lbMostrar();
-}
-function lbFechar() {
-    document.getElementById('lbOverlay').classList.remove('open');
-    document.getElementById('lbImg').src = '';
-    document.removeEventListener('keydown', lbTecla);
-    if (lbUltimoFoco) { lbUltimoFoco.focus(); lbUltimoFoco = null; }
-}
-function lbClose(e) { if (e.target.id === 'lbOverlay') lbFechar(); }
-function lbTecla(e) {
-    if (e.key === 'Escape') lbFechar();
-    else if (e.key === 'ArrowLeft') lbMover(-1);
-    else if (e.key === 'ArrowRight') lbMover(1);
-    else if (e.key === 'Tab') lbTrapFocus(e);
-}
-function lbTrapFocus(e) {
-    var focaveis = Array.prototype.filter.call(
-        document.getElementById('lbOverlay').querySelectorAll('button, a[href]'),
-        function (el) { return el.offsetParent !== null; }
-    );
-    if (!focaveis.length) return;
-    var primeiro = focaveis[0];
-    var ultimo = focaveis[focaveis.length - 1];
-    if (e.shiftKey && document.activeElement === primeiro) {
-        e.preventDefault(); ultimo.focus();
-    } else if (!e.shiftKey && document.activeElement === ultimo) {
-        e.preventDefault(); primeiro.focus();
-    }
-}
 function copiarLinkEvento() {
     var link = <?= json_encode($urlAtualEvento, JSON_UNESCAPED_UNICODE) ?>;
     var toast = document.getElementById('shareToastEvento');

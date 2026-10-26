@@ -1,0 +1,64 @@
+/* Modo escuro — ajustes manuais (CORE). Carregado depois do tema-escuro.css (gerado por
+   tools/gerar-tema-escuro.js), para corrigir o que a conversão automática não acerta. */
+
+:root[data-tema="escuro"] body{ background: var(--escuro-fundo); color: var(--escuro-texto); }
+
+/* ===== Contraste (10/2026) — vale para os DOIS temas =====
+   1) Cartões de vidro dentro dos banners escuros (ex.: «RGPD» na Proteção de Dados,
+      «Confidencialidade» no Canal de Denúncias). A camada de tema do footer.php pinta o texto
+      dos banners com a cor escura do tema claro, e estes cartões ficavam escuro-sobre-escuro. */
+body:not(#_) [class*="hero"] [class*="card-hero"] :is(h2, h3, h4, strong, i, .bi){ color: #fff !important; }
+body:not(#_) [class*="hero"] [class*="card-hero"] :is(p, span, li, small){ color: rgba(255,255,255,.88) !important; }
+body:not(#_) [class*="hero"] [class*="card-hero"] strong .bi{ color: var(--cor-secundaria) !important; }
+
+/* 2) Etiquetas (kickers) douradas sobre fundo claro: o dourado da marca (var(--ouro, #B79420)) só dá ~2,5:1
+      em fundo claro. Fora dos banners usam o dourado escurecido (≥ 4,5:1, WCAG AA). */
+body:not(#_) :is(.historia-kicker, .freguesia-kicker, .ponto-mini-tag, .docs-kicker, .section-kicker):not([class*="hero"] *){
+    color: var(--tema-acento-escuro, var(--ouro-texto, #856611)) !important;
+}
+:root[data-tema="escuro"] body:not(#_) :is(.historia-kicker, .freguesia-kicker, .ponto-mini-tag, .docs-kicker):not([class*="hero"] *){
+    color: var(--ouro-vivo, #e3c463) !important;
+}
+
+/* Botões dourados do rodapé: o footer.php força a cor do texto do rodapé (clara no escuro)
+   em todos os links/botões — sobre dourado tem de continuar escura */
+:root[data-tema="escuro"] .rm-footer .rm-footer-social a,
+:root[data-tema="escuro"] .rm-footer .rm-footer-newsletter button,
+:root[data-tema="escuro"] .rm-footer .rm-footer-newsletter button *{ color: #11151B !important; }
+
+/* etiqueta do cartão escuro lateral da História: dourado claro (sobre fundo escuro) */
+body:not(#_) .historia-side-kicker{ color: var(--ouro-vivo, #e3c463) !important; }
+
+/* etiqueta "Faltam N dias" dentro dos banners: a camada de tema pinta os <span> dos banners
+   de dourado — aqui o fundo já é dourado, o texto tem de ser escuro */
+body:not(#_) .cal-faltam{ color: #11151b !important; background: var(--cor-secundaria) !important; border: 0 !important; }
+
+/* Contactos úteis: o botão "Ligar" mantém o verde no modo escuro (a camada genérica de links
+   do tema escuro tirava-lhe o fundo) */
+:root[data-tema="escuro"] body:not(#_) .cu__ligar{ background: var(--cor-principal) !important; color: #fff !important; }
+:root[data-tema="escuro"] body:not(#_) .cu__ligar:hover{ filter: brightness(1.15); }
+
+
+
+/* Executivo (20/10/2026): etiquetas, iniciais e ícones legíveis no escuro; botão principal cheio */
+:root[data-tema="escuro"] body:not(#_) :is(.exe-etiqueta, .exe-pres__inicial, .exe-membro__inicial, .exe-comp__item h3 i, .exe-contactos i){
+    color: color-mix(in srgb, var(--cor-principal) 40%, #fff);
+    background: color-mix(in srgb, var(--cor-principal) 28%, var(--escuro-superficie, #1a1f24));
+}
+:root[data-tema="escuro"] body:not(#_) :is(.exe-atalho i, .exe-sec__kicker, .exe-membro a, .exe-fonte a){ color: color-mix(in srgb, var(--cor-principal) 40%, #fff); }
+:root[data-tema="escuro"] body:not(#_) .exe-btn--principal{ background: var(--cor-principal); border-color: var(--cor-principal); color: #fff; }
+:root[data-tema="escuro"] body:not(#_) .exe-membro :is(.exe-membro__foto, .exe-membro__inicial){ box-shadow: 0 0 0 4px var(--escuro-superficie, #1a1f24), 0 0 0 5px rgb(255 255 255 / .12); }
+
+/* Composição da Assembleia (20/10/2026): iniciais, cargos e ícones legíveis no escuro */
+:root[data-tema="escuro"] body:not(#_) :is(.asm-pessoa__inicial, .asm-cargo){
+    color: color-mix(in srgb, var(--cor-principal) 40%, #fff);
+    background: color-mix(in srgb, var(--cor-principal) 28%, var(--escuro-superficie, #1a1f24));
+}
+:root[data-tema="escuro"] body:not(#_) .asm-pessoa__inicial{ box-shadow: 0 0 0 4px var(--escuro-superficie, #1a1f24), 0 0 0 5px rgb(255 255 255 / .12); }
+:root[data-tema="escuro"] body:not(#_) :is(.asm-kick2, .asm-link i, .asm-falta > i, .asm-tabela summary, .asm-fonte a){ color: color-mix(in srgb, var(--cor-principal) 40%, #fff); }
+:root[data-tema="escuro"] body:not(#_) .asm-btn:not(.asm-btn--linha){ background: var(--cor-principal); color: #fff; }
+:root[data-tema="escuro"] body:not(#_) .asm-hemi circle{ stroke: var(--escuro-superficie, #1a1f24); }
+:root[data-tema="escuro"] body:not(#_) .asm-lugar circle{ stroke: var(--escuro-superficie, #1a1f24); }
+:root[data-tema="escuro"] body:not(#_) .asm-hemi__total{ fill: #f1f5f9; }
+:root[data-tema="escuro"] body:not(#_) :is(.asm-hemi__legenda, .asm-hemi__maioria){ fill: var(--escuro-texto-2, #94a3b8); }
+:root[data-tema="escuro"] body:not(#_) .asm-maioria line{ stroke: #94a3b8; }

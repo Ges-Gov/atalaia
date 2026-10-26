@@ -2,7 +2,7 @@
 <style>
 .legal-hero{background:linear-gradient(135deg,var(--cor-principal),#11151B 70%,#071c2e);color:#fff;padding:80px 0 96px}
 .legal-hero .container{max-width:900px}
-.legal-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
+.legal-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
 .legal-hero h1{font-size:clamp(34px,5vw,58px);margin:16px 0 10px;line-height:1.05}
 .legal-hero p{color:#dbeafe;font-size:18px;margin:0}
 .legal-shell{max-width:900px;margin:-46px auto 60px;position:relative;z-index:3;padding:0 16px}
@@ -14,72 +14,72 @@
 .legal-card a{color:var(--cor-principal);font-weight:800}
 .legal-meta{color:#64748b;font-size:14px;margin-top:8px}
 .legal-badge{display:inline-block;background:#dcfce7;color:#166534;border-radius:999px;padding:6px 14px;font-weight:900;font-size:14px}
-.legal-note{background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:14px 16px;color:color-mix(in srgb, var(--cor-secundaria) 45%, #000);font-weight:700;font-size:14px}
+.legal-note{background:#fffbeb;border:1px solid var(--ouro-fundo-2, #fde68a);border-radius:14px;padding:14px 16px;color:var(--ouro-texto, #92400e);font-weight:700;font-size:14px}
 </style>
 
 <section class="legal-hero">
     <div class="container">
-        <span class="legal-kicker"><i class="bi bi-universal-access"></i> Acessibilidade</span>
-        <h1>Declaração de Acessibilidade e Usabilidade</h1>
-        <p>Nos termos do Decreto-Lei n.º 83/2018, de 19 de outubro (Diretiva (UE) 2016/2102).</p>
+        <span class="legal-kicker"><i class="bi bi-universal-access"></i> <?= te('declaracao_acessibilidade.hero.kicker') ?></span>
+        <h1><?= te('declaracao_acessibilidade.hero.titulo') ?></h1>
+        <p><?= te('declaracao_acessibilidade.hero.subtitulo') ?></p>
     </div>
 </section>
 
 <div class="legal-shell">
     <div class="legal-card">
         <p>A <strong><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong> está
-        empenhada em tornar o seu sítio web acessível, em conformidade com o Decreto-Lei n.º 83/2018.
-        A presente declaração aplica-se ao sítio <strong><?= htmlspecialchars($_SERVER['HTTP_HOST'] ?? '') ?></strong>.</p>
+        <?= te('declaracao_acessibilidade.intro.texto') ?>
+        <?= te('declaracao_acessibilidade.intro.sitio') ?> <strong><?= htmlspecialchars($_SERVER['HTTP_HOST'] ?? '') ?></strong>.</p>
 
-        <h2>1. Estado de conformidade</h2>
-        <p><span class="legal-badge">Parcialmente conforme</span></p>
-        <p>Este sítio web está <strong>parcialmente conforme</strong> com as Diretrizes de Acessibilidade para o
-        Conteúdo Web (WCAG) 2.1, nível AA, devido às situações identificadas no ponto 3.</p>
+        <h2><?= te('declaracao_acessibilidade.ponto1.titulo') ?></h2>
+        <p><span class="legal-badge"><?= te('declaracao_acessibilidade.ponto1.selo') ?></span></p>
+        <p><?= te('declaracao_acessibilidade.ponto1.texto1') ?> <strong><?= te('declaracao_acessibilidade.ponto1.destaque') ?></strong> <?= te('declaracao_acessibilidade.ponto1.texto2') ?>
+        <?= te('declaracao_acessibilidade.ponto1.texto3') ?></p>
 
-        <h2>2. Medidas de acessibilidade já adotadas</h2>
+        <h2><?= te('declaracao_acessibilidade.ponto2.titulo') ?></h2>
         <ul>
-            <li>Identificação do idioma das páginas (português).</li>
-            <li>Textos alternativos nas imagens de conteúdo.</li>
-            <li>Estrutura de títulos e navegação consistente em todas as páginas.</li>
-            <li>Esquema de cores com contraste e tipografia legível.</li>
-            <li>Apresentação adaptável a diferentes dimensões de ecrã (dispositivos móveis).</li>
-            <li>Carregamento de conteúdos de terceiros (ex.: vídeo) apenas mediante consentimento.</li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida1') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida2') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida3') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida4') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida5') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto2.medida6') ?></li>
         </ul>
 
-        <h2>3. Conteúdo não acessível</h2>
-        <p>Apesar dos esforços, poderão existir limitações pontuais, designadamente:</p>
+        <h2><?= te('declaracao_acessibilidade.ponto3.titulo') ?></h2>
+        <p><?= te('declaracao_acessibilidade.ponto3.intro') ?></p>
         <ul>
-            <li>Alguns documentos em formato PDF publicados anteriormente podem não estar totalmente etiquetados.</li>
-            <li>Em secções com imagem ou vídeo de fundo, as ferramentas automáticas assinalam o contraste do
-            texto; após <strong>verificação manual</strong> confirmou-se que o texto é legível sobre o fundo
-            escurecido.</li>
-            <li>Conteúdos multimédia de plataformas externas (ex.: vídeo do YouTube), sujeitos às limitações
-            dessas plataformas.</li>
+            <li><?= te('declaracao_acessibilidade.ponto3.limitacao1') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto3.limitacao2_texto1') ?>
+            <?= te('declaracao_acessibilidade.ponto3.limitacao2_texto2') ?> <strong><?= te('declaracao_acessibilidade.ponto3.limitacao2_destaque') ?></strong> <?= te('declaracao_acessibilidade.ponto3.limitacao2_texto3') ?>
+            <?= te('declaracao_acessibilidade.ponto3.limitacao2_texto4') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto3.limitacao3_texto1') ?>
+            <?= te('declaracao_acessibilidade.ponto3.limitacao3_texto2') ?></li>
         </ul>
-        <p>Comprometemo-nos a corrigir progressivamente estas situações.</p>
+        <p><?= te('declaracao_acessibilidade.ponto3.compromisso') ?></p>
 
-        <h2>4. Elaboração da presente declaração</h2>
-        <p>Esta declaração foi elaborada em <strong><?= date('m/Y') ?></strong>, com base numa autoavaliação
-        que combinou:</p>
+        <h2><?= te('declaracao_acessibilidade.ponto4.titulo') ?></h2>
+        <p><?= te('declaracao_acessibilidade.ponto4.texto1') ?> <strong><?= date('m/Y') ?></strong><?= te('declaracao_acessibilidade.ponto4.texto2') ?>
+        <?= te('declaracao_acessibilidade.ponto4.texto3') ?></p>
         <ul>
-            <li>avaliação automática com a ferramenta AccessMonitor;</li>
-            <li>verificação manual — navegação por teclado, legibilidade do texto sobre fundos escuros/imagem,
-            ampliação até 200% e etiquetas dos formulários.</li>
+            <li><?= te('declaracao_acessibilidade.ponto4.metodo1') ?></li>
+            <li><?= te('declaracao_acessibilidade.ponto4.metodo2_texto1') ?>
+            <?= te('declaracao_acessibilidade.ponto4.metodo2_texto2') ?></li>
         </ul>
 
-        <h2>5. Contactos e mecanismo de resposta (feedback)</h2>
-        <p>Para comunicar problemas de acessibilidade ou solicitar informação em formato alternativo:</p>
+        <h2><?= te('declaracao_acessibilidade.ponto5.titulo') ?></h2>
+        <p><?= te('declaracao_acessibilidade.ponto5.intro') ?></p>
         <ul>
-            <?php if(siteConfig('email')): ?><li>Email: <?= htmlspecialchars(siteConfig('email')) ?></li><?php endif; ?>
-            <?php if(siteConfig('telefone')): ?><li>Telefone: <?= htmlspecialchars(siteConfig('telefone')) ?></li><?php endif; ?>
-            <li>Página de <a href="/contactos.php">Contactos</a>.</li>
+            <?php if(siteConfig('email')): ?><li><?= te('declaracao_acessibilidade.ponto5.email') ?> <?= htmlspecialchars(siteConfig('email')) ?></li><?php endif; ?>
+            <?php if(siteConfig('telefone')): ?><li><?= te('declaracao_acessibilidade.ponto5.telefone') ?> <?= htmlspecialchars(siteConfig('telefone')) ?></li><?php endif; ?>
+            <li><?= te('declaracao_acessibilidade.ponto5.contactos_texto') ?> <a href="/contactos.php"><?= te('declaracao_acessibilidade.ponto5.contactos_link') ?></a>.</li>
         </ul>
-        <p>Procuramos responder no prazo máximo de 15 dias úteis.</p>
+        <p><?= te('declaracao_acessibilidade.ponto5.prazo') ?></p>
 
-        <h2>6. Procedimento de queixa (via de recurso)</h2>
-        <p>Se não obtiver resposta satisfatória, pode apresentar queixa junto da
-        <strong>Agência para a Modernização Administrativa (AMA)</strong>, entidade responsável pela
-        monitorização — <a href="https://www.acessibilidade.gov.pt" target="_blank" rel="noopener">acessibilidade.gov.pt</a>.</p>
+        <h2><?= te('declaracao_acessibilidade.ponto6.titulo') ?></h2>
+        <p><?= te('declaracao_acessibilidade.ponto6.texto1') ?>
+        <strong><?= te('declaracao_acessibilidade.ponto6.entidade') ?></strong><?= te('declaracao_acessibilidade.ponto6.texto2') ?>
+        <?= te('declaracao_acessibilidade.ponto6.texto3') ?> <a href="https://www.acessibilidade.gov.pt" target="_blank" rel="noopener">acessibilidade.gov.pt</a>.</p>
 
     </div>
 </div>

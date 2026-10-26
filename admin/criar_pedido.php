@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $subcategoriaFinal = $subcategoria !== '' ? $subcategoria : null;
 
         do {
-            $codigoPedido = "AAEJ-" . date('Y') . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+            $codigoPedido = prefixoPedidos() . "-" . date('Y') . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
             $stmtCheck = $pdo->prepare("SELECT id FROM pedidos_junta WHERE codigo = ?");
             $stmtCheck->execute([$codigoPedido]);
         } while ($stmtCheck->fetch());

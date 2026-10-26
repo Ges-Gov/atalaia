@@ -27,13 +27,13 @@ if (session_status() === PHP_SESSION_NONE) {
     padding:18px;
     border:none;
     border-radius:14px;
-    background:var(--cor-secundaria);
+    background:var(--ouro, #C8A02E);
     color:#11151B;
     font-size:18px;
     font-weight:800;
     cursor:pointer;
     transition:.25s;
-    box-shadow:0 10px 25px color-mix(in srgb, var(--cor-secundaria) 35%, transparent);
+    box-shadow:0 10px 25px rgb(var(--ouro-rgb, 240 180 41) / .35);
 }
 
 .btn-enviar-pedido:hover{
@@ -116,13 +116,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$latitude || !$longitude) {
         $erro = "Selecione o local do pedido no mapa.";
     } elseif ($dentroFreguesia !== '1') {
-        $erro = "O local selecionado está fora da área da Freguesia de Atalaia e Alto Estanqueiro-Jardia.";
+        $erro = "O local selecionado está fora da área da Freguesia de " . nomeFreguesia() . ".";
     } elseif (submissaoRecente('pedido')) {
         $erro = "Já recebemos um pedido seu há pouco. Aguarde uns instantes antes de submeter outro.";
     } else {
 
         do {
-            $codigoPedido = "AAEJ-" . date('Y') . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+            $codigoPedido = prefixoPedidos() . "-" . date('Y') . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
             $stmtCheck = $pdo->prepare("SELECT id FROM pedidos_junta WHERE codigo = ?");
             $stmtCheck->execute([$codigoPedido]);
         } while ($stmtCheck->fetch());
@@ -241,16 +241,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="pedidos-hero-premium">
     <div class="container">
         <div class="pedidos-hero-content">
-            <span>Junta Virtual</span>
-            <h1>Pedidos à Junta</h1>
+            <span><?= te('pedidos.hero.kicker') ?></span>
+            <h1><?= te('pedidos.hero.titulo') ?></h1>
             <p>
-                Envie pedidos, sugestões ou situações que pretenda comunicar à Junta de Freguesia.
-                Indique o local no mapa e acompanhe o processo de forma simples e transparente.
+                <?= te('pedidos.hero.texto') ?>
+
             </p>
 
             <div class="pedidos-hero-actions">
-                <a href="#formPedido" class="hero-btn">Criar pedido</a>
-                <a href="/consultar-pedido.php" class="hero-btn">Consultar pedido</a>
+                <a href="#formPedido" class="hero-btn"><?= te('pedidos.hero.botao1') ?></a>
+                <a href="/consultar-pedido.php" class="hero-btn"><?= te('pedidos.hero.botao2') ?></a>
             </div>
         </div>
 
@@ -263,20 +263,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="pedidos-info-grid">
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-geo-alt"></i></div>
-                <h3>Escolha no mapa</h3>
-                <p>Selecione o local exato do pedido dentro da área da freguesia.</p>
+                <h3><?= te('pedidos.destaques.d1_titulo') ?></h3>
+                <p><?= te('pedidos.destaques.d1_texto') ?></p>
             </div>
 
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-camera"></i></div>
-                <h3>Anexe imagens</h3>
-                <p>Adicione fotografias para ajudar a Junta a analisar melhor a situação.</p>
+                <h3><?= te('pedidos.destaques.d2_titulo') ?></h3>
+                <p><?= te('pedidos.destaques.d2_texto') ?></p>
             </div>
 
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-search"></i></div>
-                <h3>Acompanhe online</h3>
-                <p>Receba um código para consultar o estado do pedido posteriormente.</p>
+                <h3><?= te('pedidos.destaques.d3_titulo') ?></h3>
+                <p><?= te('pedidos.destaques.d3_texto') ?></p>
             </div>
         </div>
     </div>
@@ -286,21 +286,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container pedidos-grid pedidos-premium-grid">
 
         <div class="content-box pedidos-form-premium-card">
-            <span class="section-kicker">Participação cidadã</span>
-            <h2>Submeter pedido</h2>
+            <span class="section-kicker"><?= te('pedidos.formulario.kicker') ?></span>
+            <h2><?= te('pedidos.formulario.titulo') ?></h2>
 
             <?php if ($cidadaoLogado): ?>
                 <div class="alerta-sucesso">
-                    Está autenticado como <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.
-                    Este pedido ficará associado à sua área pessoal.
+                    <?= te('pedidos.formulario.autenticado') ?> <strong><?= htmlspecialchars($cidadaoLogado['nome']) ?></strong>.
+                    <?= te('pedidos.formulario.autenticado_nota') ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($sucesso): ?>
                 <div class="alerta-sucesso">
-                    Pedido enviado com sucesso.<br>
-                    <strong>Código do pedido:</strong> <?= htmlspecialchars($codigoPedido) ?><br>
-                    Guarde este código para acompanhar o estado do seu pedido.
+                    <?= te('pedidos.formulario.sucesso') ?><br>
+                    <strong><?= te('pedidos.formulario.sucesso_codigo') ?></strong> <?= htmlspecialchars($codigoPedido) ?><br>
+                    <?= te('pedidos.formulario.sucesso_nota') ?>
                 </div>
             <?php endif; ?>
 
@@ -315,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input 
                         type="text" 
                         name="nome" 
-                        placeholder="O seu nome *" 
+                        placeholder="<?= te('pedidos.formulario.ph_nome') ?>" 
                         value="<?= htmlspecialchars($nomeForm) ?>"
                         <?= $cidadaoLogado ? 'readonly' : '' ?>
                         required
@@ -324,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Email"
+                        placeholder="<?= te('pedidos.formulario.ph_email') ?>"
                         value="<?= htmlspecialchars($emailForm) ?>"
                         <?= $cidadaoLogado ? 'readonly' : '' ?>
                     >
@@ -334,12 +334,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input 
                         type="text" 
                         name="telefone" 
-                        placeholder="Telefone"
+                        placeholder="<?= te('pedidos.formulario.ph_telefone') ?>"
                         value="<?= htmlspecialchars($telefoneForm) ?>"
                     >
 
                     <select name="categoria" id="categoriaOcorrencia" required>
-                        <option value="">Escolha a categoria *</option>
+                        <option value=""><?= te('pedidos.formulario.categoria') ?></option>
                         <?php foreach ($categoriasOcorrencia as $cat): ?>
                             <option value="<?= htmlspecialchars($cat['designacao']) ?>" <?= ($categoria ?? '') === $cat['designacao'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['designacao']) ?></option>
                         <?php endforeach; ?>
@@ -348,31 +348,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-grid">
                     <select name="subcategoria" id="subcategoriaOcorrencia">
-                        <option value="">Subcategoria (opcional)</option>
+                        <option value=""><?= te('pedidos.formulario.subcategoria') ?></option>
                     </select>
 
-                    <input type="text" name="assunto" placeholder="Assunto *" required>
+                    <input type="text" name="assunto" placeholder="<?= te('pedidos.formulario.ph_assunto') ?>" required>
                 </div>
 
-                <input type="text" name="localizacao" id="localizacao" placeholder="Localização / Rua / Lugar">
+                <input type="text" name="localizacao" id="localizacao" placeholder="<?= te('pedidos.formulario.ph_localizacao') ?>">
 
-                <textarea name="mensagem" placeholder="Descreva o pedido *" required></textarea>
+                <textarea name="mensagem" placeholder="<?= te('pedidos.formulario.ph_mensagem') ?>" required></textarea>
 
                 <div class="mapa-pedido-block">
                     <div class="mapa-pedido-title">
                         <div>
                             <span><i class="bi bi-geo-alt"></i></span>
-                            <strong>Localização no mapa</strong>
+                            <strong><?= te('pedidos.formulario.mapa_titulo') ?></strong>
                         </div>
-                        <small>Obrigatório</small>
+                        <small><?= te('pedidos.formulario.mapa_obrigatorio') ?></small>
                     </div>
 
                     <button type="button" class="btn-localizacao-atual" id="btnLocalizacaoAtual">
-                        <i class="bi bi-crosshair"></i> Usar localização atual
+                        <i class="bi bi-crosshair"></i> <?= te('pedidos.formulario.mapa_botao') ?>
                     </button>
 
                     <div class="mapa-form-info" id="mapaInfoTexto">
-                        Clique dentro da área da Freguesia de Atalaia e Alto Estanqueiro-Jardia para indicar o local exato do pedido.
+                        <?= te('pedidos.formulario.mapa_ajuda') ?>
                     </div>
 
                     <div id="mapaPedidoForm"></div>
@@ -382,72 +382,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="hidden" name="longitude" id="longitude">
                 <input type="hidden" name="dentro_freguesia" id="dentro_freguesia" value="0">
 
-                <label>Anexar imagens</label>
+                <label><?= te('pedidos.formulario.anexos_titulo') ?></label>
 
                 <div class="upload-pro">
                     <input type="file" name="imagens[]" id="imagensPedido" multiple accept="image/*">
                     <label for="imagensPedido">
                         <span><i class="bi bi-camera"></i></span>
-                        <strong>Escolher imagens</strong>
-                        <small id="fileNamePedido">Pode selecionar várias imagens JPG, PNG ou WEBP</small>
+                        <strong><?= te('pedidos.formulario.anexos_botao') ?></strong>
+                        <small id="fileNamePedido"><?= te('pedidos.formulario.anexos_ajuda') ?></small>
                     </label>
 
                     <div id="previewPedido" class="preview-pedido"></div>
                 </div>
 
                 <button type="submit" class="btn-enviar-pedido">
-    <i class="bi bi-upload"></i> Enviar Pedido
+    <i class="bi bi-upload"></i> <?= te('pedidos.formulario.botao') ?>
 </button>
             </form>
         </div>
 
         <aside class="content-box pedido-info pedido-info-premium">
-            <span class="section-kicker">Como funciona?</span>
-            <h2>Processo simples e transparente</h2>
+            <span class="section-kicker"><?= te('pedidos.passos.titulo') ?></span>
+            <h2><?= te('pedidos.passos.subtitulo') ?></h2>
 
             <div class="pedido-step">
                 <strong>1</strong>
-                <p>Preenche o formulário com a informação do pedido.</p>
+                <p><?= te('pedidos.passos.p1') ?></p>
             </div>
 
             <div class="pedido-step">
                 <strong>2</strong>
-                <p>Clica dentro da área da freguesia no mapa.</p>
+                <p><?= te('pedidos.passos.p2') ?></p>
             </div>
 
             <div class="pedido-step">
                 <strong>3</strong>
-                <p>Se o ponto estiver fora da freguesia, o sistema bloqueia o envio.</p>
+                <p><?= te('pedidos.passos.p3') ?></p>
             </div>
 
             <div class="pedido-step">
                 <strong>4</strong>
-                <p>A Junta recebe o pedido no backoffice.</p>
+                <p><?= te('pedidos.passos.p4') ?></p>
             </div>
 
             <div class="pedido-step">
                 <strong>5</strong>
-                <p>Recebe um código para acompanhar o estado do pedido.</p>
+                <p><?= te('pedidos.passos.p5') ?></p>
             </div>
 
             <?php if ($cidadaoLogado): ?>
                 <div class="pedido-step">
                     <strong>6</strong>
-                    <p>O pedido fica disponível automaticamente na sua área pessoal.</p>
+                    <p><?= te('pedidos.passos.p_autenticado') ?></p>
                 </div>
             <?php endif; ?>
 
             <p class="nota">
-                Os dados enviados são utilizados apenas para análise e eventual contacto sobre o pedido.
+                <?= te('pedidos.sidebar.aviso_dados') ?>
             </p>
 
             <a class="hero-btn" href="/consultar-pedido.php">
-                Consultar pedido
+                <?= te('pedidos.sidebar.botao_consultar') ?>
             </a>
 
             <?php if ($cidadaoLogado): ?>
                 <a class="btn" href="/minha-area.php" style="margin-top:10px;">
-                    Minha Área
+                    <?= te('pedidos.sidebar.botao_area') ?>
                 </a>
             <?php endif; ?>
         </aside>
@@ -568,7 +568,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }).addTo(mapa);
 
-            mapa.fitBounds(freguesiaLayer.getBounds(), { padding: [30, 30] });
+            if (freguesiaLayer.getBounds().isValid()) mapa.fitBounds(freguesiaLayer.getBounds(), { padding: [30, 30] });
             freguesiaLayer.bringToFront();
         })
         .catch(() => {
@@ -589,7 +589,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!dentro) {
             marker.bindPopup("Fora da área da freguesia").openPopup();
 
-            limparSelecao("Este ponto está fora da área da Freguesia de Atalaia e Alto Estanqueiro-Jardia. Escolha um ponto dentro do limite marcado no mapa.");
+            limparSelecao("Este ponto está fora da área da Freguesia de <?= htmlspecialchars(nomeFreguesia()) ?>. Escolha um ponto dentro do limite marcado no mapa.");
             return;
         }
 
@@ -663,7 +663,7 @@ document.addEventListener("DOMContentLoaded", function () {
         formPedido.addEventListener('submit', function (e) {
             if (!inputLat.value || !inputLng.value || inputDentro.value !== '1') {
                 e.preventDefault();
-                limparSelecao("Antes de enviar, selecione no mapa um ponto dentro da Freguesia de Atalaia e Alto Estanqueiro-Jardia.");
+                limparSelecao("Antes de enviar, selecione no mapa um ponto dentro da Freguesia de <?= htmlspecialchars(nomeFreguesia()) ?>.");
                 mapa.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });

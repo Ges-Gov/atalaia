@@ -106,6 +106,33 @@ function imagensDaOrigem(PDO $pdo, string $origem, int $origemId): array
 }
 
 /**
+ * Tira das fotos de um álbum as que repetem a foto principal (ou outra já incluída). Muitas vezes a foto
+ * principal é também a primeira do álbum, às vezes copiada com outro nome ou noutra pasta — compara-se o
+ * conteúdo (tamanho e, se igual, md5), como na apresentação da página inicial. $principal e $url($ficheiro)
+ * são caminhos web ("/assets/img/…"). Sem isto, o carrossel das fichas mostrava a mesma foto duas vezes.
+ */
+function fotosSemRepetidas(array $fotos, string $principal = '', ?callable $url = null): array
+{
+    $url = $url ?? 'imagemGaleriaUrl';
+    $chave = function (string $web): string {
+        $caminho = __DIR__ . '/..' . (string)parse_url(html_entity_decode($web), PHP_URL_PATH);
+        return is_file($caminho) ? filesize($caminho) . '-' . md5_file($caminho) : $web;
+    };
+    // também conta como repetida a foto com o mesmo nome de ficheiro (a mesma foto, recomprimida noutra pasta)
+    $nome = fn(string $web): string => 'n:' . strtolower(basename((string)parse_url(html_entity_decode($web), PHP_URL_PATH)));
+    $vistas = $principal !== '' ? [$chave($principal) => true, $nome($principal) => true] : [];
+    $saida = [];
+    foreach ($fotos as $f) {
+        $web = $url($f['ficheiro']);
+        $k = $chave($web); $n = $nome($web);
+        if (isset($vistas[$k]) || isset($vistas[$n])) continue;
+        $vistas[$k] = $vistas[$n] = true;
+        $saida[] = $f;
+    }
+    return $saida;
+}
+
+/**
  * Recebe o $_FILES de um input múltiplo (name="fotos[]") e grava as imagens
  * válidas no álbum indicado. Devolve [nGravadas, arrayDeErros].
  *
@@ -283,4 +310,39 @@ function erroUploadTexto(int $codigo): string
         default:
             return "erro desconhecido no envio (código $codigo).";
     }
+}
+
+/**
+ * Miniatura de uma foto do site (ex.: "/assets/img/galeria/x.jpg") para tiras de miniaturas.
+ * Gerada uma vez com o GD em assets/img/miniaturas/ (JPEG, $largura px) e reaproveitada
+ * enquanto o original não mudar. Sem GD ou se falhar, devolve a própria foto.
+ */
+function miniaturaImagem(string $src, int $largura = 240): string
+{
+    $raiz = realpath(__DIR__ . '/..');
+    $orig = $raiz . $src;
+    if (!function_exists('imagecreatetruecolor') || !is_file($orig)) return $src;
+    $nome = substr(md5($src), 0, 12) . '-' . $largura . '.jpg';
+    $dest = $raiz . '/assets/img/miniaturas/' . $nome;
+    $url = '/assets/img/miniaturas/' . $nome;
+    if (is_file($dest) && filemtime($dest) >= filemtime($orig)) return $url;
+    $info = @getimagesize($orig);
+    if (!$info || $info[0] < 1) return $src;
+    if ($info[0] <= $largura) return $src;   // a foto já é mais pequena: nunca aumentar
+    $img = match ($info[2]) {
+        IMAGETYPE_JPEG => @imagecreatefromjpeg($orig),
+        IMAGETYPE_PNG  => @imagecreatefrompng($orig),
+        IMAGETYPE_WEBP => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($orig) : false,
+        default        => false,
+    };
+    if (!$img) return $src;
+    $alt = max(1, (int)round($info[1] * $largura / $info[0]));
+    $mini = imagecreatetruecolor($largura, $alt);
+    imagefill($mini, 0, 0, imagecolorallocate($mini, 255, 255, 255));
+    imagecopyresampled($mini, $img, 0, 0, 0, 0, $largura, $alt, $info[0], $info[1]);
+    if (!is_dir(dirname($dest))) @mkdir(dirname($dest), 0755, true);
+    $ok = @imagejpeg($mini, $dest, 78);
+    imagedestroy($img);
+    imagedestroy($mini);
+    return $ok ? $url : $src;
 }

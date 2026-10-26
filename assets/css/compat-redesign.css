@@ -1,0 +1,232 @@
+/* compat-redesign.css — gerado (20/10/2026) a partir do CSS ANTIGO do Sousel.
+   Regras das classes que o site ainda usa e que o CSS novo do redesign não estiliza
+   (21 classes). Cada componente é retirado daqui quando passa para o visual novo. */
+
+.docs-buttons {display: flex;
+    gap: 12px;
+    flex-wrap: wrap;}
+@media (max-width: 900px) {
+.bottom-icon-wrap {position: relative;}
+.bottom-icon-wrap b {position: absolute;
+        top: -8px;
+        right: -13px;
+        background: #ef4444;
+        color: white;
+        border-radius: 999px;
+        min-width: 18px;
+        height: 18px;
+        display: grid;
+        place-items: center;
+        font-size: 10px;
+        border: 2px solid white;}
+}
+.junta-bolso-section {background:linear-gradient(180deg,#ffffff,#f8fafc);}
+.junta-bolso-card {display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:34px;
+    align-items:center;
+    background:#11151B;
+    border-radius:36px;
+    padding:42px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.18);}
+.junta-bolso-card::after {content:"";
+    position:absolute;
+    width:320px;
+    height:320px;
+    border-radius:50%;
+    background:rgba(255,255,255,.05);
+    right:-100px;
+    bottom:-100px;}
+.junta-bolso-content {position:relative;
+    z-index:2;}
+.junta-bolso-content .section-kicker {color:var(--cor-secundaria);}
+.junta-bolso-content h2 {color:white;
+    font-size:46px;
+    margin:12px 0 18px;
+    line-height:1.1;}
+.junta-bolso-content p {color:#dbeafe;
+    line-height:1.8;
+    font-size:17px;
+    max-width:700px;}
+.junta-bolso-actions {display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:28px;}
+.junta-bolso-stats {display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    position:relative;
+    z-index:2;}
+.junta-stat-card {background:#242A30;
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(10px);
+    border-radius:24px;
+    padding:28px 20px;
+    text-align:center;
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    transition:.25s ease;}
+a.junta-stat-card:hover {background:rgba(255,255,255,.2);
+    transform:translateY(-5px);}
+.junta-stat-card strong {display:block;
+    color:white;
+    font-size:38px;
+    line-height:1;
+    margin-bottom:10px;}
+.junta-stat-card span {color:#dbeafe;
+    font-weight:700;
+    line-height:1.5;}
+@media(max-width:1000px) {
+.junta-bolso-card {grid-template-columns:1fr;}
+}
+@media(max-width:700px) {
+.junta-bolso-card {padding:28px;}
+.junta-bolso-content h2 {font-size:34px;}
+.junta-bolso-stats {grid-template-columns:1fr;}
+}
+.freguesia-stats-section {background:linear-gradient(180deg,#ffffff,#f8fafc);}
+.freguesia-stats-grid {display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+    margin-top:40px;}
+.freguesia-stat-card {background:white;
+    border-radius:28px;
+    padding:34px 24px;
+    text-align:center;
+    border:1px solid #eef2f7;
+    box-shadow:0 18px 50px rgba(0,0,0,.08);
+    transition:.28s ease;
+    position:relative;
+    overflow:hidden;
+    display:block;
+    text-decoration:none;
+    color:inherit;}
+.freguesia-stat-card::before {content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg,var(--cor-principal),var(--cor-secundaria));}
+.freguesia-stat-card:hover {transform:translateY(-8px);
+    box-shadow:0 28px 65px rgba(0,0,0,.14);}
+.freguesia-stat-icon {width:74px;
+    height:74px;
+    border-radius:24px;
+    background:linear-gradient(135deg,var(--cor-principal),#11151B);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:34px;
+    margin:0 auto 22px;
+    box-shadow:0 14px 35px rgba(0,0,0,.16);}
+.freguesia-stat-card strong {display:block;
+    font-size:52px;
+    line-height:1;
+    color:#11151B;
+    margin-bottom:12px;
+    font-weight:900;}
+.freguesia-stat-card span {color:#64748b;
+    font-weight:700;
+    line-height:1.5;
+    display:block;}
+.home-ocorrencias-section {background:#f8fafc;}
+.home-ocorrencias-card {display:grid;
+    grid-template-columns:390px 1fr;
+    height:430px;
+    background:white;
+    border-radius:30px;
+    overflow:hidden;
+    box-shadow:0 24px 70px rgba(0,0,0,.12);
+    border:1px solid #e5e7eb;}
+.home-ocorrencias-list {padding:24px;
+    border-right:1px solid #e5e7eb;
+    overflow-y:auto;}
+.home-ocorrencias-head {display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;}
+.home-ocorrencias-head strong {color:#11151B;
+    font-size:21px;}
+.home-ocorrencias-head span {width:38px;
+    height:38px;
+    border-radius:50%;
+    background:var(--cor-principal);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-weight:900;}
+.home-ocorrencia-item {width:100%;
+    border:0;
+    background:white;
+    border-bottom:1px solid #eef2f7;
+    padding:14px 0;
+    display:grid;
+    grid-template-columns:28px 1fr auto;
+    gap:12px;
+    text-align:left;
+    cursor:pointer;
+    transition:.2s ease;}
+.home-ocorrencia-item:hover {background:#f8fafc;
+    padding-left:10px;
+    border-radius:14px;}
+.home-ocorrencia-dot {width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#f59f00;
+    margin-top:2px;
+    position:relative;}
+.home-ocorrencia-dot::after {content:"!";
+    color:white;
+    font-weight:900;
+    font-size:14px;
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;}
+.home-ocorrencia-item strong {display:block;
+    color:#11151B;
+    font-size:15px;
+    margin-bottom:4px;}
+.home-ocorrencia-item small {color:#64748b;
+    line-height:1.4;}
+.home-ocorrencia-item em {color:var(--cor-principal);
+    font-style:normal;
+    font-size:12px;
+    font-weight:900;}
+@media(max-width:900px) {
+.home-ocorrencias-card {grid-template-columns:1fr;
+        height:auto;}
+.home-ocorrencias-list {border-right:0;
+        border-bottom:1px solid #e5e7eb;
+        max-height:330px;}
+}
+.pedido-timeline {display:flex;
+    align-items:center;
+    margin:20px 0 30px;}
+.timeline-step {text-align:center;
+    min-width:110px;}
+.timeline-step span {width:44px;
+    height:44px;
+    border-radius:50%;
+    background:#e5e7eb;
+    color:#64748b;
+    display:grid;
+    place-items:center;
+    margin:0 auto 8px;
+    font-weight:900;}
+.timeline-step.active span {background:var(--cor-principal);
+    color:white;}
+.timeline-step strong {color:#64748b;
+    font-size:13px;}
+.timeline-step.active strong {color:#11151B;}
+.timeline-line {flex:1;
+    height:3px;
+    background:#e5e7eb;}
+@media(max-width:700px) {
+.pedido-timeline {overflow-x:auto;
+        padding-bottom:8px;}
+}

@@ -85,7 +85,7 @@ require_once "layout-top.php";
 
 <style>
 .users-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:28px;padding:28px;display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px;box-shadow:0 20px 45px rgba(0,0,0,.14)}
-.users-hero span{color:var(--cor-secundaria);text-transform:uppercase;font-weight:900;letter-spacing:.8px;font-size:13px}
+.users-hero span{color:#C8A02E;text-transform:uppercase;font-weight:900;letter-spacing:.8px;font-size:13px}
 .users-hero h2{margin:8px 0;font-size:34px}
 .users-hero p{margin:0;color:#dbeafe}
 .users-kpis{display:flex;gap:12px}

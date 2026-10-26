@@ -4,3 +4,8 @@ includes/mail_config.php
 uploads/
 deploy/*.zip
 .claude/
+
+# cache (modelo novo)
+assets/img/miniaturas/
+assets/img/links/*-branco.png
+cache/

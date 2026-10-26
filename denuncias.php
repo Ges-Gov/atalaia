@@ -5,11 +5,12 @@ $erro='';
 $uploadDir=__DIR__."/uploads/denuncias/";
 if(!is_dir($uploadDir)) mkdir($uploadDir,0775,true);
 
-function gerarCodigoDenuncia(){return "AAEJ-".date("Y")."-".strtoupper(substr(bin2hex(random_bytes(4)),0,8));}
+function gerarCodigoDenuncia(){return prefixoPedidos()."-".date("Y")."-".strtoupper(substr(bin2hex(random_bytes(4)),0,8));}
 
 function guardarAnexosDenuncia($campo,$uploadDir,&$erro){
     $ficheiros=[]; if(empty($_FILES[$campo]['name'])||!is_array($_FILES[$campo]['name'])) return $ficheiros;
     $permitidos=['pdf','doc','docx','jpg','jpeg','png','webp','mp3','mp4','zip'];
+    if(count(array_filter($_FILES[$campo]['name'])) > 5){ $erro="Pode anexar no máximo 5 ficheiros."; return []; }
     foreach($_FILES[$campo]['name'] as $i=>$nomeOriginal){
         if(empty($nomeOriginal)||empty($_FILES[$campo]['tmp_name'][$i])) continue;
         $ext=strtolower(pathinfo($nomeOriginal,PATHINFO_EXTENSION));
@@ -90,9 +91,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 </style>
 <main class="dn-page">
 <section class="dn-hero"><div class="container">
-    <span class="cd-kicker"><i class="bi bi-shield-lock"></i> Canal de Denúncias</span>
-    <h1>Efetuar uma denúncia</h1>
-    <p>Preencha o formulário com o máximo de informação possível. Os campos marcados com <span class="req">*</span> são obrigatórios. A identificação é opcional — pode denunciar de forma anónima.</p>
+    <span class="cd-kicker"><i class="bi bi-shield-lock"></i> <?= te('denuncias.hero.kicker') ?></span>
+    <h1><?= te('denuncias.hero.titulo') ?></h1>
+    <p><?= te('denuncias.hero.texto1') ?> <span class="req">*</span> <?= te('denuncias.hero.texto2') ?></p>
 </div></section>
 
 <section class="section dn-shell"><div class="container"><div class="dn-card">
@@ -101,28 +102,28 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <form method="POST" enctype="multipart/form-data" class="dn-form" id="formDenuncia">
 
         <div>
-            <label class="dn-label">Tipo de Denúncia <span class="req">*</span></label>
+            <label class="dn-label"><?= te('denuncias.formulario.tipo') ?> <span class="req">*</span></label>
             <div class="dn-tipos">
                 <label class="dn-tipo-card" data-tipo>
                     <strong><input type="radio" name="tipo" value="Externo" required>Externo</strong>
-                    <p>Pode usar este canal para denunciar violações do código de conduta ou violações da lei, incluindo questões relacionadas com suborno e corrupção, lei da concorrência, fraude, crime financeiro, questões de qualidade e segurança alimentar, assédio e discriminação, controlos de comércio internacional, proteção de dados pessoais, direitos e proteção de indivíduos, danos ambientais graves ou conflitos de interesse.</p>
+                    <p><?= te('denuncias.formulario.externo_texto') ?></p>
                 </label>
                 <label class="dn-tipo-card" data-tipo>
                     <strong><input type="radio" name="tipo" value="Interno" required>Interno</strong>
-                    <p>Poderá beneficiar de proteção do denunciante a pessoa singular que denuncie, ou divulgue publicamente, uma infração, com fundamento em informações obtidas no âmbito da sua atividade profissional desenvolvida na entidade, podendo ser considerados denunciantes: os trabalhadores com vínculo de emprego à entidade; os prestadores de serviços, contratantes, subcontratantes e fornecedores, bem como quaisquer pessoas que atuem sob a sua supervisão e direção; os membros dos Órgãos Executivo e Deliberativo da entidade; voluntários e estagiários, remunerados ou não remunerados.</p>
+                    <p><?= te('denuncias.formulario.interno_texto') ?></p>
                 </label>
             </div>
         </div>
 
         <div>
-            <label class="dn-label">Assunto <span class="req">*</span></label>
+            <label class="dn-label"><?= te('denuncias.formulario.assunto') ?> <span class="req">*</span></label>
             <input type="text" name="assunto" value="<?= htmlspecialchars($_POST['assunto'] ?? '') ?>" required>
         </div>
 
         <div>
-            <label class="dn-label">Categoria <span class="req">*</span></label>
+            <label class="dn-label"><?= te('denuncias.formulario.categoria') ?> <span class="req">*</span></label>
             <select name="categoria" required>
-                <option value="">Selecione a categoria</option>
+                <option value=""><?= te('denuncias.formulario.categoria_opcao') ?></option>
                 <?php foreach($categorias as $cat): ?>
                     <option value="<?= htmlspecialchars($cat) ?>" <?= (($_POST['categoria'] ?? '')===$cat)?'selected':'' ?>><?= htmlspecialchars($cat) ?></option>
                 <?php endforeach; ?>
@@ -130,25 +131,25 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         </div>
 
         <div>
-            <label class="dn-label">Descrição <span class="req">*</span></label>
-            <textarea name="descricao" placeholder="Descreva a situação com o máximo de detalhe possível." required><?= htmlspecialchars($_POST['descricao'] ?? '') ?></textarea>
+            <label class="dn-label"><?= te('denuncias.formulario.descricao') ?> <span class="req">*</span></label>
+            <textarea name="descricao" placeholder="<?= te('denuncias.formulario.descricao_exemplo') ?>" required><?= htmlspecialchars($_POST['descricao'] ?? '') ?></textarea>
         </div>
 
         <div>
-            <label class="dn-label">Anexar documentos</label>
+            <label class="dn-label"><?= te('denuncias.formulario.anexos') ?></label>
             <input type="file" name="anexos[]" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.mp3,.mp4,.zip">
-            <small class="dn-help">Opcional. Pode anexar ficheiros que ajudem a fundamentar a denúncia.</small>
+            <small class="dn-help"><?= te('denuncias.formulario.anexos_ajuda') ?></small>
         </div>
 
         <div class="dn-grid">
-            <div><label class="dn-label">Nome</label><input type="text" name="nome" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"><small class="dn-help">Opcional</small></div>
-            <div><label class="dn-label">Telefone</label><input type="text" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"><small class="dn-help">Opcional</small></div>
-            <div><label class="dn-label">Email</label><input type="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"><small class="dn-help">Opcional</small></div>
+            <div><label class="dn-label"><?= te('denuncias.formulario.nome') ?></label><input type="text" name="nome" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
+            <div><label class="dn-label"><?= te('denuncias.formulario.telefone') ?></label><input type="text" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
+            <div><label class="dn-label"><?= te('denuncias.formulario.email') ?></label><input type="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
         </div>
 
         <label class="dn-check">
             <input type="checkbox" name="consentimento" id="consentimento" required>
-            <span>Autorizo que os meus dados sejam tratados de forma sigilosa apenas para os fins a que se destinam, comunicar a denúncia.</span>
+            <span><?= te('denuncias.formulario.consentimento') ?></span>
         </label>
 
         <div>

@@ -158,14 +158,31 @@ $totalRequerimentos = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos");
 $reqPendentes = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos WHERE estado = 'pendente'");
 $reqAnalise = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos WHERE estado = 'em_analise'");
 $reqConcluidos = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos WHERE estado IN ('deferido','concluido')");
-$reqAtrasados = dashCount($pdo, "
+// Fora do prazo: com prazos por documento (tabela balcao_documentos, sites com Balcão de Documentos)
+// usa esses prazos; sem ela, conta os requerimentos por tratar há mais de 5 dias (antes dava sempre 0).
+$prazoPorDocumento = (bool)dashCount($pdo, "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'balcao_documentos'");
+$reqAtrasados = $prazoPorDocumento ? dashCount($pdo, "
     SELECT COUNT(*)
     FROM requerimentos r
     LEFT JOIN balcao_documentos d ON d.id = r.documento_balcao_id
     WHERE r.estado NOT IN ('deferido', 'indeferido', 'concluido')
     AND d.prazo_dias IS NOT NULL
     AND r.criado_em < DATE_SUB(NOW(), INTERVAL d.prazo_dias DAY)
+") : dashCount($pdo, "
+    SELECT COUNT(*) FROM requerimentos
+    WHERE estado NOT IN ('deferido', 'indeferido', 'concluido')
+    AND criado_em < DATE_SUB(NOW(), INTERVAL 5 DAY)
 ");
+
+// Reservas de espaços (migração 048) e farmácia de serviço (migração 047)
+// Só aparecem nos sites que têm esses módulos (redesign 10/2026: o mesmo painel serve todos os sites)
+$temReservas = is_file(__DIR__ . '/reservas.php');
+$temFarmacias = is_file(__DIR__ . '/farmacias-servico.php');
+$reservasPendentes = dashCount($pdo, "SELECT COUNT(*) FROM reservas_espacos WHERE estado = 'pendente'");
+$reservasProximas = dashCount($pdo, "SELECT COUNT(*) FROM reservas_espacos WHERE estado = 'aprovada' AND data >= CURDATE()");
+$farmaciaTurno = dashFetch($pdo, "SELECT nome, fim FROM farmacias_servico WHERE inicio <= NOW() AND fim > NOW() ORDER BY inicio DESC LIMIT 1");
+$farmaciaTurno = $farmaciaTurno[0] ?? null;
+$alertasAtivos = dashCount($pdo, "SELECT COUNT(*) FROM alertas WHERE ativo = 1 AND (data_inicio IS NULL OR data_inicio <= CURDATE()) AND (data_fim IS NULL OR data_fim >= CURDATE())");
 
 $totalMarcacoes = dashCount($pdo, "SELECT COUNT(*) FROM marcacoes_atendimento");
 $marcPendentes = dashCount($pdo, "SELECT COUNT(*) FROM marcacoes_atendimento WHERE estado = 'pendente'");
@@ -194,17 +211,24 @@ $ultimasMarcacoes = dashFetch($pdo, "
 $pedidosMes = dashFetch($pdo, "
     SELECT DATE_FORMAT(criado_em, '%m/%Y') AS mes, COUNT(*) AS total
     FROM pedidos_junta
-    GROUP BY YEAR(criado_em), MONTH(criado_em)
-    ORDER BY YEAR(criado_em), MONTH(criado_em)
-    LIMIT 12
+    WHERE criado_em >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+    GROUP BY mes   -- (com YEAR()/MONTH() o MySQL recusava a consulta e o gráfico ficava vazio)
 ");
+$reservasMes = dashFetch($pdo, "
+    SELECT DATE_FORMAT(criado_em, '%m/%Y') AS mes, COUNT(*) AS total
+    FROM reservas_espacos
+    WHERE criado_em >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+    GROUP BY mes   -- (com YEAR()/MONTH() o MySQL recusava a consulta e o gráfico ficava vazio)
+");
+// eixo: os 12 meses até ao atual, mesmo sem dados (o gráfico não fica com um só ponto)
+$mesesEixo = [];
+for ($i = 11; $i >= 0; $i--) $mesesEixo[] = date('m/Y', strtotime(date('Y-m-01') . " -$i months"));
 
 $requerimentosMes = dashFetch($pdo, "
     SELECT DATE_FORMAT(criado_em, '%m/%Y') AS mes, COUNT(*) AS total
     FROM requerimentos
-    GROUP BY YEAR(criado_em), MONTH(criado_em)
-    ORDER BY YEAR(criado_em), MONTH(criado_em)
-    LIMIT 12
+    WHERE criado_em >= DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)
+    GROUP BY mes   -- (com YEAR()/MONTH() o MySQL recusava a consulta e o gráfico ficava vazio)
 ");
 
 $pedidosEstado = dashFetch($pdo, "
@@ -261,55 +285,75 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
         </div>
     </div>
 
+    <?php /* Cartões (10/2026): todos com dados reais da BD e clicáveis — levam à lista já filtrada */ ?>
     <div class="dash-kpi-grid">
-        <div class="dash-kpi-card">
+        <a class="dash-kpi-card" href="pedidos.php?estado=pendente">
             <div class="dash-kpi-icon"><i class="bi bi-envelope-paper"></i></div>
             <small>Pedidos</small>
             <strong><?= (int)$totalPedidos ?></strong>
             <em><?= (int)$pendentes ?> pendente(s)</em>
-        </div>
+        </a>
 
-        <div class="dash-kpi-card warning">
+        <a class="dash-kpi-card warning" href="pedidos.php?estado=em_analise">
             <div class="dash-kpi-icon"><i class="bi bi-hourglass-split"></i></div>
             <small>Em análise</small>
             <strong><?= (int)$analise ?></strong>
             <em>Ocorrências em tratamento</em>
-        </div>
+        </a>
 
-        <div class="dash-kpi-card success">
+        <a class="dash-kpi-card success" href="pedidos.php?estado=resolvido">
             <div class="dash-kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
             <small>Resolvidos</small>
             <strong><?= (int)$resolvidos ?></strong>
             <em><?= $taxaResolucao ?>% de resolução</em>
-        </div>
+        </a>
 
-        <div class="dash-kpi-card purple">
+        <a class="dash-kpi-card purple" href="requerimentos.php?estado=pendente">
             <div class="dash-kpi-icon"><i class="bi bi-file-earmark-text"></i></div>
             <small>Requerimentos</small>
             <strong><?= (int)$totalRequerimentos ?></strong>
             <em><?= (int)$reqPendentes ?> pendente(s)</em>
-        </div>
+        </a>
 
-        <div class="dash-kpi-card warning">
+        <a class="dash-kpi-card <?= $reqAtrasados > 0 ? 'danger' : 'warning' ?>" href="requerimentos.php?estado=pendente">
             <div class="dash-kpi-icon"><i class="bi bi-alarm-fill"></i></div>
             <small>Balcão Virtual</small>
             <strong><?= (int)$reqAtrasados ?></strong>
-            <em>fora do prazo definido</em>
-        </div>
+            <em><?= $prazoPorDocumento ? 'fora do prazo definido' : 'por tratar há mais de 5 dias' ?></em>
+        </a>
 
-        <div class="dash-kpi-card blue">
+        <a class="dash-kpi-card blue" href="marcacoes.php">
             <div class="dash-kpi-icon"><i class="bi bi-calendar-event"></i></div>
             <small>Marcações</small>
             <strong><?= (int)$totalMarcacoes ?></strong>
             <em><?= (int)$marcConfirmadas ?> confirmada(s)</em>
-        </div>
+        </a>
 
-        <div class="dash-kpi-card dark">
+        <?php if ($temReservas): ?>
+        <a class="dash-kpi-card success" href="reservas.php?vista=pedidos&amp;estado=pendente">
+            <div class="dash-kpi-icon"><i class="bi bi-calendar2-check"></i></div>
+            <small>Reservas de espaços</small>
+            <strong><?= (int)$reservasPendentes ?></strong>
+            <em><?= (int)$reservasPendentes ?> por decidir · <?= (int)$reservasProximas ?> aprovada(s) a vir</em>
+        </a>
+
+        <?php endif; ?>
+
+        <?php if ($temFarmacias): ?>
+        <a class="dash-kpi-card <?= $farmaciaTurno ? 'success' : 'warning' ?>" href="farmacias-servico.php">
+            <div class="dash-kpi-icon"><i class="bi bi-capsule"></i></div>
+            <small>Farmácia de serviço</small>
+            <strong class="dash-kpi-texto"><?= $farmaciaTurno ? htmlspecialchars($farmaciaTurno['nome'] ?? '') : 'Sem turno' ?></strong>
+            <em><?= $farmaciaTurno ? 'até ' . date('d/m H\hi', strtotime($farmaciaTurno['fim'])) : 'publicar o turno desta semana' ?></em>
+        </a>
+        <?php endif; ?>
+
+        <a class="dash-kpi-card dark" href="noticias.php">
             <div class="dash-kpi-icon"><i class="bi bi-archive"></i></div>
             <small>Conteúdos</small>
-            <strong><?= (int)($totalNoticias + $totalEventos + $totalDocumentos) ?></strong>
-            <em>Notícias, eventos e docs</em>
-        </div>
+            <strong><?= (int)($totalNoticias + $totalEventos + $totalDocumentos + $totalPontos) ?></strong>
+            <em>Notícias, eventos, documentos e pontos</em>
+        </a>
     </div>
 
     <div class="dash-main-grid">
@@ -542,7 +586,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
 const pedidosMesLabels = <?= json_encode(array_column($pedidosMes, 'mes')) ?>;
@@ -551,7 +595,13 @@ const pedidosMesDados = <?= json_encode(array_map('intval', array_column($pedido
 const requerimentosMesLabels = <?= json_encode(array_column($requerimentosMes, 'mes')) ?>;
 const requerimentosMesDados = <?= json_encode(array_map('intval', array_column($requerimentosMes, 'total'))) ?>;
 
-const labelsMensais = [...new Set([...pedidosMesLabels, ...requerimentosMesLabels])];
+const reservasMesLabels = <?= json_encode(array_column($reservasMes, 'mes')) ?>;
+const reservasMesDados = <?= json_encode(array_map('intval', array_column($reservasMes, 'total'))) ?>;
+// sempre os últimos 12 meses (PHP), mesmo os que não têm dados
+const labelsMensais = <?= json_encode($mesesEixo) ?>;
+// cores por estado (as mesmas em todos os gráficos)
+const CORES_ESTADO = { 'Pendente': '#f59e0b', 'Em analise': '#3b82f6', 'Em análise': '#3b82f6', 'Resolvido': '#16a34a', 'Arquivado': '#64748b', 'Rejeitado': '#dc2626', 'Indeferido': '#dc2626', 'Deferido': '#16a34a', 'Concluido': '#0f766e' };
+const corDe = l => CORES_ESTADO[l] || '#94a3b8';
 
 function dadosPorLabel(labelsBase, dadosBase, labelsFinal) {
     return labelsFinal.map(label => {
@@ -590,7 +640,14 @@ new Chart(document.getElementById('graficoAtividadeMensal'), {
                 borderWidth: 3,
                 tension: 0.35,
                 fill: true
-            }
+            }<?php if ($temReservas): ?>,
+            {
+                label: 'Reservas',
+                data: dadosPorLabel(reservasMesLabels, reservasMesDados, labelsMensais),
+                borderWidth: 3,
+                tension: 0.35,
+                fill: false
+            }<?php endif; ?>
         ]
     },
     options: {
@@ -614,6 +671,7 @@ new Chart(document.getElementById('graficoPedidosEstado'), {
         labels: pedidosEstadoLabels,
         datasets: [{
             data: pedidosEstadoDados,
+            backgroundColor: pedidosEstadoLabels.map(corDe),
             borderWidth: 0
         }]
     },

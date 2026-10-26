@@ -73,7 +73,7 @@ $imagem = !empty($ponto['imagem'])
 
 <section class="ponto-detalhe-hero">
     <div class="container">
-        <span><i class="bi bi-geo-alt-fill"></i> Ponto de Interesse</span>
+        <span><i class="bi bi-geo-alt-fill"></i> <?= te('ponto.hero.kicker') ?></span>
         <h1><?= htmlspecialchars($ponto['nome']) ?></h1>
 
         <?php if (!empty($ponto['localizacao'])): ?>
@@ -90,9 +90,10 @@ $imagem = !empty($ponto['imagem'])
             // Fotografias do ponto: vivem na Galeria, num álbum criado automaticamente
             // com o nome do ponto. Não há cópias — são lidas de lá.
             require_once __DIR__ . "/includes/galeria.php";
-            $fotosPonto = imagensDaOrigem($pdo, 'ponto', (int)$ponto['id']);
+            $fotosPonto = fotosSemRepetidas(imagensDaOrigem($pdo, 'ponto', (int)$ponto['id']), $imagem);
             $todasFotosPonto = $imagem ? [html_entity_decode($imagem)] : [];
             foreach ($fotosPonto as $f) $todasFotosPonto[] = imagemGaleriaUrl($f['ficheiro']);
+            seoPonto($ponto, array_map(fn($f) => imagemGaleriaUrl($f['ficheiro']), $fotosPonto));
             ?>
             <?php if ($imagem): ?>
                 <img class="ponto-detalhe-img" src="<?= $imagem ?>" alt="<?= htmlspecialchars($ponto['nome']) ?>"
@@ -105,7 +106,7 @@ $imagem = !empty($ponto['imagem'])
 
             <?php if (!empty($fotosPonto)): ?>
                 <div data-carrossel-substitui>
-                <h2 style="margin:28px 0 14px;">Fotografias</h2>
+                <h2 style="margin:28px 0 14px;"><?= te('ponto.fotos.titulo') ?></h2>
 
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;">
                     <?php foreach ($fotosPonto as $f): ?>
@@ -121,8 +122,8 @@ $imagem = !empty($ponto['imagem'])
             <?php endif; ?>
 
             <div class="ponto-detalhe-actions">
-                <a class="hero-btn" href="/pontos.php">← Voltar aos pontos</a>
-                <a class="hero-btn" href="/mapa.php">Ver no mapa</a>
+                <a class="hero-btn" href="/pontos.php"><?= te('ponto.navegacao.voltar') ?></a>
+                <a class="hero-btn" href="/mapa.php"><?= te('ponto.navegacao.mapa') ?></a>
             </div>
 
         </div>

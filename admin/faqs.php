@@ -2,6 +2,8 @@
 $adminPageTitle = "FAQ's";
 $adminActive = "faqs";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Perguntas frequentes»", ['faq.hero.kicker','faq.hero.titulo','faq.hero.texto'], '/faq.php');
 
 $faqs = $pdo->query("SELECT * FROM faqs ORDER BY ordem ASC, id ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>

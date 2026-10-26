@@ -5,7 +5,7 @@ $clarityAtivo = function_exists('temaConfig') ? (temaConfig('clarity_project_id'
 <style>
 .legal-hero{background:linear-gradient(135deg,var(--cor-principal),#11151B 70%,#071c2e);color:#fff;padding:80px 0 96px}
 .legal-hero .container{max-width:900px}
-.legal-kicker{display:inline-flex;background:color-mix(in srgb, var(--cor-secundaria) 16%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
+.legal-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;font-size:12px}
 .legal-hero h1{font-size:clamp(34px,5vw,58px);margin:16px 0 10px;line-height:1.05}
 .legal-hero p{color:#dbeafe;font-size:18px;margin:0}
 .legal-shell{max-width:900px;margin:-46px auto 60px;position:relative;z-index:3;padding:0 16px}
@@ -24,34 +24,34 @@ $clarityAtivo = function_exists('temaConfig') ? (temaConfig('clarity_project_id'
 
 <section class="legal-hero">
     <div class="container">
-        <span class="legal-kicker"><i class="bi bi-cookie"></i> Cookies</span>
-        <h1>Política de Cookies</h1>
-        <p>O que são cookies, quais utilizamos e como pode gerir o seu consentimento.</p>
+        <span class="legal-kicker"><i class="bi bi-cookie"></i> <?= te('politica_cookies.hero.kicker') ?></span>
+        <h1><?= te('politica_cookies.hero.titulo') ?></h1>
+        <p><?= te('politica_cookies.hero.subtitulo') ?></p>
     </div>
 </section>
 
 <div class="legal-shell">
     <div class="legal-card">
-        <p class="legal-meta">Última atualização: <?= date('m/Y') ?></p>
+        <p class="legal-meta"><?= te('politica_cookies.hero.atualizacao') ?> <?= date('m/Y') ?></p>
 
-        <h2>1. O que são cookies</h2>
-        <p>Cookies são pequenos ficheiros de texto guardados no seu dispositivo quando visita um site.
-        Servem para o site funcionar corretamente e, nalguns casos, para carregar conteúdos de terceiros.</p>
+        <h2><?= te('politica_cookies.ponto1.titulo') ?></h2>
+        <p><?= te('politica_cookies.ponto1.texto1') ?>
+        <?= te('politica_cookies.ponto1.texto2') ?></p>
 
-        <h2>2. Cookies estritamente necessários</h2>
-        <p>São essenciais ao funcionamento do site e <strong>não carecem de consentimento</strong>.</p>
+        <h2><?= te('politica_cookies.ponto2.titulo') ?></h2>
+        <p><?= te('politica_cookies.ponto2.texto') ?> <strong><?= te('politica_cookies.ponto2.destaque') ?></strong>.</p>
         <table class="legal-table">
-            <caption>Cookies estritamente necessários utilizados neste site</caption>
-            <tr><th scope="col">Cookie</th><th scope="col">Finalidade</th><th scope="col">Duração</th></tr>
-            <tr><td>PHPSESSID</td><td>Manter a sessão do utilizador (ex.: área de cidadão, formulários e, quando disponível, limitar o número de perguntas ao assistente virtual)</td><td>Sessão</td></tr>
-            <tr><td>rm_cookie_consent</td><td>Guardar a sua preferência de cookies</td><td>Persistente (armazenamento local)</td></tr>
+            <caption><?= te('politica_cookies.ponto2.tabela_legenda') ?></caption>
+            <tr><th scope="col"><?= te('politica_cookies.ponto2.col_cookie') ?></th><th scope="col"><?= te('politica_cookies.ponto2.col_finalidade') ?></th><th scope="col"><?= te('politica_cookies.ponto2.col_duracao') ?></th></tr>
+            <tr><td>PHPSESSID</td><td><?= te('politica_cookies.ponto2.sessao_finalidade') ?></td><td><?= te('politica_cookies.ponto2.sessao_duracao') ?></td></tr>
+            <tr><td>rm_cookie_consent</td><td><?= te('politica_cookies.ponto2.consent_finalidade') ?></td><td><?= te('politica_cookies.ponto2.consent_duracao') ?></td></tr>
         </table>
 
-        <h2>3. Cookies de terceiros (só com consentimento)</h2>
-        <p>Só são ativados <strong>depois de aceitar</strong> no aviso de cookies:</p>
+        <h2><?= te('politica_cookies.ponto3.titulo') ?></h2>
+        <p><?= te('politica_cookies.ponto3.texto1') ?> <strong><?= te('politica_cookies.ponto3.destaque') ?></strong> <?= te('politica_cookies.ponto3.texto2') ?></p>
         <table class="legal-table">
-            <caption>Cookies de terceiros carregados apenas após consentimento</caption>
-            <tr><th scope="col">Origem</th><th scope="col">Finalidade</th><th scope="col">Mais informação</th></tr>
+            <caption><?= te('politica_cookies.ponto3.tabela_legenda') ?></caption>
+            <tr><th scope="col"><?= te('politica_cookies.ponto3.col_origem') ?></th><th scope="col"><?= te('politica_cookies.ponto3.col_finalidade') ?></th><th scope="col"><?= te('politica_cookies.ponto3.col_info') ?></th></tr>
             <tr>
                 <td>YouTube (Google)</td>
                 <td>Reprodução do vídeo em destaque na página inicial. Utilizamos o modo de privacidade
@@ -61,33 +61,33 @@ $clarityAtivo = function_exists('temaConfig') ? (temaConfig('clarity_project_id'
             </tr>
             <?php if ($clarityAtivo): ?>
             <tr>
-                <td>Microsoft Clarity</td>
-                <td>Estatísticas de utilização do site (páginas visitadas, cliques, mapas de calor) para
-                nos ajudar a melhorar a navegação. Não recolhe dados que identifiquem diretamente o
-                visitante.</td>
-                <td><a href="https://privacy.microsoft.com/pt-pt/privacystatement" target="_blank" rel="noopener">Privacidade Microsoft</a></td>
+                <td><?= te('politica_cookies.ponto3.clarity_origem') ?></td>
+                <td><?= te('politica_cookies.ponto3.clarity_texto1') ?>
+                <?= te('politica_cookies.ponto3.clarity_texto2') ?>
+                <?= te('politica_cookies.ponto3.clarity_texto3') ?></td>
+                <td><a href="https://privacy.microsoft.com/pt-pt/privacystatement" target="_blank" rel="noopener"><?= te('politica_cookies.ponto3.clarity_link') ?></a></td>
             </tr>
             <?php endif; ?>
         </table>
-        <p>Alguns recursos são carregados de serviços externos que <strong>não definem cookies</strong>, mas
-        podem registar o endereço IP para servir o conteúdo:</p>
+        <p><?= te('politica_cookies.externos.texto1') ?> <strong><?= te('politica_cookies.externos.destaque') ?></strong>, mas
+        <?= te('politica_cookies.externos.texto2') ?></p>
         <ul>
-            <li><strong>Mapa</strong>: usamos <em>OpenStreetMap</em> e a biblioteca <em>Leaflet</em> (mapa aberto,
-            sem rastreio) para mostrar os pontos de interesse.</li>
-            <li><strong>Ícones/tipos de letra</strong>: carregados de uma rede de distribuição (CDN).</li>
-            <li><strong>Assistente virtual</strong> (quando disponível no site): o texto que escrever é enviado
-            à Google (serviço Gemini) para gerar a resposta — não define cookies próprios, mas constitui uma
-            transferência de dados para os EUA. Detalhe completo na
-            <a href="/politica-privacidade.php">Política de Privacidade</a>, ponto 5.1.</li>
+            <li><strong><?= te('politica_cookies.externos.mapa_titulo') ?></strong>: usamos <em>OpenStreetMap</em> e a biblioteca <em>Leaflet</em> (mapa aberto,
+            <?= te('politica_cookies.externos.mapa_texto') ?></li>
+            <li><strong><?= te('politica_cookies.externos.icones_titulo') ?></strong><?= te('politica_cookies.externos.icones_texto') ?></li>
+            <li><strong><?= te('politica_cookies.externos.assist_titulo') ?></strong> <?= te('politica_cookies.externos.assist_texto1') ?>
+            <?= te('politica_cookies.externos.assist_texto2') ?>
+
+            <a href="/politica-privacidade.php"><?= te('politica_cookies.externos.assist_link') ?></a>, ponto 5.1.</li>
         </ul>
 
-        <h2>4. Como gerir o consentimento</h2>
-        <p>Na primeira visita é apresentado um aviso onde pode <strong>"Aceitar todos"</strong> ou escolher
-        <strong>"Só essenciais"</strong>. Pode alterar a sua escolha a qualquer momento limpando os dados do
-        navegador para este site (o aviso volta a aparecer) ou através das definições do seu navegador.</p>
+        <h2><?= te('politica_cookies.ponto4.titulo') ?></h2>
+        <p><?= te('politica_cookies.ponto4.texto1') ?> <strong>"Aceitar todos"</strong> ou escolher
+        <strong>"Só essenciais"</strong><?= te('politica_cookies.ponto4.texto2') ?>
+        <?= te('politica_cookies.ponto4.texto3') ?></p>
 
-        <h2>5. Mais informação</h2>
-        <p>Consulte também a nossa <a href="/politica-privacidade.php">Política de Privacidade</a>.</p>
+        <h2><?= te('politica_cookies.ponto5.titulo') ?></h2>
+        <p><?= te('politica_cookies.ponto5.texto') ?> <a href="/politica-privacidade.php"><?= te('politica_cookies.ponto5.link') ?></a>.</p>
     </div>
 </div>
 

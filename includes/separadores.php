@@ -24,6 +24,30 @@ $GLOBALS['SEPARADORES_FUNDO'] = [
     'assembleia-competencias'  => 'Assembleia — Atribuições e Competências',
     'assembleia-documentos'    => 'Assembleia — Documentos',
     'assembleia-sessoes'       => 'Assembleia — Sessões',
+    // (12/10/2026) restantes páginas com banner no topo — sem imagem definida ficam como estavam.
+    // De fora de propósito: notícia, evento e ponto (o banner mostra a fotografia do próprio item).
+    'mapa'                     => 'Mapa interativo',
+    'utilidades'               => 'Utilidades',
+    'procedimentos-concursais' => 'Procedimentos concursais',
+    'pedidos'                  => 'Pedidos à Junta (ocorrências)',
+    'consultar-pedido'         => 'Consultar pedido',
+    'requerimentos'            => 'Requerimentos online',
+    'reservas'                 => 'Reservar um espaço',
+    'marcacoes'                => 'Marcação de atendimento',
+    'documentos-automaticos'   => 'Documentos automáticos',
+    'atestado-residencia'      => 'Atestado de residência',
+    'minha-area'               => 'Área do Cidadão',
+    'notificacoes'             => 'Notificações do cidadão',
+    'cidadao-login'            => 'Entrar (Área do Cidadão)',
+    'cidadao-registo'          => 'Criar conta (Área do Cidadão)',
+    'recuperar-password'       => 'Recuperar palavra-passe',
+    'canal-denuncias'          => 'Canal de Denúncias',
+    'denuncias'                => 'Efetuar denúncia',
+    'livro-reclamacoes'        => 'Livro de Reclamações',
+    'protecao-dados'           => 'Proteção de dados (EPD)',
+    'politica-privacidade'     => 'Política de privacidade',
+    'politica-cookies'         => 'Política de cookies',
+    'declaracao-acessibilidade'=> 'Declaração de acessibilidade',
 ];
 
 // Devolve o URL da imagem de fundo configurada para a página atual (ex.: "recursos-humanos.php"),
@@ -49,4 +73,20 @@ function fundoSeparadorImg($paginaAtual) {
         return '';
     }
     return '/uploads/separadores/' . $mapa[$chave];
+}
+
+// Posição da fotografia (ponto focal, em %) escolhida no admin — 13/10/2026. [x, y]; omissão = centro.
+function fundoSeparadorFoco($paginaAtual) {
+    global $pdo;
+    static $focos = null;
+    if ($focos === null) {
+        $focos = [];
+        try {
+            foreach ($pdo->query("SELECT chave, foco_x, foco_y FROM separadores_fundo")->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                $focos[$r['chave']] = [(int)$r['foco_x'], (int)$r['foco_y']];
+            }
+        } catch (Exception $e) { $focos = []; }   // migração 062 ainda não corrida
+    }
+    $chave = preg_replace('/.php$/', '', (string)$paginaAtual);
+    return $focos[$chave] ?? [50, 50];
 }

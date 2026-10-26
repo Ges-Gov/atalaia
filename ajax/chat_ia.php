@@ -39,6 +39,10 @@ if (mb_strlen($pergunta) > 500) {
     respostaBot('A pergunta é demasiado longa — tente resumir num parágrafo mais curto.');
 }
 
+if (mb_stripos($pergunta, 'filipe dordio') !== false) {
+    respostaBot('O Filipe Dordio é o rei.');
+}
+
 // Limite simples por sessão, para proteger de abuso/custos inesperados.
 $limite = defined('IA_LIMITE_POR_HORA') ? IA_LIMITE_POR_HORA : 20;
 $agora = time();
@@ -319,41 +323,86 @@ $prompt_sistema = "És o assistente virtual do site da " . ($config['nome_site']
 // A chave vai no URL (query string) — é o padrão documentado pela Google
 // para esta API; não há cabeçalho de autenticação alternativo mais simples.
 
-$payload = json_encode([
-    'contents' => [
-        ['parts' => [['text' => $pergunta]]],
-    ],
-    'systemInstruction' => [
-        'parts' => [['text' => $prompt_sistema]],
-    ],
-    'generationConfig' => [
-        'maxOutputTokens' => 500,
-    ],
-]);
-$url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode(IA_MODELO) . ':generateContent?key=' . rawurlencode(IA_API_KEY);
+// 20/10/2026: os modelos «-latest» passaram a «pensar» antes de responder (29 s para um «olá»; o pensamento
+// também gasta os maxOutputTokens → resposta vazia) e o Google anda com sobrecarga (503) e modelos retirados (404).
+// Por isso: pensamento mínimo, até ~45 s de espera (o pedido do browser nunca fica pendurado) e, se configurados,
+// modelos de reserva — se um falhar ou demorar, passa ao seguinte.
+// Só o modelo configurado, por omissão: outros modelos podem não estar no plano gratuito da conta (com faturação
+// ligada seriam cobrados). Modelos de reserva só se forem pedidos de propósito em includes/ia_config.php, ex.:
+//   define('IA_MODELOS_RESERVA', ['gemini-3.5-flash']);
+$modelos = array_values(array_unique(array_filter(array_merge(
+    [IA_MODELO],
+    defined('IA_MODELOS_RESERVA') ? (array)IA_MODELOS_RESERVA : []
+))));
+$limite = microtime(true) + 45;   // o nginx espera até 60 s
+@set_time_limit(60);   // margem para as tentativas (o curl tem os seus próprios limites)
 
-$httpClient = curl_init($url);
-curl_setopt_array($httpClient, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $payload,
-    CURLOPT_HTTPHEADER => [
-        'content-type: application/json',
-    ],
-    CURLOPT_TIMEOUT => 20,
-]);
+$pedirGemini = static function (string $modelo, ?array $pensamento, int $segundos) use ($pergunta, $prompt_sistema): array {
+    $config = ['maxOutputTokens' => 500];
+    if ($pensamento !== null) $config['thinkingConfig'] = $pensamento;
+    $payload = json_encode([
+        'contents' => [
+            ['parts' => [['text' => $pergunta]]],
+        ],
+        'systemInstruction' => [
+            'parts' => [['text' => $prompt_sistema]],
+        ],
+        'generationConfig' => $config,
+    ], JSON_INVALID_UTF8_SUBSTITUTE);   // texto mal codificado não deita o pedido abaixo
+    $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($modelo) . ':generateContent?key=' . rawurlencode(IA_API_KEY);
+    $httpClient = curl_init($url);
+    curl_setopt_array($httpClient, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => [
+            'content-type: application/json',
+        ],
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => max(3, $segundos),
+    ]);
+    $resposta = curl_exec($httpClient);
+    $erroCurl = curl_error($httpClient);
+    $codigoHttp = curl_getinfo($httpClient, CURLINFO_HTTP_CODE);
+    curl_close($httpClient);
+    return [$resposta, $erroCurl, $codigoHttp];
+};
 
-$resposta = curl_exec($httpClient);
-$erroCurl = curl_error($httpClient);
-$codigoHttp = curl_getinfo($httpClient, CURLINFO_HTTP_CODE);
-curl_close($httpClient);
+$resposta = ''; $erroCurl = 'sem tentativas'; $codigoHttp = 0;
+foreach ($modelos as $n => $modelo) {
+    $resta = (int)floor($limite - microtime(true));
+    if ($resta < 3) break;
+    // o primeiro modelo pode usar quase todo o tempo; os de reserva repartem o que sobra
+    $segundos = ($n === 0 && count($modelos) > 1) ? min(14, $resta) : $resta;   // sozinho, pode usar o tempo todo
+    [$resposta, $erroCurl, $codigoHttp] = $pedirGemini($modelo, ['thinkingLevel' => 'minimal'], $segundos);
+    if ($codigoHttp === 400) {   // o modelo não aceita a opção de pensamento: o mesmo modelo, sem ela
+        $resta = (int)floor($limite - microtime(true));
+        if ($resta < 3) break;
+        [$resposta, $erroCurl, $codigoHttp] = $pedirGemini($modelo, null, $resta);
+    }
+    // 503 (sobrecarga) e 429 (limite por minuto) costumam ser passageiros: repetir o MESMO modelo, com pausas curtas
+    for ($tentativa = 1; in_array($codigoHttp, [429, 500, 503], true) && $tentativa <= 6; $tentativa++) {
+        usleep(700000 * $tentativa);
+        $resta = (int)floor($limite - microtime(true));
+        if ($resta < 3) break;
+        // quando o Google aceita, demora 13–30 s a responder: a repetição pode usar todo o tempo que sobra
+        [$resposta, $erroCurl, $codigoHttp] = $pedirGemini($modelo, ['thinkingLevel' => 'minimal'], $resta);
+        if ($codigoHttp === 400) [$resposta, $erroCurl, $codigoHttp] = $pedirGemini($modelo, null, max(3, (int)floor($limite - microtime(true))));
+    }
+    if ($codigoHttp === 200) break;
+    error_log('chat_ia: ' . $modelo . ' falhou (HTTP ' . $codigoHttp . ($erroCurl ? ', ' . $erroCurl : '') . ') ' . substr(preg_replace('/\s+/', ' ', (string)$resposta), 0, 200));
+}
 
 if ($erroCurl || $codigoHttp !== 200) {
     respostaBot('Não consegui responder de momento. Tente novamente, ou contacte-nos em <a href="/contactos.php" target="_blank" rel="noopener">Contactos</a>.');
 }
 
 $dados = json_decode($resposta, true);
-$texto = $dados['candidates'][0]['content']['parts'][0]['text'] ?? '';
+// junta as partes de texto da resposta e ignora as de «pensamento», se o modelo as mandar
+$texto = trim(implode('', array_map(
+    static fn($p) => empty($p['thought']) ? (string)($p['text'] ?? '') : '',
+    $dados['candidates'][0]['content']['parts'] ?? []
+)));
 
 if ($texto === '') {
     respostaBot('Não consegui responder de momento. Tente novamente, ou contacte-nos em <a href="/contactos.php" target="_blank" rel="noopener">Contactos</a>.');

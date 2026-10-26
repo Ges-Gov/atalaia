@@ -36,11 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($req['email'])) {
         $html = "
             <h2>Atualização do requerimento</h2>
-            <p>Olá {$req['nome']},</p>
+            <p>Olá " . htmlspecialchars((string)$req['nome']) . ",</p>
             <p>O seu requerimento foi atualizado.</p>
-            <p><strong>Código:</strong> {$req['codigo']}</p>
-            <p><strong>Tipo:</strong> {$req['tipo']}</p>
-            <p><strong>Assunto:</strong> {$req['assunto']}</p>
+            <p><strong>Código:</strong> " . htmlspecialchars((string)$req['codigo']) . "</p>
+            <p><strong>Tipo:</strong> " . htmlspecialchars((string)$req['tipo']) . "</p>
+            <p><strong>Assunto:</strong> " . htmlspecialchars((string)$req['assunto']) . "</p>
             <p><strong>Estado:</strong> " . str_replace('_', ' ', $estado) . "</p>
             <p><strong>Resposta:</strong><br>" . nl2br(htmlspecialchars($resposta)) . "</p>
             <br>
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <strong><?= htmlspecialchars($f['nome_original'] ?: $f['ficheiro']) ?></strong>
                         <span><?= htmlspecialchars($f['ficheiro']) ?></span>
                     </div>
-                    <a href="../assets/docs/requerimentos/<?= htmlspecialchars($f['ficheiro']) ?>" target="_blank">Abrir</a>
+                    <a href="ficheiro_requerimento.php?id=<?= (int)$req['id'] ?>&amp;f=<?= (int)$f['id'] ?>" target="_blank" rel="noopener">Abrir</a>
                 </div>
             <?php endforeach; ?>
         </div>

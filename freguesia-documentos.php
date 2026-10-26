@@ -346,7 +346,13 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
     color:#52606d;
     font-size:14px;
     line-height:1.7;
+    /* no máximo 3 linhas: cartões da mesma linha ficam com a mesma altura */
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
+.doc-card-content p.doc-sem-desc{ color:#64748b; font-style:italic; }
 
 .doc-card-footer{
     border-top:1px solid #eef2f7;
@@ -380,7 +386,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
 }
 
 .doc-download-link:hover{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
 }
 
 .docs-empty{
@@ -477,10 +483,10 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                 <div class="docs-hero-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
 
                 <div>
-                    <h1>Documentos da Freguesia</h1>
+                    <h1><?= te('freguesia_documentos.hero.titulo') ?></h1>
                     <p>
-                        Consulte e descarregue atas, editais, regulamentos,
-                        relatórios e outros documentos publicados.
+                        <?= te('freguesia_documentos.hero.texto') ?>
+
                     </p>
                 </div>
             </div>
@@ -490,7 +496,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
     <section class="docs-filter-floating">
         <div class="container">
             <div class="docs-filter-card">
-                <form method="GET" class="docs-filter-form">
+                <form method="GET" class="docs-filter-form" data-ajax-alvo="documentos" role="search" aria-label="Filtrar documentos">
                     <div class="docs-input-wrap">
                         <span><i class="bi bi-search"></i></span>
                         <input type="text" name="pesquisa" placeholder="Pesquisar por título ou descrição..." value="<?= htmlspecialchars($pesquisa) ?>">
@@ -499,7 +505,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                     <div class="docs-select-wrap">
                         <span><i class="bi bi-folder2"></i></span>
                         <select name="categoria">
-                            <option value="">Todas as categorias</option>
+                            <option value=""><?= te('freguesia_documentos.filtros.categorias') ?></option>
                             <?php foreach ($categoriasLista as $cat): ?>
                                 <option value="<?= htmlspecialchars($cat) ?>" <?= $catFiltro === $cat ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
                             <?php endforeach; ?>
@@ -509,21 +515,21 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                     <div class="docs-select-wrap">
                         <span><i class="bi bi-calendar-event-fill"></i></span>
                         <select name="ano">
-                            <option value="">Todos os anos</option>
+                            <option value=""><?= te('freguesia_documentos.filtros.anos') ?></option>
                             <?php foreach ($anosLista as $a): ?>
                                 <option value="<?= htmlspecialchars($a) ?>" <?= $anoFiltro == $a ? 'selected' : '' ?>><?= htmlspecialchars($a) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <button class="docs-filter-btn" type="submit"><i class="bi bi-funnel-fill"></i> Filtrar</button>
-                    <a class="docs-clear-btn" href="freguesia-documentos.php"><i class="bi bi-arrow-counterclockwise"></i> Limpar</a>
+                    <button class="docs-filter-btn" type="submit"><i class="bi bi-funnel-fill"></i> <?= te('freguesia_documentos.filtros.botao') ?></button>
+                    <a class="docs-clear-btn" href="freguesia-documentos.php"><i class="bi bi-arrow-counterclockwise"></i> <?= te('freguesia_documentos.filtros.limpar') ?></a>
                 </form>
             </div>
         </div>
     </section>
 
-    <section class="docs-content-wrap">
+    <section class="docs-content-wrap" data-zona-ajax="documentos">
         <div class="container">
 
             <?php if (!empty($grupos)): ?>
@@ -533,7 +539,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                     <div class="docs-title-row">
                         <h2><span><i class="bi bi-folder2-open"></i></span> <?= htmlspecialchars($cat) ?></h2>
                         <div class="docs-count-pill">
-                            <?= count($docs) ?> documento(s)
+                            <?= count($docs) ?> <?= te('freguesia_documentos.lista.contagem') ?>
                         </div>
                     </div>
 
@@ -551,6 +557,8 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
 
                                         <?php if (!empty($d['descricao'])): ?>
                                             <p><?= htmlspecialchars(mb_substr(strip_tags($d['descricao']), 0, 115)) ?><?= mb_strlen(strip_tags($d['descricao'])) > 115 ? '...' : '' ?></p>
+                                        <?php else: /* sem descrição: frase neutra, para o cartão não ficar vazio */ ?>
+                                            <p class="doc-sem-desc"><?= te('freguesia_documentos.lista.sem_desc_inicio') ?> <?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?><?= te('freguesia_documentos.lista.sem_desc_fim') ?></p>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -569,7 +577,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                                         href="/assets/docs/<?= htmlspecialchars($d['ficheiro']) ?>"
                                         target="_blank"
                                     >
-                                        <i class="bi bi-download"></i> Ver / Descarregar
+                                        <i class="bi bi-download"></i> <?= te('freguesia_documentos.lista.botao') ?>
                                     </a>
                                 </div>
                             </article>
@@ -582,9 +590,9 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
             <?php else: ?>
                 <div class="docs-empty">
                     <?php if ($pesquisa !== '' || $catFiltro !== '' || $anoFiltro !== ''): ?>
-                        Nenhum documento corresponde à pesquisa. <a href="freguesia-documentos.php">Limpar filtros</a>.
+                        <?= te('freguesia_documentos.vazio.pesquisa') ?> <a href="freguesia-documentos.php"><?= te('freguesia_documentos.vazio.limpar') ?></a>.
                     <?php else: ?>
-                        Ainda não existem documentos publicados.
+                        <?= te('freguesia_documentos.vazio.texto') ?>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>

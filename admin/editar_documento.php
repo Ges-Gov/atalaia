@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = $_POST['descricao'];
     $categoria = $_POST['categoria'];
     $data_documento = !empty($_POST['data_documento']) ? $_POST['data_documento'] : null;
+    // prazo de afixação/consulta pública: no dia seguinte o documento passa a inativo (cron/arquivar_editais.php)
+    $data_limite = preg_match('/^\d{4}-\d{2}-\d{2}$/', $_POST['data_limite'] ?? '') ? $_POST['data_limite'] : null;
     $ativo = isset($_POST['ativo']) ? 1 : 0;
     $area = 'freguesia';
     $ficheiro = $documento['ficheiro'];
@@ -29,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($ext !== 'pdf') {
             $erro = "Apenas ficheiros PDF são permitidos. Converta o documento para PDF antes de enviar.";
+        } elseif (file_get_contents($_FILES['ficheiro']['tmp_name'], false, null, 0, 5) !== '%PDF-') {
+            // a extensão não chega: o conteúdo tem de ser mesmo um PDF
+            $erro = "O ficheiro não é um PDF válido.";
         } else {
             $uploadDir = "../assets/docs/";
             if (!is_dir($uploadDir)) {
@@ -54,16 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($erro === '') {
         $stmt = $pdo->prepare("
             UPDATE documentos
-            SET titulo = ?, descricao = ?, area = ?, categoria = ?, ficheiro = ?, ativo = ?, data_documento = ?
+            SET titulo = ?, descricao = ?, area = ?, categoria = ?, ficheiro = ?, ativo = ?, data_documento = ?, data_limite = ?,
+                arquivado_em = IF(? = 1, NULL, arquivado_em)
             WHERE id = ?
         ");
-        $stmt->execute([$titulo, $descricao, $area, $categoria, $ficheiro, $ativo, $data_documento, $id]);
+        $stmt->execute([$titulo, $descricao, $area, $categoria, $ficheiro, $ativo, $data_documento, $data_limite, $ativo, $id]);
 
         header("Location: documentos.php");
         exit;
     }
 
-    $documento = array_merge($documento, compact('titulo', 'descricao', 'categoria', 'data_documento', 'ativo'));
+    $documento = array_merge($documento, compact('titulo', 'descricao', 'categoria', 'data_documento', 'data_limite', 'ativo'));
 }
 ?>
 
@@ -87,6 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <label>Data do documento</label>
     <input type="date" name="data_documento" value="<?= htmlspecialchars($documento['data_documento'] ?? '') ?>">
+
+    <label>Prazo de afixação / consulta pública <small style="font-weight:400;color:#64748b;">(opcional — editais, consultas públicas)</small></label>
+    <input type="date" name="data_limite" value="<?= htmlspecialchars($documento['data_limite'] ?? '') ?>">
+    <p style="margin:-6px 0 16px;font-size:13px;color:#64748b;">No dia seguinte a esta data o documento sai do site automaticamente (fica inativo, pode voltar a ativá-lo). Sem data, fica sempre.</p>
 
     <?php if (!empty($documento['ficheiro'])): ?>
         <p>

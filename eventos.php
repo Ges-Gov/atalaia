@@ -69,7 +69,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .eventos-hero-insane:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;right:-220px;top:-260px;background:rgba(255,255,255,.06)}
 .eventos-hero-insane:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(0deg,#f8fafc,transparent)}
 .eventos-hero-inner{position:relative;z-index:2;padding:80px 0 125px}
-.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
+.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--ouro-rgb, 240 180 41) / .15);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
 .eventos-hero-insane h1{font-size:clamp(46px,7vw,84px);line-height:.98;margin:0 0 20px;letter-spacing:-2px}
 .eventos-hero-insane p{color:#dbeafe;font-size:21px;line-height:1.8;max-width:780px;margin:0}
 .eventos-main{position:relative;z-index:5;margin-top:-78px}
@@ -77,15 +77,15 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-feature-insane{background:linear-gradient(135deg,#242A30,#11151B);border-radius:34px;padding:34px;color:white;box-shadow:0 24px 70px rgba(0,0,0,.18);overflow:hidden;position:relative;min-height:560px;display:flex;flex-direction:column}
 .evento-feature-insane:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-140px;top:-160px;background:rgba(255,255,255,.06)}
 .evento-feature-insane>*{position:relative;z-index:2}
-.evento-feature-badge{width:max-content;display:inline-flex;align-items:center;background:var(--cor-secundaria);color:#11151B;border-radius:999px;padding:10px 16px;font-weight:900;font-size:13px;text-transform:uppercase;margin-bottom:22px}
+.evento-feature-badge{width:max-content;display:inline-flex;align-items:center;background:var(--ouro, #C8A02E);color:#11151B;border-radius:999px;padding:10px 16px;font-weight:900;font-size:13px;text-transform:uppercase;margin-bottom:22px}
 .evento-feature-insane h2{font-size:clamp(34px,4vw,52px);line-height:1.08;letter-spacing:-1.4px;margin:0 0 18px}
 .evento-feature-insane p{color:#dbeafe;line-height:1.8;font-size:16px;margin:0 0 18px}
 .evento-feature-date{display:inline-flex;gap:9px;align-items:center;color:white;font-weight:900;margin:6px 0 18px}
-.evento-countdown{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;color:var(--cor-secundaria);font-weight:900;margin-bottom:18px}
+.evento-countdown{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:16px 18px;color:var(--ouro, #C8A02E);font-weight:900;margin-bottom:18px}
 .evento-feature-image{width:100%;height:250px;border-radius:24px;overflow:hidden;background:rgba(255,255,255,.10);margin-top:auto;box-shadow:0 20px 50px rgba(0,0,0,.22)}
 .evento-feature-image img{width:100%;height:100%;object-fit:cover;display:block;transition:.45s}
 .evento-feature-image:hover img{transform:scale(1.05)}
-.evento-feature-noimg{width:100%;height:100%;display:grid;place-items:center;color:var(--cor-secundaria);font-size:64px;font-weight:900}
+.evento-feature-noimg{width:100%;height:100%;display:grid;place-items:center;color:var(--ouro, #C8A02E);font-size:64px;font-weight:900}
 .evento-feature-btn{margin-top:18px;display:flex;justify-content:center;text-decoration:none;color:white;border:1px solid rgba(255,255,255,.30);background:rgba(255,255,255,.08);border-radius:16px;padding:14px;font-weight:900;transition:.25s}
 .evento-feature-btn:hover{transform:translateY(-3px);background:rgba(255,255,255,.14)}
 .agenda-month-insane{background:white;border-radius:34px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.10);border:1px solid #eef2f7}
@@ -96,8 +96,8 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .agenda-weekdays-insane{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:12px}.agenda-weekdays-insane span{color:#52606d;font-weight:900;text-align:center;font-size:13px}
 .agenda-calendar-insane{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
 .agenda-day-insane{min-height:78px;border-radius:18px;background:#f8fafc;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;position:relative;font-weight:900;color:#11151B;transition:.25s}
-.agenda-day-insane.empty{opacity:0;pointer-events:none}.agenda-day-insane.today{border-color:var(--cor-secundaria)}.agenda-day-insane.has-event{background:#242A30;color:white;border-color:#242A30;box-shadow:0 16px 36px rgba(36,42,50,.18)}
-.event-dot-insane{position:absolute;bottom:12px;width:8px;height:8px;background:var(--cor-secundaria);border-radius:50%}
+.agenda-day-insane.empty{opacity:0;pointer-events:none}.agenda-day-insane.today{border-color:var(--ouro, #C8A02E)}.agenda-day-insane.has-event{background:#242A30;color:white;border-color:#242A30;box-shadow:0 16px 36px rgba(36,42,50,.18)}
+.event-dot-insane{position:absolute;bottom:12px;width:8px;height:8px;background:var(--ouro, #C8A02E);border-radius:50%}
 .agenda-day-insane:hover{transform:translateY(-4px);z-index:30}
 .agenda-tooltip-insane{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translateX(-50%) translateY(8px);width:300px;background:white;color:#11151B;border-radius:22px;box-shadow:0 26px 70px rgba(0,0,0,.22);border:1px solid #eef2f7;padding:16px;opacity:0;pointer-events:none;transition:.25s;z-index:99;text-align:left}
 .agenda-tooltip-insane:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:10px solid transparent;border-top-color:white}
@@ -112,7 +112,16 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .tooltip-event-card{display:block;text-decoration:none;color:inherit;cursor:pointer;border-top:1px solid #eef2f7;padding:12px 8px 10px;margin-top:12px;border-radius:14px;transition:background .18s}
 .tooltip-event-card:hover{background:#f8fafc}
 .tooltip-event-cta{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-weight:900;font-size:13px;color:var(--cor-principal,#242A30)}
-.tooltip-event-card:hover .tooltip-event-cta{gap:10px}.tooltip-event-card:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.tooltip-event-card:hover .tooltip-event-cta{gap:10px}
+/* 15/10/2026: no telemóvel/tátil a janela do dia era centrada no dia e, nas colunas das pontas, saía do ecrã cortada.
+   Passa a painel fixo em baixo (por cima da barra de navegação), sempre inteiro e com a largura do ecrã. */
+@media (max-width:760px), (hover:none){
+  .agenda-tooltip-insane{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));width:auto!important;max-height:min(60vh,420px);overflow:auto;transform:translateY(12px);border-radius:var(--raio-cartao,20px);box-shadow:0 -6px 30px -10px rgba(15,23,42,.25),0 24px 60px -20px rgba(15,23,42,.45);z-index:1200}
+  .agenda-day-insane:hover .agenda-tooltip-insane,.agenda-tooltip-insane:hover{transform:translateY(0)}
+  .agenda-tooltip-insane:after,.agenda-tooltip-insane:before{display:none}
+  .agenda-day-insane:hover{transform:none} /* um transform no dia prendia o painel fixo ao dia */
+}
+.tooltip-event-card:first-of-type{border-top:0;padding-top:0;margin-top:0}
 .tooltip-event-img{width:100%;height:105px;object-fit:cover;border-radius:16px;display:block;margin-bottom:10px}.tooltip-event-card strong{display:block;color:#242A30;margin-bottom:6px}.tooltip-event-card small{color:#64748b;font-weight:800}.tooltip-event-card p{margin:8px 0 0;color:#52606d;font-size:13px;line-height:1.5;font-weight:600}
 .eventos-list-section{margin-top:42px}.eventos-section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}.eventos-section-head h2{color:#11151B;font-size:clamp(32px,4vw,48px);letter-spacing:-1px;margin:8px 0 0}
 .eventos-all-btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#242A30;border:1px solid #dbeafe;background:white;border-radius:16px;padding:12px 18px;font-weight:900;transition:.25s}.eventos-all-btn:hover{transform:translateY(-3px);background:#eff6ff}
@@ -131,9 +140,9 @@ $heroImagem = !empty($proximoEvento['imagem'])
     <section class="eventos-hero-insane">
         <div class="container">
             <div class="eventos-hero-inner">
-                <span class="eventos-kicker">Agenda Municipal</span>
-                <h1>Eventos</h1>
-                <p>Consulte a programação, atividades, encontros e eventos da freguesia.</p>
+                <span class="eventos-kicker"><?= te('eventos.hero.kicker') ?></span>
+                <h1><?= te('eventos.hero.titulo') ?></h1>
+                <p><?= te('eventos.hero.texto') ?></p>
             </div>
         </div>
     </section>
@@ -143,7 +152,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
         <div class="agenda-top-grid-insane">
 
             <article class="evento-feature-insane">
-                <span class="evento-feature-badge">Próximo evento</span>
+                <span class="evento-feature-badge"><?= te('eventos.destaque.etiqueta') ?></span>
 
                 <?php if ($proximoEvento): ?>
                     <h2><?= htmlspecialchars($proximoEvento['titulo']) ?></h2>
@@ -151,7 +160,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 
                     <div class="evento-feature-date"><i class="bi bi-calendar-event-fill"></i> <?= date('d/m/Y H:i', strtotime($proximoEvento['data_evento'])) ?><?php if (!empty($proximoEvento['data_fim'])): ?> &ndash; <?= date('d/m/Y H:i', strtotime($proximoEvento['data_fim'])) ?><?php endif; ?></div>
 
-                    <div class="evento-countdown" data-evento="<?= htmlspecialchars($proximoEvento['data_evento']) ?>">A calcular...</div>
+                    <div class="evento-countdown" data-evento="<?= htmlspecialchars($proximoEvento['data_evento']) ?>"><?= te('eventos.destaque.a_calcular') ?></div>
 
                     <div class="evento-feature-image">
                         <?php if (!empty($proximoEvento['imagem'])): ?>
@@ -161,10 +170,10 @@ $heroImagem = !empty($proximoEvento['imagem'])
                         <?php endif; ?>
                     </div>
 
-                    <a href="/evento.php?id=<?= (int)$proximoEvento['id'] ?>" class="evento-feature-btn">Ver detalhes do evento →</a>
+                    <a href="/evento.php?id=<?= (int)$proximoEvento['id'] ?>" class="evento-feature-btn"><?= te('eventos.destaque.botao') ?></a>
                 <?php else: ?>
-                    <h2>Sem eventos agendados</h2>
-                    <p>Quando existir um novo evento, ele aparecerá automaticamente aqui.</p>
+                    <h2><?= te('eventos.destaque.vazio_titulo') ?></h2>
+                    <p><?= te('eventos.destaque.vazio_texto') ?></p>
                 <?php endif; ?>
             </article>
 
@@ -173,7 +182,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
                     <a href="?mes=<?= $mesAnterior ?>&ano=<?= $anoAnterior ?>#agenda">‹</a>
                     <div class="agenda-month-title">
                         <strong><?= $nomesMeses[$mes] ?> <?= $ano ?></strong>
-                        <small><?= count($eventosMes) ?> evento(s) neste mês</small>
+                        <small><?= count($eventosMes) ?> <?= te('eventos.calendario.contagem') ?></small>
                     </div>
                     <a href="?mes=<?= $mesSeguinte ?>&ano=<?= $anoSeguinte ?>#agenda">›</a>
                 </div>
@@ -199,7 +208,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
                             <?php if ($temEventos): ?>
                                 <span class="event-dot-insane"></span>
                                 <div class="agenda-tooltip-insane">
-                                    <b>Evento(s) neste dia</b>
+                                    <b><?= te('eventos.calendario.dia') ?></b>
 
                                     <?php foreach ($eventosPorDia[$dia] as $ev): ?>
                                         <a class="tooltip-event-card" href="/evento.php?id=<?= (int)$ev['id'] ?>">
@@ -213,7 +222,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
                                             <?php if (!empty($ev['descricao'])): ?>
                                                 <p><?= htmlspecialchars(mb_substr(strip_tags($ev['descricao']), 0, 90)) ?>...</p>
                                             <?php endif; ?>
-                                            <span class="tooltip-event-cta">Ver evento <i class="bi bi-arrow-right"></i></span>
+                                            <span class="tooltip-event-cta"><?= te('eventos.calendario.ver') ?> <i class="bi bi-arrow-right"></i></span>
                                         </a>
                                     <?php endforeach; ?>
                                 </div>
@@ -227,10 +236,10 @@ $heroImagem = !empty($proximoEvento['imagem'])
         <section class="eventos-list-section" id="eventos-lista">
             <div class="eventos-section-head">
                 <div>
-                    <span class="eventos-kicker">Programação</span>
-                    <h2>Próximos Eventos</h2>
+                    <span class="eventos-kicker"><?= te('eventos.lista.kicker') ?></span>
+                    <h2><?= te('eventos.lista.titulo') ?></h2>
                 </div>
-                <a href="/eventos.php" class="eventos-all-btn">Ver todos os eventos →</a>
+                <a href="/eventos.php" class="eventos-all-btn"><?= te('eventos.lista.link') ?></a>
             </div>
 
             <?php if (!empty($eventosDesdeMes)): ?>
@@ -260,7 +269,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="eventos-empty">Não existem eventos registados para este mês.</div>
+                <div class="eventos-empty"><?= te('eventos.lista.vazio') ?></div>
             <?php endif; ?>
         </section>
     </section>

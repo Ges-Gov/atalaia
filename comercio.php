@@ -38,6 +38,7 @@ function comercioIcon($tipo)
 }
 
 $todosComercio = $pdo->query("SELECT * FROM comercio_local ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC);
+seoComercio($todosComercio);   // schema.org LocalBusiness (includes/seo.php)
 $total = count($todosComercio);
 
 $contagemCategorias = [];
@@ -141,9 +142,9 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
+    color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -181,7 +182,7 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 
 .comercio-hero-stat strong{
     display:block;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -319,7 +320,7 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
     height:100%;
     display:grid;
     place-items:center;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:74px;
     font-weight:900;
 }
@@ -385,6 +386,12 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 .comercio-info strong{
     color:#11151B;
 }
+/* 15/10/2026: rótulo por cima do valor — lado a lado, o rótulo encolhia e partia («Morad / a:») */
+.comercio-info{ flex-direction:column; gap:2px; }
+.comercio-info strong{ display:inline-flex; align-items:center; gap:6px; white-space:nowrap; font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:#64748b; }
+.comercio-info strong .bi{ color:var(--cor-principal); font-size:12px; }
+.comercio-info span{ color:#1e293b; overflow-wrap:anywhere; }
+:root[data-tema="escuro"] .comercio-info strong{ color:#94a3b8; } :root[data-tema="escuro"] .comercio-info span{ color:#e2e8f0; }
 
 .comercio-divider{
     height:1px;
@@ -413,7 +420,7 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 }
 
 .comercio-contact-btn:hover{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
 }
 
 .comercio-pagination{
@@ -619,23 +626,23 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
         <div class="container">
             <div class="comercio-hero-inner">
                 <div>
-                    <span class="comercio-kicker">Economia Local</span>
-                    <h1>Economia Local</h1>
+                    <span class="comercio-kicker"><?= te('comercio.hero.kicker') ?></span>
+                    <h1><?= te('comercio.hero.titulo') ?></h1>
                     <p>
-                        Descubra estabelecimentos, serviços, cafés, restaurantes
-                        e negócios locais. Apoie quem está perto de si.
+                        <?= te('comercio.hero.texto') ?>
+
                     </p>
                 </div>
 
                 <aside class="comercio-hero-stat">
                     <strong><?= (int)$total ?></strong>
-                    <span>estabelecimentos publicados</span>
+                    <span><?= te('comercio.hero.contagem') ?></span>
                 </aside>
             </div>
         </div>
     </section>
 
-    <section class="container comercio-main">
+    <section class="container comercio-main" data-zona-ajax="comercio">
 
         <div class="comercio-intro-panel">
             
@@ -650,7 +657,7 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 <?php if (count($filtrosDisponiveis) > 1): ?>
 <nav class="comercio-tabs" aria-label="Filtrar por tipo de estabelecimento">
     <a href="<?= urlComercio('') ?>" class="filtro-comercio<?= $categoriaAtual === '' ? ' active' : '' ?>">
-        <i class="bi bi-grid-fill"></i> Todos <small><?= (int)$total ?></small>
+        <i class="bi bi-grid-fill"></i> <?= te('comercio.filtros.todos') ?> <small><?= (int)$total ?></small>
     </a>
     <?php foreach ($filtrosDisponiveis as $chave => $f): ?>
         <a href="<?= urlComercio($chave) ?>" class="filtro-comercio<?= $categoriaAtual === $chave ? ' active' : '' ?>">
@@ -685,11 +692,11 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 
         <div class="comercio-section-head" id="comercio-lista">
             <div>
-                <span class="comercio-kicker">Economia local</span>
-                <h2>O nosso comércio</h2>
+                <span class="comercio-kicker"><?= te('comercio.lista.kicker') ?></span>
+                <h2><?= te('comercio.lista.titulo') ?></h2>
             </div>
 
-            <p>Negócios e serviços que dão vida à freguesia.</p>
+            <p><?= te('comercio.lista.texto') ?></p>
         </div>
 
         <?php if (!empty($comercio)): ?>
@@ -724,35 +731,35 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 
                             <?php if (!empty($c['morada'])): ?>
                                 <div class="comercio-info">
-                                    <strong><i class="bi bi-geo-alt-fill"></i> Morada:</strong>
+                                    <strong><i class="bi bi-geo-alt-fill"></i> <?= te('comercio.lista.morada') ?></strong>
                                     <span><?= nl2br(htmlspecialchars($c['morada'])) ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($c['telefone'])): ?>
                                 <div class="comercio-info">
-                                    <strong><i class="bi bi-telephone-fill"></i> Telefone:</strong>
+                                    <strong><i class="bi bi-telephone-fill"></i> <?= te('comercio.lista.telefone') ?></strong>
                                     <span><?= htmlspecialchars($c['telefone']) ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($c['email'])): ?>
                                 <div class="comercio-info">
-                                    <strong><i class="bi bi-envelope-fill"></i> Email:</strong>
+                                    <strong><i class="bi bi-envelope-fill"></i> <?= te('comercio.lista.email') ?></strong>
                                     <span><?= htmlspecialchars($c['email']) ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($c['website'])): ?>
                                 <div class="comercio-info">
-                                    <strong><i class="bi bi-globe"></i> Website:</strong>
+                                    <strong><i class="bi bi-globe"></i> <?= te('comercio.lista.website') ?></strong>
                                     <span><a href="<?= htmlspecialchars($c['website']) ?>" target="_blank" rel="noopener"><?= htmlspecialchars($c['website']) ?></a></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($c['outros_contactos'])): ?>
                                 <div class="comercio-info">
-                                    <strong><i class="bi bi-info-circle-fill"></i> Outros contactos:</strong>
+                                    <strong><i class="bi bi-info-circle-fill"></i> <?= te('comercio.lista.outros') ?></strong>
                                     <span><?= nl2br(htmlspecialchars($c['outros_contactos'])) ?></span>
                                 </div>
                             <?php endif; ?>
@@ -760,13 +767,13 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
                             <div class="comercio-actions">
                                 <?php if (!empty($c['telefone'])): ?>
                                     <a href="tel:<?= htmlspecialchars($c['telefone']) ?>" class="comercio-contact-btn">
-                                        <i class="bi bi-telephone-fill"></i> Ligar
+                                        <i class="bi bi-telephone-fill"></i> <?= te('comercio.lista.ligar') ?>
                                     </a>
                                 <?php endif; ?>
 
                                 <?php if (!empty($c['email'])): ?>
                                     <a href="mailto:<?= htmlspecialchars($c['email']) ?>" class="comercio-contact-btn">
-                                        <i class="bi bi-envelope-fill"></i> Contactar
+                                        <i class="bi bi-envelope-fill"></i> <?= te('comercio.lista.contactar') ?>
                                     </a>
                                 <?php endif; ?>
 
@@ -784,11 +791,11 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 
                                 <?php if (!empty($c['latitude']) && !empty($c['longitude'])): ?>
                                     <a href="https://www.google.com/maps?q=<?= htmlspecialchars($c['latitude']) ?>,<?= htmlspecialchars($c['longitude']) ?>" target="_blank" rel="noopener" class="comercio-contact-btn">
-                                        <i class="bi bi-geo-alt-fill"></i> Ver no mapa
+                                        <i class="bi bi-geo-alt-fill"></i> <?= te('comercio.lista.mapa') ?>
                                     </a>
                                 <?php elseif (!empty($c['morada'])): ?>
                                     <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($c['nome'] . ' ' . $c['morada']) ?>" target="_blank" rel="noopener" class="comercio-contact-btn">
-                                        <i class="bi bi-geo-alt-fill"></i> Ver no mapa
+                                        <i class="bi bi-geo-alt-fill"></i> <?= te('comercio.lista.mapa') ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -829,7 +836,7 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
         <?php else: ?>
 
             <div class="comercio-empty">
-                Ainda não existem estabelecimentos publicados.
+                <?= te('comercio.vazio.texto') ?>
             </div>
 
         <?php endif; ?>

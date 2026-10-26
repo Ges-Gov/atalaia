@@ -11,7 +11,7 @@ $stmt = $pdo->prepare("
     AND reset_expira >= NOW()
     AND ativo = 1
 ");
-$stmt->execute([$token]);
+$stmt->execute([$token !== '' ? hash('sha256', (string)$token) : '-']);   // na BD só fica o hash do token
 $cidadao = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$cidadao) {
@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $cidadao) {
     $password = $_POST['password'] ?? '';
     $confirmar = $_POST['confirmar'] ?? '';
 
-    if (strlen($password) < 6) {
-        $erro = "A password deve ter pelo menos 6 caracteres.";
+    if (mb_strlen($password) < 8) {
+        $erro = "A password deve ter pelo menos 8 caracteres.";
     } elseif ($password !== $confirmar) {
         $erro = "As passwords não coincidem.";
     } else {
@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $cidadao) {
 
 <section class="page-hero">
     <div class="container">
-        <h1>Definir Nova Password</h1>
-        <p>Escolha uma nova password para aceder ao Balcão Virtual.</p>
+        <h1><?= te('repor_password.hero.titulo') ?></h1>
+        <p><?= te('repor_password.hero.subtitulo') ?></p>
     </div>
 </section>
 
@@ -57,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $cidadao) {
 
         <?php if ($sucesso): ?>
             <div class="alerta-sucesso">
-                Password alterada com sucesso.
+                <?= te('repor_password.formulario.sucesso') ?>
             </div>
-            <a class="btn" href="/cidadao-login.php">Iniciar sessão</a>
+            <a class="btn" href="/cidadao-login.php"><?= te('repor_password.formulario.sucesso_botao') ?></a>
         <?php elseif ($cidadao): ?>
             <form method="POST" class="form-publico">
-                <input type="password" name="password" placeholder="Nova password" required>
-                <input type="password" name="confirmar" placeholder="Confirmar password" required>
+                <input type="password" name="password" minlength="8" autocomplete="new-password" placeholder="<?= te('repor_password.formulario.ph_nova') ?>" required>
+                <input type="password" name="confirmar" placeholder="<?= te('repor_password.formulario.ph_confirmar') ?>" required>
 
-                <button class="btn" type="submit">Guardar nova password</button>
+                <button class="btn" type="submit"><?= te('repor_password.formulario.botao') ?></button>
             </form>
         <?php endif; ?>
 

@@ -73,11 +73,11 @@ require_once "includes/header.php";
 <section class="cidadao-login-hero">
     <div class="container">
         <div>
-            <span>Junta Virtual</span>
-            <h1>Área do Cidadão</h1>
+            <span><?= te('cidadao_login.hero.kicker') ?></span>
+            <h1><?= te('cidadao_login.hero.titulo') ?></h1>
             <p>
-                Acompanhe pedidos, notificações e serviços digitais da Junta
-                num espaço simples, seguro e moderno.
+                <?= te('cidadao_login.hero.subtitulo') ?>
+
             </p>
         </div>
 
@@ -134,9 +134,9 @@ require_once "includes/header.php";
 
             <div class="cidadao-login-card">
 
-                <span class="section-kicker">Acesso reservado</span>
-                <h2>Entrar na minha conta</h2>
-                <p>Use os seus dados de acesso para entrar no Balcão Virtual.</p>
+                <span class="section-kicker"><?= te('cidadao_login.formulario.kicker') ?></span>
+                <h2><?= te('cidadao_login.formulario.titulo') ?></h2>
+                <p><?= te('cidadao_login.formulario.intro') ?></p>
 
                 <?php if ($erro): ?>
                     <div class="alerta-erro login-alert">
@@ -151,7 +151,7 @@ require_once "includes/header.php";
                         <input
                             type="email"
                             name="email"
-                            placeholder="Email"
+                            placeholder="<?= te('cidadao_login.formulario.ph_email') ?>"
                             value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                             required
                         >
@@ -164,11 +164,11 @@ require_once "includes/header.php";
                             type="password"
                             name="password"
                             id="loginPassword"
-                            placeholder="Password"
+                            placeholder="<?= te('cidadao_login.formulario.ph_password') ?>"
                             required
                         >
 
-                        <button type="button" class="toggle-password" id="togglePassword">
+                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="loginPassword">
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
@@ -176,7 +176,7 @@ require_once "includes/header.php";
 
                     <div class="login-antibot-box">
                         <label class="login-antibot-label" for="anti_bot">
-                            <strong>Verificação anti-bot</strong>
+                            <strong><?= te('cidadao_login.formulario.antibot') ?></strong>
                             <span><?= htmlspecialchars($antiBotPergunta) ?> = ?</span>
                         </label>
 
@@ -184,23 +184,23 @@ require_once "includes/header.php";
                             type="number"
                             name="anti_bot"
                             id="anti_bot"
-                            placeholder="Escreva o resultado"
+                            placeholder="<?= te('cidadao_login.formulario.ph_antibot') ?>"
                             required
                         >
                     </div>
 
-                    <button class="hero-btn" type="submit" style="width: 300px;">
-                        Entrar no Balcão Virtual
+                    <button class="hero-btn cidadao-login-entrar" type="submit">
+                        <?= te('cidadao_login.formulario.botao') ?>
                     </button>
 
                     <div class="cidadao-login-links">
-                        <button class="hero-btn"><a href="/cidadao-registo.php">
-                            Criar conta
-                        </a></button>
+                        <a class="hero-btn hero-btn-outline" href="/cidadao-registo.php">
+                            <?= te('cidadao_login.formulario.criar_conta') ?>
+                        </a>
 
-                        <button class="hero-btn"><a href="/recuperar-password.php">
-                            Esqueci-me da password
-                        </a></button>
+                        <a class="hero-btn hero-btn-outline" href="/recuperar-password.php">
+                            <?= te('cidadao_login.formulario.esqueci') ?>
+                        </a>
                     </div>
 
                 </form>
@@ -209,28 +209,28 @@ require_once "includes/header.php";
 
             <aside class="cidadao-login-side">
 
-                <span class="section-kicker">O que pode fazer?</span>
+                <span class="section-kicker"><?= te('cidadao_login.ajuda.kicker') ?></span>
 
-                <h2>Serviços digitais sempre disponíveis</h2>
+                <h2><?= te('cidadao_login.ajuda.titulo') ?></h2>
 
                 <div class="login-benefit">
-                    <strong><i class="bi bi-envelope-paper"></i> Pedidos à Junta</strong>
-                    <span>Submeta e acompanhe comunicações e ocorrências.</span>
+                    <strong><i class="bi bi-envelope-paper"></i> <?= te('cidadao_login.ajuda.i1_titulo') ?></strong>
+                    <span><?= te('cidadao_login.ajuda.i1_texto') ?></span>
                 </div>
 
                 <div class="login-benefit">
-                    <strong><i class="bi bi-bell"></i> Notificações</strong>
-                    <span>Receba avisos e atualizações importantes.</span>
+                    <strong><i class="bi bi-bell"></i> <?= te('cidadao_login.ajuda.i2_titulo') ?></strong>
+                    <span><?= te('cidadao_login.ajuda.i2_texto') ?></span>
                 </div>
 
                 <div class="login-benefit">
-                    <strong><i class="bi bi-file-earmark-text"></i> Requerimentos</strong>
-                    <span>Aceda a serviços digitais e documentos online.</span>
+                    <strong><i class="bi bi-file-earmark-text"></i> <?= te('cidadao_login.ajuda.i3_titulo') ?></strong>
+                    <span><?= te('cidadao_login.ajuda.i3_texto') ?></span>
                 </div>
 
                 <div class="login-benefit">
-                    <strong><i class="bi bi-chat-dots"></i> Conversação</strong>
-                    <span>Comunique diretamente com a Junta sobre os seus pedidos.</span>
+                    <strong><i class="bi bi-chat-dots"></i> <?= te('cidadao_login.ajuda.i4_titulo') ?></strong>
+                    <span><?= te('cidadao_login.ajuda.i4_texto') ?></span>
                 </div>
 
             </aside>
@@ -248,7 +248,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btn && input) {
         btn.addEventListener("click", function () {
             input.type = input.type === "password" ? "text" : "password";
-            btn.innerHTML = input.type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+            btn.innerHTML = input.type === "password" ? '<i class="bi bi-eye" aria-hidden="true"></i>' : '<i class="bi bi-eye-slash" aria-hidden="true"></i>';
+            btn.setAttribute("aria-pressed", input.type === "text" ? "true" : "false");
+            btn.setAttribute("aria-label", input.type === "text" ? "Esconder palavra-passe" : "Mostrar palavra-passe");
         });
     }
 });

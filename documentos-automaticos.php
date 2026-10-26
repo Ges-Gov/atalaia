@@ -124,8 +124,8 @@ padding:22px;
 
 <section class="docs-auto-hero">
     <div class="container">
-        <h1>Documentos Automáticos</h1>
-        <p>Gere documentos oficiais em PDF através do Balcão Virtual.</p>
+        <h1><?= te('documentos_automaticos.hero.titulo') ?></h1>
+        <p><?= te('documentos_automaticos.hero.texto') ?></p>
     </div>
 </section>
 
@@ -133,41 +133,41 @@ padding:22px;
     <div class="container" style="max-width:900px;">
 
         <div class="docs-auto-box"><div class="docs-auto-grid"><div>
-            <span class="section-kicker">Balcão Virtual</span>
-            <h2>Gerar documento</h2>
+            <span class="section-kicker"><?= te('documentos_automaticos.formulario.kicker') ?></span>
+            <h2><?= te('documentos_automaticos.formulario.titulo') ?></h2>
 
             <form method="POST" action="gerar-submeter-documento.php" class="form-publico docs-auto-form" enctype="multipart/form-data">
 
                 <select name="tipo_documento" required>
-                    <option value="">Escolha o documento *</option>
-                    <option value="atestado_residencia">Atestado de residência</option>
-                    <option value="declaracao">Declaração / comprovativo</option>
-                    <option value="certidao">Pedido de certidão</option>
-                    <option value="licenca">Licença / autorização</option>
+                    <option value=""><?= te('documentos_automaticos.formulario.tipo') ?></option>
+                    <option value="atestado_residencia"><?= te('documentos_automaticos.formulario.tipo_atestado') ?></option>
+                    <option value="declaracao"><?= te('documentos_automaticos.formulario.tipo_declaracao') ?></option>
+                    <option value="certidao"><?= te('documentos_automaticos.formulario.tipo_certidao') ?></option>
+                    <option value="licenca"><?= te('documentos_automaticos.formulario.tipo_licenca') ?></option>
                 </select>
 
-                <input type="text" name="nome" placeholder="Nome completo *" required>
+                <input type="text" name="nome" placeholder="<?= te('documentos_automaticos.formulario.ph_nome') ?>" required>
 
-                <input type="text" name="morada" placeholder="Morada completa *" required>
+                <input type="text" name="morada" placeholder="<?= te('documentos_automaticos.formulario.ph_morada') ?>" required>
 
-                <input type="text" name="cc" placeholder="Cartão de Cidadão">
+                <input type="text" name="cc" placeholder="<?= te('documentos_automaticos.formulario.ph_cc') ?>">
 
-                <input type="text" name="nif" placeholder="NIF">
+                <input type="text" name="nif" placeholder="<?= te('documentos_automaticos.formulario.ph_nif') ?>">
 
                 <input type="date" name="data_nascimento">
 
-                <input type="text" name="assunto" placeholder="Assunto / finalidade">
+                <input type="text" name="assunto" placeholder="<?= te('documentos_automaticos.formulario.ph_assunto') ?>">
 
-                <textarea name="observacoes" placeholder="Observações adicionais"></textarea>
-
-
+                <textarea name="observacoes" placeholder="<?= te('documentos_automaticos.formulario.ph_observacoes') ?>"></textarea>
 
 
 
 
 
 
-<label>Cartão de Cidadão - Frente</label>
+
+
+<label><?= te('documentos_automaticos.formulario.cc_frente') ?></label>
 
 <input 
 type="file" 
@@ -175,7 +175,7 @@ name="cc_frente"
 accept=".jpg,.jpeg,.png,.pdf,.webp"
 required>
 
-<label>Cartão de Cidadão - Verso</label>
+<label><?= te('documentos_automaticos.formulario.cc_verso') ?></label>
 
 <input 
 type="file" 
@@ -189,10 +189,10 @@ required>
 
 
                 <button class="btn" type="submit">
-                    Gerar PDF automaticamente
+                    <?= te('documentos_automaticos.formulario.botao') ?>
                 </button>
 
-            </form></div><aside class="docs-auto-info"><span class="section-kicker">Documentos digitais</span><h3>Emissão automática e segura</h3><ul><li>Geração imediata em PDF</li><li>Validação administrativa</li><li>Documentos oficiais</li><li>Disponível 24h por dia</li></ul><div class="docs-auto-badges"><span>PDF automático</span><span>Seguro</span><span>Online</span></div></aside></div>
+            </form></div><aside class="docs-auto-info"><span class="section-kicker"><?= te('documentos_automaticos.sidebar.kicker') ?></span><h3><?= te('documentos_automaticos.sidebar.titulo') ?></h3><ul><li><?= te('documentos_automaticos.sidebar.item1') ?></li><li><?= te('documentos_automaticos.sidebar.item2') ?></li><li><?= te('documentos_automaticos.sidebar.item3') ?></li><li><?= te('documentos_automaticos.sidebar.item4') ?></li></ul><div class="docs-auto-badges"><span><?= te('documentos_automaticos.sidebar.selo1') ?></span><span><?= te('documentos_automaticos.sidebar.selo2') ?></span><span><?= te('documentos_automaticos.sidebar.selo3') ?></span></div></aside></div>
         </div>
 
     </div>

@@ -2,6 +2,8 @@
 $adminPageTitle = "Pontos de Interesse";
 $adminActive = "pontos";
 require_once "includes/header.php";
+require_once __DIR__ . "/includes/textos_bloco.php";
+textosBloco("Texto do topo da página «Pontos de interesse»", ['pontos.hero.kicker','pontos.hero.titulo','pontos.hero.texto'], '/pontos.php');
 
 $pontos = $pdo->query("SELECT * FROM pontos_interesse ORDER BY nome ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>

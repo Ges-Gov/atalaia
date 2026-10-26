@@ -21,33 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-function estadoPedidoTexto($estado) {
-    return match ($estado) {
-        'pendente' => 'Pendente',
-        'em_analise' => 'Em análise',
-        'resolvido' => 'Resolvido',
-        'arquivado' => 'Arquivado',
-        default => ucfirst(str_replace('_', ' ', $estado))
-    };
-}
-
-function estadoPedidoClasse($estado) {
-    return match ($estado) {
-        'pendente' => 'estado-pendente',
-        'em_analise' => 'estado-em_analise',
-        'resolvido' => 'estado-resolvido',
-        'arquivado' => 'estado-arquivado',
-        default => ''
-    };
-}
 ?>
 
 <section class="consulta-hero-premium">
     <div class="container">
         <div>
-            <span>Junta Virtual</span>
-            <h1>Consultar Pedido</h1>
-            <p>Acompanhe o estado do seu pedido, veja atualizações e consulte a resposta da Junta.</p>
+            <span><?= te('consultar_pedido.hero.kicker') ?></span>
+            <h1><?= te('consultar_pedido.hero.titulo') ?></h1>
+            <p><?= te('consultar_pedido.hero.texto') ?></p>
         </div>
 
         <div class="consulta-hero-icon"><i class="bi bi-search"></i></div>
@@ -60,15 +41,15 @@ function estadoPedidoClasse($estado) {
         <div class="consulta-wrapper">
 
             <div class="consulta-form-card">
-                <span class="section-kicker">Acompanhamento online</span>
-                <h2>Introduza os dados do pedido</h2>
-                <p>Use o código recebido por email e o email utilizado na submissão.</p>
+                <span class="section-kicker"><?= te('consultar_pedido.formulario.kicker') ?></span>
+                <h2><?= te('consultar_pedido.formulario.titulo') ?></h2>
+                <p><?= te('consultar_pedido.formulario.intro') ?></p>
 
                 <form method="POST" class="consulta-form-premium">
                     <input 
                         type="text" 
                         name="codigo" 
-                        placeholder="Código do pedido"
+                        placeholder="<?= te('consultar_pedido.formulario.ph_codigo') ?>"
                         value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>"
                         required
                     >
@@ -76,12 +57,12 @@ function estadoPedidoClasse($estado) {
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Email utilizado"
+                        placeholder="<?= te('consultar_pedido.formulario.ph_email') ?>"
                         value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                         required
                     >
 
-                    <button class="hero-btn" type="submit">Consultar pedido</button>
+                    <button class="hero-btn" type="submit"><?= te('consultar_pedido.formulario.botao') ?></button>
                 </form>
 
                 <?php if ($erro): ?>
@@ -92,25 +73,25 @@ function estadoPedidoClasse($estado) {
             </div>
 
             <div class="consulta-help-card">
-                <h3>Como consultar?</h3>
+                <h3><?= te('consultar_pedido.passos.titulo') ?></h3>
 
                 <div class="consulta-step">
                     <strong>1</strong>
-                    <span>Introduza o código do pedido.</span>
+                    <span><?= te('consultar_pedido.passos.p1') ?></span>
                 </div>
 
                 <div class="consulta-step">
                     <strong>2</strong>
-                    <span>Use o mesmo email da submissão.</span>
+                    <span><?= te('consultar_pedido.passos.p2') ?></span>
                 </div>
 
                 <div class="consulta-step">
                     <strong>3</strong>
-                    <span>Veja o estado e resposta da Junta.</span>
+                    <span><?= te('consultar_pedido.passos.p3') ?></span>
                 </div>
 
                 <a href="/pedidos.php" class="hero-btn">
-                    Fazer novo pedido
+                    <?= te('consultar_pedido.passos.botao') ?>
                 </a>
             </div>
 
@@ -121,9 +102,9 @@ function estadoPedidoClasse($estado) {
 
                 <div class="pedido-track-header">
                     <div>
-                        <span class="section-kicker">Pedido encontrado</span>
+                        <span class="section-kicker"><?= te('consultar_pedido.resultado.titulo') ?></span>
                         <h2><?= htmlspecialchars($pedido['assunto']) ?></h2>
-                        <p>Código: <strong><?= htmlspecialchars($pedido['codigo'] ?? '-') ?></strong></p>
+                        <p><?= te('consultar_pedido.resultado.codigo') ?> <strong><?= htmlspecialchars($pedido['codigo'] ?? '-') ?></strong></p>
                     </div>
 
                     <span class="estado-badge <?= estadoPedidoClasse($pedido['estado']) ?>">
@@ -131,6 +112,15 @@ function estadoPedidoClasse($estado) {
                     </span>
                 </div>
 
+                <style>
+                    /* redesign 10/2026: no telemóvel os 3 passos repartem a largura (antes rolava para o lado e cortava «Resolvido») */
+                    @media (max-width: 700px) {
+                        .pedido-timeline { overflow-x: visible; }
+                        .pedido-timeline .timeline-step { min-width: 0; flex: 0 0 auto; max-width: 30%; }
+                        .pedido-timeline .timeline-step strong { display: block; font-size: 12px; line-height: 1.25; }
+                        .pedido-timeline .timeline-line { min-width: 12px; }
+                    }
+                </style>
                 <div class="pedido-timeline">
                     <div class="timeline-step active">
                         <span>1</span>
@@ -154,22 +144,22 @@ function estadoPedidoClasse($estado) {
 
                 <div class="pedido-consulta-grid premium">
                     <div>
-                        <strong>Categoria</strong>
+                        <strong><?= te('consultar_pedido.resultado.categoria') ?></strong>
                         <span><?= htmlspecialchars($pedido['categoria']) ?></span>
                     </div>
 
                     <div>
-                        <strong>Localização</strong>
+                        <strong><?= te('consultar_pedido.resultado.localizacao') ?></strong>
                         <span><?= htmlspecialchars($pedido['localizacao'] ?: '-') ?></span>
                     </div>
 
                     <div>
-                        <strong>Data de envio</strong>
+                        <strong><?= te('consultar_pedido.resultado.data_envio') ?></strong>
                         <span><?= date('d/m/Y H:i', strtotime($pedido['criado_em'])) ?></span>
                     </div>
 
                     <div>
-                        <strong>Última atualização</strong>
+                        <strong><?= te('consultar_pedido.resultado.atualizacao') ?></strong>
                         <span>
                             <?= !empty($pedido['atualizado_em']) 
                                 ? date('d/m/Y H:i', strtotime($pedido['atualizado_em'])) 
@@ -181,17 +171,17 @@ function estadoPedidoClasse($estado) {
 
                 <div class="pedido-message-grid">
                     <div class="pedido-message-box">
-                        <h3>Mensagem enviada</h3>
+                        <h3><?= te('consultar_pedido.resultado.mensagem') ?></h3>
                         <p><?= nl2br(htmlspecialchars($pedido['mensagem'])) ?></p>
                     </div>
 
                     <div class="pedido-message-box resposta">
-                        <h3>Resposta da Junta</h3>
+                        <h3><?= te('consultar_pedido.resultado.resposta') ?></h3>
 
                         <?php if (!empty($pedido['resposta'])): ?>
                             <p><?= nl2br(htmlspecialchars($pedido['resposta'])) ?></p>
                         <?php else: ?>
-                            <p>Ainda não existe resposta registada para este pedido.</p>
+                            <p><?= te('consultar_pedido.resultado.sem_resposta') ?></p>
                         <?php endif; ?>
                     </div>
                 </div>

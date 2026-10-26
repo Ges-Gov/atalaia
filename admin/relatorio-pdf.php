@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . "/includes/auth.php";
-require_once __DIR__ . "/../includes/db.php";
+require_once __DIR__ . "/../includes/config.php";
 require_once __DIR__ . "/../dompdf/autoload.inc.php";
 
 use Dompdf\Dompdf;
@@ -92,7 +92,7 @@ $html = '
     }
 
     .hero small {
-        color: #D4AA00;
+        color: #C8A02E;
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: .5px;
@@ -198,7 +198,7 @@ $html = '
 <div class="page">
 
     <div class="hero">
-        <small>AAEJ Digital</small>
+        <small>' . htmlspecialchars(nomeFreguesia()) . ' Digital</small>
         <h1>Relatório Geral da Junta Virtual</h1>
         <p>Resumo institucional dos pedidos, requerimentos, marcações e atividade digital.</p>
         <div class="meta">Gerado em: ' . htmlspecialchars($dataRelatorio) . '</div>
@@ -367,7 +367,7 @@ $html .= '
     </div>
 
     <div class="footer">
-        Relatório gerado automaticamente pela plataforma AAEJ Digital.
+        Relatório gerado automaticamente pela plataforma ' . htmlspecialchars(nomeFreguesia()) . ' Digital.
     </div>
 
 </div>
@@ -395,5 +395,5 @@ $dompdf->loadHtml($html, 'UTF-8');
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
-$dompdf->stream("relatorio-atalaia.pdf", ["Attachment" => false]);
+$dompdf->stream("relatorio-" . preg_replace("/[^a-z0-9]+/", "-", strtolower(iconv("UTF-8", "ASCII//TRANSLIT", nomeFreguesia()))) . ".pdf", ["Attachment" => false]);
 exit;

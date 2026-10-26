@@ -6,13 +6,7 @@ require_once "../includes/separadores.php";
 $uploadDir = "../uploads/separadores/";
 $erro = "";
 
-// Garantir a tabela (defensivo — também vem no sqlfix)
-$pdo->exec("CREATE TABLE IF NOT EXISTS separadores_fundo (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    chave VARCHAR(60) NOT NULL UNIQUE,
-    imagem VARCHAR(255) DEFAULT NULL,
-    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+// A tabela vem da migração 002 (deixou de ser criada aqui a 17/10/2026: o utilizador da BD da aplicação não cria tabelas)
 
 // Remover imagem
 if (isset($_GET['remover'])) {
@@ -63,8 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $atual = [];
-foreach ($pdo->query("SELECT chave, imagem FROM separadores_fundo")->fetchAll(PDO::FETCH_ASSOC) as $r) {
+$focoSep = [];
+foreach ($pdo->query("SELECT * FROM separadores_fundo")->fetchAll(PDO::FETCH_ASSOC) as $r) {
     $atual[$r['chave']] = $r['imagem'];
+    $focoSep[$r['chave']] = ((int)($r['foco_x'] ?? 50)) . '% ' . ((int)($r['foco_y'] ?? 50)) . '%';
 }
 
 $adminPageTitle = "Fundos dos Separadores";
@@ -97,10 +93,7 @@ require_once "includes/header.php";
 .sep-acts{display:flex;gap:8px;flex-wrap:wrap;margin:0;}
 </style>
 
-<div class="admin-topbar">
-    <h1>Fundos dos Separadores</h1>
-    <p>Defina uma imagem de fundo para o cabeçalho (hero) de cada separador do site. A imagem fica com um véu escuro por cima para o texto continuar legível. Sem imagem, mantém-se o fundo padrão.</p>
-</div>
+<p class="adm-ajuda-pagina" style="margin:-8px 0 20px;color:var(--adm-texto-2);max-width:80ch">Defina uma imagem de fundo para o cabeçalho (hero) de cada separador do site. A imagem fica com um véu escuro por cima para o texto continuar legível. Sem imagem, mantém-se o fundo padrão.</p>
 
 <?php if (isset($_GET['ok'])): ?>
     <div class="alerta-sucesso">Alterações guardadas com sucesso.</div>
@@ -109,13 +102,21 @@ require_once "includes/header.php";
     <div class="alerta-erro"><?= htmlspecialchars($erro) ?></div>
 <?php endif; ?>
 
+<?php if (isset($_GET['ajustar']) && isset($GLOBALS['SEPARADORES_FUNDO'][$_GET['ajustar']])):
+    require_once __DIR__ . "/includes/banner_editor.php"; ?>
+    <div id="ajustar">
+        <?php bannerEditor($_GET['ajustar'], $GLOBALS['SEPARADORES_FUNDO'][$_GET['ajustar']]); ?>
+        <p style="margin:-10px 0 22px"><a class="btn secondary" href="separadores-fundo.php"><i class="bi bi-arrow-left"></i> Voltar a todas as páginas</a></p>
+    </div>
+<?php endif; ?>
+
 <div class="sep-grid">
     <?php foreach ($GLOBALS['SEPARADORES_FUNDO'] as $chave => $nome): ?>
         <?php $img = $atual[$chave] ?? null; ?>
         <div class="sep-card">
             <div class="sep-prev">
                 <?php if (!empty($img)): ?>
-                    <img src="/uploads/separadores/<?= htmlspecialchars($img) ?>" alt="">
+                    <img src="/uploads/separadores/<?= htmlspecialchars($img) ?>" alt="" style="object-position: <?= htmlspecialchars($focoSep[$chave] ?? '50% 50%') ?>">
                 <?php else: ?>
                     Sem imagem
                 <?php endif; ?>
@@ -130,6 +131,9 @@ require_once "includes/header.php";
                     <input type="file" name="imagem" accept="image/*" required>
                     <div class="sep-acts">
                         <button class="btn"><?= !empty($img) ? 'Substituir' : 'Carregar' ?></button>
+                        <?php if (!empty($img)): ?>
+                            <a class="btn secondary" href="separadores-fundo.php?ajustar=<?= urlencode($chave) ?>#ajustar"><i class="bi bi-arrows-move"></i> Ajustar posição</a>
+                        <?php endif; ?>
                         <?php if (!empty($img)): ?>
                             <a class="btn danger" href="separadores-fundo.php?remover=<?= htmlspecialchars($chave) ?>" onclick="return confirm('Remover a imagem de fundo deste separador?')">Remover</a>
                         <?php endif; ?>

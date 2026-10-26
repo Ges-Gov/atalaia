@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/includes/db.php";
+require_once __DIR__ . "/includes/config.php";   // db + siteConfig()/nomeFreguesia()
 
 $pagina = $pdo->query("SELECT * FROM pagina_historia ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
 
@@ -22,9 +22,9 @@ if (!empty($pagina['timeline_texto'])) {
 /* HERÁLDICA — integrada na página História */
 $heraldica = [
     'hero_kicker' => 'Heráldica',
-    'titulo' => 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia',
-    'texto_intro' => 'Escudo de ouro, com uma buzina de vermelho cordada de azul; em campanha, charrua de vermelho com relha, podão, maço e cadeia de negro; bordadura de azul carregada de contas de rosário. Coroa mural de prata de três torres. Listel branco com a legenda em letras negras: GRANHO.',
-    'imagem' => 'logo-aaej.png',
+    'titulo' => 'Brasão da Freguesia ' . deFreguesia(),
+    'texto_intro' => '',
+    'imagem' => '',
     'fonte_texto' => '',
     'fonte_url' => ''
 ];
@@ -43,7 +43,7 @@ try {
 
 $heraldicaImg = !empty($heraldica['imagem'])
     ? "/uploads/heraldica/" . htmlspecialchars($heraldica['imagem'])
-    : "/assets/img/logo-aaej.png";
+    : (siteConfig('logo') ? "/assets/img/" . htmlspecialchars(siteConfig('logo')) : "/assets/img/freguesia-1.jpg");
 
 /* Se houver vários brasões individuais (união de freguesias), mostra-os
    empilhados em vez do símbolo único combinado. */
@@ -117,9 +117,9 @@ function textoSeguro($texto) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: color-mix(in srgb, var(--cor-secundaria) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 38%, transparent);
-    color: var(--cor-secundaria);
+    background: rgb(var(--ouro-rgb, 240 180 41) / .14);
+    border: 1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);
+    color: var(--ouro, #C8A02E);
     border-radius: 999px;
     padding: 10px 16px;
     font-size: 13px;
@@ -380,12 +380,12 @@ function textoSeguro($texto) {
     height: 18px;
     border-radius: 50%;
     background: var(--cor-secundaria);
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--cor-secundaria) 18%, transparent);
+    box-shadow: 0 0 0 5px rgb(var(--ouro-rgb, 240 180 41) / .18);
 }
 
 .timeline-item h3 {
     margin: 0 0 10px;
-    color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    color: var(--ouro-claro, #f8d77a);
     font-size: 24px;
 }
 
@@ -580,7 +580,7 @@ function textoSeguro($texto) {
     <section class="historia-intro">
 
         <div>
-            <span class="historia-kicker">Memória local</span>
+            <span class="historia-kicker"><?= te('historia.intro.kicker') ?></span>
 
             <h2><?= htmlspecialchars($pagina['intro_titulo'] ?? '') ?></h2>
 
@@ -591,13 +591,13 @@ function textoSeguro($texto) {
 
             <div>
                 <div class="historia-side-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                <span class="historia-side-kicker">Identidade da freguesia</span>
-                <span class="historia-side-name">Atalaia e Alto Estanqueiro-Jardia · Montijo</span>
+                <span class="historia-side-kicker"><?= te('historia.intro.painel_kicker') ?></span>
+                <span class="historia-side-name"><?= te('historia.intro.painel_nome') ?></span>
             </div>
 
             <p style="color:#dbeafe;line-height:1.8;margin-top:24px;">
-                Uma freguesia marcada pela tradição,
-                património, agricultura e identidade ribatejana.
+                <?= te('historia.intro.painel_frase') ?>
+
             </p>
 
         </aside>
@@ -632,7 +632,7 @@ function textoSeguro($texto) {
 
     <section class="timeline-section">
 
-        <span class="historia-kicker">Linha temporal</span>
+        <span class="historia-kicker"><?= te('historia.timeline.kicker') ?></span>
 
         <h2><?= htmlspecialchars($pagina['timeline_titulo'] ?? 'Linha do tempo') ?></h2>
 
@@ -679,7 +679,7 @@ function textoSeguro($texto) {
 
 
 <div class="historia-heraldica-divider" id="heraldica">
-    <span><i class="bi bi-shield-fill"></i> Heráldica da Freguesia</span>
+    <span><i class="bi bi-shield-fill"></i> <?= te('historia.heraldica.divisor') ?></span>
 </div>
 
 <section class="historia-heraldica">
@@ -687,10 +687,10 @@ function textoSeguro($texto) {
         <div class="historia-heraldica-img<?= !empty($brasoesIndividuais) ? ' multi' : '' ?>">
             <?php if (!empty($brasoesIndividuais)): ?>
                 <?php foreach ($brasoesIndividuais as $brasao): ?>
-                    <img src="/assets/img/heraldica/<?= htmlspecialchars($brasao['imagem']) ?>" alt="<?= htmlspecialchars($brasao['titulo']) ?>">
+                    <img src="/uploads/heraldica/<?= htmlspecialchars($brasao['imagem']) ?>" alt="<?= htmlspecialchars($brasao['titulo']) ?>">
                 <?php endforeach; ?>
             <?php else: ?>
-                <img src="<?= $heraldicaImg ?>" alt="Brasão de Atalaia e Alto Estanqueiro-Jardia">
+                <img src="<?= $heraldicaImg ?>" alt="Brasão de <?= htmlspecialchars(nomeFreguesia()) ?>">
             <?php endif; ?>
         </div>
 
@@ -699,14 +699,14 @@ function textoSeguro($texto) {
                 <?= htmlspecialchars($heraldica['hero_kicker'] ?? 'Heráldica') ?>
             </span>
 
-            <h2><?= htmlspecialchars($heraldica['titulo'] ?? 'Brasão da Freguesia de Atalaia e Alto Estanqueiro-Jardia') ?></h2>
+            <h2><?= htmlspecialchars($heraldica['titulo'] ?? 'Brasão da Freguesia ' . deFreguesia()) ?></h2>
 
             <p><?= textoSeguro($heraldica['texto_intro'] ?? '') ?></p>
         </div>
     </div>
 
     <div class="historia-heraldica-elementos">
-        <h2>Elementos Heráldicos</h2>
+        <h2><?= te('historia.heraldica.titulo') ?></h2>
 
         <?php if(!empty($elementosHeraldica)): ?>
             <div class="historia-heraldica-grid">
@@ -714,7 +714,7 @@ function textoSeguro($texto) {
                     <article class="historia-heraldica-card">
                         <?php if (!empty($e['imagem'])): ?>
                             <div class="historia-heraldica-card-img">
-                                <img src="/assets/img/heraldica/<?= htmlspecialchars($e['imagem']) ?>" alt="<?= htmlspecialchars($e['titulo']) ?>">
+                                <img src="/uploads/heraldica/<?= htmlspecialchars($e['imagem']) ?>" alt="<?= htmlspecialchars($e['titulo']) ?>">
                             </div>
                         <?php else: ?>
                             <div class="historia-heraldica-icon">
@@ -728,7 +728,7 @@ function textoSeguro($texto) {
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <p>Ainda não existem elementos heráldicos publicados.</p>
+            <p><?= te('historia.heraldica.vazio') ?></p>
         <?php endif; ?>
     </div>
 </section>
@@ -760,11 +760,11 @@ function textoSeguro($texto) {
 
         <div>
 
-            <h2>Conheça a história e a heráldica da freguesia</h2>
+            <h2><?= te('historia.cta.titulo') ?></h2>
 
             <p>
-                Descubra as origens, a memória e a identidade
-                que moldaram a freguesia ao longo do tempo.
+                <?= te('historia.cta.texto') ?>
+
             </p>
 
         </div>

@@ -1,8 +1,9 @@
 <?php
-require_once "includes/db.php";
+require_once "includes/chat_acesso.php";
 
-$pedidoId = $_POST['pedido_id'] ?? 0;
-$tipo = $_POST['tipo'] ?? '';
+$pedidoId = (int) ($_POST['pedido_id'] ?? 0);
+// cada um só marca o seu lado da conversa como «a escrever»
+$tipo = chatExigirAcesso($pdo, $pedidoId);
 
 if ($pedidoId && in_array($tipo, ['cidadao','admin'])) {
 

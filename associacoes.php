@@ -102,9 +102,9 @@ function getAssociacaoIcon($nome)
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:color-mix(in srgb, var(--cor-secundaria) 15%, transparent);
-    border:1px solid color-mix(in srgb, var(--cor-secundaria) 42%, transparent);
-    color:color-mix(in srgb, var(--cor-secundaria) 55%, #fff);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
+    color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
     padding:10px 16px;
     font-size:13px;
@@ -142,7 +142,7 @@ function getAssociacaoIcon($nome)
 
 .assoc-hero-stat strong{
     display:block;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:56px;
     line-height:1;
     margin-bottom:8px;
@@ -306,7 +306,7 @@ function getAssociacaoIcon($nome)
     height:100%;
     display:grid;
     place-items:center;
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
     font-size:74px;
     font-weight:900;
 }
@@ -417,7 +417,7 @@ function getAssociacaoIcon($nome)
 }
 
 .assoc-contact-btn:hover{
-    color:var(--cor-secundaria);
+    color:var(--ouro, #C8A02E);
 }
 
 .assoc-pagination{
@@ -562,17 +562,17 @@ function getAssociacaoIcon($nome)
         <div class="container">
             <div class="associacoes-hero-inner">
                 <div>
-                    <span class="assoc-kicker">Comunidade e Movimento Associativo</span>
-                    <h1>Associações da Freguesia</h1>
+                    <span class="assoc-kicker"><?= te('associacoes.hero.kicker') ?></span>
+                    <h1><?= te('associacoes.hero.titulo') ?></h1>
                     <p>
-                        Conheça as associações, coletividades e grupos que dinamizam
-                        a vida cultural, social, desportiva e comunitária da freguesia.
+                        <?= te('associacoes.hero.texto') ?>
+
                     </p>
                 </div>
 
                 <aside class="assoc-hero-stat">
                     <strong><?= (int)$totalAssociacoes ?></strong>
-                    <span>associações publicadas</span>
+                    <span><?= te('associacoes.hero.contagem') ?></span>
                 </aside>
             </div>
         </div>
@@ -582,7 +582,7 @@ function getAssociacaoIcon($nome)
 
         <div class="assoc-intro-panel">
             <div class="assoc-tabs">
-                <a href="/associacoes.php" class="<?= $categoriaAssoc === '' ? 'active' : '' ?>"><i class="bi bi-people-fill"></i> Todas</a>
+                <a href="/associacoes.php" class="<?= $categoriaAssoc === '' ? 'active' : '' ?>"><i class="bi bi-people-fill"></i> <?= te('associacoes.filtros.todas') ?></a>
                 <?php foreach ($categoriasAssoc as $cNome => $cIcone): ?>
                     <a href="/associacoes.php?categoria=<?= urlencode($cNome) ?>" class="<?= $categoriaAssoc === $cNome ? 'active' : '' ?>"><i class="bi <?= $cIcone ?>"></i> <?= $cNome ?></a>
                 <?php endforeach; ?>
@@ -595,11 +595,11 @@ function getAssociacaoIcon($nome)
 
         <div class="assoc-section-head">
             <div>
-                <span class="hero-btn">Movimento associativo</span>
-                <h2>Juntos fazemos mais</h2>
+                <span class="hero-btn"><?= te('associacoes.lista.kicker') ?></span>
+                <h2><?= te('associacoes.lista.titulo') ?></h2>
             </div>
 
-            <p>Entidades que dão vida à freguesia.</p>
+            <p><?= te('associacoes.lista.texto') ?></p>
         </div>
 
         <?php if (!empty($associacoes)): ?>
@@ -645,28 +645,28 @@ function getAssociacaoIcon($nome)
 
                             <?php if (!empty($a['email'])): ?>
                                 <div class="assoc-info">
-                                    <strong>Email:</strong>
+                                    <strong><?= te('associacoes.lista.email') ?></strong>
                                     <span><?= htmlspecialchars($a['email']) ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($a['telefone'])): ?>
                                 <div class="assoc-info">
-                                    <strong>Telefone:</strong>
+                                    <strong><?= te('associacoes.lista.telefone') ?></strong>
                                     <span><?= htmlspecialchars($a['telefone']) ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($a['website'])): ?>
                                 <div class="assoc-info">
-                                    <strong>Website:</strong>
+                                    <strong><?= te('associacoes.lista.website') ?></strong>
                                     <span><a href="<?= htmlspecialchars($a['website']) ?>" target="_blank" rel="noopener"><?= htmlspecialchars($a['website']) ?></a></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php if (!empty($a['outros_contactos'])): ?>
                                 <div class="assoc-info">
-                                    <strong>Outros contactos:</strong>
+                                    <strong><?= te('associacoes.lista.outros') ?></strong>
                                     <span><?= nl2br(htmlspecialchars($a['outros_contactos'])) ?></span>
                                 </div>
                             <?php endif; ?>
@@ -674,7 +674,7 @@ function getAssociacaoIcon($nome)
                             <div class="assoc-actions">
                                 <?php if (!empty($a['email'])): ?>
                                     <a href="mailto:<?= htmlspecialchars($a['email']) ?>" class="assoc-contact-btn">
-                                        <i class="bi bi-envelope-fill"></i> Contactar
+                                        <i class="bi bi-envelope-fill"></i> <?= te('associacoes.lista.contactar') ?>
                                     </a>
                                 <?php endif; ?>
                                 <?php if (!empty($a['facebook'])): ?>
@@ -689,11 +689,11 @@ function getAssociacaoIcon($nome)
                                 <?php endif; ?>
                                 <?php if (!empty($a['latitude']) && !empty($a['longitude'])): ?>
                                     <a href="https://www.google.com/maps?q=<?= htmlspecialchars($a['latitude']) ?>,<?= htmlspecialchars($a['longitude']) ?>" target="_blank" rel="noopener" class="assoc-contact-btn">
-                                        <i class="bi bi-geo-alt-fill"></i> Ver no mapa
+                                        <i class="bi bi-geo-alt-fill"></i> <?= te('associacoes.lista.mapa') ?>
                                     </a>
                                 <?php elseif (!empty($a['morada'])): ?>
                                     <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($a['nome'] . ' ' . $a['morada']) ?>" target="_blank" rel="noopener" class="assoc-contact-btn">
-                                        <i class="bi bi-geo-alt-fill"></i> Ver no mapa
+                                        <i class="bi bi-geo-alt-fill"></i> <?= te('associacoes.lista.mapa') ?>
                                     </a>
                                 <?php endif; ?>
                             </div>

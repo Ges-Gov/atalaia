@@ -1,5 +1,5 @@
 <?php
-require_once "includes/db.php";
+require_once "includes/config.php";
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -23,7 +23,7 @@ $meta_url = $siteBaseUrl . "/noticia.php?id=" . $id;
 
 $meta_imagem = !empty($noticia['imagem'])
     ? $siteBaseUrl . "/assets/img/" . $noticia['imagem']
-    : $siteBaseUrl . "/assets/img/logo.png";
+    : $siteBaseUrl . "/assets/img/" . (siteConfig('logo') ?: 'freguesia-1.jpg');
 
 require_once "includes/header.php";
  ?>
@@ -34,6 +34,7 @@ if (!$noticia) {
     require_once "includes/footer.php";
     exit;
 }
+seoNoticia($noticia);
 
 $outras = $pdo->prepare("
     SELECT *
@@ -48,6 +49,9 @@ $outrasNoticias = $outras->fetchAll(PDO::FETCH_ASSOC);
 $galeriaNoticia = $pdo->prepare("SELECT * FROM noticias_imagens WHERE noticia_id = ? ORDER BY ordem ASC, id ASC");
 $galeriaNoticia->execute([$id]);
 $galeriaNoticiaFotos = $galeriaNoticia->fetchAll(PDO::FETCH_ASSOC);
+require_once __DIR__ . "/includes/galeria.php";
+$galeriaNoticiaFotos = fotosSemRepetidas($galeriaNoticiaFotos, !empty($noticia['imagem']) ? '/assets/img/' . $noticia['imagem'] : '',
+    fn($f) => '/assets/img/' . $f);   // sem repetir a foto principal no carrossel
 
 $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
 $urlAtual = $protocolo . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -66,9 +70,9 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
 
 <section class="noticia-detail-hero">
     <div class="container">
-        <span>Notícia<?= !empty($noticia['categoria']) ? ' · ' . htmlspecialchars($noticia['categoria']) : '' ?></span>
+        <span><?= te('noticia.hero.kicker') ?><?= !empty($noticia['categoria']) ? ' · ' . htmlspecialchars($noticia['categoria']) : '' ?></span>
         <h1><?= htmlspecialchars($noticia['titulo']) ?></h1>
-        <p>Publicado em <?= date('d/m/Y H:i', strtotime($noticia['data'])) ?></p>
+        <p><?= te('noticia.hero.publicado') ?> <?= date('d/m/Y H:i', strtotime($noticia['data'])) ?></p>
     </div>
 </section>
 
@@ -201,106 +205,9 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
     cursor:zoom-in;
     transition:.25s;
 }
-.lb-trigger{display:block;width:100%;padding:0;border:0;background:none;font:inherit;text-align:left;cursor:zoom-in;}
 .noticia-detail-img:hover{opacity:.92;}
 
 /* LIGHTBOX */
-.lb-overlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:9999;
-    background:rgba(0,0,0,.88);
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    padding:60px 24px 24px;
-    box-sizing:border-box;
-    cursor:zoom-out;
-    backdrop-filter:blur(4px);
-}
-.lb-overlay.open{display:flex;}
-.lb-img{
-    max-width:92vw;
-    max-height:80vh;
-    object-fit:contain;
-    border-radius:16px;
-    box-shadow:0 30px 80px rgba(0,0,0,.5);
-    cursor:default;
-}
-.lb-close{
-    position:fixed;
-    top:18px;
-    right:22px;
-    background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.3);
-    color:white;
-    width:46px;
-    height:46px;
-    border-radius:50%;
-    font-size:20px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.2s;
-    backdrop-filter:blur(8px);
-    line-height:1;
-    padding:0;
-}
-.lb-close:hover{background:rgba(255,255,255,.28);}
-.lb-bar{
-    margin-top:18px;
-    display:flex;
-    gap:12px;
-    align-items:center;
-    flex-wrap:wrap;
-    justify-content:center;
-}
-.lb-download{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:white;
-    color:#11151B;
-    padding:12px 20px;
-    border-radius:14px;
-    text-decoration:none;
-    font-weight:900;
-    font-size:14px;
-    transition:.2s;
-}
-.lb-download:hover{background:#f1f5f9;transform:translateY(-2px);}
-.lb-counter{
-    color:rgba(255,255,255,.7);
-    font-weight:800;
-    font-size:14px;
-    min-width:50px;
-    text-align:center;
-}
-.lb-nav{
-    background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.25);
-    color:white;
-    width:46px;
-    height:46px;
-    border-radius:50%;
-    font-size:22px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.2s;
-    backdrop-filter:blur(8px);
-    position:fixed;
-    top:50%;
-    transform:translateY(-50%);
-    padding:0;
-    line-height:1;
-}
-.lb-nav:hover{background:rgba(255,255,255,.28);}
-#lbPrev{left:16px;}
-#lbNext{right:16px;}
 </style>
 
 <section class="section noticia-detail-section">
@@ -332,7 +239,7 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                 .noticia-galeria-item img{width:100%;height:170px;object-fit:cover;display:block;}
                 </style>
                 <div class="noticia-galeria" data-carrossel-substitui>
-                    <h3>Galeria de fotos</h3>
+                    <h3><?= te('noticia.galeria.titulo') ?></h3>
                     <div class="noticia-galeria-grid">
                         <?php foreach ($galeriaNoticiaFotos as $gIdx => $g): ?>
                             <a class="noticia-galeria-item" href="#" onclick="lbAbrir(todasImagens, <?= $coverOffset + $gIdx ?>); return false;">
@@ -343,11 +250,10 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                 </div>
             <?php endif; ?>
 
-
             <div class="noticia-share-box">
                 <div class="noticia-share-head">
-                    <strong>Partilhar esta notícia</strong>
-                    <span>Ajude a divulgar esta informação</span>
+                    <strong><?= te('noticia.partilha.titulo') ?></strong>
+                    <span><?= te('noticia.partilha.texto') ?></span>
                 </div>
 
                 <div class="noticia-share-buttons">
@@ -382,7 +288,7 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                         class="share-btn share-copy"
                         onclick="copiarLinkNoticia()">
                         <span><i class="bi bi-link-45deg"></i></span>
-                        Copiar link
+                        <?= te('noticia.partilha.copiar') ?>
                     </button>
 
                     <a 
@@ -394,22 +300,22 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                 </div>
 
                 <div class="share-note">
-                    Nota: o Instagram não permite partilha direta de links em publicações pelo browser. O botão copia o link para colar no Instagram, stories ou mensagem.
+                    <?= te('noticia.partilha.nota_instagram') ?>
                 </div>
 
                 <div class="share-toast" id="shareToast">
-                    Link copiado com sucesso.
+                    <?= te('noticia.partilha.copiado') ?>
                 </div>
             </div>
 
             <a href="/noticias.php" class="noticia-btn">
-                ← Voltar às notícias
+                <?= te('noticia.navegacao.voltar') ?>
             </a>
 
         </article>
 
         <aside class="noticia-side-card">
-            <h3>Outras notícias</h3>
+            <h3><?= te('noticia.sidebar.titulo') ?></h3>
 
             <?php if (!empty($outrasNoticias)): ?>
                 <?php foreach ($outrasNoticias as $n): ?>
@@ -419,79 +325,15 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
                     </a>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p>Sem outras notícias.</p>
+                <p><?= te('noticia.sidebar.vazio') ?></p>
             <?php endif; ?>
         </aside>
 
     </div>
 </section>
 
-
-<div class="lb-overlay" id="lbOverlay" onclick="lbClose(event)" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
-    <button class="lb-close" onclick="lbFechar()" aria-label="Fechar">&#x2715;</button>
-    <button class="lb-nav" id="lbPrev" onclick="lbMover(-1,event)" aria-label="Imagem anterior">&#8249;</button>
-    <button class="lb-nav" id="lbNext" onclick="lbMover(1,event)" aria-label="Imagem seguinte">&#8250;</button>
-    <img class="lb-img" id="lbImg" src="" alt="">
-    <div class="lb-bar">
-        <a class="lb-download" id="lbDownload" href="" download><i class="bi bi-download"></i> Descarregar</a>
-        <span class="lb-counter" id="lbCounter"></span>
-    </div>
-</div>
-
 <script>
 var todasImagens = <?= json_encode($todasImagens, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-var lbImagens = [];
-var lbIdx = 0;
-var lbUltimoFoco = null;
-
-function lbMostrar() {
-    document.getElementById('lbImg').src = lbImagens[lbIdx];
-    document.getElementById('lbDownload').href = lbImagens[lbIdx];
-    var multi = lbImagens.length > 1;
-    document.getElementById('lbCounter').textContent = multi ? (lbIdx+1)+' / '+lbImagens.length : '';
-    document.getElementById('lbPrev').style.display = multi ? 'flex' : 'none';
-    document.getElementById('lbNext').style.display = multi ? 'flex' : 'none';
-}
-function lbAbrir(imgs, idx) {
-    lbUltimoFoco = document.activeElement;
-    lbImagens = imgs; lbIdx = idx;
-    lbMostrar();
-    document.getElementById('lbOverlay').classList.add('open');
-    document.addEventListener('keydown', lbTecla);
-    document.querySelector('.lb-close').focus();
-}
-function lbMover(dir, e) {
-    if (e) e.stopPropagation();
-    lbIdx = (lbIdx + dir + lbImagens.length) % lbImagens.length;
-    lbMostrar();
-}
-function lbFechar() {
-    document.getElementById('lbOverlay').classList.remove('open');
-    document.getElementById('lbImg').src = '';
-    document.removeEventListener('keydown', lbTecla);
-    if (lbUltimoFoco) { lbUltimoFoco.focus(); lbUltimoFoco = null; }
-}
-function lbClose(e) { if (e.target.id === 'lbOverlay') lbFechar(); }
-function lbTecla(e) {
-    if (e.key === 'Escape') lbFechar();
-    else if (e.key === 'ArrowLeft') lbMover(-1);
-    else if (e.key === 'ArrowRight') lbMover(1);
-    else if (e.key === 'Tab') lbTrapFocus(e);
-}
-function lbTrapFocus(e) {
-    var focaveis = Array.prototype.filter.call(
-        document.getElementById('lbOverlay').querySelectorAll('button, a[href]'),
-        function (el) { return el.offsetParent !== null; }
-    );
-    if (!focaveis.length) return;
-    var primeiro = focaveis[0];
-    var ultimo = focaveis[focaveis.length - 1];
-    if (e.shiftKey && document.activeElement === primeiro) {
-        e.preventDefault(); ultimo.focus();
-    } else if (!e.shiftKey && document.activeElement === ultimo) {
-        e.preventDefault(); primeiro.focus();
-    }
-}
 
 function copiarLinkNoticia() {
     const link = <?= json_encode($urlAtual, JSON_UNESCAPED_UNICODE) ?>;

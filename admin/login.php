@@ -2,6 +2,7 @@
 session_start();
 require_once "../includes/db.php";
 require_once "../includes/tema.php";
+require_once "../includes/config.php";
 
 $loginLogo = '';
 try {
@@ -70,11 +71,8 @@ if ($admin) {
     elseif (($admin['tipo'] ?? '') === 'admin_denuncias') header("Location: denuncias.php");
     else header("Location: dashboard.php");
     exit;
-
 } else {
-
     $erro = "Utilizador ou password inválidos.";
-
 }
 
 
@@ -108,13 +106,13 @@ if ($admin) {
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Login | AAEJ Digital</title>
+    <link rel="stylesheet" href="assets/fonte.css?v=20261013a">
+    <title>Login | <?= htmlspecialchars(nomeFreguesia()) ?> Digital</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/assets/vendor/bootstrap-icons/bootstrap-icons.min.css?v=1.11.3">
 
     <style>
-<?php $__cores = ['cor_principal' => '#242A30', 'cor_secundaria' => '#C8A02E']; try { $__cores = array_merge($__cores, array_filter((array)$pdo->query("SELECT cor_principal, cor_secundaria FROM configuracoes_site LIMIT 1")->fetch(PDO::FETCH_ASSOC))); } catch (Throwable $e) {} ?>:root{--cor-principal:<?= htmlspecialchars($__cores['cor_principal']) ?>;--cor-secundaria:<?= htmlspecialchars($__cores['cor_secundaria']) ?>;}
-
+        :root{ <?php foreach (temaPaletaMarca() as $v => $c) echo $v . ': ' . $c . '; '; ?>}   /* cores de destaque da marca (tema.php) */
         * {
             box-sizing: border-box;
         }
@@ -122,9 +120,9 @@ if ($admin) {
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family:var(--fonte);
             background:
-                radial-gradient(circle at top right, color-mix(in srgb, var(--cor-secundaria) 22%, transparent), transparent 35%),
+                radial-gradient(circle at top right, rgb(var(--ouro-rgb, 240 180 41) / .22), transparent 35%),
                 radial-gradient(circle at bottom left, rgba(255,255,255,.10), transparent 32%),
                 linear-gradient(135deg, rgba(36,42,50,.94), rgba(17,21,28,.95)),
                 url("../assets/img/freguesia-1.jpg") center/cover no-repeat;
@@ -151,7 +149,7 @@ if ($admin) {
 
         .login-kicker {
             display: inline-block;
-            color: var(--cor-secundaria);
+            color: var(--ouro, #C8A02E);
             text-transform: uppercase;
             font-weight: 900;
             letter-spacing: 1px;
@@ -223,7 +221,7 @@ if ($admin) {
             width: 64px;
             height: 64px;
             border-radius: 20px;
-            background: var(--cor-secundaria);
+            background: var(--ouro, #C8A02E);
             color: #11151B;
             display: grid;
             place-items: center;
@@ -292,8 +290,8 @@ if ($admin) {
 
         .login-card input:focus {
             background: rgba(255,255,255,.20);
-            border-color: var(--cor-secundaria);
-            box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-secundaria) 18%, transparent);
+            border-color: var(--ouro, #C8A02E);
+            box-shadow: 0 0 0 4px rgb(var(--ouro-rgb, 240 180 41) / .18);
         }
 
         .password-wrap {
@@ -330,7 +328,7 @@ if ($admin) {
             height: 56px;
             border: 0;
             border-radius: 18px;
-            background: var(--cor-secundaria);
+            background: var(--ouro, #C8A02E);
             color: #11151B;
             font-weight: 900;
             font-size: 16px;
@@ -344,6 +342,17 @@ if ($admin) {
             filter: brightness(1.05);
         }
 
+        .mfa-caixa h3{ margin:0 0 8px; font-size:18px; display:flex; gap:8px; align-items:center; color:#fff; }
+        .mfa-caixa p, .mfa-caixa ol{ color:#dbe3ec; font-size:14px; line-height:1.55; margin:0 0 10px; }
+        .mfa-caixa ol{ padding-left:20px; }
+        .mfa-qr{ display:grid; place-items:center; margin:14px auto; width:200px; height:200px; background:#fff; border-radius:14px; padding:8px; box-shadow:0 0 0 1px #e2e8f0; }
+        .mfa-qr img, .mfa-qr svg{ width:100%; height:100%; image-rendering:pixelated; }
+        .mfa-chave{ margin:0 0 14px; font-size:13px; color:#dbe3ec; }
+        .mfa-chave summary{ cursor:pointer; font-weight:700; }
+        .mfa-chave code{ display:block; margin:8px 0 4px; padding:10px; border-radius:10px; background:rgba(255,255,255,.12); color:#fff; font-size:15px; letter-spacing:1px; word-break:break-all; }
+        .mfa-codigo{ font-size:24px !important; letter-spacing:6px; text-align:center; font-weight:800; }
+        .mfa-cancelar{ text-align:center; margin:12px 0 0; font-size:14px; }
+        .mfa-cancelar a{ color:#e5e7eb; }
         .erro {
             background: #fee2e2;
             color: #991b1b;
@@ -371,11 +380,11 @@ if ($admin) {
         }
 
         .back-link:hover {
-            color: var(--cor-secundaria);
+            color: var(--ouro, #C8A02E);
         }
 
         .login-clock {
-            color: var(--cor-secundaria);
+            color: var(--ouro, #C8A02E);
             font-weight: 900;
             font-size: 13px;
         }
@@ -426,7 +435,7 @@ if ($admin) {
             Sistema Inteligente de Gestão de Freguesia
         </span>
 
-        <h1>AAEJ Digital</h1>
+        <h1><?= htmlspecialchars(nomeFreguesia()) ?> Digital</h1>
 
         <p>
             Plataforma moderna para gestão municipal, atendimento digital,
@@ -467,24 +476,24 @@ if ($admin) {
 
             <div>
                 <h2>Administração</h2>
-                <small>Backoffice AAEJ Digital</small>
+                <small>Backoffice <?= htmlspecialchars(nomeFreguesia()) ?> Digital</small>
             </div>
         </div>
 
-        <?php if (isset($erro)): ?>
-            <div class="erro"><?= htmlspecialchars($erro) ?></div>
+        <?php if (!empty($erro)): ?>
+            <div class="erro" role="alert"><?= htmlspecialchars($erro) ?></div>
         <?php endif; ?>
 
         <form method="POST">
             <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect) ?>">
-            <label>Utilizador</label>
-            <input type="text" name="username" placeholder="Introduza o utilizador" required autocomplete="username">
+            <label for="lgUser">Utilizador</label>
+            <input type="text" name="username" id="lgUser" placeholder="Introduza o utilizador" required autocomplete="username" maxlength="120">
 
             <div class="password-wrap">
-                <label>Password</label>
+                <label for="password">Password</label>
                 <input type="password" name="password" id="password" placeholder="Introduza a password" required autocomplete="current-password">
 
-                <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar ou esconder password">
+                <button type="button" class="toggle-password" aria-label="Mostrar ou esconder password">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
@@ -509,6 +518,7 @@ if ($admin) {
 
 </div>
 
+<script src="assets/qrcode.min.js?v=1.4.4"></script>
 <script>
 function togglePassword() {
     const input = document.getElementById("password");
@@ -516,7 +526,16 @@ function togglePassword() {
     if (!input) return;
 
     input.type = input.type === "password" ? "text" : "password";
+    // o ícone e o estado acompanham (olho riscado = password à vista)
+    const btn = document.querySelector(".toggle-password");
+    if (btn) {
+        btn.setAttribute("aria-pressed", input.type === "text" ? "true" : "false");
+        const ico = btn.querySelector("i");
+        if (ico) ico.className = input.type === "text" ? "bi bi-eye-slash" : "bi bi-eye";
+    }
 }
+// o botão tinha perdido o onclick no redesign (23/10/2026): fica ligado aqui
+document.querySelector(".toggle-password")?.addEventListener("click", togglePassword);
 
 function updateClock() {
     const clock = document.getElementById("clock");

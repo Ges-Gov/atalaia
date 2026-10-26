@@ -1,3 +1,11 @@
+/* Transições de página (View Transitions): o browser salta a animação quando o visitante clica outra vez a meio, e a
+   promessa rejeitada aparecia como erro na consola («Transition was skipped») — apanha-se aqui; sem animação, aplica-se direto. */
+function jfTransicao(fn) {
+    try {
+        var t = document.startViewTransition(fn);
+        ['ready', 'finished', 'updateCallbackDone'].forEach(function (k) { if (t && t[k] && t[k].catch) t[k].catch(function () {}); });
+    } catch (e) { fn(); }
+}
 // Header de vidro adaptativo. Corre logo (não espera pelo DOMContentLoaded): o app.js está no fim
 // do <body>, por isso a página já existe e assim o hero sobe para trás da barra antes de pintar.
 (function () {
@@ -139,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const mudar = function () { if (window.jfDefinirTema) window.jfDefinirTema(novo); sincronizar(); };
         const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         // Transição suave entre temas onde o browser suporta View Transitions
-        if (document.startViewTransition && !reduz) document.startViewTransition(mudar); else mudar();
+        if (document.startViewTransition && !reduz) jfTransicao(mudar); else mudar();
     });
 
     new MutationObserver(sincronizar).observe(raiz, { attributes: true, attributeFilter: ["data-tema"] });
@@ -1346,7 +1354,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const nova = new DOMParser().parseFromString(html, "text/html").querySelector('[data-zona-ajax="' + nome + '"]');
                 if (!nova) throw new Error("zona");
                 const trocar = function () { zona.innerHTML = nova.innerHTML; };
-                if (document.startViewTransition && !jfReduzMovimento()) document.startViewTransition(trocar); else trocar();
+                if (document.startViewTransition && !jfReduzMovimento()) jfTransicao(trocar); else trocar();
                 zona.classList.remove("zona-a-carregar");
                 zona.removeAttribute("aria-busy");
                 zona.classList.remove("zona-entrou"); void zona.offsetWidth; zona.classList.add("zona-entrou");
@@ -1786,7 +1794,7 @@ document.addEventListener("DOMContentLoaded", function () {
             b.addEventListener("click", function () {
                 const cat = b.dataset.filtroNoticias;
                 const grelha = bloco.querySelector(".editorial__grelha");
-                if (document.startViewTransition && !jfReduzMovimento()) document.startViewTransition(function () { aplicar(cat); });
+                if (document.startViewTransition && !jfReduzMovimento()) jfTransicao(function () { aplicar(cat); });
                 else aplicar(cat);
                 if (grelha) grelha.setAttribute("aria-busy", "false");
             });

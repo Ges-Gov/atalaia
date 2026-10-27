@@ -49,6 +49,8 @@ foreach ($comLugar as $l) {
     $falta = (int)$l['mandatos'] - $publicados;
     if ($falta > 0) $porPublicar[] = [$l, $falta];
 }
+// todos os lugares já têm uma pessoa publicada (algumas sem partido indicado): não falta ninguém
+if ($totalLugares > 0 && count($membros) >= $totalLugares) $porPublicar = [];
 $nPorPublicar = array_sum(array_map(fn($x) => $x[1], $porPublicar));
 
 $proxima = null;

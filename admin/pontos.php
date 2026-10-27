@@ -32,7 +32,7 @@ $pontos = $pdo->query("SELECT * FROM pontos_interesse ORDER BY nome ASC")->fetch
                 </td>
 
                 <td><?= htmlspecialchars($p['nome']) ?></td>
-                <td><?= htmlspecialchars($p['localizacao']) ?></td>
+                <td><?= htmlspecialchars($p['localizacao'] ?? '') ?></td>
 
                 <td>
                     <a class="btn secondary" href="editar_ponto.php?id=<?= $p['id'] ?>">Editar</a>

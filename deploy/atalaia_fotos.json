@@ -1,0 +1,69 @@
+{
+  "_nota": "27/10/2026 — fotografias dos cartões e da Memória da Freguesia que estavam sem imagem. Fontes: Câmara Municipal do Montijo (notícia «Festa Grande na Atalaia») e Wikimedia Commons (CC BY-SA). Só atualiza linhas que existem.",
+  "atualizar": [
+    {
+      "tabela": "cartoes_site",
+      "valores": {
+        "imagem": "cartoes/festas-atalaia.jpg"
+      },
+      "onde": [
+        "titulo",
+        "Festas da Atalaia"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "freguesia_memoria",
+      "valores": {
+        "imagem": "memoria/festa-grande.jpg",
+        "imagem_legenda": "A procissão da Festa Grande, com a imagem de Nossa Senhora da Atalaia",
+        "imagem_credito": "Foto: Câmara Municipal do Montijo (Festa Grande, 2016)"
+      },
+      "onde": [
+        "titulo",
+        "A Festa Grande"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "freguesia_memoria",
+      "valores": {
+        "imagem": "memoria/saudacao-senhora.jpg",
+        "imagem_legenda": "Nossa Senhora da Atalaia à porta do santuário, entre fitas e peregrinos",
+        "imagem_credito": "Foto: Câmara Municipal do Montijo (Festa Grande, 2016)"
+      },
+      "onde": [
+        "titulo",
+        "Saudação à Senhora"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "freguesia_memoria",
+      "valores": {
+        "imagem": "memoria/atalaia-rua.jpg",
+        "imagem_legenda": "Casas caiadas da Atalaia, com a escadaria e a torre do santuário ao fundo",
+        "imagem_credito": "Foto: Vitor Oliveira, CC BY-SA 2.0 (Wikimedia Commons)"
+      },
+      "onde": [
+        "titulo",
+        "A Atalaia e a Estrada Real"
+      ],
+      "so_se_existir": true
+    },
+    {
+      "tabela": "freguesia_memoria",
+      "valores": {
+        "imagem": "memoria/santuario-azulejos.jpg",
+        "imagem_legenda": "Painel de azulejos do século XVIII no interior do santuário",
+        "imagem_credito": "Foto: Pedro S Bello, CC BY-SA 4.0 (Wikimedia Commons)"
+      },
+      "onde": [
+        "titulo",
+        "Os altos e baixos do Santuário"
+      ],
+      "so_se_existir": true
+    }
+  ],
+  "inserir": []
+}

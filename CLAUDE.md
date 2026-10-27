@@ -107,9 +107,9 @@ ficheiros, 0 falhas). Ainda **sem deploy feito** — site só local.
 |---|---|
 | **Endereço** | https://new.aaej.pt (provisório; o informático vai mudar o nome da pasta para `juf.aaej.pt` quando a Junta aprovar) |
 | **Servidor** | alojamento cPanel da Junta, `185.12.116.247` (`cpanel903.dnscpanel.com`, DNS gerida pela Flesk). O email da Junta (`geral@juf.aaej.pt`) está no mesmo servidor. |
-| **Acesso** | só FTP: `gesgov@new.aaej.pt` em `ftp.jfaaej.pt:21`, FTP explícito sobre TLS. O certificado não é para esse nome, por isso tem de se aceitar. A password fica com o utilizador e não é guardada aqui. |
+| **Acesso** | só FTP: `gesgov@juf.aaej.pt` em `ftp.jfaaej.pt:21` (conta recriada pelo informático a 27/10/2026; antes era `gesgov@new.aaej.pt`), FTP explícito sobre TLS. O certificado não é para esse nome, por isso tem de se aceitar. A password fica com o utilizador e não é guardada aqui. |
 | **PHP / BD** | PHP 8.4 (ea-php84), MariaDB 10.6. BD `jfatalai_atalaia`, utilizador `jfatalai_GesGov`. Porta 3306 fechada ao exterior. |
-| **Atualizar** | **O `pull_sites2.sh` não chega lá.** Fazer push para `Ges-Gov/atalaia` e depois enviar por FTP só os ficheiros alterados desde o último envio (`git diff --name-only <último>..HEAD`; último enviado: `5362908`, a 16/10/2026, com a licença GesGov). **Nunca enviar a `.htaccess` da raiz**, porque a deles tem diretivas do cPanel. Migrações: script temporário que dá sessão de admin e faz `require migrations/run.php`, chamado uma vez e apagado logo a seguir. |
+| **Atualizar** | **O `pull_sites2.sh` não chega lá.** Fazer push para `Ges-Gov/atalaia` e depois enviar por FTP só os ficheiros alterados desde o último envio (`git diff --name-only <último>..HEAD`; último enviado: `cdac16d`, a 27/10/2026, modelo novo). **Nunca enviar a `.htaccess` da raiz**, porque a deles tem diretivas do cPanel. Migrações: script temporário que dá sessão de admin e faz `require migrations/run.php`, chamado uma vez e apagado logo a seguir. |
 | **Cuidados** | O alojamento limita pedidos seguidos (erro 429 e bloqueio temporário do IP no FTP): espaçar os pedidos. Antes de substituir ficheiros, confirmar que ninguém os alterou lá. |
 | **Credenciais nossas lá** | `mail_config.php` (conta `newsletter@gesgov.pt`) e o hash do `admin` oculto, comum ao portefólio. Proposto: SMTP próprio e password única do `admin` no Atalaia. Chave Gemini própria do site, posta pelo utilizador. |
 | **Cron** | A pedir ao informático, no cPanel → Cron Jobs: diário às 8h, `/usr/local/bin/php /home/jfatalai/<pasta final>/cron/newsletter_enviar_mensal.php` |
@@ -149,3 +149,16 @@ backoffice real é `new.aaej.pt/admin`. Em 15/10/2026 o código foi também atua
 - ⚠️ Envio: a conta FTP `gesgov@new.aaej.pt` dá «421 Home directory not available» desde que a pasta passou a `juf.aaej.pt`
   — o informático tem de a apontar para a pasta nova. Depois: ficheiros alterados desde `5362908` (nunca a `.htaccess` da raiz),
   migrações e carregador por script temporário (o servidor não tem SSH).
+
+## Modelo novo — ENVIADO a 27/10/2026
+
+- Cópia da BD antes do envio (feita por script temporário, que devolve o SQL sem o gravar no servidor):
+  `atal_bd_antes_20261027.sql` no scratchpad da sessão. Foi testada a reposição: 82 tabelas e 32 notícias.
+- Ordem do envio:
+  1. As 16 migrações primeiro, com o executor temporário. O código antigo funciona com as tabelas novas.
+  2. Depois os 219 ficheiros do código, nunca a `.htaccess` da raiz.
+  3. Por fim `deploy/atalaia_redesign.json`, com o carregador temporário (simular → real).
+  4. Os scripts temporários e o JSON foram apagados logo a seguir.
+- `freguesia.php` e `admin/freguesia.php` apareciam como «mexidos no servidor». Só diferiam nas terminações de linha (CRLF), por isso foram substituídos.
+- Inventário antes e depois (`atal_inventario_antes/depois_20261027.json`): 32 notícias com os mesmos títulos, 1 evento, 6 pontos, as mesmas associações e o mesmo comércio.
+- Ferramenta: `atalaia_fase.py backup|migracoes|conteudo` no scratchpad, com a password em FTP_PASS.

@@ -1060,6 +1060,8 @@ return [
             'consultar_pedido.resultado.mensagem' => ['Título «mensagem enviada»', 'Mensagem enviada'],
             'consultar_pedido.resultado.resposta' => ['Título «resposta da Junta»', 'Resposta da Junta'],
             'consultar_pedido.resultado.sem_resposta' => ['Mensagem quando ainda não há resposta', 'Ainda não existe resposta registada para este pedido.', 'texto'],
+            'consultar_pedido.resultado.historico' => ['Título «o que foi feito» (histórico do pedido)', 'O que foi feito'],
+            'consultar_pedido.resultado.sem_historico' => ['Mensagem quando ainda não há seguimento', 'A Junta ainda não registou seguimento neste pedido.', 'texto'],
         ],
     ],
     'pedido_detalhe' => [

@@ -17,7 +17,12 @@ $siteBaseUrl = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'ht
 
 $meta_titulo = $noticia['titulo'] ?? 'Notícia';
 
-$meta_descricao = mb_substr(strip_tags($noticia['descricao'] ?? ''), 0, 160);
+// resumo para a pré-visualização do Facebook/WhatsApp: numa só linha e cortado no fim de uma palavra
+$meta_descricao = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($noticia['descricao'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+if (mb_strlen($meta_descricao) > 200) {
+    $meta_descricao = mb_substr($meta_descricao, 0, 200);
+    $meta_descricao = rtrim(mb_substr($meta_descricao, 0, mb_strrpos($meta_descricao, ' ') ?: 200), " ,;:.-–—") . '…';
+}
 
 $meta_url = $siteBaseUrl . "/noticia.php?id=" . $id;
 

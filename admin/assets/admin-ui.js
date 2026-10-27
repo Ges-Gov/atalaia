@@ -284,6 +284,40 @@
         aplicar();
     });
 
+    /* Botões com data-copiar (ex.: «Partilhar no Facebook» das notícias): o link abre normalmente e o texto fica
+       copiado, com um aviso para o colar — o Facebook não aceita texto pré-preenchido, só o endereço */
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('[data-copiar]');
+        if (!a) return;
+        var texto = a.getAttribute('data-copiar') || '';
+        var avisar = function (ok) {
+            var t = document.getElementById('admAvisoCopiar');
+            if (!t) {
+                t = document.createElement('div'); t.id = 'admAvisoCopiar'; t.setAttribute('role', 'status');
+                t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;max-width:min(560px,calc(100vw - 32px));' +
+                    'background:#11151B;color:#fff;padding:14px 18px;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.25);font-size:14px;line-height:1.5';
+                document.body.appendChild(t);
+            }
+            t.textContent = '';
+            if (ok) {
+                var forte = document.createElement('strong'); forte.textContent = 'Texto da notícia copiado. ';
+                t.appendChild(forte);
+                t.appendChild(document.createTextNode('Na janela do Facebook, clique na caixa da publicação e carregue Ctrl+V (no telemóvel: toque longo → Colar).'));
+            } else {
+                t.textContent = 'Não foi possível copiar o texto automaticamente. Copie-o da notícia e cole-o na publicação do Facebook.';
+            }
+            clearTimeout(t._fim); t.hidden = false; t._fim = setTimeout(function () { t.hidden = true; }, 9000);
+        };
+        var recurso = function () {
+            var ta = document.createElement('textarea'); ta.value = texto; ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:-1000px;opacity:0'; document.body.appendChild(ta); ta.select();
+            var ok = false; try { ok = document.execCommand('copy'); } catch (er) {}
+            document.body.removeChild(ta); avisar(ok);
+        };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(texto).then(function () { avisar(true); }, recurso);
+        else recurso();
+    });
+
     /* 5) Eliminar sempre com confirmação (links eliminar_*.php que ainda não a pediam) */
     document.addEventListener('click', function (e) {
         var a = e.target.closest('a[href*="eliminar"]');

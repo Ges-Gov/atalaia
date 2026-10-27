@@ -102,9 +102,8 @@ $galeria = $pdo->prepare("SELECT * FROM noticias_imagens WHERE noticia_id = ? OR
 $galeria->execute([$id]);
 $galeriaFotos = $galeria->fetchAll(PDO::FETCH_ASSOC);
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$urlNoticia = $scheme . '://' . $_SERVER['HTTP_HOST'] . '/noticia.php?id=' . $id;
-$fbShare = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($urlNoticia);
+require_once __DIR__ . "/includes/partilha.php";
+$fbShare = urlPartilhaFacebookNoticia((int)$id);
 ?>
 
 <style>
@@ -164,7 +163,7 @@ $fbShare = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($urlNotic
 
     <div style="margin:18px 0;">
         <button class="btn">Guardar alterações</button>
-        <a class="btn" style="background:#1877F2;" href="<?= htmlspecialchars($fbShare) ?>" target="_blank" rel="noopener"><i class="bi bi-facebook"></i> Partilhar no Facebook</a>
+        <a class="btn" style="background:#1877F2;" href="<?= htmlspecialchars($fbShare) ?>" target="_blank" rel="noopener" data-copiar="<?= htmlspecialchars(textoPartilhaNoticia($noticia)) ?>"><i class="bi bi-facebook"></i> Partilhar no Facebook</a>
     </div>
 </form>
 

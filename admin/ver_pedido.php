@@ -583,7 +583,7 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
                     </div>
                 </div>
 
-                <label>Resposta / Observações internas</label>
+                <label>Resposta ao cidadão <small style="font-weight:400;color:#64748b;">(aparece a quem consultar o pedido no site — as notas só para a equipa vão em «Notas internas»)</small></label>
                 <textarea name="resposta"><?= htmlspecialchars($pedido['resposta'] ?? '') ?></textarea>
 
                 <label class="vp-checkbox-inline">

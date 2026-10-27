@@ -131,7 +131,7 @@ $menuLink = function (array $i, bool $topo = false): string {
     <link rel="stylesheet" href="assets/fonte.css?v=20261013a">
     <link rel="stylesheet" href="assets/admin.css?v=20261012b">
     <link rel="stylesheet" href="assets/admin-ui.css?v=20261022a">
-    <script src="assets/admin-ui.js?v=20261013a" defer></script>
+    <script src="assets/admin-ui.js?v=20261027a" defer></script>
 </head>
 
 <body>

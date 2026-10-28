@@ -258,9 +258,10 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
     filter:brightness(1.05);
 }
 .home-video-muted{
+    /* em baixo à direita: em cima ficava por trás do cabeçalho transparente e lia-se por cima do menu */
     position:absolute;
     right:32px;
-    top:32px;
+    bottom:32px;
     z-index:4;
     background:rgba(255,255,255,.14);
     color:white;

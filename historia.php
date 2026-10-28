@@ -41,6 +41,13 @@ try {
     $elementosHeraldica = $stmtElementos->fetchAll(PDO::FETCH_ASSOC);
 } catch(Exception $e) {}
 
+// imagens da heráldica: as postas pelo backoffice ficam em uploads/heraldica/; sites antigos (ex.: Crato, com os brasões das
+// antigas freguesias) têm-nas em assets/img/heraldica/ — usa a que existir
+$imgHeraldica = function (string $f): string {
+    $f = basename($f);
+    return is_file(__DIR__ . '/uploads/heraldica/' . $f) || !is_file(__DIR__ . '/assets/img/heraldica/' . $f)
+        ? '/uploads/heraldica/' . rawurlencode($f) : '/assets/img/heraldica/' . rawurlencode($f);
+};
 $heraldicaImg = !empty($heraldica['imagem'])
     ? "/uploads/heraldica/" . htmlspecialchars($heraldica['imagem'])
     : (siteConfig('logo') ? "/assets/img/" . htmlspecialchars(siteConfig('logo')) : "/assets/img/freguesia-1.jpg");
@@ -687,7 +694,7 @@ function textoSeguro($texto) {
         <div class="historia-heraldica-img<?= !empty($brasoesIndividuais) ? ' multi' : '' ?>">
             <?php if (!empty($brasoesIndividuais)): ?>
                 <?php foreach ($brasoesIndividuais as $brasao): ?>
-                    <img src="/uploads/heraldica/<?= htmlspecialchars($brasao['imagem']) ?>" alt="<?= htmlspecialchars($brasao['titulo']) ?>">
+                    <img src="<?= htmlspecialchars($imgHeraldica($brasao['imagem'])) ?>" alt="<?= htmlspecialchars($brasao['titulo']) ?>">
                 <?php endforeach; ?>
             <?php else: ?>
                 <img src="<?= $heraldicaImg ?>" alt="Brasão de <?= htmlspecialchars(nomeFreguesia()) ?>">
@@ -714,7 +721,7 @@ function textoSeguro($texto) {
                     <article class="historia-heraldica-card">
                         <?php if (!empty($e['imagem'])): ?>
                             <div class="historia-heraldica-card-img">
-                                <img src="/uploads/heraldica/<?= htmlspecialchars($e['imagem']) ?>" alt="<?= htmlspecialchars($e['titulo']) ?>">
+                                <img src="<?= htmlspecialchars($imgHeraldica($e['imagem'])) ?>" alt="<?= htmlspecialchars($e['titulo']) ?>">
                             </div>
                         <?php else: ?>
                             <div class="historia-heraldica-icon">

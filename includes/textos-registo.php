@@ -36,7 +36,7 @@ return [
             'inicio.agenda.vazio_texto' => ['Sem eventos — texto', 'Quando existir um novo evento, ele aparece automaticamente aqui.'],
             'inicio.agenda.vazio_botao' => ['Sem eventos — botão', 'Ver agenda'],
             'inicio.agenda.proximos' => ['Título da lista de próximos eventos', 'Próximos Eventos'],
-            'inicio.agenda.sem_publicados' => ['Mensagem sem eventos publicados', 'Ainda não existem eventos publicados.'],
+            'inicio.agenda.sem_publicados' => ['Mensagem sem próximos eventos', 'Não há eventos marcados para os próximos dias.'],
             'inicio.proximidade.kicker' => ['Etiqueta (o título é o slogan das Configurações gerais)', 'Proximidade'],
             'inicio.proximidade.numeros' => ['Título dos números', 'A Junta em números'],
             'inicio.proximidade.guias_titulo' => ['Guias — título', 'O que precisa de fazer hoje?'],

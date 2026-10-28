@@ -7511,12 +7511,14 @@ body.header-sobre-escuro .menu-redes--barra a:hover{ background: rgba(255,255,25
    botão "voltar ao topo" aparece, para ficarem empilhados e nunca sobrepostos. */
 .chat-ia-fab{ transition: bottom var(--dur-3) var(--ease-spring), transform var(--dur-2) var(--ease-out) !important; }
 .chat-ia-panel{ transition: bottom var(--dur-3) var(--ease-spring); }
-body:has(.voltar-topo--visivel) .chat-ia-fab{ bottom: calc(24px + 54px + 14px) !important; right: 22px !important; }
-body:has(.voltar-topo--visivel) .chat-ia-panel{ bottom: calc(24px + 54px + 14px + 70px) !important; }
+/* 28/10/2026: o "voltar ao topo" soma a margem de baixo do ecrã (env(safe-area-inset-bottom), não nula em iPhones
+   com barra de gesto); o assistente soma a mesma, senão no iPhone ficavam meio sobrepostos (no Android é 0) */
+body:has(.voltar-topo--visivel) .chat-ia-fab{ bottom: calc(24px + 54px + 14px + env(safe-area-inset-bottom, 0px)) !important; right: 22px !important; }
+body:has(.voltar-topo--visivel) .chat-ia-panel{ bottom: calc(24px + 54px + 14px + 70px + env(safe-area-inset-bottom, 0px)) !important; }
 @media (max-width: 850px){
-    .chat-ia-fab{ bottom: 100px !important; }
-    body:has(.voltar-topo--visivel) .chat-ia-fab{ bottom: calc(100px + 48px + 14px) !important; right: 16px !important; }
-    body:has(.voltar-topo--visivel) .chat-ia-panel{ bottom: calc(100px + 48px + 14px + 70px) !important; }
+    .chat-ia-fab{ bottom: calc(100px + env(safe-area-inset-bottom, 0px)) !important; }
+    body:has(.voltar-topo--visivel) .chat-ia-fab{ bottom: calc(100px + 48px + 14px + env(safe-area-inset-bottom, 0px)) !important; right: 16px !important; }
+    body:has(.voltar-topo--visivel) .chat-ia-panel{ bottom: calc(100px + 48px + 14px + 70px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 
 /* ---------- Lightbox reutilizável (app.js, [data-lightbox]) ---------- */

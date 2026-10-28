@@ -518,7 +518,6 @@ if ($admin) {
 
 </div>
 
-<script src="assets/qrcode.min.js?v=1.4.4"></script>
 <script>
 function togglePassword() {
     const input = document.getElementById("password");

@@ -368,10 +368,15 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
                completo (com escolha de qualidade). Só carrega depois de aceites os cookies. */
             $ytId = ($slide['tipo'] ?? 'imagem') === 'video' ? youtubeId($slide['video_url'] ?? '') : '';
             $fundoSlide = !empty($slide['imagem']) ? '/assets/img/' . $slide['imagem'] : ($ytId ? youtubeMiniatura($ytId) : '');
+            // foto e foco próprios para o telemóvel (migração 036), se o slide os tiver
+            $estiloMovel = '';
+            if (!empty($slide['imagem_movel'])) $estiloMovel .= " --img-movel: url('/assets/img/" . htmlspecialchars($slide['imagem_movel']) . "');";
+            if (!empty($slide['posicao_movel']) && preg_match('/^\d{1,3}% \d{1,3}%$/', $slide['posicao_movel'])) $estiloMovel .= ' --pos-movel: ' . $slide['posicao_movel'] . ';';
         ?>
             <div
                 class="hero-slide <?= $i === 0 ? 'active' : '' ?><?= $ytId ? ' hero-slide--video' . (($slide['video_ajuste'] ?? '') === 'ajustar' ? ' hero-slide--ajustar' : '') : '' ?>"
-                style="background-image: url('<?= htmlspecialchars($fundoSlide) ?>');<?= $ytId ? ' --video-formato: ' . max(1, (float)($slide['video_formato'] ?? 1.7778)) . ';' : '' ?>"
+                style="background-image: url('<?= htmlspecialchars($fundoSlide) ?>');<?= $ytId ? ' --video-formato: ' . max(1, (float)($slide['video_formato'] ?? 1.7778)) . ';' : '' ?><?= $estiloMovel ?>"
+                <?= !empty($slide['imagem_movel']) ? 'data-img-movel' : '' ?> <?= strpos($estiloMovel, '--pos-movel') !== false ? 'data-pos-movel' : '' ?>
                 <?php if ($ytId): ?>data-video-leitor="<?= htmlspecialchars(youtubeEmbedLeitor($ytId)) ?>"<?php endif; ?>
             >
                 <?php if ($ytId): ?>
@@ -456,6 +461,22 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
             <kbd class="hero-pesquisa__atalho" data-atalho-pesquisa aria-hidden="true">Ctrl K</kbd>
         </button>
 
+        <?php
+        // Barra de ícones da Junta (tabela atalhos, migração 034 — ex.: os ícones do designer do Sines): quando existe,
+        // substitui os cartões de acesso rápido. Sem linhas na tabela, fica tudo como antes.
+        $atalhosJunta = [];
+        try { $atalhosJunta = $pdo->query("SELECT titulo, icone, url FROM atalhos WHERE ativo = 1 ORDER BY ordem, id")->fetchAll(PDO::FETCH_ASSOC); } catch (Throwable $e) {}
+        ?>
+        <?php if ($atalhosJunta): ?>
+        <nav class="home-atalhos-grid" aria-label="Atalhos">
+            <?php foreach ($atalhosJunta as $at): $externo = preg_match('#^https?://#i', $at['url']); ?>
+                <a href="<?= htmlspecialchars($at['url']) ?>" class="home-atalho"<?= $externo ? ' target="_blank" rel="noopener"' : '' ?>>
+                    <?php if (!empty($at['icone'])): ?><img src="/assets/img/<?= htmlspecialchars($at['icone']) ?>" alt="" loading="lazy"><?php endif; ?>
+                    <span><?= htmlspecialchars($at['titulo']) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </nav>
+        <?php else: ?>
         <?php /* Atalhos (12/10/2026): editáveis em Página Inicial › Cartões e atalhos (cartoes_site) */ ?>
         <div class="quick-access-grid quick-access-grid--6 qa-entrada" id="qaGrelha" style="--n: <?= max(1, count($cartoesAtalhos = cartoesSite('atalhos'))) ?>">
             <?php foreach ($cartoesAtalhos as $iAtalho => $c):
@@ -474,6 +495,7 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
             </a>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 <script>/* a entrada dos ícones dos atalhos corre uma vez */setTimeout(function(){var g=document.getElementById("qaGrelha");if(g)g.classList.remove("qa-entrada");},2600);</script>

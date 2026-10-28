@@ -25,6 +25,7 @@
 function menuAdminDefinicao(array $badges = []): array
 {
     $badgePedidos = $badgeRequerimentos = $badgeFaturacao = $badgeMensagens = $badgeReservas = 0;
+    $badgeSugestoes = null;
     extract($badges);
 
     $menuAdmin = [
@@ -90,6 +91,8 @@ function menuAdminDefinicao(array $badges = []): array
              'rel' => ['ver_pedido.php', 'criar_pedido.php', 'ocorrencias_config.php'], 'dica' => 'Problemas comunicados pelos cidadãos (buracos, iluminação, limpeza…)'],
             ['chave' => 'mensagens_contacto', 'rotulo' => 'Mensagens de contacto', 'href' => 'mensagens-contacto.php', 'icone' => 'bi-chat-left-text', 'badge' => $badgeMensagens,
              'dica' => 'Mensagens enviadas pelo formulário da página Contactos'],
+            ...($badgeSugestoes !== null ? [['chave' => 'sugestoes', 'rotulo' => 'Sugestões', 'href' => 'sugestoes.php', 'icone' => 'bi-lightbulb', 'site' => '/sugestoes.php',
+             'badge' => $badgeSugestoes, 'dica' => 'Sugestões enviadas pelo formulário do site']] : []),
             ['chave' => 'requerimentos', 'rotulo' => 'Requerimentos', 'href' => 'requerimentos.php', 'icone' => 'bi-file-earmark-check', 'site' => '/requerimentos.php', 'badge' => $badgeRequerimentos,
              'rel' => ['ver_requerimento.php'], 'dica' => 'Pedidos de documentos feitos online (Balcão Virtual)'],
             ['chave' => 'marcacoes', 'rotulo' => 'Marcações', 'href' => 'marcacoes.php', 'icone' => 'bi-calendar-check',

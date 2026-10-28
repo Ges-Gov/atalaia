@@ -2215,3 +2215,47 @@ document.addEventListener("DOMContentLoaded", function () {
         if (t.scrollWidth > t.clientWidth + 1 && !t.hasAttribute("tabindex")) { t.tabIndex = 0; t.setAttribute("role", t.getAttribute("role") || "region"); if (!t.getAttribute("aria-label")) t.setAttribute("aria-label", "Tabela (deslize para ver tudo)"); }
     });
 })();
+
+// Barra de atalhos (ícones) no telemóvel: desliza devagar sozinha, como os parceiros do gesgov.pt.
+// Tocar pausa (o deslizar com o dedo é o scroll nativo do browser) e retoma 1,5 s depois de largar.
+// A lista é duplicada (cópias escondidas no computador) para o ciclo parecer infinito.
+document.addEventListener("DOMContentLoaded", function () {
+    const faixa = document.querySelector(".home-atalhos-grid");
+    if (!faixa || faixa.dataset.carrossel === "1") return;
+    faixa.dataset.carrossel = "1";
+
+    Array.prototype.slice.call(faixa.children).forEach(function (a) {
+        const c = a.cloneNode(true);
+        c.setAttribute("data-copia", "");
+        c.setAttribute("aria-hidden", "true");
+        c.tabIndex = -1;
+        faixa.appendChild(c);
+    });
+
+    const telemovel = window.matchMedia("(max-width: 700px)");
+    const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let pausado = false, retomar = null, posicao = 0, anterior = performance.now();
+
+    function pausar() { pausado = true; clearTimeout(retomar); }
+    function retomarDepois() { clearTimeout(retomar); retomar = setTimeout(function () { pausado = false; }, 1500); }
+    faixa.addEventListener("touchstart", pausar, { passive: true });
+    faixa.addEventListener("touchend", retomarDepois, { passive: true });
+    faixa.addEventListener("touchcancel", retomarDepois, { passive: true });
+
+    function passo(agora) {
+        const dt = (agora - anterior) / 1000;
+        anterior = agora;
+        if (telemovel.matches && !semMovimento.matches && !document.hidden) {
+            if (pausado) {
+                posicao = faixa.scrollLeft;
+            } else {
+                posicao += 26 * dt;                       // px por segundo: devagar de propósito
+                const metade = faixa.scrollWidth / 2;
+                if (posicao >= metade) posicao -= metade;
+                faixa.scrollLeft = posicao;
+            }
+        }
+        requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
+});

@@ -83,6 +83,17 @@ $nomeForm = $cidadaoLogado['nome'] ?? '';
 $emailForm = $cidadaoLogado['email'] ?? '';
 $telefoneForm = $cidadaoLogado['telefone'] ?? '';
 
+// ?categoria=Sugestão abre o formulário com essa categoria já escolhida (ex.: um atalho da página inicial).
+// Só aceita uma categoria que exista; o valor volta a ser escapado onde é mostrado.
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && isset($_GET['categoria'])) {
+    foreach ($categoriasOcorrencia as $cat) {
+        if (mb_strtolower($cat['designacao']) === mb_strtolower(trim((string)$_GET['categoria']))) {
+            $categoria = $cat['designacao'];
+            break;
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cidadaoId = $cidadaoLogado['id'] ?? null;
 

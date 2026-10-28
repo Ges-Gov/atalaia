@@ -352,7 +352,7 @@ body {
 
 .hero-slider {
     position: relative;
-    height: 90vh;
+    height: var(--tema-hero-altura, 90vh);
     overflow: hidden;
 }
 
@@ -397,7 +397,7 @@ body {
 
 .hero-slider {
     position: relative;
-    height: 90vh;
+    height: var(--tema-hero-altura, 90vh);
     min-height: 620px;
     overflow: hidden;
     background: #11151B;
@@ -9673,4 +9673,42 @@ body .pres .pres__moldura::before{ inset: -22% -22% auto -22%; height: 75%; bord
    círculo cortava a cabeça; com retratos fica igual. */
 :root body :is(.exe-pres__retrato img, .exe-org__topo img, .exe-membro__foto, .pres-equipa__avatar, .pres__moldura img, .asm-pessoa__foto){
     object-position: 50% 0% !important;
+}
+
+
+/* ===== Funcionalidades vindas do Sines (28/10/2026) — só têm efeito com a configuração na BD ===== */
+
+/* Cabeçalho só com o logótipo (tema_config.cabecalho_so_logo = 1): o logótipo já traz o nome */
+body .site-header .header-inner .brand.brand--so-logo img{ height:68px !important; width:auto; }
+@media (max-width: 850px){ body .site-header .header-inner .brand.brand--so-logo img{ height:50px !important; } }
+
+/* Barra de ícones da Junta (tabela atalhos, migração 034): no lugar dos cartões de acesso rápido */
+.home-atalhos-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:14px;
+    max-width:1120px; margin:18px auto 0; padding:14px; background:#fff; border-radius:24px;
+    box-shadow:0 18px 40px rgba(15,23,42,.08);
+}
+.home-atalho{
+    display:flex; flex-direction:column; align-items:center; gap:12px; padding:14px 8px; border-radius:18px;
+    color:#6b7280; text-decoration:none; text-align:center; font-size:13px; font-weight:800; letter-spacing:.4px;
+    text-transform:uppercase; transition:color .2s ease, background .2s ease;
+}
+.home-atalho img{ width:84px; height:84px; object-fit:contain; transition:transform .25s ease; }
+.home-atalho:hover, .home-atalho:focus-visible{ color:var(--cor-principal); background:color-mix(in srgb, var(--cor-principal) 6%, #fff); }
+.home-atalho:hover img{ transform:translateY(-4px) scale(1.05); }
+/* cópias criadas pelo app.js para o ciclo infinito do telemóvel: no computador não aparecem */
+.home-atalho[data-copia]{ display:none; }
+@media (max-width: 700px){
+    .home-atalhos-grid{ display:flex; gap:4px; max-width:none; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding:8px; }
+    .home-atalhos-grid::-webkit-scrollbar{ display:none; }
+    .home-atalho, .home-atalho[data-copia]{ display:flex; flex:0 0 108px; gap:8px; padding:10px 4px; font-size:11px; }
+    .home-atalho img{ width:62px; height:62px; }
+}
+:root[data-tema="escuro"] .home-atalhos-grid{ background:var(--escuro-cartao, #1b2129); box-shadow:none; }
+:root[data-tema="escuro"] .home-atalho{ color:#cbd5e1; }
+
+/* Slide com foto e foco próprios no telemóvel (migração 036: imagem_movel / posicao_movel) */
+@media (max-width: 850px){
+    .hero-slide[data-img-movel]{ background-image:var(--img-movel) !important; }
+    .hero-slide[data-pos-movel]{ background-position:var(--pos-movel) !important; }
 }

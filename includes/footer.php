@@ -70,8 +70,9 @@ if (isset($pdo)) {
             <!-- 1. Identidade -->
             <div class="rodape__col rodape__col--marca">
                 <div class="rodape__brasao">
-                    <?php if (!empty(siteConfig('logo'))): ?>
-                        <img src="/assets/img/<?= htmlspecialchars(siteConfig('logo')) ?>" alt="" loading="lazy">
+                    <?php $logoRodape = temaConfig('logo_rodape', '') !== '' ? temaConfig('logo_rodape') : siteConfig('logo'); ?>
+                    <?php if (!empty($logoRodape)): ?>
+                        <img src="/assets/img/<?= htmlspecialchars($logoRodape) ?>" alt="" loading="lazy">
                     <?php else: ?>
                         <span><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></span>
                     <?php endif; ?>
@@ -564,6 +565,6 @@ if (is_file($iaConfigPath)) {
 </script>
 <?php endif; ?>
 
-<script src="/assets/js/app.js?v=20261026b"></script>
+<script src="/assets/js/app.js?v=20261028a"></script>
 </body>
 </html>

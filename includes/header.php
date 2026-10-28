@@ -102,7 +102,7 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261022b">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261028a">
     <link rel="stylesheet" href="/assets/css/tema-escuro.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/compat-redesign.css?v=20261020r">
@@ -115,7 +115,13 @@ if (!empty($_SESSION['cidadao_id'])) {
 <?php endif; ?>
 
 
-<?php $sepBgImg = function_exists('fundoSeparadorImg') ? fundoSeparadorImg($paginaAtual ?? '') : ''; ?>
+<?php
+// Uma página pode trazer o seu próprio fundo de separador (ex.: pagina.php, por página de conteúdo);
+// senão vale o definido no backoffice para esta página (separadores_fundo).
+$sepBgImg = !empty($fundoSeparadorPagina)
+    ? $fundoSeparadorPagina
+    : (function_exists('fundoSeparadorImg') ? fundoSeparadorImg($paginaAtual ?? '') : '');
+?>
 <?php if ($sepBgImg !== ''): ?>
     <?php
     // Proporção da imagem (largura/altura) para o banner ter a forma da foto: assim vê-se a
@@ -131,7 +137,7 @@ if (!empty($_SESSION['cidadao_id'])) {
            que o texto do banner precisa. "cover" corta só o que sobra, a partir do ponto de foco. */
         :root{ --sep-ratio: <?= $sepRatio ?>; }
         section[class*="hero"]{
-            background-image: linear-gradient(rgba(17,21,27,.62), rgba(17,21,27,.78)), url('<?= htmlspecialchars($sepBgImg) ?>') !important;
+            background-image: linear-gradient(rgba(17,21,27,var(--tema-separador-veu,.62)), rgba(17,21,27,var(--tema-separador-veu-fim,.78))), url('<?= htmlspecialchars($sepBgImg) ?>') !important;
             background-size: cover !important;
             background-position: <?= implode('% ', $sepFoco) ?>% !important;
             background-repeat: no-repeat !important;
@@ -198,7 +204,8 @@ if (!empty($_SESSION['cidadao_id'])) {
     <div class="main-header">
         <div class="container header-inner">
 
-            <a href="/index.php" class="brand">
+            <?php $soLogo = temaConfig('cabecalho_so_logo', '0') === '1' && !empty($config['logo']); ?>
+            <a href="/index.php" class="brand<?= $soLogo ? ' brand--so-logo' : '' ?>">
                 <?php if (!empty($config['logo'])): ?>
                     
 
@@ -214,10 +221,15 @@ if (!empty($_SESSION['cidadao_id'])) {
                     <div class="brand-icon"><?= htmlspecialchars(temaConfig('logo_iniciais', '')) ?></div>
                 <?php endif; ?>
 
+                <?php /* tema_config.cabecalho_so_logo = 1: o logótipo já tem o nome da Junta escrito — não se repete */ ?>
+                <?php if ($soLogo): ?>
+                    <span class="sr-only"><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></span>
+                <?php else: ?>
                 <div>
                     <strong><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong>
                     <small><?= htmlspecialchars(siteConfig('municipio', 'Município')) ?></small>
                 </div>
+                <?php endif; ?>
             </a>
 
             <nav class="main-nav" id="mainNav">

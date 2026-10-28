@@ -59,6 +59,13 @@ function temaVariaveisCss()
         'footer-bg'        => '#F2EAD6',
         'footer-texto'     => '#3a3f47',
         'kicker-img-texto' => '#FCE9B8',
+        // véu escuro por cima das fotos do slider (à esquerda / à direita) e altura do slider no computador
+        'hero-veu'          => '.62',
+        'hero-veu-fim'      => '.12',
+        'hero-altura'       => '90vh',
+        // véu escuro por cima das imagens de fundo dos separadores das páginas (topo / fundo)
+        'separador-veu'     => '.62',
+        'separador-veu-fim' => '.78',
     ];
 
     $css = '';

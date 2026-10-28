@@ -75,7 +75,11 @@ try { $badgeReservas = (int)$pdo->query("SELECT COUNT(*) FROM reservas_espacos W
 
 // Menu lateral: definido em menu.php; aqui só se desenha
 require_once __DIR__ . "/menu.php";
-[$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas'));
+$badgeSugestoes = null;   // null = o site não usa o formulário de sugestões (não aparece no menu)
+if (temaConfig('sugestoes_ativo', '0') === '1') {
+    try { $badgeSugestoes = (int)$pdo->query("SELECT COUNT(*) FROM sugestoes WHERE lida = 0")->fetchColumn(); } catch (Throwable $e) { $badgeSugestoes = 0; }
+}
+[$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas', 'badgeSugestoes'));
 [$menuVisivel, $menuAtual, $menuGrupoAtual] = menuAdminPreparar($menuAdmin, (string)$adminActive);
 
 $adminPapeis = ['admin' => 'Administrador', 'operador' => 'Operador', 'vogal' => 'Vogal',

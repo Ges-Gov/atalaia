@@ -102,7 +102,7 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261028a">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261028b">
     <link rel="stylesheet" href="/assets/css/tema-escuro.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/compat-redesign.css?v=20261020r">

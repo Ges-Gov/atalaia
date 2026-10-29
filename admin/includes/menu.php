@@ -96,7 +96,7 @@ function menuAdminDefinicao(array $badges = []): array
             ['chave' => 'requerimentos', 'rotulo' => 'Requerimentos', 'href' => 'requerimentos.php', 'icone' => 'bi-file-earmark-check', 'site' => '/requerimentos.php', 'badge' => $badgeRequerimentos,
              'rel' => ['ver_requerimento.php'], 'dica' => 'Pedidos de documentos feitos online (Balcão Virtual)'],
             ['chave' => 'marcacoes', 'rotulo' => 'Marcações', 'href' => 'marcacoes.php', 'icone' => 'bi-calendar-check',
-             'rel' => ['ver_marcacao.php'], 'dica' => 'Marcações de atendimento presencial'],
+             'rel' => ['ver_marcacao.php'], 'dica' => 'Marcações de atendimento e requisições de espaços ou equipamento'],
             ['chave' => 'reservas', 'rotulo' => 'Reservas de espaços', 'href' => 'reservas.php', 'icone' => 'bi-calendar2-check', 'site' => '/reservas.php', 'badge' => $badgeReservas,
              'dica' => 'Pedidos de reserva de salas e espaços, e os espaços disponíveis'],
             ['chave' => 'relatorio_pdf', 'rotulo' => 'Relatório (PDF)', 'href' => 'relatorio-pdf.php', 'icone' => 'bi-file-earmark-pdf',

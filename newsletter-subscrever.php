@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $honeypot = trim($_POST['website'] ?? '');
 
-    if ($honeypot === '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    require_once __DIR__ . '/includes/validacao.php';
+    if ($honeypot === '' && emailValido($email)) {
         try {
             $pdo->prepare("INSERT INTO newsletter_subscribers (email, origem) VALUES (?, 'site')")->execute([$email]);
         } catch (PDOException $e) {

@@ -19,10 +19,8 @@ const SMTP_USER = 'newsletter@gesgov.pt';
     define('SMTP_PASS', $mailConfig['pass'] ?? '');
 })();
 
-// Valida formato de email antes de o usar como destinatário em formulários públicos.
-function emailValido($email) {
-    return $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
+// emailValido() e telefoneValido() vivem em validacao.php (30/10/2026: o email passou a ver também o domínio).
+require_once __DIR__ . '/validacao.php';
 
 // Trava submissões repetidas do mesmo browser/sessão em menos de $segundos.
 // Defesa simples contra scripts a rebentar formulários públicos com envios em massa.

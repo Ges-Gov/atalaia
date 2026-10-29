@@ -57,7 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$nome || !$email || !$tipo || !$assunto) {
         $erro = "Preencha todos os campos obrigatórios.";
     } elseif (!emailValido($email)) {
-        $erro = "Indique um email válido.";
+        $erro = "Indique um email válido e que exista.";
+    } elseif ($telefone !== '' && !telefoneValido($telefone)) {
+        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
     } elseif (!$consentimento) {
         $erro = "Tem de aceitar o tratamento dos seus dados pessoais para submeter o requerimento.";
     } elseif (submissaoRecente('requerimento')) {
@@ -892,7 +894,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <input type="email" name="email" placeholder="<?= te('requerimentos.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
 
-                        <input type="text" name="telefone" placeholder="<?= te('requerimentos.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
+                        <input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="<?= te('requerimentos.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
 
                         <select name="tipo" required>
                             <option value=""><?= te('requerimentos.formulario.tipo') ?></option>

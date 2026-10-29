@@ -52,7 +52,8 @@ $naoLidas = count(array_filter($sugestoes, fn($s) => !$s['lida']));
             </summary>
             <div class="sug-corpo">
                 <p class="sug-contacto"><strong><?= htmlspecialchars($s['nome']) ?></strong> —
-                    <a href="mailto:<?= htmlspecialchars($s['email']) ?>?subject=<?= rawurlencode('Re: ' . $s['assunto']) ?>"><?= htmlspecialchars($s['email']) ?></a></p>
+                    <a href="mailto:<?= htmlspecialchars($s['email']) ?>?subject=<?= rawurlencode('Re: ' . $s['assunto']) ?>"><?= htmlspecialchars($s['email']) ?></a>
+                    <?php if (!empty($s['telefone'])): ?> · <a href="tel:<?= htmlspecialchars($s['telefone']) ?>"><i class="bi bi-telephone"></i> <?= htmlspecialchars($s['telefone']) ?></a><?php endif; ?></p>
                 <div class="sug-texto"><?= nl2br(htmlspecialchars($s['mensagem'])) ?></div>
                 <form method="post" class="sug-acoes">
                     <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">

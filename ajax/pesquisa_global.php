@@ -168,9 +168,10 @@ $paginasFixas = [
     ["Executivo", "Composição do executivo da Junta.", "/executivo.php", '<i class="bi bi-people-fill"></i>'],
     ["Contactos", "Telefone, email, morada e formulário de contacto.", "/contactos.php", '<i class="bi bi-telephone-fill"></i>'],
     // Balcão Virtual temporariamente oculto da pesquisa: ["Junta Virtual", "Pedidos, requerimentos, marcações e serviços online.", "/minha-area.php", '<i class="bi bi-laptop"></i>'],
-    ["Pedidos à Junta", "Submeter pedidos online à Junta de Freguesia.", "/pedidos.php", '<i class="bi bi-envelope-fill"></i>'],
-    ["Requerimentos Online", "Submeter requerimentos e documentos digitais.", "/requerimentos.php", '<i class="bi bi-file-earmark-text-fill"></i>'],
-    ["Marcação de Atendimento", "Agendar atendimento com a Junta.", "/marcacoes.php", '<i class="bi bi-calendar-event-fill"></i>'],
+    ["Ocorrências", "Comunicar à Junta um problema na freguesia (iluminação, limpeza, vias…).", "/pedidos.php", '<i class="bi bi-exclamation-triangle-fill"></i>'],
+    ["Sugestões", "Enviar uma ideia ou sugestão à Junta de Freguesia.", "/sugestoes.php", '<i class="bi bi-lightbulb-fill"></i>'],
+    // Requerimentos desativados (30/10/2026): ["Requerimentos Online", "Submeter requerimentos e documentos digitais.", "/requerimentos.php", '<i class="bi bi-file-earmark-text-fill"></i>'],
+    ["Marcações e requisições", "Agendar atendimento ou requisitar um espaço ou equipamento da Junta.", "/marcacoes.php", '<i class="bi bi-calendar-event-fill"></i>'],
     ["Transparência", "Consultar indicadores e informação pública.", "/transparencia.php", '<i class="bi bi-bar-chart-fill"></i>'],
 ];
 

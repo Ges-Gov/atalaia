@@ -22,100 +22,158 @@ $nomeForm = $cidadaoLogado['nome'] ?? '';
 $emailForm = $cidadaoLogado['email'] ?? '';
 $telefoneForm = $cidadaoLogado['telefone'] ?? '';
 
+// 30/10/2026: a página serve dois pedidos — agendar um atendimento ou requisitar/alugar um espaço ou
+// equipamento (migração 084: tipo_pedido, recurso, hora_fim, num_pessoas). Os valores voltam ao
+// formulário quando há um erro, para não ser preciso escrever tudo de novo.
+$tipoPedido = (($_POST['tipo_pedido'] ?? $_GET['tipo'] ?? '') === 'requisicao') ? 'requisicao' : 'atendimento';
+$valores = [
+    'assunto' => '', 'data' => '', 'hora' => '', 'mensagem' => '', 'tipo_atendimento' => 'presencial',
+    'recurso' => '', 'hora_inicio' => '', 'hora_fim' => '', 'num_pessoas' => '',
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cidadaoId = $cidadaoLogado['id'] ?? null;
 
     $nome = trim($_POST['nome'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
-    $assunto = trim($_POST['assunto'] ?? '');
-    $data = trim($_POST['data_marcacao'] ?? '');
-    $hora = trim($_POST['hora_marcacao'] ?? '');
-    $mensagem = trim($_POST['mensagem'] ?? '');
-    $tipoAtendimento = trim($_POST['tipo_atendimento'] ?? 'presencial');
+    $valores = [
+        'assunto' => trim($_POST['assunto'] ?? ''),
+        'data' => trim($_POST['data_marcacao'] ?? ''),
+        'hora' => trim($_POST['hora_marcacao'] ?? ''),
+        'mensagem' => trim($_POST['mensagem'] ?? ''),
+        'tipo_atendimento' => ($_POST['tipo_atendimento'] ?? '') === 'virtual' ? 'virtual' : 'presencial',
+        'recurso' => trim($_POST['recurso'] ?? ''),
+        'hora_inicio' => trim($_POST['hora_inicio'] ?? ''),
+        'hora_fim' => trim($_POST['hora_fim'] ?? ''),
+        'num_pessoas' => trim($_POST['num_pessoas'] ?? ''),
+    ];
+    $nomeForm = $nome;
+    $emailForm = $email;
+    $telefoneForm = $telefone;
 
     if ($cidadaoLogado) {
         $nome = $cidadaoLogado['nome'];
         $email = $cidadaoLogado['email'];
-        $telefone = $cidadaoLogado['telefone'] ?? $telefone;
+        if (!empty($cidadaoLogado['telefone'])) {
+            $telefone = $cidadaoLogado['telefone'];
+        }
     }
+
+    $eRequisicao = $tipoPedido === 'requisicao';
+    $data = $valores['data'];
+    $hora = $eRequisicao ? $valores['hora_inicio'] : $valores['hora'];
+    $horaFim = $eRequisicao ? $valores['hora_fim'] : null;
+    $numPessoas = ($eRequisicao && ctype_digit($valores['num_pessoas'])) ? (int)$valores['num_pessoas'] : null;
+    $assunto = $eRequisicao ? mb_substr('Requisição: ' . $valores['recurso'], 0, 150) : $valores['assunto'];
+    $mensagem = $valores['mensagem'];
+    $formatoHora = '/^([01]\d|2[0-3]):[0-5]\d$/';
 
     $siteWeb = trim($_POST['site_web'] ?? ''); // honeypot: campo invisível, só bots o preenchem
 
     if ($siteWeb !== '') {
         // Bot apanhado no honeypot: finge sucesso, não processa nem envia nada.
         $sucesso = true;
-    } elseif (!$nome || !$email || !$assunto || !$data || !$hora) {
+    } elseif (!$nome || !$email || !$telefone || !$data || !$hora
+              || ($eRequisicao ? (!$valores['recurso'] || !$horaFim || !$mensagem) : !$assunto)) {
         $erro = "Preencha todos os campos obrigatórios.";
     } elseif (!emailValido($email)) {
-        $erro = "Indique um email válido.";
-    } elseif ($data < date('Y-m-d')) {
-        $erro = "A data da marcação não pode ser anterior ao dia de hoje.";
+        $erro = "Indique um email válido e que exista.";
+    } elseif (!telefoneValido($telefone)) {
+        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
+    } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) || $data < date('Y-m-d')) {
+        $erro = "A data do pedido não pode ser anterior ao dia de hoje.";
+    } elseif (!preg_match($formatoHora, $hora) || ($eRequisicao && (!preg_match($formatoHora, $horaFim) || $horaFim <= $hora))) {
+        $erro = $eRequisicao ? "Indique a hora de início e a hora de fim (a de fim depois da de início)." : "Escolha uma hora válida.";
+    } elseif (mb_strlen($valores['recurso']) > 200 || mb_strlen($mensagem) > 5000) {
+        $erro = "O texto é demasiado longo.";
     } elseif (submissaoRecente('marcacao')) {
         $erro = "Já recebemos um pedido seu há pouco. Aguarde uns instantes antes de submeter outro.";
     } else {
-        $stmt = $pdo->prepare("
-            SELECT COUNT(*) 
-            FROM marcacoes_atendimento
-            WHERE data_marcacao = ?
-            AND hora_marcacao = ?
-            AND estado IN ('pendente','confirmada')
-        ");
-        $stmt->execute([$data, $hora]);
+        $ocupada = 0;
+        if (!$eRequisicao) {
+            // Só os atendimentos ocupam vaga na agenda; as requisições são analisadas pela Junta.
+            $stmt = $pdo->prepare("
+                SELECT COUNT(*)
+                FROM marcacoes_atendimento
+                WHERE data_marcacao = ?
+                AND hora_marcacao = ?
+                AND tipo_pedido = 'atendimento'
+                AND estado IN ('pendente','confirmada')
+            ");
+            $stmt->execute([$data, $hora]);
+            $ocupada = (int)$stmt->fetchColumn();
+        }
 
-        if ($stmt->fetchColumn() > 0) {
+        if ($ocupada > 0) {
             $erro = "Já existe uma marcação para essa data e hora.";
         } else {
             $stmt = $pdo->prepare("
                 INSERT INTO marcacoes_atendimento
-                (cidadao_id, nome, email, telefone, assunto, data_marcacao, hora_marcacao, mensagem, tipo_atendimento)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (tipo_pedido, cidadao_id, nome, email, telefone, assunto, recurso, data_marcacao, hora_marcacao, hora_fim, num_pessoas, mensagem, tipo_atendimento)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $stmt->execute([
+                $tipoPedido,
                 $cidadaoId,
                 $nome,
                 $email,
-                $telefone,
+                telefoneLimpo($telefone),
                 $assunto,
+                $eRequisicao ? $valores['recurso'] : null,
                 $data,
                 $hora,
+                $horaFim,
+                $numPessoas,
                 $mensagem,
-                $tipoAtendimento
+                $eRequisicao ? 'presencial' : $valores['tipo_atendimento']
             ]);
 
             $sucesso = true;
+            $h = fn($t) => htmlspecialchars((string)$t, ENT_QUOTES, 'UTF-8');
+            $quando = $eRequisicao ? "das {$h($hora)} às {$h($horaFim)}" : $h($hora);
+            $titulo = $eRequisicao ? "Novo pedido de requisição" : "Nova marcação de atendimento";
 
             $emailJunta = siteConfig('email_notificacoes', siteConfig('email'));
 
             if (!empty($emailJunta)) {
                 $htmlJunta = "
-                    <h2>Nova marcação de atendimento</h2>
-                    <p><strong>Nome:</strong> " . htmlspecialchars($nome) . "</p>
-                    <p><strong>Email:</strong> " . htmlspecialchars($email) . "</p>
-                    <p><strong>Telefone:</strong> " . htmlspecialchars($telefone) . "</p>
-                    <p><strong>Assunto:</strong> " . htmlspecialchars($assunto) . "</p>
-                    <p><strong>Data:</strong> " . htmlspecialchars($data) . "</p>
-                    <p><strong>Hora:</strong> " . htmlspecialchars($hora) . "</p>
-                    <p><strong>Mensagem:</strong><br>" . nl2br(htmlspecialchars($mensagem)) . "</p>
+                    <h2>{$titulo}</h2>
+                    <p><strong>Nome:</strong> {$h($nome)}</p>
+                    <p><strong>Email:</strong> {$h($email)}</p>
+                    <p><strong>Telefone:</strong> {$h($telefone)}</p>
+                    " . ($eRequisicao
+                        ? "<p><strong>Espaço ou equipamento:</strong> {$h($valores['recurso'])}</p>"
+                          . ($numPessoas ? "<p><strong>N.º de pessoas:</strong> {$numPessoas}</p>" : '')
+                        : "<p><strong>Assunto:</strong> {$h($assunto)}</p>") . "
+                    <p><strong>Data:</strong> {$h($data)}</p>
+                    <p><strong>Hora:</strong> {$quando}</p>
+                    <p><strong>" . ($eRequisicao ? 'Finalidade' : 'Mensagem') . ":</strong><br>" . nl2br($h($mensagem)) . "</p>
                 ";
 
-                enviarEmailSistema($emailJunta, "Nova marcação de atendimento", $htmlJunta);
+                enviarEmailSistema($emailJunta, $titulo, $htmlJunta, $email);
             }
 
             $htmlCidadao = "
-                <h2>Pedido de marcação recebido</h2>
-                <p>Olá " . htmlspecialchars($nome) . ",</p>
-                <p>Recebemos o seu pedido de marcação de atendimento.</p>
-                <p><strong>Assunto:</strong> " . htmlspecialchars($assunto) . "</p>
-                <p><strong>Data:</strong> " . htmlspecialchars($data) . "</p>
-                <p><strong>Hora:</strong> " . htmlspecialchars($hora) . "</p>
-                <p>A Junta irá analisar e confirmar a marcação.</p>
+                <h2>Pedido recebido</h2>
+                <p>Olá {$h($nome)},</p>
+                <p>Recebemos o seu pedido de " . ($eRequisicao ? "requisição" : "marcação de atendimento") . ".</p>
+                <p><strong>" . ($eRequisicao ? "Espaço ou equipamento" : "Assunto") . ":</strong> {$h($eRequisicao ? $valores['recurso'] : $assunto)}</p>
+                <p><strong>Data:</strong> {$h($data)}</p>
+                <p><strong>Hora:</strong> {$quando}</p>
+                <p>A Junta irá analisar o pedido e responder-lhe por email.</p>
                 <br>
-                <p><strong>" . htmlspecialchars(siteConfig('nome_site')) . "</strong></p>
+                <p><strong>" . $h(siteConfig('nome_site')) . "</strong></p>
             ";
 
-            enviarEmailSistema($email, "Pedido de marcação recebido", $htmlCidadao);
+            enviarEmailSistema($email, "Pedido recebido", $htmlCidadao);
+
+            $valores = array_map(fn() => '', $valores);
+            if (!$cidadaoLogado) {
+                $nomeForm = $emailForm = $telefoneForm = '';
+            }
+            $valores['tipo_atendimento'] = 'presencial';
         }
     }
 }
@@ -391,6 +449,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     border-color:var(--cor-principal);
     box-shadow:0 0 0 4px rgba(36,42,50,.1);
 }
+
+/* 30/10/2026: escolha entre atendimento e requisição de espaço/equipamento */
+.marcacoes-tipo{border:0;margin:0;padding:0;min-width:0;}
+.marcacoes-tipo legend{color:#11151B;font-size:13px;font-weight:900;margin-bottom:8px;letter-spacing:.2px;padding:0;}
+.marcacoes-tipo__ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.marcacoes-field .marcacoes-tipo__op{position:relative;display:block;cursor:pointer;margin:0;}
+.marcacoes-field .marcacoes-tipo__op input{position:absolute;opacity:0;width:1px;height:1px;min-height:0;padding:0;}
+.marcacoes-tipo__op span{display:flex;align-items:center;gap:10px;min-height:56px;padding:12px 16px;border:2px solid #dbe4ee;border-radius:16px;
+    background:#f8fafc;font-size:15px;font-weight:800;color:#11151B;line-height:1.3;transition:.2s ease;}
+.marcacoes-tipo__op span i{font-size:20px;flex-shrink:0;}
+.marcacoes-tipo__op input:checked + span{border-color:var(--cor-principal);background:color-mix(in srgb, var(--cor-principal) 8%, #fff);color:var(--cor-principal);}
+.marcacoes-tipo__op input:focus-visible + span{outline:2px solid var(--cor-principal);outline-offset:2px;}
+.marcacoes-horas{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.marcacoes-form [data-pedido][hidden]{display:none !important;}
+@media(max-width:700px){.marcacoes-tipo__ops{grid-template-columns:1fr;}}
 
 .marcacoes-field input[readonly]{
     background:#eef6ff;
@@ -694,74 +767,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" class="marcacoes-form">
+                <form method="POST" class="marcacoes-form" id="marcacoesForm">
                     <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
+                    <fieldset class="marcacoes-field full marcacoes-tipo">
+                        <legend><?= te('marcacoes.formulario.tipo_pedido') ?></legend>
+                        <div class="marcacoes-tipo__ops">
+                        <label class="marcacoes-tipo__op">
+                            <input type="radio" name="tipo_pedido" value="atendimento" <?= $tipoPedido === 'atendimento' ? 'checked' : '' ?>>
+                            <span><i class="bi bi-person-video2" aria-hidden="true"></i> <?= te('marcacoes.formulario.op_atendimento') ?></span>
+                        </label>
+                        <label class="marcacoes-tipo__op">
+                            <input type="radio" name="tipo_pedido" value="requisicao" <?= $tipoPedido === 'requisicao' ? 'checked' : '' ?>>
+                            <span><i class="bi bi-building" aria-hidden="true"></i> <?= te('marcacoes.formulario.op_requisicao') ?></span>
+                        </label>
+                        </div>
+                    </fieldset>
+
                     <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.nome') ?></label>
-                        <input type="text" name="nome" placeholder="<?= te('marcacoes.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <label for="marc-nome"><?= te('marcacoes.formulario.nome') ?></label>
+                        <input type="text" id="marc-nome" name="nome" autocomplete="name" placeholder="<?= te('marcacoes.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.email') ?></label>
-                        <input type="email" name="email" placeholder="<?= te('marcacoes.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <label for="marc-email"><?= te('marcacoes.formulario.email') ?></label>
+                        <input type="email" id="marc-email" name="email" autocomplete="email" placeholder="<?= te('marcacoes.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.telefone') ?></label>
-                        <input type="text" name="telefone" placeholder="<?= te('marcacoes.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
+                        <label for="marc-telefone"><?= te('marcacoes.formulario.telefone') ?></label>
+                        <input type="tel" id="marc-telefone" name="telefone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="<?= te('marcacoes.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>" required>
                     </div>
 
-                    <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.tipo') ?></label>
-                        <select name="tipo_atendimento" required>
+                    <!-- Agendar um atendimento -->
+                    <div class="marcacoes-field" data-pedido="atendimento">
+                        <label for="marc-tipo"><?= te('marcacoes.formulario.tipo') ?></label>
+                        <select id="marc-tipo" name="tipo_atendimento" required>
                             <option value="presencial"><?= te('marcacoes.formulario.tipo_presencial') ?></option>
-                            <option value="virtual"><?= te('marcacoes.formulario.tipo_virtual') ?></option>
+                            <option value="virtual" <?= $valores['tipo_atendimento'] === 'virtual' ? 'selected' : '' ?>><?= te('marcacoes.formulario.tipo_virtual') ?></option>
                         </select>
                     </div>
 
-                    <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.assunto') ?></label>
-                        <select name="assunto" required>
-                            <option value="Recursos Humanos">Recursos Humanos</option>
-<option value="Urbanismo e Habitação">Urbanismo e Habitação</option>
-<option value="Comunicação e Informação">Comunicação e Informação</option>
-<option value="Bem-estar Animal">Bem-estar Animal</option>
-<option value="Proteção Civil">Proteção Civil</option>
-<option value="Educação">Educação</option>
-<option value="Saúde">Saúde</option>
-<option value="Turismo">Turismo</option>
-<option value="Desporto">Desporto</option>
-<option value="Outros Assuntos">Outros Assuntos</option>
+                    <div class="marcacoes-field" data-pedido="atendimento">
+                        <label for="marc-assunto"><?= te('marcacoes.formulario.assunto') ?></label>
+                        <select id="marc-assunto" name="assunto" required>
+                            <?php foreach (['Recursos Humanos', 'Urbanismo e Habitação', 'Comunicação e Informação', 'Bem-estar Animal', 'Proteção Civil',
+                                            'Educação', 'Saúde', 'Turismo', 'Desporto', 'Outros Assuntos'] as $opcao): ?>
+                                <option value="<?= htmlspecialchars($opcao) ?>" <?= $valores['assunto'] === $opcao ? 'selected' : '' ?>><?= htmlspecialchars($opcao) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.data') ?></label>
-                        <input type="date" name="data_marcacao" min="<?= date('Y-m-d') ?>" required>
+                    <!-- Requisitar ou alugar um espaço ou equipamento -->
+                    <div class="marcacoes-field full" data-pedido="requisicao">
+                        <label for="marc-recurso"><?= te('marcacoes.formulario.recurso') ?></label>
+                        <input type="text" id="marc-recurso" name="recurso" maxlength="200" placeholder="<?= te('marcacoes.formulario.ph_recurso') ?>" value="<?= htmlspecialchars($valores['recurso']) ?>" required>
                     </div>
 
                     <div class="marcacoes-field">
-                        <label><?= te('marcacoes.formulario.hora') ?></label>
-                        <select name="hora_marcacao" required>
+                        <label for="marc-data"><?= te('marcacoes.formulario.data') ?></label>
+                        <input type="date" id="marc-data" name="data_marcacao" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($valores['data']) ?>" required>
+                    </div>
+
+                    <div class="marcacoes-field" data-pedido="atendimento">
+                        <label for="marc-hora"><?= te('marcacoes.formulario.hora') ?></label>
+                        <select id="marc-hora" name="hora_marcacao" required>
                             <option value=""><?= te('marcacoes.formulario.hora_opcao') ?></option>
-                            <option value="09:00">09:00</option>
-                            <option value="09:30">09:30</option>
-                            <option value="10:00">10:00</option>
-                            <option value="10:30">10:30</option>
-                            <option value="11:00">11:00</option>
-                            <option value="11:30">11:30</option>
-                            <option value="14:00">14:00</option>
-                            <option value="14:30">14:30</option>
-                            <option value="15:00">15:00</option>
-                            <option value="15:30">15:30</option>
-                            <option value="16:00">16:00</option>
+                            <?php foreach (['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00'] as $opcao): ?>
+                                <option value="<?= $opcao ?>" <?= $valores['hora'] === $opcao ? 'selected' : '' ?>><?= $opcao ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <div class="marcacoes-field full">
-                        <label><?= te('marcacoes.formulario.mensagem') ?></label>
-                        <textarea name="mensagem" placeholder="<?= te('marcacoes.formulario.ph_mensagem') ?>"></textarea>
+                    <div class="marcacoes-field marcacoes-horas" data-pedido="requisicao">
+                        <div>
+                            <label for="marc-hora-inicio"><?= te('marcacoes.formulario.hora_inicio') ?></label>
+                            <input type="time" id="marc-hora-inicio" name="hora_inicio" value="<?= htmlspecialchars($valores['hora_inicio']) ?>" required>
+                        </div>
+                        <div>
+                            <label for="marc-hora-fim"><?= te('marcacoes.formulario.hora_fim') ?></label>
+                            <input type="time" id="marc-hora-fim" name="hora_fim" value="<?= htmlspecialchars($valores['hora_fim']) ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="marcacoes-field" data-pedido="requisicao">
+                        <label for="marc-pessoas"><?= te('marcacoes.formulario.num_pessoas') ?></label>
+                        <input type="number" id="marc-pessoas" name="num_pessoas" min="1" max="100000" inputmode="numeric" value="<?= htmlspecialchars($valores['num_pessoas']) ?>">
+                    </div>
+
+                    <div class="marcacoes-field full" data-pedido="atendimento">
+                        <label for="marc-mensagem"><?= te('marcacoes.formulario.mensagem') ?></label>
+                        <textarea id="marc-mensagem" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_mensagem') ?>"><?= $tipoPedido === 'atendimento' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
+                    </div>
+
+                    <div class="marcacoes-field full" data-pedido="requisicao">
+                        <label for="marc-finalidade"><?= te('marcacoes.formulario.finalidade') ?></label>
+                        <textarea id="marc-finalidade" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_finalidade') ?>" required><?= $tipoPedido === 'requisicao' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
                     </div>
 
                     <div class="marcacoes-submit-row">
@@ -769,6 +870,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button class="hero-btn" type="submit"><?= te('marcacoes.formulario.botao') ?></button>
                     </div>
                 </form>
+                <script>
+                // Mostra só os campos do tipo de pedido escolhido; os escondidos ficam «disabled»,
+                // para não serem enviados nem bloquearem o envio por serem obrigatórios.
+                (function () {
+                    var form = document.getElementById('marcacoesForm');
+                    if (!form) return;
+                    function aplicar() {
+                        var escolhido = (form.querySelector('input[name="tipo_pedido"]:checked') || {}).value || 'atendimento';
+                        form.querySelectorAll('[data-pedido]').forEach(function (bloco) {
+                            var ativo = bloco.getAttribute('data-pedido') === escolhido;
+                            bloco.hidden = !ativo;
+                            bloco.querySelectorAll('input, select, textarea').forEach(function (campo) { campo.disabled = !ativo; });
+                        });
+                    }
+                    form.querySelectorAll('input[name="tipo_pedido"]').forEach(function (r) { r.addEventListener('change', aplicar); });
+                    aplicar();
+                })();
+                </script>
             </div>
         </div>
 

@@ -41,8 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_contacto'])) {
          || (time() - (int)($_POST['t'] ?? 0)) < 3;                              // preenchido em < 3 s = robô
 
     if (mb_strlen($dadosForm['nome']) < 2)                                  $errosForm['nome'] = 'Indique o seu nome.';
-    if (!filter_var($dadosForm['email'], FILTER_VALIDATE_EMAIL))           $errosForm['email'] = 'Indique um email válido (ex.: nome@exemplo.pt).';
-    if ($dadosForm['telefone'] !== '' && !preg_match('/^[\d\s+()-]{9,20}$/', $dadosForm['telefone'])) $errosForm['telefone'] = 'O telefone deve ter pelo menos 9 algarismos.';
+    require_once __DIR__ . '/includes/validacao.php';
+    if (!emailValido($dadosForm['email']))                                  $errosForm['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if ($dadosForm['telefone'] !== '' && !telefoneValido($dadosForm['telefone'])) $errosForm['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
     if (!in_array($dadosForm['assunto'], $assuntosContacto, true))         $errosForm['assunto'] = 'Escolha o motivo do contacto.';
     if (mb_strlen($dadosForm['mensagem']) < 10)                            $errosForm['mensagem'] = 'Explique o motivo do contacto (pelo menos 10 caracteres).';
     if (mb_strlen($dadosForm['mensagem']) > 4000)                          $errosForm['mensagem'] = 'A mensagem é demasiado longa (máximo 4000 caracteres).';

@@ -13,7 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($nome && $email && $password) {
         if (!emailValido($email)) {
-            $erro = "Indique um email válido.";
+            $erro = "Indique um email válido e que exista.";
+        } elseif ($telefone !== '' && !telefoneValido($telefone)) {
+            $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
         } else {
             $stmt = $pdo->prepare("SELECT id FROM cidadaos WHERE email = ?");
             $stmt->execute([$email]);
@@ -108,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="registo-input-group">
                             <span><i class="bi bi-telephone"></i></span>
-                            <input type="text" name="telefone" placeholder="<?= te('cidadao_registo.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
+                            <input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="<?= te('cidadao_registo.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
                         </div>
 
                         <div class="registo-input-group password-group">

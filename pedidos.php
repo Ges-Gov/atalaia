@@ -123,7 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!$nome || !$categoria || !$assunto || !$mensagem) {
         $erro = "Preencha todos os campos obrigatórios.";
     } elseif ($email !== '' && !emailValido($email)) {
-        $erro = "Indique um email válido.";
+        $erro = "Indique um email válido e que exista.";
+    } elseif ($telefone !== '' && !telefoneValido($telefone)) {
+        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
     } elseif (!$latitude || !$longitude) {
         $erro = "Selecione o local do pedido no mapa.";
     } elseif ($dentroFreguesia !== '1') {
@@ -343,7 +345,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-grid">
                     <input 
-                        type="text" 
+                        type="tel" 
+                        inputmode="tel"
+                        autocomplete="tel"
+                        maxlength="20"
                         name="telefone" 
                         placeholder="<?= te('pedidos.formulario.ph_telefone') ?>"
                         value="<?= htmlspecialchars($telefoneForm) ?>"

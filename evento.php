@@ -36,7 +36,9 @@ if ($evento && !empty($evento['inscricoes_ativas']) && $_SERVER['REQUEST_METHOD'
     } elseif (!$emailInsc && !$telefoneInsc) {
         $inscricaoErro = "Indique um email ou um telefone, para ser possível contactá-lo(a).";
     } elseif ($emailInsc && !emailValido($emailInsc)) {
-        $inscricaoErro = "O email indicado não é válido.";
+        $inscricaoErro = "O email indicado não é válido ou não existe.";
+    } elseif ($telefoneInsc && !telefoneValido($telefoneInsc)) {
+        $inscricaoErro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
     } elseif ($prazoInscricao && strtotime($prazoInscricao) < time()) {
         $inscricaoErro = "As inscrições para este evento já encerraram.";
     } elseif (!empty($evento['inscricoes_vagas'])) {

@@ -19,6 +19,13 @@ if ($responsavelFiltro !== '') {
     $params[] = $responsavelFiltro;
 }
 
+// 30/10/2026: a página pública aceita também requisições de espaços/equipamento (migração 084).
+$tipoFiltro = in_array($_GET['tipo'] ?? '', ['atendimento', 'requisicao'], true) ? $_GET['tipo'] : '';
+if ($tipoFiltro !== '') {
+    $where[] = "tipo_pedido = ?";
+    $params[] = $tipoFiltro;
+}
+
 $whereSql = '';
 if (!empty($where)) {
     $whereSql = "WHERE " . implode(" AND ", $where);
@@ -137,7 +144,7 @@ function labelEstadoMarcacao($estado) {
     <div>
         <span class="agenda-exec-kicker">Agenda Executiva Digital</span>
         <h2>Central de Agendamentos</h2>
-        <p>Calendário interno da Junta com marcações por responsável, estado e disponibilidade semanal.</p>
+        <p>Calendário interno da Junta com marcações de atendimento e requisições de espaços e equipamento, por responsável, estado e disponibilidade semanal.</p>
     </div>
     <div class="agenda-live-pill"><i></i>Agenda ativa</div>
 </div>
@@ -156,6 +163,8 @@ function labelEstadoMarcacao($estado) {
     <a class="btn secondary" href="marcacoes.php?estado=confirmada">Confirmadas</a>
     <a class="btn secondary" href="marcacoes.php?estado=cancelada">Canceladas</a>
     <a class="btn secondary" href="marcacoes.php?estado=concluida">Concluídas</a>
+    <a class="btn secondary" href="marcacoes.php?tipo=atendimento">Atendimentos</a>
+    <a class="btn secondary" href="marcacoes.php?tipo=requisicao">Requisições</a>
     <?php foreach ($responsaveis as $resp): ?>
         <a class="btn secondary" href="marcacoes.php?responsavel=<?= urlencode($resp) ?>"><?= htmlspecialchars($resp) ?></a>
     <?php endforeach; ?>
@@ -179,10 +188,12 @@ function labelEstadoMarcacao($estado) {
                     <?php foreach ($marcacoesDia as $m): ?>
                         <?php $cor = corResponsavelMarcacao($m['responsavel'] ?? ''); ?>
                         <a class="agenda-event" href="ver_marcacao.php?id=<?= (int)$m['id'] ?>" style="background:<?= $cor ?>">
-                            <strong><?= substr($m['hora_marcacao'], 0, 5) ?> · <?= htmlspecialchars($m['nome']) ?></strong>
+                            <strong><?= substr($m['hora_marcacao'], 0, 5) ?><?= !empty($m['hora_fim']) ? '–' . substr($m['hora_fim'], 0, 5) : '' ?> · <?= htmlspecialchars($m['nome']) ?></strong>
                             <span><?= htmlspecialchars($m['assunto']) ?></span>
                             <span><?= htmlspecialchars($m['responsavel'] ?: 'A definir') ?></span>
-                            <?php if (($m['tipo_atendimento'] ?? 'presencial') === 'virtual'): ?>
+                            <?php if (($m['tipo_pedido'] ?? 'atendimento') === 'requisicao'): ?>
+                                <small style="background:rgba(217,119,6,.95);color:white;"><i class="bi bi-box-seam"></i> Requisição</small>
+                            <?php elseif (($m['tipo_atendimento'] ?? 'presencial') === 'virtual'): ?>
                                 <small style="background:rgba(37,99,235,.95);color:white;"><i class="bi bi-laptop"></i> Virtual</small>
                             <?php else: ?>
                                 <small style="background:rgba(255,255,255,.20);color:white;"><i class="bi bi-building"></i> Presencial</small>
@@ -207,7 +218,7 @@ function labelEstadoMarcacao($estado) {
                     <div class="agenda-side-icon" style="background:<?= $corResp ?>"><i class="bi bi-calendar-event"></i></div>
                     <div>
                         <strong><?= htmlspecialchars($m['nome']) ?></strong>
-                        <span><?= htmlspecialchars($m['assunto']) ?> · <?= htmlspecialchars($m['responsavel'] ?: 'A definir') ?> · <?= (($m['tipo_atendimento'] ?? 'presencial') === 'virtual') ? '<i class="bi bi-laptop"></i> Virtual' : '<i class="bi bi-building"></i> Presencial' ?></span>
+                        <span><?= htmlspecialchars($m['assunto']) ?> · <?= htmlspecialchars($m['responsavel'] ?: 'A definir') ?> · <?= (($m['tipo_pedido'] ?? 'atendimento') === 'requisicao') ? '<i class="bi bi-box-seam"></i> Requisição' : ((($m['tipo_atendimento'] ?? 'presencial') === 'virtual') ? '<i class="bi bi-laptop"></i> Virtual' : '<i class="bi bi-building"></i> Presencial') ?></span>
                     </div>
                     <small><?= date('d/m', strtotime($m['data_marcacao'])) ?><br><?= substr($m['hora_marcacao'], 0, 5) ?></small>
                 </a>
@@ -243,12 +254,14 @@ function labelEstadoMarcacao($estado) {
             <?php foreach ($marcacoes as $m): ?>
                 <tr>
                     <td><?= date('d/m/Y', strtotime($m['data_marcacao'])) ?></td>
-                    <td><?= substr($m['hora_marcacao'], 0, 5) ?></td>
+                    <td><?= substr($m['hora_marcacao'], 0, 5) ?><?= !empty($m['hora_fim']) ? '–' . substr($m['hora_fim'], 0, 5) : '' ?></td>
                     <td><?= htmlspecialchars($m['nome']) ?></td>
                     <td><?= htmlspecialchars($m['assunto']) ?></td>
                     <td><?= htmlspecialchars($m['responsavel'] ?: 'A definir') ?></td>
                     <td>
-                        <?php if (($m['tipo_atendimento'] ?? 'presencial') === 'virtual'): ?>
+                        <?php if (($m['tipo_pedido'] ?? 'atendimento') === 'requisicao'): ?>
+                            <span class="estado-badge" style="background:#d97706;color:#fff;"><i class="bi bi-box-seam"></i> Requisição</span>
+                        <?php elseif (($m['tipo_atendimento'] ?? 'presencial') === 'virtual'): ?>
                             <span class="estado-badge" style="background:#2563eb;color:#fff;"><i class="bi bi-laptop"></i> Virtual</span>
                         <?php else: ?>
                             <span class="estado-badge" style="background:#475569;color:#fff;"><i class="bi bi-building"></i> Presencial</span>

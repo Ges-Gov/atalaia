@@ -1,14 +1,16 @@
 <?php
 // Formulário de sugestões (migração 035). As sugestões ficam na BD e leem-se no backoffice
 // (Junta Virtual › Sugestões); a Junta recebe também um aviso por email, se o email estiver configurado.
+// 30/10/2026: quem sugere identifica-se com nome, email (com domínio que exista) e telemóvel.
 require_once "includes/db.php";
+require_once __DIR__ . "/includes/validacao.php";
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
 $erro = '';
 $enviado = false;
-$campos = ['nome' => '', 'email' => '', 'assunto' => '', 'mensagem' => ''];
+$campos = ['nome' => '', 'email' => '', 'telefone' => '', 'assunto' => '', 'mensagem' => ''];
 
 if (empty($_SESSION['sugestoes_token'])) {
     $_SESSION['sugestoes_token'] = bin2hex(random_bytes(16));
@@ -27,18 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $enviado = true;                       // robô: finge que correu bem e não guarda nada
     } elseif (count($envios) >= 5) {
         $erro = 'Já enviou várias sugestões na última hora. Tente mais tarde.';
-    } elseif ($campos['nome'] === '' || $campos['assunto'] === '' || $campos['mensagem'] === '') {
-        $erro = 'Preencha o nome, o assunto e a mensagem.';
-    } elseif (!filter_var($campos['email'], FILTER_VALIDATE_EMAIL)) {
-        $erro = 'Indique um email válido, para a Junta lhe poder responder.';
+    } elseif ($campos['nome'] === '' || $campos['telefone'] === '' || $campos['assunto'] === '' || $campos['mensagem'] === '') {
+        $erro = 'Preencha o nome, o telemóvel, o assunto e a mensagem.';
+    } elseif (!emailValido($campos['email'])) {
+        $erro = 'Indique um email válido e que exista, para a Junta lhe poder responder.';
+    } elseif (!telefoneValido($campos['telefone'], true)) {
+        $erro = 'Indique um número de telemóvel válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
     } elseif (empty($_POST['consentimento'])) {
         $erro = 'Para enviar, tem de aceitar o tratamento dos dados indicados.';
     } elseif (mb_strlen($campos['mensagem']) > 5000 || mb_strlen($campos['assunto']) > 200 || mb_strlen($campos['nome']) > 150) {
         $erro = 'O texto é demasiado longo.';
     } else {
         try {
-            $pdo->prepare("INSERT INTO sugestoes (nome, email, assunto, mensagem, ip) VALUES (?, ?, ?, ?, ?)")
-                ->execute([$campos['nome'], $campos['email'], $campos['assunto'], $campos['mensagem'], $_SERVER['REMOTE_ADDR'] ?? null]);
+            $pdo->prepare("INSERT INTO sugestoes (nome, email, telefone, assunto, mensagem, ip) VALUES (?, ?, ?, ?, ?, ?)")
+                ->execute([$campos['nome'], $campos['email'], telefoneLimpo($campos['telefone']), $campos['assunto'], $campos['mensagem'], $_SERVER['REMOTE_ADDR'] ?? null]);
             $envios[] = time();
             $_SESSION['sugestoes_envios'] = $envios;
             $enviado = true;
@@ -51,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($para !== '' && function_exists('enviarEmailSistema')) {
                     $h = fn($t) => nl2br(htmlspecialchars($t, ENT_QUOTES, 'UTF-8'));
                     enviarEmailSistema($para, 'Nova sugestão no site: ' . $campos['assunto'],
-                        "<p><strong>Nome:</strong> {$h($campos['nome'])}<br><strong>Email:</strong> {$h($campos['email'])}</p>"
+                        "<p><strong>Nome:</strong> {$h($campos['nome'])}<br><strong>Email:</strong> {$h($campos['email'])}<br><strong>Telemóvel:</strong> {$h($campos['telefone'])}</p>"
                         . "<p><strong>Assunto:</strong> {$h($campos['assunto'])}</p><p>{$h($campos['mensagem'])}</p>"
                         . "<p>Também disponível no backoffice, em Junta Virtual › Sugestões.</p>", $campos['email']);
                 }
             } catch (Throwable $e) {
                 error_log('sugestoes: aviso por email falhou: ' . $e->getMessage());
             }
-            $campos = ['nome' => '', 'email' => '', 'assunto' => '', 'mensagem' => ''];
+            $campos = ['nome' => '', 'email' => '', 'telefone' => '', 'assunto' => '', 'mensagem' => ''];
         } catch (Throwable $e) {
             error_log('sugestoes: ' . $e->getMessage());
             $erro = 'Não foi possível enviar agora. Tente mais tarde.';
@@ -88,7 +92,7 @@ require_once "includes/header.php";
     max-width:760px;margin:0 auto;background:#fff;border-radius:26px;box-shadow:0 22px 50px rgba(15,23,42,.09);padding:38px 42px;
 }
 .sugestoes-card label{display:block;font-weight:800;font-size:14px;margin:16px 0 6px;color:#1f2933;}
-.sugestoes-card input[type=text],.sugestoes-card input[type=email],.sugestoes-card textarea{
+.sugestoes-card input[type=text],.sugestoes-card input[type=email],.sugestoes-card input[type=tel],.sugestoes-card textarea{
     width:100%;box-sizing:border-box;border:1px solid #d6dde6;border-radius:14px;padding:13px 15px;font:inherit;font-size:16px;background:#fbfcfd;
 }
 .sugestoes-card textarea{min-height:170px;resize:vertical;}
@@ -139,7 +143,11 @@ require_once "includes/header.php";
                 <input type="text" id="sug-nome" name="nome" maxlength="150" required value="<?= htmlspecialchars($campos['nome']) ?>">
 
                 <label for="sug-email">Email *</label>
-                <input type="email" id="sug-email" name="email" maxlength="190" required value="<?= htmlspecialchars($campos['email']) ?>">
+                <input type="email" id="sug-email" name="email" maxlength="190" required autocomplete="email" value="<?= htmlspecialchars($campos['email']) ?>">
+
+                <label for="sug-telefone">Telemóvel *</label>
+                <input type="tel" id="sug-telefone" name="telefone" maxlength="20" required autocomplete="tel" inputmode="tel"
+                       placeholder="912 345 678" value="<?= htmlspecialchars($campos['telefone']) ?>">
 
                 <label for="sug-assunto">Assunto *</label>
                 <input type="text" id="sug-assunto" name="assunto" maxlength="200" required value="<?= htmlspecialchars($campos['assunto']) ?>">
@@ -149,7 +157,7 @@ require_once "includes/header.php";
 
                 <label class="sugestoes-consent">
                     <input type="checkbox" name="consentimento" value="1" required>
-                    <span>Aceito que a Junta de Freguesia trate os dados indicados para responder a esta sugestão,
+                    <span>Aceito que a Junta de Freguesia trate os dados indicados (nome, email e telemóvel) para responder a esta sugestão,
                         nos termos da <a href="/politica-privacidade.php">política de privacidade</a>.</span>
                 </label>
 

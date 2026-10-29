@@ -46,6 +46,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 
     if(!in_array($tipo,['Externo','Interno'],true)||!$categoria||!$assunto||!$descricao) $erro="Preencha os campos obrigatórios (Tipo, Assunto, Categoria e Descrição).";
     if(!$erro && !isset($_POST['consentimento'])) $erro="Tem de autorizar o tratamento sigiloso dos dados.";
+    // Contactos opcionais (a denúncia pode ser anónima), mas se forem dados têm de ser válidos.
+    require_once __DIR__ . '/includes/validacao.php';
+    if(!$erro && $email!=='' && !emailValido($email)) $erro="O email indicado não é válido ou não existe.";
+    if(!$erro && $telefone!=='' && !telefoneValido($telefone)) $erro="Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
 
     if(!$erro){
         $anonima = ($nome==='' && $telefone==='' && $email==='') ? 1 : 0;
@@ -143,7 +147,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 
         <div class="dn-grid">
             <div><label class="dn-label"><?= te('denuncias.formulario.nome') ?></label><input type="text" name="nome" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
-            <div><label class="dn-label"><?= te('denuncias.formulario.telefone') ?></label><input type="text" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
+            <div><label class="dn-label"><?= te('denuncias.formulario.telefone') ?></label><input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
             <div><label class="dn-label"><?= te('denuncias.formulario.email') ?></label><input type="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
         </div>
 

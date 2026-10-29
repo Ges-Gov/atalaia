@@ -113,10 +113,11 @@ if (isset($pdo)) {
             <nav class="rodape__col" aria-label="Junta Virtual e ligações úteis">
                 <h3 class="rodape__titulo">Junta Virtual</h3>
                 <ul class="rodape__links">
-                    <li><a href="/pedidos.php">Pedidos à Junta</a></li>
+                    <li><a href="/pedidos.php">Ocorrências</a></li>
+                    <li><a href="/sugestoes.php">Sugestões</a></li>
                     <?php /* Balcão Virtual temporariamente oculto: <li><a href="/minha-area.php">Balcão Virtual</a></li> */ ?>
-                    <li><a href="/requerimentos.php">Requerimentos</a></li>
-                    <li><a href="/marcacoes.php">Marcações</a></li>
+                    <?php /* Requerimentos desativados (30/10/2026): <li><a href="/requerimentos.php">Requerimentos</a></li> */ ?>
+                    <li><a href="/marcacoes.php">Marcações e requisições</a></li>
                     <li><a href="/livro-reclamacoes.php">Livro de Reclamações</a></li>
                 </ul>
                 <h3 class="rodape__titulo rodape__titulo--sub">Ligações úteis</h3>

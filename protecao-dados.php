@@ -15,8 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aceita = isset($_POST['aceita_politica']) ? 1 : 0;
     $autoriza = isset($_POST['autoriza_resposta']) ? 1 : 0;
 
+    require_once __DIR__ . '/includes/validacao.php';
     if (!$nome || !$email || !$mensagem) {
         $erro = "Preencha todos os campos obrigatórios.";
+    } elseif (!emailValido($email)) {
+        $erro = "Indique um email válido e que exista, para lhe podermos responder.";
     } elseif (!$aceita || !$autoriza) {
         $erro = "Tem de aceitar a política de privacidade e autorizar o envio dos dados para resposta.";
     } else {

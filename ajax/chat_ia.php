@@ -153,9 +153,9 @@ $contexto .= "Contacto geral: email " . ($config['email'] ?? '') . ", telefone "
 // Sem isto, o assistente não sabe que existem e diz "não disponível"
 // para perguntas sobre políticas, DPO, acessibilidade, etc.
 $contexto .= "Páginas fixas do site (usa o link exato quando a pergunta corresponder):\n";
-$contexto .= "- Pedidos à Junta: /pedidos.php\n";
-$contexto .= "- Requerimentos: /requerimentos.php\n";
-$contexto .= "- Marcações: /marcacoes.php\n";
+$contexto .= "- Ocorrências (comunicar um problema na freguesia: buraco, iluminação, lixo…): /pedidos.php\n";
+$contexto .= "- Sugestões (ideias e sugestões para a Junta): /sugestoes.php\n";
+$contexto .= "- Marcações e requisições (agendar atendimento, requisitar ou alugar um espaço ou equipamento): /marcacoes.php\n";
 $contexto .= "- Livro de Reclamações: /livro-reclamacoes.php\n";
 $contexto .= "- Transparência: /transparencia.php\n";
 $contexto .= "- Notícias: /noticias.php\n";

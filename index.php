@@ -788,11 +788,12 @@ $proxEmail = siteConfig('email', '');
                 <p><?= te('inicio.proximidade.voz_texto') ?></p>
                 <div class="prox-voz__acoes">
                     <?php if ($proxEmail !== ''): ?>
-                        <a class="prox-acao" href="mailto:<?= htmlspecialchars($proxEmail) ?>?subject=<?= rawurlencode('Sugestão para a Junta de Freguesia') ?>">
-                            <i class="bi bi-envelope-fill" aria-hidden="true"></i> <?= te('inicio.proximidade.voz_botao1') ?>
-                        </a>
                         <span class="prox-voz__email"><?= htmlspecialchars($proxEmail) ?></span>
                     <?php endif; ?>
+                    <?php /* 30/10/2026: «Enviar sugestão» abre o formulário de Sugestões (antes abria o programa de email) */ ?>
+                    <a class="prox-acao" href="/sugestoes.php">
+                        <i class="bi bi-lightbulb-fill" aria-hidden="true"></i> <?= te('inicio.proximidade.voz_botao1') ?>
+                    </a>
                     <a class="prox-acao prox-acao--secundaria" href="/pedidos.php">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> <?= te('inicio.proximidade.voz_botao2') ?>
                     </a>

@@ -200,7 +200,7 @@ $estadoAtualLabel = estadoMarcacaoLabel($marcacao['estado']);
         <span class="exec-kicker">Agenda Executiva Digital</span>
         <h2><?= htmlspecialchars($marcacao['assunto']) ?></h2>
         <p>
-            Pedido de atendimento de <?= htmlspecialchars($marcacao['nome']) ?>.
+            <?= (($marcacao['tipo_pedido'] ?? 'atendimento') === 'requisicao') ? 'Pedido de requisição' : 'Pedido de atendimento' ?> de <?= htmlspecialchars($marcacao['nome']) ?>.
             Defina responsável, data oficial, hora e estado da marcação.
         </p>
     </div>
@@ -221,7 +221,18 @@ $estadoAtualLabel = estadoMarcacaoLabel($marcacao['estado']);
             <div class="exec-info-row"><strong>Munícipe</strong><span><?= htmlspecialchars($marcacao['nome']) ?></span></div>
             <div class="exec-info-row"><strong>Email</strong><span><?= htmlspecialchars($marcacao['email']) ?></span></div>
             <div class="exec-info-row"><strong>Telefone</strong><span><?= htmlspecialchars($marcacao['telefone'] ?? '-') ?></span></div>
-            <div class="exec-info-row"><strong>Assunto</strong><span><?= htmlspecialchars($marcacao['assunto']) ?></span></div>
+            <?php if (($marcacao['tipo_pedido'] ?? 'atendimento') === 'requisicao'): ?>
+                <div class="exec-info-row"><strong>Tipo de pedido</strong><span><i class="bi bi-box-seam"></i> Requisição / aluguer</span></div>
+                <div class="exec-info-row"><strong>Espaço ou equipamento</strong><span><?= htmlspecialchars($marcacao['recurso'] ?? '') ?></span></div>
+                <?php if (!empty($marcacao['hora_fim'])): ?>
+                    <div class="exec-info-row"><strong>Período pedido</strong><span><?= substr($marcacao['hora_marcacao'], 0, 5) ?>–<?= substr($marcacao['hora_fim'], 0, 5) ?></span></div>
+                <?php endif; ?>
+                <?php if (!empty($marcacao['num_pessoas'])): ?>
+                    <div class="exec-info-row"><strong>N.º de pessoas</strong><span><?= (int)$marcacao['num_pessoas'] ?></span></div>
+                <?php endif; ?>
+            <?php else: ?>
+                <div class="exec-info-row"><strong>Assunto</strong><span><?= htmlspecialchars($marcacao['assunto']) ?></span></div>
+            <?php endif; ?>
             <div class="exec-info-row"><strong>Data pretendida/atual</strong><span><?= date('d/m/Y', strtotime($marcacao['data_marcacao'])) ?></span></div>
             <div class="exec-info-row"><strong>Hora pretendida/atual</strong><span><?= substr($marcacao['hora_marcacao'], 0, 5) ?></span></div>
             <div class="exec-info-row"><strong>Responsável atual</strong><span><?= htmlspecialchars($marcacao['responsavel'] ?: 'Ainda não definido') ?></span></div>
@@ -230,7 +241,7 @@ $estadoAtualLabel = estadoMarcacaoLabel($marcacao['estado']);
 
         <?php if (!empty($marcacao['mensagem'])): ?>
             <div class="exec-note">
-                <strong>Mensagem do munícipe:</strong><br>
+                <strong><?= (($marcacao['tipo_pedido'] ?? 'atendimento') === 'requisicao') ? 'Finalidade indicada pelo munícipe:' : 'Mensagem do munícipe:' ?></strong><br>
                 <?= nl2br(htmlspecialchars($marcacao['mensagem'])) ?>
             </div>
         <?php endif; ?>

@@ -7463,6 +7463,11 @@ body .premium-list-block .premium-horizontal-list{ grid-template-columns: minmax
 :root[data-tema="escuro"] body .links-uteis__item:hover,
 :root[data-tema="escuro"] body .links-uteis__item:focus-visible{ background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12); }
 :root[data-tema="escuro"] body .links-uteis__item:is(:hover, :focus-visible) .links-uteis__logo--branco{ opacity: 1; }
+/* 30/10/2026: ao passar o rato volta o logótipo a cores (numa pastilha clara, para os escuros se lerem);
+   os logótipos «cheios» não têm versão branca (includes/logos.php) e ficam sempre a cores. */
+:root[data-tema="escuro"] body .links-uteis__item:is(:hover, :focus-visible):has(.links-uteis__logo--branco) .links-uteis__logo--branco{ display: none; }
+:root[data-tema="escuro"] body .links-uteis__item:is(:hover, :focus-visible):has(.links-uteis__logo--branco) .links-uteis__logo:not(.links-uteis__logo--branco){ display: block; background: #fff; border-radius: 8px; box-shadow: 0 0 0 6px #fff; filter: none; opacity: 1; }
+:root[data-tema="escuro"] body .links-uteis__item:not(:has(.links-uteis__logo--branco)) img{ filter: none; opacity: .92; }
 @media (max-width: 560px){
     .links-uteis__lista{ gap: 4px 6px; }
     .links-uteis__item{ height: 76px; padding: 10px 12px; }
@@ -9714,3 +9719,17 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
     .hero-slide[data-img-movel]{ background-image:var(--img-movel) !important; }
     .hero-slide[data-pos-movel]{ background-position:var(--pos-movel) !important; }
 }
+
+/* Modo escuro (30/10/2026): formulário de Sugestões (cartão branco com letra branca), opções das Marcações
+   e botões dourados do topo — o texto ficava ilegível. */
+:root[data-tema="escuro"] body .sugestoes-card{ background: var(--escuro-superficie); border: 1px solid var(--escuro-borda); box-shadow: 0 22px 50px rgba(0,0,0,.35); }
+:root[data-tema="escuro"] body .sugestoes-card label{ color: var(--escuro-texto); }
+:root[data-tema="escuro"] body .sugestoes-card :is(input[type=text], input[type=email], input[type=tel], textarea){ background: var(--escuro-superficie-2); border-color: var(--escuro-borda); color: var(--escuro-texto); }
+:root[data-tema="escuro"] body .sugestoes-card :is(input, textarea)::placeholder{ color: var(--escuro-texto-2); opacity: .75; }
+:root[data-tema="escuro"] body .sugestoes-consent{ color: var(--escuro-texto-2); }
+:root[data-tema="escuro"] body .sugestoes-card a{ color: color-mix(in srgb, var(--cor-secundaria) 75%, #fff); }
+:root[data-tema="escuro"] body .marcacoes-tipo legend{ color: var(--escuro-texto); }
+:root[data-tema="escuro"] body .marcacoes-tipo__op span{ background: var(--escuro-superficie); border-color: var(--escuro-borda); color: var(--escuro-texto); }
+:root[data-tema="escuro"] body .marcacoes-tipo__op input:checked + span{ background: color-mix(in srgb, var(--cor-principal) 35%, var(--escuro-superficie)); border-color: color-mix(in srgb, var(--cor-principal) 60%, #fff); color: #fff; }
+:root[data-tema="escuro"] body .hero-slider .hero-actions a.hero-btn:not(.hero-btn-outline){ color: #11151B; }
+@media (min-width: 851px){ :root[data-tema="escuro"] body .hero-slider .hero-actions a.hero-btn-outline{ color: #11151B; } }

@@ -386,7 +386,6 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
                     </div>
                 <?php endif; ?>
                 <div class="hero-overlay">
-                    <span><?= te('inicio.topo.etiqueta') ?></span>
                     <?php if ($i === 0): ?>
                         <h1><?= htmlspecialchars($slide['titulo'] ?? '') ?></h1>
                     <?php else: ?>
@@ -438,7 +437,6 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
     <?php else: ?>
         <div class="hero-slide active" style="background:var(--cor-principal);">
             <div class="hero-overlay">
-                <span><?= te('inicio.topo.etiqueta') ?></span>
                 <h1><?= htmlspecialchars($home['hero_titulo']) ?></h1>
                 <p><?= htmlspecialchars($home['hero_subtitulo']) ?></p>
             </div>

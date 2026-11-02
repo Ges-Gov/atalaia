@@ -1,0 +1,16 @@
+{
+ "_fonte": "02/11/2026: o atalho «Editais e Documentos» da página inicial levava aos documentos da Assembleia; passa aos Documentos da Freguesia",
+ "atualizar": [
+  {
+   "tabela": "cartoes_site",
+   "onde": [
+    "titulo",
+    "Editais e Documentos"
+   ],
+   "so_se_existir": true,
+   "valores": {
+    "link": "/freguesia-documentos.php"
+   }
+  }
+ ]
+}

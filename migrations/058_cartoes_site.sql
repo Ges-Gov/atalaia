@@ -32,7 +32,7 @@ SET @vazia := (SELECT COUNT(*) = 0 FROM cartoes_site);
 INSERT INTO cartoes_site (grupo, titulo, texto, icone, link, ordem)
 SELECT * FROM (
     SELECT 'atalhos' AS g, 'Comunicar Ocorrência' AS t, 'Buracos, iluminação, limpeza' AS x, 'bi-exclamation-triangle-fill' AS i, '/pedidos.php' AS l, 1 AS o
-    UNION ALL SELECT 'atalhos', 'Editais e Documentos', 'Atas, editais e informação oficial', 'bi-file-earmark-text-fill', '/assembleia-documentos.php', 2
+    UNION ALL SELECT 'atalhos', 'Editais e Documentos', 'Atas, editais e informação oficial', 'bi-file-earmark-text-fill', '/freguesia-documentos.php', 2
     UNION ALL SELECT 'atalhos', 'Executivo e Assembleia', 'Quem representa a freguesia', 'bi-people-fill', '/executivo.php', 3
     UNION ALL SELECT 'atalhos', 'Pontos de Interesse', 'Património e locais a visitar', 'bi-geo-alt-fill', '/pontos.php', 4
     UNION ALL SELECT 'atalhos', 'Contactos', 'Telefone, email e horário', 'bi-telephone-fill', '/contactos.php', 5

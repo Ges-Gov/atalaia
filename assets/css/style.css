@@ -7096,6 +7096,19 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
     color: rgba(231,234,238,.82);
 }
 .rodape__creditos a{ font-weight: 600; }
+/* «Powered by» com o logótipo GesGov (02/11/2026): duas máscaras — o «Ges» e a barra (destaque) e o resto.
+   Parado, tudo na cor do texto do rodapé; ao passar o rato, o resto fica branco e o destaque na cor secundária do site. */
+.rodape__powered{ display: inline-flex; align-items: center; gap: 10px; }
+.rodape__gesgov{ display: inline-flex; align-items: center; color: inherit; }
+.rodape__gesgov-logo{ position: relative; display: block; width: 80px; aspect-ratio: 301 / 120; }
+.rodape__gesgov-logo::before,
+.rodape__gesgov-logo::after{ content: ""; position: absolute; inset: 0; background-color: currentColor; opacity: .85;
+    transition: background-color var(--dur-2, .2s) ease, opacity var(--dur-2, .2s) ease;
+    -webkit-mask: var(--gg-mascara) center / contain no-repeat; mask: var(--gg-mascara) center / contain no-repeat; }
+.rodape__gesgov-logo::before{ --gg-mascara: url("/assets/img/gesgov-marca-resto.png"); }
+.rodape__gesgov-logo::after{ --gg-mascara: url("/assets/img/gesgov-marca-destaque.png"); }
+.rodape__gesgov:is(:hover, :focus-visible) .rodape__gesgov-logo::before{ background-color: #fff; opacity: 1; }
+.rodape__gesgov:is(:hover, :focus-visible) .rodape__gesgov-logo::after{ background-color: var(--cor-secundaria); opacity: 1; }
 .rodape__reservada{ justify-self: end; display: inline-flex; align-items: center; gap: 6px; }
 @media (max-width: 1000px){
     .rodape__grelha{ grid-template-columns: 1fr 1fr; }

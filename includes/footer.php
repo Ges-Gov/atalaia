@@ -167,7 +167,7 @@ if (isset($pdo)) {
             </nav>
             <div class="rodape__creditos">
                 <span><?= htmlspecialchars(siteConfig('footer', '© ' . date('Y') . ' ' . siteConfig('nome_site', 'Junta de Freguesia'))) ?></span>
-                <span>Powered by <a href="https://www.gesgov.pt" target="_blank" rel="noopener">GesGov</a></span>
+                <span class="rodape__powered">Powered by <a class="rodape__gesgov" href="https://www.gesgov.pt" target="_blank" rel="noopener" aria-label="GesGov — Soluções Integradas para Autarquias" title="GesGov — Soluções Integradas para Autarquias"><span class="rodape__gesgov-logo" aria-hidden="true"></span></a></span>
                 <a class="rodape__reservada" href="/admin/login.php"><i class="bi bi-lock-fill" aria-hidden="true"></i> Área reservada</a>
             </div>
         </div>

@@ -212,7 +212,7 @@ foreach ($contactos as $c) {
                     <?php endforeach; ?>
                 </select></div>
         </div>
-        <fieldset class="horario-junta">
+        <fieldset class="horario-junta" id="horario-junta">
             <legend>Horário de atendimento da Junta</legend>
             <div class="horario-junta__linha"><span>Manhã</span>
                 <label>abre às <input type="time" name="hor_m_ini" value="<?= $horCampos['m_ini'] ?>"></label>

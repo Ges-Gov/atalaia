@@ -42,6 +42,8 @@ function menuAdminDefinicao(array $badges = []): array
              'dica' => 'Atalhos do topo, Serviços, «Perto de quem precisa», «Descobrir» e destaques do Bem-vindo: criar, mudar, ordenar e esconder'],
             ['chave' => 'homepage', 'rotulo' => 'Textos da página inicial', 'href' => 'homepage.php', 'icone' => 'bi-fonts', 'site' => '/',
              'dica' => 'Boas-vindas, mensagem do Presidente, chamada final e outros textos da página inicial'],
+            ['chave' => 'horario_atendimento', 'rotulo' => 'Horário de atendimento', 'href' => 'contactos.php#horario-junta', 'icone' => 'bi-clock', 'site' => '/',
+             'dica' => 'Dias e horas de atendimento da Junta: o indicador «Aberto/Fechado», o rodapé e a página Contactos (02/11/2026)'],
             ['chave' => 'galeria-albuns', 'rotulo' => 'Galeria de fotos', 'href' => 'galeria-albuns.php', 'icone' => 'bi-images', 'site' => '/galeria.php',
              'rel' => ['galeria-album.php'], 'dica' => 'Álbuns de fotografias (a apresentação da página inicial usa estes álbuns)'],
             ['chave' => 'links_uteis', 'rotulo' => 'Links úteis', 'href' => 'links-uteis.php', 'icone' => 'bi-link-45deg', 'site' => '/',

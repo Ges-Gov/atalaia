@@ -64,14 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             email = ?,
             telefone = ?,
             morada = ?,
-            horario = ?,
             facebook = ?,
             instagram = ?,
-            youtube = ?,
-            x_twitter = ?,
-            tiktok = ?,
-            linkedin = ?,
-            whatsapp = ?,
             email_notificacoes = ?,
             logo = ?,
             cor_principal = ?,
@@ -89,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['email'] ?? '',
         $_POST['telefone'] ?? '',
         $_POST['morada'] ?? '',
-        $_POST['horario'] ?? '',
         $_POST['facebook'] ?? '',
         $_POST['instagram'] ?? '',
         $_POST['email_notificacoes'] ?? '',
@@ -98,8 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cor_secundaria,
         $_POST['footer'] ?? '',
         isset($_POST['alertas_ativos']) ? 1 : 0,
+        trim($_POST['dominio'] ?? ($configuracoes['dominio'] ?? '')),
         $configuracoes['id']
-    ]);
+    ]);   // 02/11/2026: os campos batiam errado (22 vs 16) e nada se gravava; redes sociais gravadas à parte, abaixo
 
     // Mais redes sociais (migração 041, redesign 10/2026). À parte, para não falhar o resto num site sem a 041.
     try {
@@ -156,7 +150,7 @@ require_once "includes/header.php";
 
     <textarea name="morada" placeholder="Morada"><?= htmlspecialchars($configuracoes['morada'] ?? '') ?></textarea>
 
-    <textarea name="horario" placeholder="Horário de funcionamento"><?= htmlspecialchars($configuracoes['horario'] ?? '') ?></textarea>
+    <p class="cfg-nota"><i class="bi bi-clock"></i> O <strong>horário de atendimento</strong> muda-se em <a href="contactos.php">Contactos</a> — é o único sítio, e vale para todo o site.</p>
 
     <input type="email" name="email_notificacoes" placeholder="Email para notificações internas" value="<?= htmlspecialchars($configuracoes['email_notificacoes'] ?? '') ?>">
 

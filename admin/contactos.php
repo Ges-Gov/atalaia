@@ -29,13 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bloco_texto = trim($_POST['bloco_texto'] ?? '');
         $mapa_embed = trim($_POST['mapa_embed'] ?? '');
         $horario_titulo = trim($_POST['horario_titulo'] ?? '');
-        $horario_texto = trim($_POST['horario_texto'] ?? '');
+        $horario_junta = trim($_POST['horario_junta'] ?? '');
+        $horario_texto = $horario_junta;   // 02/11/2026: um só horário (configuracoes_site.horario); este fica igual por compatibilidade
 
         if (!$hero_titulo) {
             $erro = "O título principal é obrigatório.";
         } else {
             $stmt = $pdo->prepare("UPDATE contactos_pagina_config SET hero_kicker=?, hero_titulo=?, hero_subtitulo=?, bloco_titulo=?, bloco_texto=?, mapa_embed=?, horario_titulo=?, horario_texto=?, atualizado_em=NOW() WHERE id=?");
             $stmt->execute([$hero_kicker,$hero_titulo,$hero_subtitulo,$bloco_titulo,$bloco_texto,$mapa_embed,$horario_titulo,$horario_texto,$id]);
+            $pdo->prepare("UPDATE configuracoes_site SET horario = ?")->execute([$horario_junta]);
             $sucesso = "Conteúdo principal atualizado.";
         }
     }
@@ -85,6 +87,15 @@ if (isset($_GET['toggle'])) {
 }
 
 $config = getContactosConfig($pdo);
+
+// horário da Junta: um só, em configuracoes_site.horario (02/11/2026) — e o que o site percebe dele
+$horarioJunta = (string)($pdo->query("SELECT horario FROM configuracoes_site LIMIT 1")->fetchColumn() ?: '');
+require_once __DIR__ . '/../includes/hoje.php';
+$horarioLido = '';
+if (($hj = horarioJunta($horarioJunta)) !== null) {
+    $nomesDias = [1 => 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo'];
+    $horarioLido = $nomesDias[$hj['dias'][0]] . ' a ' . $nomesDias[end($hj['dias'])] . ', ' . implode(' · ', array_map(fn($i) => horaTexto($i[0]) . '–' . horaTexto($i[1]), $hj['intervalos']));
+}
 
 $editar = null;
 if (isset($_GET['editar'])) {
@@ -162,7 +173,9 @@ foreach ($contactos as $c) {
         </div>
         <div class="contact-form-grid">
             <div><label>Título horário</label><input type="text" name="horario_titulo" value="<?= htmlspecialchars($config['horario_titulo'] ?? '') ?>"></div>
-            <div><label>Texto horário</label><textarea name="horario_texto"><?= htmlspecialchars($config['horario_texto'] ?? '') ?></textarea></div>
+            <div><label>Horário de atendimento da Junta</label><textarea name="horario_junta" rows="3" placeholder="Segunda a sexta-feira: 09h00-13h00 e 14h00-17h00"><?= htmlspecialchars($horarioJunta) ?></textarea>
+                <small class="contact-ajuda">É o <strong>único sítio</strong> onde se muda o horário: vale para o rodapé, a página inicial, esta página e o indicador «Aberto/Fechado». Escreva as horas assim: <em>09h00-13h00 e 14h00-17h00</em>.<br>
+                <?php if ($horarioLido): ?>O site entende: <strong><?= htmlspecialchars($horarioLido) ?></strong><?php else: ?><span style="color:#b45309">O site não reconhece horas neste texto — o indicador «Aberto/Fechado» não aparece.</span><?php endif; ?></small></div>
         </div>
         <div><label>Google Maps iframe/embed</label><textarea name="mapa_embed" placeholder="<iframe ...></iframe>"><?= htmlspecialchars($config['mapa_embed'] ?? '') ?></textarea></div>
         <div class="contact-actions"><button class="btn" type="submit">Guardar conteúdo principal</button></div>

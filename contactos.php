@@ -26,6 +26,7 @@ try {
     $row = $pdo->query("SELECT * FROM contactos_pagina_config WHERE ativo = 1 ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
     if ($row) $configContactos = array_merge($configContactos, array_filter($row, fn($v) => $v !== null));
 } catch (Exception $e) {}
+if (trim((string)siteConfig('horario', '')) !== '') $configContactos['horario_texto'] = siteConfig('horario');   // um só horário (02/11/2026)
 
 /* ---------- 2. Formulário: tratar o envio (padrão POST → redirect → GET) ---------- */
 $assuntosContacto = ['Pedido de informação', 'Sugestão', 'Reclamação', 'Atendimento / marcação', 'Outro assunto'];

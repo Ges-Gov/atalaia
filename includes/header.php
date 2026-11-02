@@ -102,7 +102,7 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261102">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261102b">
     <link rel="stylesheet" href="/assets/css/tema-escuro.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/compat-redesign.css?v=20261020r">
@@ -110,6 +110,9 @@ if (!empty($_SESSION['cidadao_id'])) {
 
 <?php $faviconFich = temaConfig('favicon', '') !== '' ? temaConfig('favicon') : siteConfig('logo', ''); ?>
 <?php require_once __DIR__ . '/favicon.php'; echo faviconLinks($faviconFich); /* ícones quadrados e /favicon.ico gerados do brasão (02/11/2026) */ ?>
+<?php $logoEscala = (float)str_replace(',', '.', temaConfig('logo_escala', '1')); if ($logoEscala >= 0.5 && $logoEscala <= 2 && $logoEscala != 1): /* tema_config.logo_escala: tamanho do logótipo no cabeçalho (02/11/2026) */ ?>
+    <style>:root{--logo-escala:<?= $logoEscala ?>}</style>
+<?php endif; ?>
 
 
 <?php

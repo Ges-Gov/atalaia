@@ -6043,7 +6043,7 @@ body.header-sobre-escuro .site-header .header-inner{
     border-color: rgba(255, 255, 255, .1);
     box-shadow: 0 10px 34px -14px rgba(0, 0, 0, .7);
 }
-body .site-header .header-inner .brand img{ height: 46px !important; }
+body .site-header .header-inner .brand img{ height: calc(46px * var(--logo-escala, 1)) !important; }
 body .site-header .header-inner .brand strong{ font-size: 15.5px; font-weight: 700; line-height: 1.25; }   /* 13/10/2026: linhas do nome mais juntas */
 body .site-header .header-inner .brand small{ font-size: 12.5px; font-weight: 400; }
 /* 13/10/2026, a pedido: no computador a pílula é mais alta (mais espaço vertical, mesmos textos),
@@ -6054,7 +6054,7 @@ body .site-header .header-inner .brand small{ font-size: 12.5px; font-weight: 40
         width: min(1520px, calc(100% - 40px));
         padding: 12px 14px 12px 22px;
     }
-    body .site-header .header-inner .brand img{ height: 56px !important; }
+    body .site-header .header-inner .brand img{ height: calc(56px * var(--logo-escala, 1)) !important; }
 }
 
 /* Brasão: entrada suave na 1.ª página da visita (classe posta pelo app.js) e brilho no hover */

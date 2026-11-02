@@ -109,10 +109,7 @@ if (!empty($_SESSION['cidadao_id'])) {
     <link rel="stylesheet" href="/assets/vendor/bootstrap-icons/bootstrap-icons.min.css?v=1.11.3"><?php /* ícones servidos pelo próprio site (antes da CDN jsdelivr) */ ?>
 
 <?php $faviconFich = temaConfig('favicon', '') !== '' ? temaConfig('favicon') : siteConfig('logo', ''); ?>
-<?php if ($faviconFich !== ''): ?>
-    <link rel="icon" type="image/png" sizes="180x180" href="/assets/img/<?= htmlspecialchars($faviconFich) ?>">
-    <link rel="apple-touch-icon" href="/assets/img/<?= htmlspecialchars($faviconFich) ?>">
-<?php endif; ?>
+<?php require_once __DIR__ . '/favicon.php'; echo faviconLinks($faviconFich); /* ícones quadrados e /favicon.ico gerados do brasão (02/11/2026) */ ?>
 
 
 <?php

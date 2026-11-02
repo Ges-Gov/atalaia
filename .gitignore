@@ -9,3 +9,6 @@ deploy/*.zip
 assets/img/miniaturas/
 assets/img/links/*-branco.png
 cache/
+# ícones gerados do brasão por includes/favicon.php (02/11/2026)
+/favicon.ico
+assets/img/favicon/

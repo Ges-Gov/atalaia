@@ -162,6 +162,7 @@ if (isset($pdo)) {
                 <a href="/politica-cookies.php">Política de Cookies</a>
                 <a href="/protecao-dados.php">Proteção de Dados (DPO)</a>
                 <a href="/declaracao-acessibilidade.php">Acessibilidade</a>
+                <a href="/creditos.php">Créditos das imagens</a>
                 <a href="/canal-denuncias.php">Canal de Denúncias</a>
                 <a href="/livro-reclamacoes.php">Livro de Reclamações</a>
             </nav>

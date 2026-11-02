@@ -1425,6 +1425,18 @@ return [
             'declaracao_acessibilidade.ponto6.texto3' => ['Texto (final)', 'monitorização —'],
         ],
     ],
+    'creditos' => [
+        'rotulo' => 'Créditos das imagens', 'url' => '/creditos.php', 'icone' => 'bi-camera',
+        'seccoes' => ['hero' => 'Topo da página', 'intro' => 'Introdução', 'contacto' => 'Pedido de correção', 'vazio' => 'Sem créditos'],
+        'campos' => [
+            'creditos.hero.kicker' => ['Etiqueta por cima do título', 'Créditos'],
+            'creditos.hero.titulo' => ['Título', 'Créditos das imagens'],
+            'creditos.hero.subtitulo' => ['Texto por baixo do título', 'Autoria e licença das fotografias e imagens de terceiros usadas neste site.', 'texto'],
+            'creditos.intro.texto' => ['Texto de introdução', 'Respeitamos os direitos de autor de quem fotografa. As imagens de terceiros publicadas neste site são usadas com autorização ou ao abrigo da respetiva licença, e o seu autor ou titular fica identificado abaixo.', 'texto'],
+            'creditos.contacto.texto' => ['Texto do pedido de correção (antes do email)', 'Se é autor ou titular de uma imagem deste site e ela não está corretamente identificada, ou se não autorizou a sua utilização, contacte-nos e corrigimos ou retiramos a imagem:', 'texto'],
+            'creditos.vazio.texto' => ['Mensagem quando ainda não há créditos', 'Ainda não há imagens de terceiros registadas nesta página.'],
+        ],
+    ],
     'protecao_dados' => [
         'rotulo' => 'Proteção de dados (EPD)', 'url' => '/protecao-dados.php', 'icone' => 'bi-shield-lock',
         'seccoes' => ['hero' => 'Topo da página', 'intro' => 'Caixa de introdução', 'formulario' => 'Formulário', 'direitos' => 'Os seus direitos'],

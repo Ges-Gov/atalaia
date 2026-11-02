@@ -322,7 +322,7 @@ function miniaturaImagem(string $src, int $largura = 240): string
     $raiz = realpath(__DIR__ . '/..');
     $orig = $raiz . $src;
     if (!function_exists('imagecreatetruecolor') || !is_file($orig)) return $src;
-    $nome = substr(md5($src), 0, 12) . '-' . $largura . '.jpg';
+    $nome = substr(md5($src), 0, 12) . '-' . $largura . 'o.jpg';   // «o» (02/11/2026): já com a orientação EXIF aplicada
     $dest = $raiz . '/assets/img/miniaturas/' . $nome;
     $url = '/assets/img/miniaturas/' . $nome;
     if (is_file($dest) && filemtime($dest) >= filemtime($orig)) return $url;
@@ -336,10 +336,15 @@ function miniaturaImagem(string $src, int $largura = 240): string
         default        => false,
     };
     if (!$img) return $src;
-    $alt = max(1, (int)round($info[1] * $largura / $info[0]));
+    // fotos do telemóvel/digitalizações «deitadas» trazem a rotação na marca EXIF (o GD ignora-a): aplica-a aqui
+    $rodar = ['3' => 180, '6' => 270, '8' => 90][(string)(($info[2] === IMAGETYPE_JPEG && function_exists('exif_read_data')) ? (@exif_read_data($orig)['Orientation'] ?? '') : '')] ?? 0;
+    if ($rodar && ($r = imagerotate($img, $rodar, 0))) { imagedestroy($img); $img = $r; }
+    $w = imagesx($img); $h = imagesy($img);
+    if ($w <= $largura) { imagedestroy($img); return $src; }
+    $alt = max(1, (int)round($h * $largura / $w));
     $mini = imagecreatetruecolor($largura, $alt);
     imagefill($mini, 0, 0, imagecolorallocate($mini, 255, 255, 255));
-    imagecopyresampled($mini, $img, 0, 0, 0, 0, $largura, $alt, $info[0], $info[1]);
+    imagecopyresampled($mini, $img, 0, 0, 0, 0, $largura, $alt, $w, $h);
     if (!is_dir(dirname($dest))) @mkdir(dirname($dest), 0755, true);
     $ok = @imagejpeg($mini, $dest, 78);
     imagedestroy($img);

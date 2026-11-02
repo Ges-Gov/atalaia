@@ -3,6 +3,7 @@ require_once "includes/auth.php";
 require_once "../includes/db.php";
 require_once "../includes/galeria.php";
 require_once "../includes/categorias.php";
+require_once "../includes/eventos_campos.php";
 
 $errosFotos = [];
 
@@ -61,18 +62,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventoId = (int)$pdo->lastInsertId();
 
     // Campos extra da inscrição, criados já nesta página (sem precisar de guardar
-    // o evento primeiro): arrays paralelos vindos das linhas dinâmicas do formulário.
-    $camposLabel = $_POST['campo_extra_label'] ?? [];
-    $camposTipo = $_POST['campo_extra_tipo'] ?? [];
-    $camposObrigatorio = $_POST['campo_extra_obrigatorio'] ?? [];
-    $insCampo = $pdo->prepare("INSERT INTO eventos_campos_extra (evento_id, label, tipo, obrigatorio, ordem) VALUES (?, ?, ?, ?, ?)");
+    // o evento primeiro): uma entrada campo_extra[n][...] por linha dinâmica do formulário.
+    // Uma «escolha» sem opções fica como texto curto (o evento já está gravado; corrige-se em Campos extra).
+    $insCampo = $pdo->prepare("INSERT INTO eventos_campos_extra (evento_id, label, tipo, opcoes, obrigatorio, ordem) VALUES (?, ?, ?, ?, ?, ?)");
     $ordemCampo = 1;
-    foreach ($camposLabel as $i => $label) {
-        $label = trim($label);
+    foreach ((array)($_POST['campo_extra'] ?? []) as $linha) {
+        if (!is_array($linha)) continue;
+        [$label, $tipo, $opcoes, $erroCampo] = eventoCampoDefinicao($linha['label'] ?? '', $linha['tipo'] ?? '', $linha['opcoes'] ?? '');
         if ($label === '') continue;
-        $tipo = ($camposTipo[$i] ?? 'texto') === 'checkbox' ? 'checkbox' : 'texto';
-        $obrigatorio = isset($camposObrigatorio[$i]) ? 1 : 0;
-        $insCampo->execute([$eventoId, $label, $tipo, $obrigatorio, $ordemCampo++]);
+        if ($erroCampo) $tipo = 'texto';
+        $insCampo->execute([$eventoId, $label, $tipo, $opcoes, isset($linha['obrigatorio']) ? 1 : 0, $ordemCampo++]);
     }
 
     // Fotografias -> Galeria, num álbum com o título do evento. O álbum fica ligado
@@ -203,6 +202,16 @@ require_once "includes/header.php";
     font-size:13px;
     white-space:nowrap;
 }
+.campo-extra-linha textarea{
+    grid-column:1/-1;
+    border:1px solid #dbe4ee;
+    border-radius:10px;
+    padding:9px 11px;
+    font-weight:700;
+    font-family:inherit;
+    width:100%;
+    box-sizing:border-box;
+}
 @media(max-width:700px){.campo-extra-linha{grid-template-columns:1fr 1fr;}}
 </style>
 
@@ -286,7 +295,7 @@ require_once "includes/header.php";
 
         <div class="evento-campos-extra-builder">
             <strong>Campos extra (opcional)</strong>
-            <p style="color:#6b7280;font-weight:700;font-size:13px;margin:4px 0 10px;">Ex.: "Precisa de almoço?", "Restrição alimentar". Ficam gravados por cada inscrição e visíveis na lista de inscritos.</p>
+            <p style="color:#6b7280;font-weight:700;font-size:13px;margin:4px 0 10px;">Ex.: "Precisa de almoço?", "Restrição alimentar", "Em que paragem apanha o autocarro?". Pode ser texto curto ou longo, número, data, escolha numa lista, sim/não ou foto/ficheiro. Ficam gravados por cada inscrição e visíveis na lista de inscritos.</p>
             <div id="camposExtraLista"></div>
             <button type="button" class="btn secondary" id="btnAdicionarCampoExtra"><i class="bi bi-plus-lg"></i> Adicionar campo</button>
         </div>
@@ -324,30 +333,44 @@ require_once "includes/header.php";
 // por algum motivo, isto continua a funcionar de qualquer forma.
 document.addEventListener("DOMContentLoaded", function () {
     var lista = document.getElementById("camposExtraLista");
+    var tipos = <?= json_encode(EVENTO_CAMPO_TIPOS, JSON_UNESCAPED_UNICODE) ?>;
+    var n = 0;   // índice de cada linha: campo_extra[n][label|tipo|opcoes|obrigatorio]
     document.getElementById("btnAdicionarCampoExtra").addEventListener("click", function () {
         var linha = document.createElement("div");
         linha.className = "campo-extra-linha";
+        var prefixo = "campo_extra[" + (n++) + "]";
 
         var inputLabel = document.createElement("input");
         inputLabel.type = "text";
-        inputLabel.name = "campo_extra_label[]";
+        inputLabel.name = prefixo + "[label]";
         inputLabel.placeholder = 'Ex.: Precisa de almoço?';
 
         var selectTipo = document.createElement("select");
-        selectTipo.name = "campo_extra_tipo[]";
-        var optTexto = document.createElement("option");
-        optTexto.value = "texto";
-        optTexto.textContent = "Texto";
-        var optCheckbox = document.createElement("option");
-        optCheckbox.value = "checkbox";
-        optCheckbox.textContent = "Checkbox (sim/não)";
-        selectTipo.appendChild(optTexto);
-        selectTipo.appendChild(optCheckbox);
+        selectTipo.name = prefixo + "[tipo]";
+        Object.keys(tipos).forEach(function (valor) {
+            var opt = document.createElement("option");
+            opt.value = valor;
+            opt.textContent = tipos[valor];
+            selectTipo.appendChild(opt);
+        });
+
+        // Opções de uma «escolha»: só aparecem (e só são pedidas) quando é esse o tipo.
+        var opcoes = document.createElement("textarea");
+        opcoes.name = prefixo + "[opcoes]";
+        opcoes.rows = 3;
+        opcoes.placeholder = "Uma opção por linha. Ex.:\nParagem da igreja\nParagem do largo";
+        opcoes.className = "campo-extra-opcoes";
+        opcoes.hidden = true;
+        selectTipo.addEventListener("change", function () {
+            opcoes.hidden = selectTipo.value !== "escolha";
+            opcoes.required = !opcoes.hidden;
+            if (!opcoes.hidden) opcoes.focus();
+        });
 
         var labelObrigatorio = document.createElement("label");
         var inputObrigatorio = document.createElement("input");
         inputObrigatorio.type = "checkbox";
-        inputObrigatorio.name = "campo_extra_obrigatorio[]";
+        inputObrigatorio.name = prefixo + "[obrigatorio]";
         inputObrigatorio.style.width = "auto";
         labelObrigatorio.appendChild(inputObrigatorio);
         labelObrigatorio.appendChild(document.createTextNode(" Obrigatório"));
@@ -362,6 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
         linha.appendChild(selectTipo);
         linha.appendChild(labelObrigatorio);
         linha.appendChild(btnRemover);
+        linha.appendChild(opcoes);
         lista.appendChild(linha);
         inputLabel.focus();
     });

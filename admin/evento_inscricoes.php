@@ -1,6 +1,7 @@
 <?php
 require_once "includes/auth.php";
 require_once "../includes/db.php";
+require_once "../includes/eventos_campos.php";
 
 $id = (int)($_GET['id'] ?? 0);
 
@@ -13,6 +14,11 @@ if (!$evento) {
 }
 
 if (isset($_GET['apagar'])) {
+    // Os ficheiros enviados nesta inscrição (fotos/PDF) vão com ela.
+    $stmtExtra = $pdo->prepare("SELECT campos_extra FROM eventos_inscricoes WHERE id = ? AND evento_id = ?");
+    $stmtExtra->execute([(int)$_GET['apagar'], $id]);
+    eventoApagarFicheiros((array)json_decode((string)$stmtExtra->fetchColumn(), true));
+
     $del = $pdo->prepare("DELETE FROM eventos_inscricoes WHERE id = ? AND evento_id = ?");
     $del->execute([(int)$_GET['apagar'], $id]);
     header("Location: evento_inscricoes.php?id=" . $id);
@@ -43,7 +49,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     foreach ($rows as $r) {
         $extra = $r['campos_extra'] ? json_decode($r['campos_extra'], true) : [];
         $linha = [$r['nome'], $r['email'], $r['telefone'], $r['num_pessoas']];
-        foreach ($camposDef as $cd) $linha[] = $extra[$cd['id']] ?? '';
+        foreach ($camposDef as $cd) $linha[] = eventoRespostaTexto($extra[$cd['id']] ?? '');
         $linha[] = $r['observacoes'];
         $linha[] = date('d/m/Y H:i', strtotime($r['criado_em']));
         fputcsv($out, $linha);
@@ -111,14 +117,20 @@ require_once "includes/header.php";
                         foreach ($extraView as $campoId => $valor):
                             if (!isset($camposLabelPorId[$campoId]) || $valor === '') continue;
                         ?>
-                            <div><strong><?= htmlspecialchars($camposLabelPorId[$campoId]) ?>:</strong> <?= htmlspecialchars($valor) ?></div>
+                            <div><strong><?= htmlspecialchars($camposLabelPorId[$campoId]) ?>:</strong>
+                                <?php if (eventoFicheiroNome($valor) !== ''): ?>
+                                    <a href="evento_ficheiro.php?inscricao=<?= (int)$insc['id'] ?>&campo=<?= (int)$campoId ?>" target="_blank"><i class="bi bi-paperclip"></i> <?= htmlspecialchars(eventoRespostaTexto($valor)) ?></a>
+                                <?php else: ?>
+                                    <?= nl2br(htmlspecialchars(eventoRespostaTexto($valor))) ?>
+                                <?php endif; ?>
+                            </div>
                         <?php endforeach; ?>
                     </td>
                 <?php endif; ?>
                 <td><?= nl2br(htmlspecialchars($insc['observacoes'] ?? '')) ?></td>
                 <td><?= date('d/m/Y H:i', strtotime($insc['criado_em'])) ?></td>
                 <td>
-                    <a class="btn danger" href="evento_inscricoes.php?id=<?= (int)$id ?>&apagar=<?= (int)$insc['id'] ?>" onclick="return confirm('Cancelar esta inscrição?')">Cancelar</a>
+                    <a class="btn danger" href="evento_inscricoes.php?id=<?= (int)$id ?>&apagar=<?= (int)$insc['id'] ?>" onclick="return confirm('Cancelar esta inscrição? Os ficheiros que a pessoa enviou também são apagados.')">Cancelar</a>
                 </td>
             </tr>
         <?php endforeach; ?>

@@ -3,6 +3,7 @@ require_once "includes/db.php";
 require_once "includes/galeria.php";
 require_once "includes/config.php";
 require_once "includes/mail_helper.php";
+require_once "includes/eventos_campos.php";
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -53,23 +54,16 @@ if ($evento && !empty($evento['inscricoes_ativas']) && $_SERVER['REQUEST_METHOD'
         }
     }
 
-    // Campos extra deste evento (definidos no backoffice)
+    // Campos extra deste evento (definidos no backoffice; tipos em includes/eventos_campos.php)
     $respostasExtra = [];
     $htmlCamposExtra = '';
     if (!$inscricaoErro) {
+        [$respostasExtra, $inscricaoErro] = eventoCamposRespostas($camposExtraEvento);
         foreach ($camposExtraEvento as $campo) {
-            $nomeCampo = 'campo_' . $campo['id'];
-            if ($campo['tipo'] === 'checkbox') {
-                $valor = isset($_POST[$nomeCampo]) ? 'Sim' : 'Não';
-            } else {
-                $valor = trim($_POST[$nomeCampo] ?? '');
-                if ($campo['obrigatorio'] && $valor === '') {
-                    $inscricaoErro = "Preencha o campo \"" . $campo['label'] . "\".";
-                    break;
-                }
-            }
-            $respostasExtra[$campo['id']] = $valor;
-            $htmlCamposExtra .= "<p><strong>" . htmlspecialchars($campo['label']) . ":</strong> " . htmlspecialchars($valor) . "</p>";
+            if (!array_key_exists($campo['id'], $respostasExtra)) continue;
+            $valor = $respostasExtra[$campo['id']];
+            $htmlCamposExtra .= "<p><strong>" . htmlspecialchars($campo['label']) . ":</strong> " . htmlspecialchars(eventoRespostaTexto($valor))
+                . (is_array($valor) ? " <em>(ficheiro enviado — ver na lista de inscrições, no backoffice)</em>" : "") . "</p>";
         }
     }
 
@@ -248,8 +242,13 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 .evento-campo-checkbox{justify-content:flex-end;}
 .evento-campo-checkbox label{display:flex;align-items:center;gap:8px;font-weight:800;color:#11151B;font-size:15px;}
 .evento-campo-checkbox input[type=checkbox]{width:auto;flex-shrink:0;}
-.evento-inscricao-form input,.evento-inscricao-form textarea{border:1px solid #dbe4ee;background:#f8fafc;border-radius:14px;padding:12px 14px;font-weight:700;font-family:inherit;font-size:15px;color:#11151B;box-sizing:border-box;width:100%;}
+.evento-inscricao-form input,.evento-inscricao-form textarea,.evento-inscricao-form select{border:1px solid #dbe4ee;background:#f8fafc;border-radius:14px;padding:12px 14px;font-weight:700;font-family:inherit;font-size:15px;color:#11151B;box-sizing:border-box;width:100%;}
 .evento-inscricao-form textarea{min-height:80px;resize:vertical;}
+.evento-inscricao-form input[type=file]{padding:9px 12px;font-size:14px;}
+.evento-campo-largo{grid-column:1/-1;}
+.evento-campo-ajuda{color:#64748b;font-weight:700;font-size:12px;}
+:root[data-tema="escuro"] .evento-inscricao-form select{border:1px solid var(--escuro-borda);background:var(--escuro-superficie);color:var(--escuro-texto)}
+:root[data-tema="escuro"] .evento-campo-ajuda{color:var(--escuro-texto-2)}
 .evento-inscricao-erro{background:#fee2e2;color:#991b1b;padding:12px 14px;border-radius:12px;font-weight:800;margin-bottom:4px;}
 .evento-inscricao-sucesso{background:#dcfce7;color:#166534;padding:14px 16px;border-radius:14px;font-weight:800;display:flex;align-items:center;gap:9px;}
 .evento-inscricao-fechado{background:#f1f5f9;color:#475569;padding:14px 16px;border-radius:14px;font-weight:800;margin:0;}
@@ -344,7 +343,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                         <?php if ($inscricaoErro): ?>
                             <div class="evento-inscricao-erro"><?= htmlspecialchars($inscricaoErro) ?></div>
                         <?php endif; ?>
-                        <form method="POST" class="evento-inscricao-form" id="formInscricaoEvento">
+                        <form method="POST" class="evento-inscricao-form" id="formInscricaoEvento"<?= eventoCamposTemFicheiro($camposExtraEvento) ? ' enctype="multipart/form-data"' : '' ?>>
                             <input type="hidden" name="inscrever_evento" value="1">
                             <p class="evento-inscricao-nota"><?= te('evento.inscricoes.nota') ?></p>
                             <div class="evento-inscricao-grid">
@@ -365,21 +364,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                                     <input type="number" id="inscNumPessoas" name="num_pessoas" min="1" <?= $restantesView !== null ? 'max="' . $restantesView . '"' : '' ?> value="<?= htmlspecialchars($_POST['num_pessoas'] ?? '1') ?>">
                                 </div>
 
-                                <?php foreach ($camposExtraEvento as $campo): $nomeCampoView = 'campo_' . $campo['id']; ?>
-                                    <?php if ($campo['tipo'] === 'checkbox'): ?>
-                                        <div class="evento-campo evento-campo-checkbox">
-                                            <label>
-                                                <input type="checkbox" name="<?= $nomeCampoView ?>" <?= !empty($_POST[$nomeCampoView]) ? 'checked' : '' ?>>
-                                                <?= htmlspecialchars($campo['label']) ?><?= $campo['obrigatorio'] ? ' *' : '' ?>
-                                            </label>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="evento-campo">
-                                            <label for="<?= $nomeCampoView ?>"><?= htmlspecialchars($campo['label']) ?><?= $campo['obrigatorio'] ? ' *' : '' ?></label>
-                                            <input type="text" id="<?= $nomeCampoView ?>" name="<?= $nomeCampoView ?>" <?= $campo['obrigatorio'] ? 'required' : '' ?> value="<?= htmlspecialchars($_POST[$nomeCampoView] ?? '') ?>">
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                                <?php foreach ($camposExtraEvento as $campo) echo eventoCampoHtml($campo); ?>
                             </div>
                             <div class="evento-campo">
                                 <label for="inscObservacoes"><?= te('evento.inscricoes.campo_obs') ?></label>

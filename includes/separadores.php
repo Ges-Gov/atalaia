@@ -3,6 +3,8 @@
 // Geridos no backoffice em admin/separadores-fundo.php. Chave = nome do ficheiro .php sem extensão.
 
 $GLOBALS['SEPARADORES_FUNDO'] = [
+    // (03/11/2026) usado em todas as páginas abaixo que não tenham fundo próprio; sem ele, vale a 1.ª foto do slider
+    '_omissao'             => 'Por omissão (páginas sem fundo próprio)',
     'freguesia'            => 'A Freguesia',
     'historia'             => 'História',
     'heraldica'            => 'Heráldica',
@@ -48,6 +50,15 @@ $GLOBALS['SEPARADORES_FUNDO'] = [
     'politica-privacidade'     => 'Política de privacidade',
     'politica-cookies'         => 'Política de cookies',
     'declaracao-acessibilidade'=> 'Declaração de acessibilidade',
+    'creditos'                 => 'Créditos das imagens',
+    // (03/11/2026) páginas com banner que não estavam na lista (ficavam sempre com o degradê)
+    'sugestoes'                => 'Sugestões',
+    'ocorrencias-mapa'         => 'Mapa de ocorrências',
+    'ocorrencia'               => 'Ocorrência (detalhe)',
+    'pedido-detalhe'           => 'Pedido (detalhe)',
+    'repor-password'           => 'Repor palavra-passe',
+    'area-vogais'              => 'Área dos vogais',
+    'pagina'                   => 'Páginas de conteúdo (sem fundo próprio)',
 ];
 
 // Devolve o URL da imagem de fundo configurada para a página atual (ex.: "recursos-humanos.php"),
@@ -69,10 +80,26 @@ function fundoSeparadorImg($paginaAtual) {
     }
 
     $chave = preg_replace('/\.php$/', '', (string)$paginaAtual);
-    if (empty($mapa[$chave])) {
+    if (!empty($mapa[$chave])) {
+        return '/uploads/separadores/' . $mapa[$chave];
+    }
+    // Página da lista sem fundo próprio: o fundo por omissão ou, sem ele, a 1.ª foto do slider (em vez do degradê).
+    // Só para as páginas da lista — a página inicial, notícia, evento e ponto ficam como estão.
+    if ($chave === '_omissao' || !isset($GLOBALS['SEPARADORES_FUNDO'][$chave])) {
         return '';
     }
-    return '/uploads/separadores/' . $mapa[$chave];
+    if (!empty($mapa['_omissao'])) {
+        return '/uploads/separadores/' . $mapa['_omissao'];
+    }
+    static $slide = null;
+    if ($slide === null) {
+        try {
+            $slide = (string)$pdo->query("SELECT imagem FROM slides_homepage WHERE ativo = 1 AND imagem <> '' ORDER BY COALESCE(ordem, 999999), id LIMIT 1")->fetchColumn();
+        } catch (Exception $e) {
+            $slide = '';
+        }
+    }
+    return ($slide !== '' && is_file(__DIR__ . '/../assets/img/' . $slide)) ? '/assets/img/' . $slide : '';
 }
 
 // Posição da fotografia (ponto focal, em %) escolhida no admin — 13/10/2026. [x, y]; omissão = centro.
@@ -88,5 +115,5 @@ function fundoSeparadorFoco($paginaAtual) {
         } catch (Exception $e) { $focos = []; }   // migração 062 ainda não corrida
     }
     $chave = preg_replace('/.php$/', '', (string)$paginaAtual);
-    return $focos[$chave] ?? [50, 50];
+    return $focos[$chave] ?? $focos['_omissao'] ?? [50, 50];
 }

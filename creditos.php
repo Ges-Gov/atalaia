@@ -63,7 +63,7 @@ $t = fn(string $chave): string => function_exists('te') ? te($chave) : htmlspeci
             <div class="creditos-grelha">
                 <?php foreach ($creditos as $c): ?>
                     <figure class="credito" style="margin:0">
-                        <img src="<?= htmlspecialchars(miniaturaImagem($c['src'], 480)) ?>" alt="" loading="lazy">
+                        <img src="<?= htmlspecialchars(function_exists('miniaturaImagem') ? miniaturaImagem($c['src'], 480) : $c['src']) ?>" alt="" loading="lazy"><?php /* os sites do modelo antigo não têm miniaturas */ ?>
                         <div>
                             <?php if ($c['onde'] !== ''): ?><span class="credito-onde"><?= htmlspecialchars($c['onde']) ?></span><?php endif; ?>
                             <span class="credito-titular"><i class="bi bi-camera" aria-hidden="true"></i> <?= htmlspecialchars($c['titular']) ?></span>

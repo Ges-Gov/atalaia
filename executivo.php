@@ -48,39 +48,16 @@ $morada = siteConfig('morada');
 $horario = siteConfig('horario');
 $telLink = preg_replace('/[^0-9+]/', '', (string)$telefone);
 
-/* O que faz a Junta — resumo, por áreas, das competências do art. 16.º da Lei n.º 75/2013 (alíneas entre parênteses) */
-$competencias = [
-    ['bi-cash-coin', 'Planeamento e contas', [
-        'Elabora o plano de atividades e o orçamento e executa-os depois de aprovados pela Assembleia (a, b)',
-        'Presta contas à Assembleia de Freguesia e ao Tribunal de Contas (e, vv)',
-        'Prepara os regulamentos da freguesia (h)',
-    ]],
-    ['bi-cone-striped', 'Espaço público', [
-        'Conserva caminhos, arruamentos e pavimentos pedonais (ff)',
-        'Mantém parques infantis, equipamentos desportivos, fontanários e abrigos de passageiros (z, bb, cc)',
-        'Coloca as placas toponímicas e conserva a sinalização vertical (dd, ee)',
-    ]],
-    ['bi-people', 'Ação social, cultura e desporto', [
-        'Promove projetos de intervenção comunitária na ação social, cultura e desporto (t)',
-        'Apoia as associações e as atividades de interesse para a freguesia (o, v)',
-        'Colabora com as instituições de solidariedade social (u)',
-    ]],
-    ['bi-file-earmark-text', 'Serviços ao cidadão', [
-        'Passa atestados e lavra termos de identidade e justificação administrativa (rr, qq)',
-        'Faz o recenseamento eleitoral (pp)',
-        'Regista e licencia cães e gatos (nn) e licencia venda ambulante de lotarias e atividades ruidosas temporárias (n.º 3)',
-    ]],
-    ['bi-bank', 'Património e cemitérios', [
-        'Administra e conserva o património da freguesia e mantém o seu cadastro (ii, jj)',
-        'Gere e conserva os cemitérios da freguesia e concede terrenos para sepulturas (gg, hh)',
-        'Gere balneários, lavadouros e sanitários públicos (aa)',
-    ]],
-    ['bi-shield-check', 'Cooperação e proteção civil', [
-        'Colabora com a proteção civil municipal em caso de acidente grave (y)',
-        'Fornece material de limpeza e expediente às escolas do 1.º ciclo e do pré-escolar (mm)',
-        'Prepara com a Câmara Municipal os acordos de delegação de competências (i, j)',
-    ]],
-];
+/* O que faz a Junta — resumo, por áreas, das competências do art. 16.º da Lei n.º 75/2013 (alíneas entre parênteses).
+   Cartões editáveis no backoffice (Textos do site › Executivo › O que faz a Junta), 05/11/2026: título e pontos
+   (um por linha) de cada cartão; um título «-» esconde o cartão. Os ícones ficam fixos, pela ordem. */
+$competencias = [];
+foreach (['bi-cash-coin', 'bi-cone-striped', 'bi-people', 'bi-file-earmark-text', 'bi-bank', 'bi-shield-check'] as $n => $icone) {
+    $titulo = trim(tx('executivo.competencias.cartao' . ($n + 1) . '_titulo'));
+    if ($titulo === '' || $titulo === '-') continue;
+    $itens = array_values(array_filter(array_map('trim', preg_split('/\R/u', tx('executivo.competencias.cartao' . ($n + 1) . '_pontos'))), 'strlen'));
+    $competencias[] = [$icone, $titulo, $itens];
+}
 
 $atalhos = [
     ['bi-calendar-check', 'Marcar atendimento', 'Marque uma reunião ou atendimento com a Junta.', '/marcacoes.php'],

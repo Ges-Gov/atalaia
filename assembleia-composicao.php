@@ -250,17 +250,12 @@ if ($totalLugares > 0 && $comLugar) {
                     ?>
                     <svg viewBox="0 0 <?= $W ?> <?= $Hh ?>" role="img" aria-labelledby="asmHemiT asmHemiD">
                         <title id="asmHemiT">Distribuição dos <?= $totalLugares ?> lugares da Assembleia</title>
-                        <desc id="asmHemiD"><?= $h(implode('; ', array_map(fn($l) => $l['sigla'] . ': ' . $l['mandatos'] . ' ' . ((int)$l['mandatos'] === 1 ? 'lugar' : 'lugares') . ', ' . $pct($l['votos_pct']) . ' dos votos', $listas))) ?>. Maioria absoluta: <?= $maioria ?> lugares.</desc>
+                        <desc id="asmHemiD"><?= $h(implode('; ', array_map(fn($l) => $l['sigla'] . ': ' . $l['mandatos'] . ' ' . ((int)$l['mandatos'] === 1 ? 'lugar' : 'lugares') . ', ' . $pct($l['votos_pct']) . ' dos votos', $listas))) ?>.</desc>
                         <g class="asm-anel" aria-hidden="true">
                             <?php foreach ($arcos as [$a, $b, $cor, $dica]): $g = .012; ?>
                                 <path d="M <?= $pt($a - $g, $Ranel) ?> A <?= $Ranel ?> <?= $Ranel ?> 0 0 1 <?= $pt($b + $g, $Ranel) ?>" stroke="<?= $h($cor) ?>" data-tip="<?= $h($dica) ?>"></path>
                             <?php endforeach; ?>
                         </g>
-                        <?php if ($aMaioria !== null): ?>
-                            <g class="asm-maioria" aria-hidden="true">
-                                <line x1="<?= round($cx + cos($aMaioria) * ($Ranel + 16), 1) ?>" y1="<?= round($cy - sin($aMaioria) * ($Ranel + 16), 1) ?>" x2="<?= round($cx + cos($aMaioria) * ($R + 44), 1) ?>" y2="<?= round($cy - sin($aMaioria) * ($R + 44), 1) ?>"></line>
-                            </g>
-                        <?php endif; ?>
                         <?php foreach ($lugares as [$ang, $r, $l, $pessoa, $n]):
                             $x = round($cx + cos($ang) * $R * $r, 1); $y = round($cy - sin($ang) * $R * $r, 1);
                             $dica = 'Lugar ' . $n . ' · ' . $l['sigla'] . ' — ' . ($pessoa ? $pessoa['nome'] . ' (' . $pessoa['cargo'] . ')' : 'vogal (nome por publicar)'); ?>
@@ -271,13 +266,11 @@ if ($totalLugares > 0 && $comLugar) {
                         <?php endforeach; ?>
                         <text class="asm-hemi__total" x="<?= $cx ?>" y="<?= $cy - 40 ?>" text-anchor="middle"><?= $totalLugares ?></text>
                         <text class="asm-hemi__legenda" x="<?= $cx ?>" y="<?= $cy - 14 ?>" text-anchor="middle">lugares</text>
-                        <text class="asm-hemi__maioria" x="<?= $cx ?>" y="<?= $cy + 14 ?>" text-anchor="middle">Maioria absoluta: <?= $maioria ?></text>
                     </svg>
                     <div class="asm-tip" role="status" aria-live="polite"></div>
                     <ul class="asm-hemi__chave">
                         <li><span class="asm-chave-lugar" aria-hidden="true"></span> Um círculo = um lugar<?= $umaFila ? ' (com as iniciais de quem já está publicado)' : '' ?></li>
                         <li><span class="asm-chave-anel" aria-hidden="true"></span> Anel interior = percentagem de votos</li>
-                        <?php if ($aMaioria !== null): ?><li><span class="asm-chave-maioria" aria-hidden="true"></span> Linha = maioria absoluta (<?= $maioria ?> lugares)<?= $comMaioria ? ' — o ' . $h($comMaioria['sigla']) . ' tem maioria' : ' — nenhuma lista tem maioria' ?></li><?php endif; ?>
                     </ul>
                 </div>
                 <div>

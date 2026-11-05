@@ -18,10 +18,17 @@ if ($catFiltro !== '') {
     $where[] = "categoria = ?";
     $params[] = $catFiltro;
 }
-if ($anoFiltro !== '') {
+if ($anoFiltro === 'sem') {
+    $where[] = "data_documento IS NULL";
+} elseif ($anoFiltro !== '') {
     $where[] = "YEAR(data_documento) = ?";
     $params[] = $anoFiltro;
 }
+
+// Pastas por ano (05/11/2026): sem pesquisa nem filtros, mostram-se primeiro as pastas «Documentos AAAA»
+require_once __DIR__ . "/includes/documentos_pastas.php";
+$vistaPastas = $pesquisa === '' && $catFiltro === '' && $anoFiltro === '';
+$pastas = $vistaPastas ? $pdo->query("SELECT * FROM (SELECT YEAR(data_documento) AS ano, COUNT(*) AS n FROM documentos WHERE ativo = 1 AND area = 'freguesia' GROUP BY YEAR(data_documento)) t ORDER BY (ano IS NULL), ano DESC")->fetchAll(PDO::FETCH_ASSOC) : [];
 
 $whereSql = implode(" AND ", $where);
 
@@ -532,7 +539,13 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
     <section class="docs-content-wrap" data-zona-ajax="documentos">
         <div class="container">
 
-            <?php if (!empty($grupos)): ?>
+            <?php if ($vistaPastas && $pastas): ?>
+
+                <?php documentosPastas($pastas, 'freguesia-documentos.php'); ?>
+
+            <?php elseif (!empty($grupos)): ?>
+
+                <?php if ($anoFiltro !== '' && $pesquisa === '' && $catFiltro === '') documentosVoltarPastas('freguesia-documentos.php'); ?>
 
                 <?php foreach ($grupos as $cat => $docs): ?>
 

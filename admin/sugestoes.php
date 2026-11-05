@@ -2,6 +2,7 @@
 $adminPageTitle = "Sugestões";
 $adminActive = "sugestoes";
 require_once "includes/header.php";
+require_once "includes/responder.php";
 
 if (!podeAceder('virtual')) {
     die("Sem acesso a esta secção.");
@@ -15,7 +16,10 @@ $token = $_SESSION['sugestoes_admin_token'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && hash_equals($token, (string)($_POST['token'] ?? ''))) {
     $id = (int)($_POST['id'] ?? 0);
     $acao = $_POST['acao'] ?? '';
-    if ($acao === 'lida') {
+    if ($acao === 'responder') {
+        $erro = responderMensagem($pdo, 'sugestoes', $id, (string)($_POST['resposta'] ?? ''));
+        $_SESSION['resp_aviso'] = $erro ? ['erro', $erro] : ['ok', 'Resposta enviada.'];
+    } elseif ($acao === 'lida') {
         $pdo->prepare("UPDATE sugestoes SET lida = 1 WHERE id = ?")->execute([$id]);
     } elseif ($acao === 'nao_lida') {
         $pdo->prepare("UPDATE sugestoes SET lida = 0 WHERE id = ?")->execute([$id]);
@@ -43,6 +47,8 @@ $naoLidas = count(array_filter($sugestoes, fn($s) => !$s['lida']));
     </p>
 </div>
 
+<?php responderEstilos(); responderAviso(); ?>
+
 <div class="sug-lista">
     <?php foreach ($sugestoes as $s): ?>
         <details class="sug-item <?= $s['lida'] ? '' : 'nova' ?>" id="s<?= (int)$s['id'] ?>">
@@ -55,10 +61,10 @@ $naoLidas = count(array_filter($sugestoes, fn($s) => !$s['lida']));
                     <a href="mailto:<?= htmlspecialchars($s['email']) ?>?subject=<?= rawurlencode('Re: ' . $s['assunto']) ?>"><?= htmlspecialchars($s['email']) ?></a>
                     <?php if (!empty($s['telefone'])): ?> · <a href="tel:<?= htmlspecialchars($s['telefone']) ?>"><i class="bi bi-telephone"></i> <?= htmlspecialchars($s['telefone']) ?></a><?php endif; ?></p>
                 <div class="sug-texto"><?= nl2br(htmlspecialchars($s['mensagem'])) ?></div>
+                <?php responderBloco($s, ['token' => $token]); ?>
                 <form method="post" class="sug-acoes">
                     <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
                     <input type="hidden" name="id" value="<?= (int)$s['id'] ?>">
-                    <a class="btn" href="mailto:<?= htmlspecialchars($s['email']) ?>?subject=<?= rawurlencode('Re: ' . $s['assunto']) ?>">Responder por email</a>
                     <?php if ($s['lida']): ?>
                         <button class="btn secondary" name="acao" value="nao_lida">Marcar como não lida</button>
                     <?php else: ?>

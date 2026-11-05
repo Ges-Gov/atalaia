@@ -7,6 +7,7 @@
 $adminPageTitle = "Mensagens de Contacto";
 $adminActive = "mensagens_contacto";
 require_once "includes/header.php";
+require_once "includes/responder.php";
 
 if (!podeAceder('virtual')) {
     echo '<p>Sem permissão para ver as mensagens.</p>';
@@ -17,6 +18,10 @@ if (!podeAceder('virtual')) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int)($_POST['id'] ?? 0);
     $acao = $_POST['acao'] ?? '';
+    if ($acao === 'responder') {
+        $erro = responderMensagem($pdo, 'contactos_mensagens', $id, (string)($_POST['resposta'] ?? ''));
+        $_SESSION['resp_aviso'] = $erro ? ['erro', $erro] : ['ok', 'Resposta enviada.'];
+    }
     if ($acao === 'lida')     $pdo->prepare("UPDATE contactos_mensagens SET lida = 1 WHERE id = ?")->execute([$id]);
     if ($acao === 'por_ler')  $pdo->prepare("UPDATE contactos_mensagens SET lida = 0 WHERE id = ?")->execute([$id]);
     if ($acao === 'apagar')   $pdo->prepare("DELETE FROM contactos_mensagens WHERE id = ?")->execute([$id]);
@@ -37,9 +42,11 @@ try {
 
 <p style="color:#64748b;max-width:760px;">
     Mensagens enviadas pelo formulário da página <a href="/contactos.php#formulario" target="_blank">Contactos</a>.
-    Para responder, use o botão <strong>Responder</strong> (abre o seu programa de email com o endereço do cidadão).
+    Para responder, use o botão <strong>Responder</strong>: escreve a resposta aqui e o site envia-a por email ao cidadão.
     Os dados pessoais devem ser apagados quando já não forem necessários (RGPD).
 </p>
+
+<?php responderEstilos(); responderAviso(); ?>
 
 <div class="admin-actions">
     <a class="btn <?= $todas ? 'secondary' : '' ?>" href="mensagens-contacto.php">Por ler (<?= $porLer ?>)</a>
@@ -64,8 +71,8 @@ try {
             <small style="color:#64748b;"><?= date('d/m/Y H:i', strtotime($m['criado_em'])) ?><?= $m['email_enviado'] ? ' · enviada por email' : '' ?></small>
         </div>
         <p style="white-space:pre-wrap;margin:12px 0;line-height:1.6;"><?= htmlspecialchars($m['mensagem']) ?></p>
+        <?php responderBloco($m); ?>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <a class="btn" href="mailto:<?= htmlspecialchars($m['email']) ?>?subject=<?= rawurlencode('Re: ' . $m['assunto']) ?>">Responder</a>
             <form method="POST" style="display:inline;margin:0;padding:0;background:none;box-shadow:none;">
                 <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
                 <input type="hidden" name="acao" value="<?= $m['lida'] ? 'por_ler' : 'lida' ?>">

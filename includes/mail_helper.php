@@ -74,6 +74,34 @@ function enviarEmailSistema($para, $assunto, $html, $replyTo = null) {
         return $mail->send();
 
     } catch (Exception $e) {
+        // 05/11/2026: alguns alojamentos (o cPanel da Atalaia) bloqueiam ligações SMTP para fora. Se nem chegou a ligar
+        // ao nosso servidor, envia pelo servidor de email local do alojamento, em nome do domínio do próprio site.
+        if (stripos((string)$mail->ErrorInfo, 'connect') === false) return false;
+        return enviarEmailLocal($para, $assunto, $html, $replyTo);
+    }
+}
+
+// Envio pelo servidor de email local do alojamento (sendmail do PHP), com remetente noreply@<domínio do site> —
+// o SPF do domínio do alojamento autoriza esse servidor. Só se usa quando o SMTP partilhado está inacessível.
+function enviarEmailLocal($para, $assunto, $html, $replyTo = null) {
+    $dominio = preg_replace('#^(https?://)?(www\.)?#i', '', (string)siteConfig('dominio', ''));
+    $dominio = strtok($dominio, '/:') ?: preg_replace('/^www\./i', '', (string)($_SERVER['HTTP_HOST'] ?? ''));
+    if ($dominio === '' || !function_exists('mail')) return false;
+
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isMail();
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom('noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
+        $mail->addAddress($para);
+        if ($replyTo && emailValido($replyTo)) {
+            $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
+        }
+        $mail->isHTML(true);
+        $mail->Subject = $assunto;
+        $mail->Body = $html;
+        return $mail->send();
+    } catch (Exception $e) {
         return false;
     }
 }

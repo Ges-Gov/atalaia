@@ -36,7 +36,9 @@ function submissaoRecente($chave, $segundos = 20) {
     return false;
 }
 
-function enviarEmailSistema($para, $assunto, $html, $replyTo = null) {
+// $de / $bcc (05/11/2026): remetente próprio (ex.: o email da Junta, no «Responder») e cópia oculta. O remetente só
+// se aplica no envio pelo servidor local do alojamento — pelo SMTP partilhado o «De:» é sempre a conta de envio.
+function enviarEmailSistema($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
     // Sem password configurada: não tenta enviar (evita timeouts nos formulários).
     if (SMTP_PASS === '') {
         return false;
@@ -66,6 +68,7 @@ function enviarEmailSistema($para, $assunto, $html, $replyTo = null) {
         if ($replyTo && emailValido($replyTo)) {
             $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
         }
+        if ($bcc && emailValido($bcc)) $mail->addBCC($bcc);
 
         $mail->isHTML(true);
         $mail->Subject = $assunto;
@@ -77,13 +80,13 @@ function enviarEmailSistema($para, $assunto, $html, $replyTo = null) {
         // 05/11/2026: alguns alojamentos (o cPanel da Atalaia) bloqueiam ligações SMTP para fora. Se nem chegou a ligar
         // ao nosso servidor, envia pelo servidor de email local do alojamento, em nome do domínio do próprio site.
         if (stripos((string)$mail->ErrorInfo, 'connect') === false) return false;
-        return enviarEmailLocal($para, $assunto, $html, $replyTo);
+        return enviarEmailLocal($para, $assunto, $html, $replyTo, $de, $bcc);
     }
 }
 
 // Envio pelo servidor de email local do alojamento (sendmail do PHP), com remetente noreply@<domínio do site> —
 // o SPF do domínio do alojamento autoriza esse servidor. Só se usa quando o SMTP partilhado está inacessível.
-function enviarEmailLocal($para, $assunto, $html, $replyTo = null) {
+function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
     $dominio = preg_replace('#^(https?://)?(www\.)?#i', '', (string)siteConfig('dominio', ''));
     $dominio = strtok($dominio, '/:') ?: preg_replace('/^www\./i', '', (string)($_SERVER['HTTP_HOST'] ?? ''));
     if ($dominio === '' || !function_exists('mail')) return false;
@@ -92,11 +95,14 @@ function enviarEmailLocal($para, $assunto, $html, $replyTo = null) {
     try {
         $mail->isMail();
         $mail->CharSet = 'UTF-8';
-        $mail->setFrom('noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
+        // remetente pedido (ex.: geral@ da Junta) só se for do domínio do site — é o que o SPF do alojamento autoriza
+        $deOk = $de && emailValido($de) && preg_match('/@(.+\.)?' . preg_quote($dominio, '/') . '$/i', $de);
+        $mail->setFrom($deOk ? $de : 'noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
         $mail->addAddress($para);
         if ($replyTo && emailValido($replyTo)) {
             $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
         }
+        if ($bcc && emailValido($bcc)) $mail->addBCC($bcc);
         $mail->isHTML(true);
         $mail->Subject = $assunto;
         $mail->Body = $html;

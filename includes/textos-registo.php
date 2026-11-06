@@ -224,11 +224,11 @@ return [
             'comercio.lista.mapa' => ['Cartão — botão «Ver no mapa»', 'Ver no mapa'],
             'comercio.vazio.texto' => ['Mensagem quando não há estabelecimentos', 'Ainda não existem estabelecimentos publicados.'],
             // 06/11/2026: página em modo de candidaturas (includes/comercio_candidaturas_pagina.php)
-            'comercio.cand.titulo' => ['Candidaturas — título', 'Apoie o comércio local. Compre na nossa freguesia!'],
-            'comercio.cand.intro' => ['Candidaturas — texto de introdução', "Esta página vai dar a conhecer o comércio, as empresas e os serviços da nossa freguesia.\nQueremos dar mais visibilidade aos negócios locais, aproximá-los de quem cá vive e incentivar as compras perto de casa.", 'texto'],
-            'comercio.cand.chamada' => ['Candidaturas — título do quadro', 'Tem um negócio na freguesia? Peça para aparecer aqui.'],
-            'comercio.cand.texto' => ['Candidaturas — texto do quadro', "Preencha o pedido de divulgação e envie o logótipo ou uma imagem do seu estabelecimento.\nA Junta de Freguesia analisa todos os pedidos antes de os publicar.", 'texto'],
-            'comercio.cand.fecho' => ['Candidaturas — frase final', 'Juntos valorizamos o que é nosso. Apoiar o comércio local é investir na nossa freguesia.'],
+            'comercio.cand.titulo' => ['Candidaturas — título', 'Apoie o comércio local'],
+            'comercio.cand.intro' => ['Candidaturas — frase do topo', 'Tem um negócio na freguesia? Peça para aparecer nesta página. É gratuito.'],
+            'comercio.cand.chamada' => ['Candidaturas — título do formulário', 'Pedido de divulgação'],
+            'comercio.cand.texto' => ['Candidaturas — texto por baixo do título do formulário', 'Leva dois minutos. A Junta de Freguesia analisa cada pedido antes de o publicar.'],
+            'comercio.cand.fecho' => ['Candidaturas — frase final', 'Compre na nossa freguesia.'],
         ],
     ],
     'associacoes' => [

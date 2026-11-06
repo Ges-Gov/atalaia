@@ -105,145 +105,158 @@ require_once __DIR__ . "/header.php";
 ?>
 
 <style>
-.cc-hero{background:linear-gradient(135deg, var(--cor-principal), color-mix(in srgb, var(--cor-principal) 55%, #000) 75%);color:#fff;padding:84px 0 110px;}
-.cc-kicker{display:inline-flex;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);color:#fff;padding:8px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px;}
-.cc-hero h1{font-size:clamp(34px,4.6vw,58px);margin:16px 0 14px;line-height:1.06;color:#fff;max-width:900px;}
-.cc-hero p{max-width:780px;color:rgba(255,255,255,.92);font-size:18px;line-height:1.7;margin:0;}
-.cc-shell{margin-top:-60px;position:relative;z-index:5;padding-bottom:70px;}
-.cc-grelha{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:26px;align-items:start;}
-.cc-card{background:#fff;border-radius:26px;box-shadow:0 22px 50px rgba(15,23,42,.09);padding:34px 36px;}
-.cc-card h2{margin:0 0 12px;font-size:24px;line-height:1.25;color:#11151B;}
-.cc-card > p{color:#475569;line-height:1.7;margin:0 0 14px;}
-.cc-lista{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:12px;}
-.cc-lista li{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;color:#1f2933;line-height:1.5;font-size:15px;}
-.cc-lista li i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb, var(--cor-principal) 10%, #fff);color:var(--cor-principal);font-size:18px;}
-.cc-lista strong{display:block;color:#11151B;}
-.cc-alt{margin-top:22px;padding:16px 18px;border-radius:16px;background:#f8fafc;border:1px solid #e5e7eb;font-size:14px;color:#475569;line-height:1.6;}
-.cc-alt a{color:var(--cor-principal);font-weight:800;word-break:break-all;}
+/* 06/11/2026 (2.ª versão): menos texto, nada sobreposto — topo curto, 3 passos, formulário centrado */
+.cc-hero{background:linear-gradient(135deg, var(--cor-principal), color-mix(in srgb, var(--cor-principal) 55%, #000) 80%);color:#fff;padding:90px 0 80px;text-align:center;}
+.cc-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;padding:8px 16px;border-radius:999px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;font-size:12px;}
+.cc-hero h1{font-size:clamp(36px,5vw,62px);margin:18px auto 14px;line-height:1.05;color:#fff;max-width:820px;}
+.cc-hero p{max-width:620px;margin:0 auto;color:rgba(255,255,255,.9);font-size:19px;line-height:1.6;}
+.cc-cta{display:inline-flex;align-items:center;gap:10px;margin-top:30px;background:var(--cor-secundaria);color:#11151B;font-weight:900;font-size:17px;padding:15px 28px;border-radius:999px;text-decoration:none;box-shadow:0 12px 30px rgba(0,0,0,.25);transition:transform .15s;}
+.cc-cta:hover{transform:translateY(-2px);color:#11151B;}
+
+.cc-passos{padding:64px 0 10px;}
+.cc-passos ol{list-style:none;margin:0 auto;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1000px;counter-reset:passo;}
+.cc-passos li{background:#fff;border:1px solid #e8edf3;border-radius:22px;padding:28px 24px;text-align:center;box-shadow:0 10px 30px rgba(15,23,42,.05);}
+.cc-passos li i{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 16px;border-radius:50%;font-size:26px;
+    background:color-mix(in srgb, var(--cor-principal) 10%, #fff);color:var(--cor-principal);}
+.cc-passos strong{display:block;font-size:18px;color:#11151B;margin-bottom:6px;}
+.cc-passos span{color:#64748b;font-size:15px;line-height:1.5;}
+
+.cc-pedido{padding:44px 0 80px;scroll-margin-top:90px;}
+.cc-card{max-width:720px;margin:0 auto;background:#fff;border-radius:26px;box-shadow:0 22px 50px rgba(15,23,42,.08);padding:38px 40px;border:1px solid #eef2f7;}
+.cc-card h2{margin:0;font-size:28px;color:#11151B;text-align:center;}
+.cc-sub{margin:8px 0 22px;text-align:center;color:#64748b;font-size:15px;line-height:1.5;}
 .cc-form label{display:block;font-weight:800;font-size:14px;margin:14px 0 6px;color:#1f2933;}
-.cc-form .cc-duas{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+.cc-duas{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
 .cc-form input[type=text],.cc-form input[type=email],.cc-form input[type=tel],.cc-form textarea{width:100%;box-sizing:border-box;border:1px solid #d6dde6;border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;background:#fbfcfd;}
-.cc-form textarea{min-height:110px;resize:vertical;}
+.cc-form textarea{min-height:96px;resize:vertical;}
 .cc-form input:focus,.cc-form textarea:focus{outline:2px solid var(--cor-principal);outline-offset:1px;background:#fff;}
-.cc-ficheiro{border:2px dashed #cbd5e1;border-radius:16px;padding:16px;background:#fbfcfd;}
-.cc-ficheiro input{width:100%;font:inherit;font-size:15px;}
-.cc-ficheiro small{display:block;margin-top:8px;color:#64748b;font-size:13px;line-height:1.5;}
-.cc-consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 6px;font-size:14px;line-height:1.5;color:#475569;font-weight:400 !important;}
-.cc-consent input{margin-top:3px;flex-shrink:0;width:18px;height:18px;}
-.cc-form button{margin-top:16px;border:0;border-radius:14px;padding:14px 26px;font-weight:900;font-size:16px;cursor:pointer;background:var(--cor-secundaria);color:#11151B;display:inline-flex;gap:8px;align-items:center;}
+.cc-form .cc-ficheiro{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0;font-weight:400;border:2px dashed #cbd5e1;border-radius:18px;padding:22px 16px;background:#fbfcfd;text-align:center;cursor:pointer;}
+.cc-ficheiro:hover{border-color:var(--cor-principal);}
+.cc-ficheiro > i{font-size:30px;color:var(--cor-principal);}
+.cc-ficheiro input{max-width:100%;font:inherit;font-size:14px;}
+.cc-ficheiro small{display:block;color:#64748b;font-size:13px;font-weight:400;}
+.cc-consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 4px;font-size:13px !important;line-height:1.5;color:#64748b !important;font-weight:400 !important;}
+.cc-consent input{margin-top:2px;flex-shrink:0;width:18px;height:18px;}
+.cc-enviar{display:flex;width:100%;justify-content:center;align-items:center;gap:8px;margin-top:20px;border:0;border-radius:14px;padding:15px 26px;font-weight:900;font-size:17px;cursor:pointer;background:var(--cor-secundaria);color:#11151B;}
 .cc-isco{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
-.cc-alerta{padding:14px 16px;border-radius:14px;margin-bottom:10px;font-weight:700;line-height:1.5;}
+.cc-alerta{padding:14px 16px;border-radius:14px;margin-bottom:12px;font-weight:700;line-height:1.5;text-align:center;}
 .cc-alerta.ok{background:#dcfce7;color:#166534;}
 .cc-alerta.erro{background:#fee2e2;color:#991b1b;}
-.cc-fecho{text-align:center;margin:34px auto 0;max-width:720px;font-size:19px;font-weight:800;color:var(--cor-principal);line-height:1.5;}
-@media(max-width:960px){.cc-grelha{grid-template-columns:1fr;}}
+.cc-alt{max-width:720px;margin:18px auto 0;text-align:center;color:#64748b;font-size:14px;line-height:1.6;}
+.cc-alt a{color:var(--cor-principal);font-weight:800;}
+@media(max-width:820px){.cc-passos ol{grid-template-columns:1fr;gap:12px;}.cc-passos li{display:grid;grid-template-columns:54px 1fr;text-align:left;gap:4px 14px;padding:18px;align-items:center;}
+    .cc-passos li i{grid-row:span 2;width:54px;height:54px;margin:0;font-size:22px;}.cc-passos strong{margin:0;}}
 @media(max-width:700px){
-    .cc-hero{padding:56px 0 86px;}
-    .cc-hero h1{font-size:clamp(28px,8vw,36px);}
-    .cc-hero p{font-size:15px;}
-    .cc-card{padding:24px 20px;border-radius:20px;}
-    .cc-form .cc-duas{grid-template-columns:1fr;}
+    .cc-hero{padding:58px 0 54px;}
+    .cc-hero h1{font-size:clamp(30px,9vw,40px);}
+    .cc-hero p{font-size:16px;}
+    .cc-passos{padding-top:34px;}
+    .cc-card{padding:26px 20px;border-radius:20px;}
+    .cc-duas{grid-template-columns:1fr;}
 }
 </style>
 
 <main>
 <section class="cc-hero">
     <div class="container">
-        <span class="cc-kicker"><?= te('comercio.hero.kicker') ?></span>
+        <span class="cc-kicker"><i class="bi bi-shop"></i> <?= te('comercio.hero.kicker') ?></span>
         <h1><?= te('comercio.cand.titulo') ?></h1>
         <p><?= te('comercio.cand.intro') ?></p>
+        <a class="cc-cta" href="#pedido">Quero aparecer aqui <i class="bi bi-arrow-down"></i></a>
     </div>
 </section>
 
-<section class="cc-shell" id="candidatura">
+<section class="cc-passos" aria-label="Como funciona">
     <div class="container">
-        <div class="cc-grelha">
-            <div class="cc-card">
-                <h2><?= te('comercio.cand.chamada') ?></h2>
-                <p><?= te('comercio.cand.texto') ?></p>
-                <ul class="cc-lista">
-                    <li><i class="bi bi-gift"></i><span><strong>Gratuito</strong>Para estabelecimentos e empresas com sede ou atividade na freguesia.</span></li>
-                    <li><i class="bi bi-image"></i><span><strong>Logótipo ou imagem do estabelecimento</strong>JPG, PNG ou WEBP, na horizontal, até <?= COMERCIO_CAND_MAX_MB ?> MB.</span></li>
-                    <li><i class="bi bi-aspect-ratio"></i><span><strong>Tamanho recomendado: 1200 × 800 píxeis</strong>No mínimo 800 × 533. Uma imagem nítida, sem texto muito pequeno.</span></li>
-                    <li><i class="bi bi-check2-circle"></i><span><strong>Análise pela Junta</strong>Cada pedido é visto pela Junta de Freguesia antes de ser publicado.</span></li>
-                </ul>
-                <?php if ($emailJunta !== ''): ?>
-                    <div class="cc-alt">
-                        Prefere enviar por email? Mande os mesmos dados e a imagem para
-                        <a href="mailto:<?= htmlspecialchars($emailJunta) ?>?subject=<?= rawurlencode('Divulgação – Economia Local') ?>"><?= htmlspecialchars($emailJunta) ?></a>,
-                        com o assunto «Divulgação – Economia Local».
+        <ol>
+            <li><i class="bi bi-pencil-square"></i><strong>Preencha o pedido</strong><span>Nome do negócio, atividade e contactos.</span></li>
+            <li><i class="bi bi-image"></i><strong>Envie uma imagem</strong><span>O logótipo ou uma foto, na horizontal.</span></li>
+            <li><i class="bi bi-patch-check"></i><strong>Fica no site</strong><span>Depois de aprovado pela Junta. Gratuito.</span></li>
+        </ol>
+    </div>
+</section>
+
+<section class="cc-pedido" id="pedido">
+    <div class="container">
+        <div class="cc-card" id="candidatura">
+            <h2><?= te('comercio.cand.chamada') ?></h2>
+            <p class="cc-sub"><?= te('comercio.cand.texto') ?></p>
+
+            <?php if ($enviada): ?>
+                <div class="cc-alerta ok"><i class="bi bi-check-circle"></i> Obrigado! O pedido foi enviado à Junta de Freguesia. Vai receber uma confirmação por email.</div>
+            <?php elseif ($erro): ?>
+                <div class="cc-alerta erro"><?= htmlspecialchars($erro) ?></div>
+            <?php endif; ?>
+
+            <form method="post" action="/comercio.php#candidatura" enctype="multipart/form-data" class="cc-form" novalidate>
+                <input type="hidden" name="token" value="<?= htmlspecialchars($_SESSION['comercio_cand_token']) ?>">
+                <input type="hidden" name="MAX_FILE_SIZE" value="<?= COMERCIO_CAND_MAX_MB * 1024 * 1024 ?>">
+                <div class="cc-isco" aria-hidden="true">
+                    <label for="cc-site-web">Não preencher</label>
+                    <input type="text" id="cc-site-web" name="site_web" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="cc-duas">
+                    <div>
+                        <label for="cc-nome">Nome do negócio *</label>
+                        <input type="text" id="cc-nome" name="nome_estabelecimento" maxlength="200" required value="<?= htmlspecialchars($campos['nome_estabelecimento']) ?>">
                     </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="cc-card">
-                <h2>Pedido de divulgação</h2>
-                <?php if ($enviada): ?>
-                    <div class="cc-alerta ok">Obrigado! O seu pedido foi enviado à Junta de Freguesia. Vai receber uma confirmação por email.</div>
-                <?php elseif ($erro): ?>
-                    <div class="cc-alerta erro"><?= htmlspecialchars($erro) ?></div>
-                <?php endif; ?>
-
-                <form method="post" action="/comercio.php#candidatura" enctype="multipart/form-data" class="cc-form" novalidate>
-                    <input type="hidden" name="token" value="<?= htmlspecialchars($_SESSION['comercio_cand_token']) ?>">
-                    <input type="hidden" name="MAX_FILE_SIZE" value="<?= COMERCIO_CAND_MAX_MB * 1024 * 1024 ?>">
-                    <div class="cc-isco" aria-hidden="true">
-                        <label for="cc-site-web">Não preencher</label>
-                        <input type="text" id="cc-site-web" name="site_web" tabindex="-1" autocomplete="off">
+                    <div>
+                        <label for="cc-atividade">Atividade *</label>
+                        <input type="text" id="cc-atividade" name="atividade" maxlength="150" required placeholder="Ex.: café, cabeleireiro" value="<?= htmlspecialchars($campos['atividade']) ?>">
                     </div>
+                </div>
 
-                    <label for="cc-nome">Nome do estabelecimento ou empresa *</label>
-                    <input type="text" id="cc-nome" name="nome_estabelecimento" maxlength="200" required value="<?= htmlspecialchars($campos['nome_estabelecimento']) ?>">
+                <label for="cc-morada">Morada *</label>
+                <input type="text" id="cc-morada" name="morada" maxlength="255" required value="<?= htmlspecialchars($campos['morada']) ?>">
 
-                    <div class="cc-duas">
-                        <div>
-                            <label for="cc-atividade">Atividade *</label>
-                            <input type="text" id="cc-atividade" name="atividade" maxlength="150" required placeholder="Ex.: café, cabeleireiro, oficina" value="<?= htmlspecialchars($campos['atividade']) ?>">
-                        </div>
-                        <div>
-                            <label for="cc-morada">Morada / localidade *</label>
-                            <input type="text" id="cc-morada" name="morada" maxlength="255" required value="<?= htmlspecialchars($campos['morada']) ?>">
-                        </div>
+                <div class="cc-duas">
+                    <div>
+                        <label for="cc-responsavel">Responsável *</label>
+                        <input type="text" id="cc-responsavel" name="responsavel" maxlength="150" required autocomplete="name" value="<?= htmlspecialchars($campos['responsavel']) ?>">
                     </div>
-
-                    <div class="cc-duas">
-                        <div>
-                            <label for="cc-responsavel">Nome do responsável *</label>
-                            <input type="text" id="cc-responsavel" name="responsavel" maxlength="150" required autocomplete="name" value="<?= htmlspecialchars($campos['responsavel']) ?>">
-                        </div>
-                        <div>
-                            <label for="cc-telefone">Telefone *</label>
-                            <input type="tel" id="cc-telefone" name="telefone" maxlength="20" required autocomplete="tel" inputmode="tel" value="<?= htmlspecialchars($campos['telefone']) ?>">
-                        </div>
+                    <div>
+                        <label for="cc-telefone">Telefone *</label>
+                        <input type="tel" id="cc-telefone" name="telefone" maxlength="20" required autocomplete="tel" inputmode="tel" value="<?= htmlspecialchars($campos['telefone']) ?>">
                     </div>
+                </div>
 
-                    <label for="cc-email">Email *</label>
-                    <input type="email" id="cc-email" name="email" maxlength="190" required autocomplete="email" value="<?= htmlspecialchars($campos['email']) ?>">
-
-                    <label for="cc-website">Website ou redes sociais</label>
-                    <input type="text" id="cc-website" name="website" maxlength="255" placeholder="Ex.: www.… ou página do Facebook / Instagram" value="<?= htmlspecialchars($campos['website']) ?>">
-
-                    <label for="cc-descricao">Breve descrição</label>
-                    <textarea id="cc-descricao" name="descricao" maxlength="1000" placeholder="O que faz, horário, o que o distingue…"><?= htmlspecialchars($campos['descricao']) ?></textarea>
-
-                    <label for="cc-imagem">Logótipo ou imagem do estabelecimento *</label>
-                    <div class="cc-ficheiro">
-                        <input type="file" id="cc-imagem" name="imagem" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
-                        <small>JPG, PNG ou WEBP · na horizontal · recomendado 1200 × 800 píxeis · até <?= COMERCIO_CAND_MAX_MB ?> MB</small>
+                <div class="cc-duas">
+                    <div>
+                        <label for="cc-email">Email *</label>
+                        <input type="email" id="cc-email" name="email" maxlength="190" required autocomplete="email" value="<?= htmlspecialchars($campos['email']) ?>">
                     </div>
+                    <div>
+                        <label for="cc-website">Website ou redes sociais</label>
+                        <input type="text" id="cc-website" name="website" maxlength="255" value="<?= htmlspecialchars($campos['website']) ?>">
+                    </div>
+                </div>
 
-                    <label class="cc-consent">
-                        <input type="checkbox" name="autorizacao" value="1" required>
-                        <span>Autorizo a Junta de Freguesia a divulgar no site os dados do estabelecimento e a imagem enviada, e confirmo que tenho direito a usar essa imagem.
-                            Os meus dados de contacto servem só para tratar este pedido, nos termos da <a href="/politica-privacidade.php">política de privacidade</a>.</span>
-                    </label>
+                <label for="cc-descricao">Breve descrição</label>
+                <textarea id="cc-descricao" name="descricao" maxlength="1000" placeholder="O que faz, horário…"><?= htmlspecialchars($campos['descricao']) ?></textarea>
 
-                    <button type="submit"><i class="bi bi-send"></i> Enviar pedido</button>
-                </form>
-            </div>
+                <label for="cc-imagem">Logótipo ou imagem *</label>
+                <label class="cc-ficheiro" for="cc-imagem">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <input type="file" id="cc-imagem" name="imagem" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+                    <small>JPG, PNG ou WEBP · horizontal · ideal 1200 × 800 px · até <?= COMERCIO_CAND_MAX_MB ?> MB</small>
+                </label>
+
+                <label class="cc-consent">
+                    <input type="checkbox" name="autorizacao" value="1" required>
+                    <span>Autorizo a divulgação no site destes dados e da imagem, que tenho direito a usar. Os contactos servem só para tratar o pedido
+                        (<a href="/politica-privacidade.php">política de privacidade</a>).</span>
+                </label>
+
+                <button type="submit" class="cc-enviar"><i class="bi bi-send"></i> Enviar pedido</button>
+            </form>
         </div>
 
-        <p class="cc-fecho"><?= te('comercio.cand.fecho') ?></p>
+        <?php if ($emailJunta !== ''): ?>
+            <p class="cc-alt">Prefere por email? Envie para
+                <a href="mailto:<?= htmlspecialchars($emailJunta) ?>?subject=<?= rawurlencode('Divulgação – Economia Local') ?>"><?= htmlspecialchars($emailJunta) ?></a>
+                com o assunto «Divulgação – Economia Local».</p>
+        <?php endif; ?>
     </div>
 </section>
 </main>

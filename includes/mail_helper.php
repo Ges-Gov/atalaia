@@ -36,9 +36,74 @@ function submissaoRecente($chave, $segundos = 20) {
     return false;
 }
 
-// $de / $bcc (05/11/2026): remetente próprio (ex.: o email da Junta, no «Responder») e cópia oculta. O remetente só
-// se aplica no envio pelo servidor local do alojamento — pelo SMTP partilhado o «De:» é sempre a conta de envio.
+// IPs públicos dos servidores onde os sites correm: o nosso VPS (o SERVER_ADDR lá é o do proxy interno, 127.0.0.1)
+// e o alojamento da Junta da Atalaia (juf.aaej.pt)
+const SERVIDORES_ENVIO_IPS = ['185.205.244.198', '185.12.116.247'];
+
+/** Domínios do site, sem www: o do pedido (HTTP_HOST) e o de configuracoes_site.dominio — este ainda é o endereço
+ *  temporário (nip.io) em vários sites que já passaram para o domínio próprio. */
+function dominiosSite(): array {
+    $r = [];
+    foreach ([(string)($_SERVER['HTTP_HOST'] ?? ''), (string)siteConfig('dominio', '')] as $d) {
+        $d = strtolower(preg_replace('#^(https?://)?(www\.)?#i', '', trim($d)));
+        $d = (string)strtok($d, '/:');
+        if ($d !== '' && strpos($d, '.') !== false && !filter_var($d, FILTER_VALIDATE_IP)) $r[] = $d;
+    }
+    return array_values(array_unique($r));
+}
+
+/** Domínio principal do site (o do pedido; sem pedido, o da configuração). */
+function dominioSite(): string {
+    return dominiosSite()[0] ?? '';
+}
+
+/** O SPF do domínio autoriza o servidor onde o site corre? (ip4 exato, a e mx do próprio domínio; não segue include) */
+function spfAutorizaServidor(string $dominio): bool {
+    static $cache = [];
+    $dominio = strtolower(trim($dominio));
+    if ($dominio === '') return false;
+    if (isset($cache[$dominio])) return $cache[$dominio];
+    $ips = array_values(array_filter(array_unique(array_merge([(string)($_SERVER['SERVER_ADDR'] ?? '')], SERVIDORES_ENVIO_IPS)),
+        fn($ip) => $ip !== '' && strpos($ip, '127.') !== 0));
+    $spf = '';
+    foreach (@dns_get_record($dominio, DNS_TXT) ?: [] as $r) {
+        $t = (string)($r['txt'] ?? implode('', $r['entries'] ?? []));
+        if (stripos($t, 'v=spf1') === 0) { $spf = $t; break; }
+    }
+    $ok = false;
+    foreach ($spf !== '' ? preg_split('/\s+/', $spf) : [] as $tok) {
+        $tok = ltrim($tok, '+');
+        if (stripos($tok, 'ip4:') === 0 && in_array(substr($tok, 4), $ips, true)) { $ok = true; break; }
+        if (strcasecmp($tok, 'a') === 0 && array_intersect(gethostbynamel($dominio) ?: [], $ips)) { $ok = true; break; }
+        if (strcasecmp($tok, 'mx') === 0) {
+            foreach (@dns_get_record($dominio, DNS_MX) ?: [] as $mx) {
+                if (array_intersect(gethostbynamel((string)$mx['target']) ?: [], $ips)) { $ok = true; break 2; }
+            }
+        }
+    }
+    return $cache[$dominio] = $ok;
+}
+
+/** Remetente para emails em nome da Junta (ex.: «Responder», 06/11/2026): o email da Junta, se o domínio dele autorizar
+ *  este servidor; senão geral@<domínio do site>, se este o autorizar; senão '' (fica a conta de envio partilhada). */
+function remetenteJunta(): string {
+    $email = (string)siteConfig('email', '');
+    if ($email !== '' && emailValido($email) && spfAutorizaServidor(substr((string)strrchr($email, '@'), 1))) return $email;
+    foreach (dominiosSite() as $dominio) {
+        if (spfAutorizaServidor($dominio)) return 'geral@' . $dominio;
+    }
+    return '';
+}
+
+// $de / $bcc (05/11/2026): remetente próprio (ex.: o email da Junta, no «Responder») e cópia oculta. Se o SPF do
+// domínio do remetente autorizar este servidor, o email sai pelo servidor de email local, em nome dele; senão sai
+// pelo SMTP partilhado, com a conta de envio no «De:».
 function enviarEmailSistema($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
+    if ($de && emailValido($de) && spfAutorizaServidor(substr((string)strrchr($de, '@'), 1))
+        && enviarEmailLocal($para, $assunto, $html, $replyTo, $de, $bcc)) {
+        return true;
+    }
+
     // Sem password configurada: não tenta enviar (evita timeouts nos formulários).
     if (SMTP_PASS === '') {
         return false;
@@ -84,19 +149,18 @@ function enviarEmailSistema($para, $assunto, $html, $replyTo = null, $de = null,
     }
 }
 
-// Envio pelo servidor de email local do alojamento (sendmail do PHP), com remetente noreply@<domínio do site> —
-// o SPF do domínio do alojamento autoriza esse servidor. Só se usa quando o SMTP partilhado está inacessível.
+// Envio pelo servidor de email local (sendmail do PHP): em nome de $de, se o SPF do domínio dele autorizar este
+// servidor (ou for o domínio do site); senão noreply@<domínio do site>.
 function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
-    $dominio = preg_replace('#^(https?://)?(www\.)?#i', '', (string)siteConfig('dominio', ''));
-    $dominio = strtok($dominio, '/:') ?: preg_replace('/^www\./i', '', (string)($_SERVER['HTTP_HOST'] ?? ''));
+    $dominio = dominioSite();
     if ($dominio === '' || !function_exists('mail')) return false;
 
     $mail = new PHPMailer(true);
     try {
         $mail->isMail();
         $mail->CharSet = 'UTF-8';
-        // remetente pedido (ex.: geral@ da Junta) só se for do domínio do site — é o que o SPF do alojamento autoriza
-        $deOk = $de && emailValido($de) && preg_match('/@(.+\.)?' . preg_quote($dominio, '/') . '$/i', $de);
+        $dDe = $de ? strtolower(substr((string)strrchr($de, '@'), 1)) : '';
+        $deOk = $de && emailValido($de) && ($dDe === $dominio || spfAutorizaServidor($dDe));
         $mail->setFrom($deOk ? $de : 'noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
         $mail->addAddress($para);
         if ($replyTo && emailValido($replyTo)) {

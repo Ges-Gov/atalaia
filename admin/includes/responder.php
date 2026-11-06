@@ -37,9 +37,9 @@ function responderMensagem(PDO $pdo, string $tabela, int $id, string $texto): st
         . '<hr style="border:0;border-top:1px solid #e5e7eb;margin:24px 0">'
         . '<p style="color:#64748b;font-size:13px">Em resposta à sua mensagem de ' . date('d/m/Y', strtotime($m['criado_em'])) . ' («' . htmlspecialchars($m['assunto']) . '»):</p>'
         . '<blockquote style="color:#64748b;font-size:13px;border-left:3px solid #e5e7eb;margin:0;padding-left:12px">' . nl2br(htmlspecialchars($m['mensagem'])) . '</blockquote>';
-    // enviado em nome do email da Junta (remetente), com cópia oculta para a Junta ficar com registo
+    // remetente: o email da Junta ou geral@<domínio do site> (remetenteJunta), com cópia oculta para a Junta ficar com registo
     $emailJunta = (string)siteConfig('email');
-    if (!enviarEmailSistema($m['email'], 'Re: ' . $m['assunto'], $html, $emailJunta, $emailJunta, $emailJunta)) {
+    if (!enviarEmailSistema($m['email'], 'Re: ' . $m['assunto'], $html, $emailJunta, remetenteJunta(), $emailJunta)) {
         return 'Não foi possível enviar o email (o envio de email do site não está a funcionar). A resposta não foi enviada nem gravada.';
     }
     $pdo->prepare($sql['gravar'])->execute([$texto, (string)($_SESSION['admin'] ?? ''), $id]);

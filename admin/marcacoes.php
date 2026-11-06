@@ -151,7 +151,7 @@ function labelEstadoMarcacao($estado) {
 
 <div class="agenda-kpi-grid">
     <div class="agenda-kpi"><span><i class="bi bi-calendar-event"></i></span><strong><?= (int)$kpis['total'] ?></strong><small>Total</small></div>
-    <div class="agenda-kpi"><span>⏳</span><strong><?= (int)$kpis['pendente'] ?></strong><small>Pendentes</small></div>
+    <div class="agenda-kpi"><span><i class="bi bi-hourglass-split"></i></span><strong><?= (int)$kpis['pendente'] ?></strong><small>Pendentes</small></div>
     <div class="agenda-kpi"><span><i class="bi bi-check-circle-fill"></i></span><strong><?= (int)$kpis['confirmada'] ?></strong><small>Confirmadas</small></div>
     <div class="agenda-kpi"><span><i class="bi bi-flag"></i></span><strong><?= (int)$kpis['concluida'] ?></strong><small>Concluídas</small></div>
     <div class="agenda-kpi"><span><i class="bi bi-fire"></i></span><strong><?= (int)$kpis['hoje'] ?></strong><small>Hoje</small></div>

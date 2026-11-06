@@ -206,7 +206,7 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
                     <?php if(!empty($heraldica['fonte_url'])): ?>
                         <a class="heraldica-source" href="<?= htmlspecialchars($heraldica['fonte_url']) ?>" target="_blank"><i class="bi bi-link-45deg"></i> <?= htmlspecialchars($heraldica['fonte_texto']) ?></a>
                     <?php else: ?>
-                        <span class="heraldica-source">ℹ️ <?= htmlspecialchars($heraldica['fonte_texto']) ?></span>
+                        <span class="heraldica-source"><i class="bi bi-info-circle"></i> <?= htmlspecialchars($heraldica['fonte_texto']) ?></span>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>

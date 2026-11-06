@@ -741,7 +741,7 @@ body {
     transition: all .25s ease;
 }
 
-/* 👇 AQUI ESTÁ A MAGIA */
+/* AQUI ESTÁ A MAGIA */
 .nav-dropdown:hover .submenu {
     opacity: 1;
     visibility: visible;
@@ -1569,10 +1569,10 @@ body {
 .form-publico select,
 .form-publico textarea {
     width: 100%;
-    min-height: 44px; /* 🔥 mais baixo */
+    min-height: 44px; /* mais baixo */
     border: 1px solid #dbe3ea;
     border-radius: 12px;
-    padding: 10px 14px; /* 🔥 menos padding */
+    padding: 10px 14px; /* menos padding */
     background: #f8fafc;
     font-size: 14px;
     color: #11151B;
@@ -1583,7 +1583,7 @@ body {
 /* TEXTAREA */
 .form-publico textarea {
     grid-column: span 2;
-    min-height: 110px; /* 🔥 mais equilibrado */
+    min-height: 110px; /* mais equilibrado */
 }
 
 /* LABEL */
@@ -1608,7 +1608,7 @@ body {
     font-size: 14px;
 }
 
-/* 🔥 RESPIRO DO LADO DIREITO */
+/* RESPIRO DO LADO DIREITO */
 .content-box {
     padding: 28px 32px !important;
 }
@@ -1745,7 +1745,7 @@ body {
 }
 
 .pedidos-grid {
-    gap: 40px; /* 🔥 mais espaço entre colunas */
+    gap: 40px; /* mais espaço entre colunas */
 }
 
 .pedidos-grid .content-box {

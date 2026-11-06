@@ -928,7 +928,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="marcacoes-contact-strip">
                 <div><span><i class="bi bi-geo-alt"></i></span> <?= te('marcacoes.sidebar.nota1') ?></div>
                 <div><span><i class="bi bi-envelope"></i></span> <?= te('marcacoes.sidebar.nota2') ?></div>
-                <div><span>⏱️</span> <?= te('marcacoes.sidebar.nota3') ?></div>
+                <div><span><i class="bi bi-clock"></i></span> <?= te('marcacoes.sidebar.nota3') ?></div>
             </div>
         </aside>
 

@@ -605,7 +605,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
                             <?php if (!empty($p['imagem'])): ?>
                                 <img src="/assets/img/<?= htmlspecialchars($p['imagem']) ?>" alt="<?= htmlspecialchars($p['nome']) ?>">
                             <?php else: ?>
-                                <div class="ponto-sem-img-insane">⌂</div>
+                                <div class="ponto-sem-img-insane"><i class="bi bi-image"></i></div>
                             <?php endif; ?>
 
                             <div class="ponto-pin-float"><i class="bi bi-geo-alt-fill"></i></div>

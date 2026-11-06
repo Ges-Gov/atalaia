@@ -132,8 +132,10 @@ function textoRicoEditor(): void {
 .tr-barra button:hover{background:#e9eef5;border-color:#d6dde8}
 .tr-barra .tr-sep{width:1px;height:22px;background:#d6dde8;margin:0 4px}
 .tr-barra .tr-cor{width:20px;height:20px;min-width:20px;border-radius:50%;padding:0;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1}
-.tr-barra input[type=color]{width:28px;height:28px;border:none;background:none;padding:0;cursor:pointer}
-.tr-barra select{height:32px;border:1px solid #d6dde8;border-radius:7px;background:#fff;padding:0 6px;font-size:13px}
+/* !important: os formulários do backoffice (ex. .vp-compor) esticam inputs e selects a 100% */
+.tr-editor .tr-barra input[type=color]{width:28px!important;height:28px!important;min-height:0!important;border:none!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;cursor:pointer;flex:0 0 auto}
+.tr-editor .tr-barra select{width:auto!important;height:32px!important;min-height:0!important;margin:0!important;border:1px solid #d6dde8!important;border-radius:7px!important;background:#fff!important;padding:0 6px!important;font-size:13px!important;box-shadow:none!important;flex:0 0 auto}
+.tr-editor .tr-barra button{width:auto;margin:0;box-shadow:none;flex:0 0 auto}
 .tr-area{min-height:110px;max-height:420px;overflow:auto;padding:12px 14px;outline:none;line-height:1.5;font-size:15px;text-align:left}
 .tr-area:empty:before{content:attr(data-placeholder);color:#94a3b8}
 .tr-area ul,.tr-area ol{margin:4px 0 4px 22px;padding:0}

@@ -11,7 +11,8 @@ $pontos = $pdo->query("
     ORDER BY nome ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-$economia = $pdo->query("
+require_once __DIR__ . "/includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
+$economia = comercioEmCandidaturas() ? [] : $pdo->query("
     SELECT * FROM comercio_local
     WHERE latitude IS NOT NULL AND longitude IS NOT NULL
     AND latitude != '' AND longitude != ''

@@ -26,6 +26,7 @@ function menuAdminDefinicao(array $badges = []): array
 {
     $badgePedidos = $badgeRequerimentos = $badgeFaturacao = $badgeMensagens = $badgeReservas = 0;
     $badgeSugestoes = null;
+    $badgeComercioCand = null;   // null = sem a tabela das candidaturas à Economia Local (não aparece no menu)
     extract($badges);
 
     $menuAdmin = [
@@ -79,6 +80,8 @@ function menuAdminDefinicao(array $badges = []): array
              'rel' => ['adicionar_associacao.php', 'editar_associacao.php'], 'dica' => 'Associações culturais e desportivas, contactos e posição no mapa'],
             ['chave' => 'comercio', 'rotulo' => 'Economia local', 'href' => 'comercio.php', 'icone' => 'bi-shop', 'site' => '/comercio.php',
              'rel' => ['adicionar_comercio.php', 'editar_comercio.php'], 'dica' => 'Restaurantes, cafés, alojamento e lojas da freguesia'],
+            ...($badgeComercioCand !== null ? [['chave' => 'comercio_candidaturas', 'rotulo' => 'Candidaturas (comércio)', 'href' => 'comercio-candidaturas.php', 'icone' => 'bi-inbox', 'site' => '/comercio.php',
+             'badge' => $badgeComercioCand, 'dica' => 'Pedidos dos negócios da freguesia para aparecerem na Economia Local']] : []),
             ['sub' => 'Informação'],
             ['chave' => 'documentos', 'rotulo' => 'Documentos públicos', 'href' => 'documentos.php', 'icone' => 'bi-file-earmark-text', 'site' => '/freguesia-documentos.php',
              'rel' => ['adicionar_documento.php', 'editar_documento.php'], 'dica' => 'Orçamento, contas, regulamentos e outros documentos em PDF'],

@@ -84,7 +84,8 @@ $contactos = $pdo->query("
     LIMIT 15
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-$comercio = $pdo->query("
+require_once __DIR__ . "/../includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
+$comercio = comercioEmCandidaturas() ? [] : $pdo->query("
     SELECT nome, tipo, telefone, morada
     FROM comercio_local
     ORDER BY nome ASC

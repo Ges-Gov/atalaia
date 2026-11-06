@@ -138,8 +138,9 @@ try {
     }
 } catch (Exception $e) {}
 
+require_once __DIR__ . "/../includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
 /* Economia Local */
-try {
+if (!comercioEmCandidaturas()) try {
     $stmt = $pdo->prepare("
         SELECT nome, descricao, categoria
         FROM comercio_local

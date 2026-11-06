@@ -79,7 +79,9 @@ $badgeSugestoes = null;   // null = o site não usa o formulário de sugestões 
 if (temaConfig('sugestoes_ativo', '0') === '1') {
     try { $badgeSugestoes = (int)$pdo->query("SELECT COUNT(*) FROM sugestoes WHERE lida = 0")->fetchColumn(); } catch (Throwable $e) { $badgeSugestoes = 0; }
 }
-[$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas', 'badgeSugestoes'));
+$badgeComercioCand = null;   // 06/11/2026 (Atalaia): candidaturas à Economia Local por ver
+try { $badgeComercioCand = (int)$pdo->query("SELECT COUNT(*) FROM comercio_candidaturas WHERE estado = 'nova'")->fetchColumn(); } catch (Throwable $e) {}
+[$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas', 'badgeSugestoes', 'badgeComercioCand'));
 [$menuVisivel, $menuAtual, $menuGrupoAtual] = menuAdminPreparar($menuAdmin, (string)$adminActive);
 
 $adminPapeis = ['admin' => 'Administrador', 'operador' => 'Operador', 'vogal' => 'Vogal',

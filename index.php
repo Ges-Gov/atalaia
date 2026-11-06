@@ -161,7 +161,8 @@ if (!$presidenteHome && trim((string)($home['presidente_nome'] ?? '')) !== '') {
 
 $associacoesCount = $pdo->query("SELECT COUNT(*) FROM associacoes")->fetchColumn();
 $pontosCount = $pdo->query("SELECT COUNT(*) FROM pontos_interesse")->fetchColumn();
-$comercioCount = $pdo->query("SELECT COUNT(*) FROM comercio_local")->fetchColumn();
+require_once __DIR__ . "/includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
+$comercioCount = comercioEmCandidaturas() ? null : $pdo->query("SELECT COUNT(*) FROM comercio_local")->fetchColumn();
 $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1")->fetchColumn();
 ?>
 
@@ -966,7 +967,9 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                 <?php foreach ([
                     ['/pontos.php', $pontosCount, 'Pontos de interesse', 'bi-geo-alt-fill'],
                     ['/associacoes.php', $associacoesCount, 'Associações', 'bi-people-fill'],
-                    ['/comercio.php', $comercioCount, 'Comércio local', 'bi-shop'],
+                    // em modo de candidaturas (Atalaia, 06/11/2026) o comércio não se mostra: fica o número de notícias
+                    $comercioCount !== null ? ['/comercio.php', $comercioCount, 'Comércio local', 'bi-shop']
+                        : ['/noticias.php', (int)$pdo->query("SELECT COUNT(*) FROM noticias")->fetchColumn(), 'Notícias', 'bi-newspaper'],
                     ['/freguesia-documentos.php', $documentosCount, 'Documentos', 'bi-file-earmark-text-fill'],
                 ] as [$urlStat, $nStat, $rotStat, $icoStat]): ?>
                     <a href="<?= $urlStat ?>" class="stat-tile" aria-label="<?= (int)$nStat ?> <?= $rotStat ?>">

@@ -128,7 +128,8 @@ try {
                          'img' => $p['imagem'] ? '/assets/img/' . $p['imagem'] : '', 'link' => '/ponto.php?id=' . (int)$p['id'], 'extra' => 'Ponto de interesse'];
     }
 } catch (Exception $e) {}
-try {
+require_once __DIR__ . "/includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
+if (!comercioEmCandidaturas()) try {
     foreach ($pdo->query("SELECT nome, tipo, morada, latitude, longitude, imagem, telefone FROM comercio_local WHERE latitude <> '' AND longitude <> '' AND latitude IS NOT NULL ORDER BY nome") as $c) {
         $locaisMapa[] = ['tipo' => 'comercio', 'sub' => $subComercio((string)$c['tipo']), 'nome' => $c['nome'], 'morada' => (string)$c['morada'], 'lat' => (float)$c['latitude'], 'lng' => (float)$c['longitude'],
                          'img' => $c['imagem'] ? '/assets/img/' . $c['imagem'] : '', 'link' => '/comercio.php', 'extra' => $c['tipo'] ?: 'Economia local'];

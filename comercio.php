@@ -1,3 +1,12 @@
+<?php
+// 06/11/2026 (Atalaia): em modo de candidaturas a página mostra só a apresentação e o formulário de pedido de divulgação
+require_once __DIR__ . "/includes/db.php";
+require_once __DIR__ . "/includes/comercio_candidaturas.php";
+if (comercioEmCandidaturas()) {
+    require __DIR__ . "/includes/comercio_candidaturas_pagina.php";
+    exit;
+}
+?>
 <?php require_once "includes/header.php"; ?>
 
 <?php

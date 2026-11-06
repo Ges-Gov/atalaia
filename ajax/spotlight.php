@@ -131,7 +131,8 @@ foreach (procurar($pdo, "SELECT nome, categoria, telefone FROM associacoes
         'icone' => 'bi-people-fill',
     ];
 }
-foreach (procurar($pdo, "SELECT nome, tipo, telefone FROM comercio_local
+require_once __DIR__ . "/../includes/comercio_candidaturas.php";   // 06/11/2026: Economia Local em modo de candidaturas
+if (!comercioEmCandidaturas()) foreach (procurar($pdo, "SELECT nome, tipo, telefone FROM comercio_local
                          WHERE nome LIKE ? OR tipo LIKE ? LIMIT 3", 2, $like) as $r) {
     $resultados[] = [
         'grupo' => 'Comércio local',

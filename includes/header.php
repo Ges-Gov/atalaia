@@ -264,6 +264,7 @@ $sepBgImg = !empty($fundoSeparadorPagina)
                     <nav class="submenu" aria-label="Junta Virtual">
                         <a href="/pedidos.php">Ocorrências</a>
                         <a href="/sugestoes.php">Sugestões</a>
+                        <a href="/marcacoes.php">Marcações e requisições</a>
                          
                                
 

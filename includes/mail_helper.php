@@ -186,6 +186,8 @@ function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $
             if ($via === 'sendmail') { $mail->isSendmail(); $mail->Sendmail = '/usr/sbin/sendmail'; } else { $mail->isMail(); }
             $mail->CharSet = 'UTF-8';
             $mail->setFrom($remetente, siteConfig('nome_site', 'Junta de Freguesia'));
+            // o isSendmail() copia o «-f» do sendmail_path (com aspas) para o Sender e o setFrom() já não o troca
+            $mail->Sender = $remetente;
             $mail->addAddress($para);
             if ($replyTo && emailValido($replyTo)) {
                 $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
@@ -196,7 +198,7 @@ function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $
             $mail->Body = $html;
             if ($mail->send()) return true;
         } catch (\Throwable $e) {
-            // tenta a via seguinte
+            error_log('enviarEmailLocal (' . $via . '): ' . ($mail->ErrorInfo ?: $e->getMessage()));
         }
     }
     return false;

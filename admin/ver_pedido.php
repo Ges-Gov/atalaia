@@ -728,11 +728,15 @@ function vpIniciais($nome) {
             <span class="vp-painel-icone"><i class="bi bi-chat-dots-fill"></i></span>
             <h2>Conversa com o Cidadão</h2>
         </div>
-        <a class="btn danger"
-           href="limpar_chat_pedido.php?id=<?= $id ?>"
-           onclick="return confirm('Tem a certeza que quer limpar toda a conversa deste pedido? Esta ação não pode ser revertida.')">
-            Limpar conversa
-        </a>
+        <?php if (isGesGov()):   // 06/11/2026: a conversa fica sempre guardada; só a GesGov a pode limpar (POST + token)
+            if (empty($_SESSION['pedidos_admin_token'])) $_SESSION['pedidos_admin_token'] = bin2hex(random_bytes(16)); ?>
+            <form method="post" action="limpar_chat_pedido.php" style="margin:0"
+                  onsubmit="return confirm('ATENÇÃO: apaga PARA SEMPRE todas as mensagens desta conversa com o cidadão. Não pode ser revertido.\n\nLimpar a conversa?')">
+                <input type="hidden" name="token" value="<?= htmlspecialchars($_SESSION['pedidos_admin_token']) ?>">
+                <input type="hidden" name="id" value="<?= (int)$id ?>">
+                <button type="submit" class="btn danger">Limpar conversa (GesGov)</button>
+            </form>
+        <?php endif; ?>
     </div>
 
     <div class="chat-box" id="chatBox">

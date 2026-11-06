@@ -145,6 +145,7 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
     grid-template-columns:repeat(3,1fr);
     gap:18px;
 }
+.heraldica-grid--2{grid-template-columns:repeat(2,1fr);}   /* 2 ou 4 cartões: 2 colunas, sem cartão sozinho */
 .heraldica-card{
     background:linear-gradient(180deg,#fff,#f8fafc);
     border:1px solid #e5e7eb;
@@ -166,6 +167,21 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
     place-items:center;
     font-size:30px;
     margin-bottom:15px;
+}
+/* 06/11/2026: cartão com a imagem do brasão (heraldica_elementos.imagem, em uploads/heraldica/) em vez do ícone */
+.heraldica-brasao{
+    height:200px;
+    display:grid;
+    place-items:center;
+    margin:0 0 16px;
+    border-radius:20px;
+    background:radial-gradient(circle at 50% 45%, #fff 0%, #f1f5f9 100%);
+}
+.heraldica-brasao img{
+    max-width:80%;
+    max-height:180px;
+    object-fit:contain;
+    filter:drop-shadow(0 8px 14px rgba(15,23,42,.18));
 }
 .heraldica-card h3{
     margin:0 0 8px;
@@ -215,10 +231,14 @@ $img = !empty($heraldica['imagem']) ? "/uploads/heraldica/" . htmlspecialchars($
         <div class="heraldica-section">
             <h2><?= te('heraldica.elementos.titulo') ?></h2>
 
-            <div class="heraldica-grid">
+            <div class="heraldica-grid<?= in_array(count($elementos), [2, 4], true) ? ' heraldica-grid--2' : '' ?>">
                 <?php foreach($elementos as $e): ?>
                     <article class="heraldica-card">
-                        <div class="heraldica-icon"><i class="bi <?= htmlspecialchars($e['icone'] ?: 'bi-shield') ?>"></i></div>
+                        <?php if (!empty($e['imagem'])): ?>
+                            <div class="heraldica-brasao"><img src="/uploads/heraldica/<?= htmlspecialchars(basename((string)$e['imagem'])) ?>" alt="<?= htmlspecialchars($e['titulo']) ?>" loading="lazy"></div>
+                        <?php else: ?>
+                            <div class="heraldica-icon"><i class="bi <?= htmlspecialchars($e['icone'] ?: 'bi-shield') ?>"></i></div>
+                        <?php endif; ?>
                         <h3><?= htmlspecialchars($e['titulo']) ?></h3>
                         <p><?= hTxt($e['descricao']) ?></p>
                     </article>

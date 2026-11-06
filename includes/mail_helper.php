@@ -84,22 +84,38 @@ function spfAutorizaServidor(string $dominio): bool {
     return $cache[$dominio] = $ok;
 }
 
+/** O remetente técnico do servidor (o «-f» do sendmail_path, que o FastPanel fixa com o «email do administrador» do
+ *  site) é do mesmo domínio que $dominio? Sem isso o DMARC falha. Sem «-f» fixo (ex.: cPanel da Atalaia) vale o nosso. */
+function envelopeServidorAlinhado(string $dominio): bool {
+    $dominio = strtolower(trim($dominio));
+    if ($dominio === '') return false;
+    if (!preg_match('/-f\s*[\'"]?[^\s\'"@]+@([^\s\'"]+)/', (string)ini_get('sendmail_path'), $m)) return true;
+    $env = strtolower($m[1]);
+    return $env === $dominio || str_ends_with($env, '.' . $dominio) || str_ends_with($dominio, '.' . $env);
+}
+
+/** Pode sair do servidor local em nome deste domínio? (SPF autoriza o servidor e o remetente técnico alinha) */
+function podeEnviarComo(string $dominio): bool {
+    return envelopeServidorAlinhado($dominio) && spfAutorizaServidor($dominio);
+}
+
 /** Remetente para emails em nome da Junta (ex.: «Responder», 06/11/2026): o email da Junta, se o domínio dele autorizar
  *  este servidor; senão geral@<domínio do site>, se este o autorizar; senão '' (fica a conta de envio partilhada). */
 function remetenteJunta(): string {
     $email = (string)siteConfig('email', '');
-    if ($email !== '' && emailValido($email) && spfAutorizaServidor(substr((string)strrchr($email, '@'), 1))) return $email;
+    if ($email !== '' && emailValido($email) && podeEnviarComo(substr((string)strrchr($email, '@'), 1))) return $email;
     foreach (dominiosSite() as $dominio) {
-        if (spfAutorizaServidor($dominio)) return 'geral@' . $dominio;
+        if (podeEnviarComo($dominio)) return 'geral@' . $dominio;
     }
     return '';
 }
 
 // $de / $bcc (05/11/2026): remetente próprio (ex.: o email da Junta, no «Responder») e cópia oculta. Se o SPF do
-// domínio do remetente autorizar este servidor, o email sai pelo servidor de email local, em nome dele; senão sai
+// domínio do remetente autorizar este servidor e o remetente técnico do servidor for desse domínio (podeEnviarComo),
+// o email sai pelo servidor de email local, em nome dele; senão sai
 // pelo SMTP partilhado, com a conta de envio no «De:».
 function enviarEmailSistema($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
-    if ($de && emailValido($de) && spfAutorizaServidor(substr((string)strrchr($de, '@'), 1))
+    if ($de && emailValido($de) && podeEnviarComo(substr((string)strrchr($de, '@'), 1))
         && enviarEmailLocal($para, $assunto, $html, $replyTo, $de, $bcc)) {
         return true;
     }
@@ -160,7 +176,7 @@ function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $
         $mail->isMail();
         $mail->CharSet = 'UTF-8';
         $dDe = $de ? strtolower(substr((string)strrchr($de, '@'), 1)) : '';
-        $deOk = $de && emailValido($de) && ($dDe === $dominio || spfAutorizaServidor($dDe));
+        $deOk = $de && emailValido($de) && ($dDe === $dominio || podeEnviarComo($dDe));
         $mail->setFrom($deOk ? $de : 'noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
         $mail->addAddress($para);
         if ($replyTo && emailValido($replyTo)) {

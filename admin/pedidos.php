@@ -3,6 +3,11 @@ $adminPageTitle = "Pedidos à Junta";
 $adminActive = "pedidos";
 require_once "includes/header.php";
 require_once __DIR__ . "/../includes/mapa.php"; $centroMapa = centroFreguesia();
+// 06/11/2026: «Arquivar» / «Eliminar» por formulário com token (arquivar_pedido.php, eliminar_pedido.php)
+if (empty($_SESSION['pedidos_admin_token'])) $_SESSION['pedidos_admin_token'] = bin2hex(random_bytes(16));
+$pedidosToken = $_SESSION['pedidos_admin_token'];
+$pedidosAviso = $_SESSION['pedidos_aviso'] ?? null;
+unset($_SESSION['pedidos_aviso']);
 
 $estado = $_GET['estado'] ?? '';
 $aba = $_GET['aba'] ?? 'gestao';
@@ -46,6 +51,9 @@ if ($aba === 'atribuidas') {
     $params[] = (int)$adminId;
 } elseif ($aba === 'tratadas') {
     $where[] = "estado IN ('resolvido', 'arquivado')";
+} elseif ($aba === 'gestao' && $estado === '') {
+    // as arquivadas saem da lista de trabalho; ficam em «Tratadas» (ou com o filtro de estado «Arquivados»)
+    $where[] = "estado <> 'arquivado'";
 } elseif ($aba === 'minhas') {
     $where[] = "EXISTS (SELECT 1 FROM pedidos_funcionarios pf WHERE pf.pedido_id = pedidos_junta.id AND pf.admin_id = ?)";
     $params[] = (int)$adminId;
@@ -315,8 +323,30 @@ $percentagemMapaResolvidas = $totalMapa > 0 ? round(($totalMapaResolvidas / $tot
 .prioridade-normal{background:#e9ecef;color:#495057}
 .prioridade-baixo{background:#f1f3f5;color:#868e96}
 
+.form-acao{display:inline;margin:0;padding:0;}
+.form-acao button.btn-acao{border:none;cursor:pointer;font:inherit;}
+.btn-acao.arquivar{background:#e0f2fe;color:#075985;}
+.btn-acao.arquivar:hover{background:#bae6fd;}
+.pedidos-dica{margin:0 0 14px;padding:10px 14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;color:#475569;font-size:14px;line-height:1.5;}
+.pedidos-dica i{color:#075985;margin-right:4px;}
+.pedidos-aviso{padding:12px 16px;border-radius:12px;margin:0 0 14px;font-weight:700;}
+.pedidos-aviso.ok{background:#dcfce7;color:#166534;}
+.pedidos-aviso.erro{background:#fee2e2;color:#991b1b;}
 .tag-pill{display:inline-flex;align-items:center;background:color-mix(in srgb, var(--cor-principal, #242A30) 12%, white);color:var(--cor-principal,#242A30);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:800;margin:2px 4px 2px 0;white-space:nowrap;}
 </style>
+
+<?php if ($pedidosAviso): ?>
+    <div class="pedidos-aviso <?= $pedidosAviso[0] === 'ok' ? 'ok' : 'erro' ?>"><?= htmlspecialchars($pedidosAviso[1]) ?></div>
+<?php endif; ?>
+<script>
+function confirmarEliminarOcorrencia(f) {
+    return confirm('ATENÇÃO: eliminar é PERMANENTE.\n\n'
+        + 'A ocorrência ' + (f.dataset.codigo || '') + ', as fotos, as mensagens e o histórico são apagados e não podem ser recuperados.\n\n'
+        + 'Use «Eliminar» só para enganos (ocorrência duplicada ou de teste). Para guardar uma ocorrência tratada, use «Arquivar».\n\n'
+        + 'Eliminar mesmo assim?');
+}
+</script>
+<p class="pedidos-dica"><i class="bi bi-archive"></i> Depois de tratar uma ocorrência, use <strong>Arquivar</strong>: sai desta lista e fica guardada em «Tratadas», com as mensagens e o histórico. <strong>Eliminar</strong> apaga para sempre e serve só para enganos (ocorrência duplicada ou de teste).</p>
 
 <div class="pedidos-header-actions">
     <div class="pedidos-tabs">
@@ -463,8 +493,20 @@ $percentagemMapaResolvidas = $totalMapa > 0 ? round(($totalMapaResolvidas / $tot
                 <td>
                     <div class="acoes-btns">
                         <a class="btn-acao ver" href="ver_pedido.php?id=<?= $p['id'] ?>" title="Ver"><i class="bi bi-eye"></i></a>
-                        <?php if (isAdminMaster()): ?>
-                            <a class="btn-acao eliminar" href="eliminar_pedido.php?id=<?= $p['id'] ?>" onclick="return confirm('Eliminar ocorrência?')" title="Eliminar"><i class="bi bi-trash"></i></a>
+                        <?php if ($p['estado'] !== 'arquivado'): ?>
+                            <form method="post" action="arquivar_pedido.php" class="form-acao">
+                                <input type="hidden" name="token" value="<?= htmlspecialchars($pedidosToken) ?>">
+                                <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+                                <button type="submit" class="btn-acao arquivar" title="Arquivar (fica guardada em «Tratadas»)"><i class="bi bi-archive"></i></button>
+                            </form>
+                        <?php endif; ?>
+                        <?php if (isAdminMaster() || isGesGov()): ?>
+                            <form method="post" action="eliminar_pedido.php" class="form-acao"
+                                  data-codigo="<?= htmlspecialchars((string)$p['codigo']) ?>" onsubmit="return confirmarEliminarOcorrencia(this)">
+                                <input type="hidden" name="token" value="<?= htmlspecialchars($pedidosToken) ?>">
+                                <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+                                <button type="submit" class="btn-acao eliminar" title="Eliminar para sempre (só para enganos)"><i class="bi bi-trash"></i></button>
+                            </form>
                         <?php endif; ?>
                     </div>
 

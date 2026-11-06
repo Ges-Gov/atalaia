@@ -209,21 +209,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sucesso = true;
 
         $emailJunta = siteConfig('email_notificacoes', siteConfig('email'));
-        $assuntoJunta = "Novo pedido à Junta - " . $assunto;
+        // 06/11/2026 (Atalaia, pedido do presidente): aviso à Junta com «Nova ocorrência», ligação direta para a
+        // ocorrência no backoffice, mapa e um botão para responder ao freguês por email
+        $assuntoJunta = "Nova ocorrência - " . $assunto;
+        $baseSite = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https' ? 'https' : 'http')
+            . '://' . preg_replace('/[^a-z0-9.\-:]/i', '', (string)($_SERVER['HTTP_HOST'] ?? ''));
+        $linkBackoffice = $baseSite . '/admin/ver_pedido.php?id=' . (int)$pedido_id;
+        $linkMapa = 'https://www.google.com/maps?q=' . rawurlencode($latitude . ',' . $longitude);
+        $estiloBotao = 'display:inline-block;background:#1f3b63;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:bold';
 
         $htmlJunta = "
-            <h2>Novo pedido recebido</h2>
-            <p><strong>Código:</strong> " . htmlspecialchars($codigoPedido) . "</p>
-            <p><strong>Nome:</strong> " . htmlspecialchars($nome) . "</p>
-            <p><strong>Email:</strong> " . htmlspecialchars($email) . "</p>
-            <p><strong>Telefone:</strong> " . htmlspecialchars($telefone) . "</p>
-            <p><strong>Categoria:</strong> " . htmlspecialchars($categoria) . "</p>
-            <p><strong>Subcategoria:</strong> " . htmlspecialchars($subcategoriaFinal ?? '') . "</p>
+            <h2>Nova ocorrência recebida</h2>
             <p><strong>Assunto:</strong> " . htmlspecialchars($assunto) . "</p>
-            <p><strong>Localização:</strong> " . htmlspecialchars($localizacao) . "</p>
-            <p><strong>Coordenadas:</strong> " . htmlspecialchars($latitude) . ", " . htmlspecialchars($longitude) . "</p>
+            <p><strong>Código:</strong> " . htmlspecialchars($codigoPedido) . "</p>
+            <p><strong>Categoria:</strong> " . htmlspecialchars($categoria) . ($subcategoriaFinal ? " — " . htmlspecialchars($subcategoriaFinal) : "") . "</p>
             <p><strong>Mensagem:</strong><br>" . nl2br(htmlspecialchars($mensagem)) . "</p>
-            <p>Consulte este pedido no backoffice.</p>
+            <p><strong>Localização:</strong> " . htmlspecialchars($localizacao) . " (<a href=\"" . htmlspecialchars($linkMapa) . "\">ver no mapa</a>)</p>
+            <hr>
+            <p><strong>Comunicada por:</strong> " . htmlspecialchars($nome) . "</p>
+            <p><strong>Email:</strong> " . ($email !== '' ? htmlspecialchars($email) : '—') . "</p>
+            <p><strong>Telefone:</strong> " . ($telefone !== '' ? htmlspecialchars($telefone) : '—') . "</p>
+            <p style=\"margin-top:22px\"><a href=\"" . htmlspecialchars($linkBackoffice) . "\" style=\"$estiloBotao\">Abrir a ocorrência no backoffice</a></p>
+            " . ($email !== '' ? "<p><a href=\"mailto:" . htmlspecialchars(rawurlencode($email)) . "?subject=" . rawurlencode('Re: ' . $assunto) . "\">Responder ao freguês por email</a></p>" : "") . "
         ";
 
         if (!empty($emailJunta)) {

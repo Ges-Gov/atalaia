@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/includes/cidadao_auth.php";
 require_once __DIR__ . "/includes/header.php";
+require_once __DIR__ . "/includes/texto_rico.php";   // resumo da resposta sem formatação (06/11/2026)
 ?>
 
 
@@ -282,7 +283,7 @@ $ultimosPedidos = array_slice($pedidos, 0, 5);
                                 </div>
 
                                 <?php if (!empty($p['resposta'])): ?>
-                                    <p><strong>Resposta da Junta:</strong> <?= htmlspecialchars($p['resposta']) ?></p>
+                                    <p><strong>Resposta da Junta:</strong> <?= htmlspecialchars(textoRicoTexto($p['resposta'])) ?></p>
                                 <?php endif; ?>
                             </div>
 

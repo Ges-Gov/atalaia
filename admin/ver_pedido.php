@@ -3,6 +3,7 @@ $adminPageTitle = "Ver Pedido";
 $adminActive = "pedidos";
 require_once "includes/header.php";
 require_once "../includes/mail_helper.php";
+require_once "../includes/texto_rico.php";   // 06/11/2026: respostas com formatação (só a Atalaia)
 
 /* LOG OPERACIONAL */
 function criarLogOperacional($pdo, $adminId, $pedidoId, $tipo, $mensagem)
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_ocorrencia'])
 
     $estadosValidos = array_column($estadosDb, 'slug');
     $novoEstado = in_array($_POST['estado'] ?? '', $estadosValidos, true) ? $_POST['estado'] : $pedido['estado'];
-    $novaResposta = $_POST['resposta'] ?? ($pedido['resposta'] ?? '');
+    $novaResposta = isset($_POST['resposta']) ? textoRicoLimpar((string)$_POST['resposta']) : ($pedido['resposta'] ?? '');
 
     $estadosInternosValidos = ['por_tratar', 'em_tratamento', 'tratado'];
     $novoEstadoInterno = in_array($_POST['estado_interno'] ?? '', $estadosInternosValidos, true) ? $_POST['estado_interno'] : 'por_tratar';
@@ -190,7 +191,7 @@ $pdo->prepare("
 
 /* Mensagem admin (chat) */
 if (isset($_POST['mensagem_admin'])) {
-    $mensagem = trim($_POST['mensagem_admin']);
+    $mensagem = textoRicoLimpar(trim($_POST['mensagem_admin']));
 
     if ($mensagem !== '') {
         $stmtMsg = $pdo->prepare("
@@ -207,7 +208,8 @@ if (isset($_POST['mensagem_admin'])) {
                 <h2>Nova resposta da Junta</h2>
                 <p><strong>Pedido:</strong> " . htmlspecialchars((string)$pedido['codigo']) . "</p>
                 <p><strong>Assunto:</strong> " . htmlspecialchars((string)$pedido['assunto']) . "</p>
-                <p><strong>Mensagem:</strong><br>" . nl2br(htmlspecialchars($mensagem)) . "</p>
+                <p><strong>Mensagem:</strong></p>
+                <div>" . textoRicoHtml($mensagem) . "</div>
                 <br>
                 <p>Consulte o pedido no Balcão Virtual.</p>
             ";
@@ -584,7 +586,7 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
                 </div>
 
                 <label>Resposta ao cidadão <small style="font-weight:400;color:#64748b;">(aparece a quem consultar o pedido no site — as notas só para a equipa vão em «Notas internas»)</small></label>
-                <textarea name="resposta"><?= htmlspecialchars($pedido['resposta'] ?? '') ?></textarea>
+                <textarea name="resposta" data-texto-rico><?= htmlspecialchars(textoRicoLimpar((string)($pedido['resposta'] ?? ''))) ?></textarea>
 
                 <label class="vp-checkbox-inline">
                     <input type="checkbox" name="publico" value="1" <?= !empty($pedido['publico']) ? 'checked' : '' ?>>
@@ -738,7 +740,7 @@ function vpIniciais($nome) {
             <?php foreach ($mensagens as $m): ?>
                 <div class="chat-msg <?= $m['autor_tipo'] ?>">
                     <strong><?= htmlspecialchars($m['autor_nome']) ?></strong>
-                    <p><?= nl2br(htmlspecialchars($m['mensagem'])) ?></p>
+                    <?php if ($m['autor_tipo'] === 'admin'): ?><div class="chat-texto"><?= textoRicoHtml($m['mensagem']) ?></div><?php else: ?><p><?= nl2br(htmlspecialchars($m['mensagem'])) ?></p><?php endif; ?>
                     <small><?= date('d/m/Y H:i', strtotime($m['criado_em'])) ?></small>
                 </div>
             <?php endforeach; ?>
@@ -750,7 +752,7 @@ function vpIniciais($nome) {
     <div id="typingStatus" style="font-size:13px;color:#6b7280;margin-top:8px;"></div>
 
     <form method="POST" class="vp-compor">
-        <textarea id="msgInputAdmin" name="mensagem_admin" placeholder="Responder ao cidadão..." required></textarea>
+        <textarea id="msgInputAdmin" name="mensagem_admin" placeholder="Responder ao cidadão..." required data-texto-rico></textarea>
         <button class="btn"><i class="bi bi-send"></i> Enviar resposta</button>
     </form>
 </div>
@@ -935,4 +937,6 @@ setInterval(loadChat, 4000);
 setInterval(loadTyping, 1000);
 </script>
 
+<?php textoRicoEditor(); ?>
+<style>.chat-texto{margin:4px 0}.chat-texto ul,.chat-texto ol{margin:4px 0 4px 20px;padding:0}.chat-texto p{margin:0 0 6px}</style>
 <?php require_once "includes/footer.php"; ?>

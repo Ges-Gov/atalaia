@@ -1,4 +1,5 @@
 <?php require_once "includes/header.php"; ?>
+<?php require_once __DIR__ . "/includes/texto_rico.php"; // respostas da Junta com formatação (06/11/2026) ?>
 
 <?php
 $pedido = null;
@@ -235,7 +236,7 @@ if ($respostaJunta === '') {
                         <h3><?= te('consultar_pedido.resultado.resposta') ?></h3>
 
                         <?php if ($respostaJunta !== ''): ?>
-                            <p><?= nl2br(htmlspecialchars($respostaJunta)) ?></p>
+                            <div><?= textoRicoHtml($respostaJunta) ?></div>
                         <?php else: ?>
                             <p><?= te('consultar_pedido.resultado.sem_resposta') ?></p>
                         <?php endif; ?>
@@ -267,7 +268,7 @@ if ($respostaJunta === '') {
                                 <div>
                                     <strong><?= htmlspecialchars($h['titulo']) ?></strong>
                                     <time datetime="<?= date('c', strtotime($h['data'])) ?>"><?= date('d/m/Y H:i', strtotime($h['data'])) ?></time>
-                                    <?php if ($h['texto'] !== ''): ?><div class="hist-texto"><?= nl2br(htmlspecialchars($h['texto'])) ?></div><?php endif; ?>
+                                    <?php if ($h['texto'] !== ''): ?><div class="hist-texto"><?= $h['titulo'] === 'Resposta da Junta' ? textoRicoHtml($h['texto']) : nl2br(htmlspecialchars($h['texto'])) ?></div><?php endif; ?>
                                 </div>
                             </li>
                         <?php endforeach; ?>

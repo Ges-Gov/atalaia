@@ -84,8 +84,9 @@ function spfAutorizaServidor(string $dominio): bool {
     return $cache[$dominio] = $ok;
 }
 
-/** O remetente técnico do servidor (o «-f» do sendmail_path, que o FastPanel fixa com o «email do administrador» do
- *  site) é do mesmo domínio que $dominio? Sem isso o DMARC falha. Sem «-f» fixo (ex.: cPanel da Atalaia) vale o nosso. */
+/** O remetente técnico do mail() do PHP (o «-f» do sendmail_path, que o FastPanel fixou na criação do site, quase sempre
+ *  admin@<site>.nip.io) é do mesmo domínio que $dominio? Sem isso o DMARC falha. Sem «-f» fixo (ex.: cPanel da Atalaia)
+ *  vale o nosso. Só conta quando o sendmail direto (enviarEmailLocal) não está disponível. */
 function envelopeServidorAlinhado(string $dominio): bool {
     $dominio = strtolower(trim($dominio));
     if ($dominio === '') return false;
@@ -94,9 +95,9 @@ function envelopeServidorAlinhado(string $dominio): bool {
     return $env === $dominio || str_ends_with($env, '.' . $dominio) || str_ends_with($dominio, '.' . $env);
 }
 
-/** Pode sair do servidor local em nome deste domínio? (SPF autoriza o servidor e o remetente técnico alinha) */
+/** Pode sair do servidor local em nome deste domínio? (o SPF do domínio autoriza o servidor) */
 function podeEnviarComo(string $dominio): bool {
-    return envelopeServidorAlinhado($dominio) && spfAutorizaServidor($dominio);
+    return spfAutorizaServidor($dominio);
 }
 
 /** Remetente para emails em nome da Junta (ex.: «Responder», 06/11/2026): o email da Junta, se o domínio dele autorizar
@@ -165,29 +166,38 @@ function enviarEmailSistema($para, $assunto, $html, $replyTo = null, $de = null,
     }
 }
 
-// Envio pelo servidor de email local (sendmail do PHP): em nome de $de, se o SPF do domínio dele autorizar este
-// servidor (ou for o domínio do site); senão noreply@<domínio do site>.
+// Envio pelo servidor de email local, em nome de $de (se o SPF do domínio dele autorizar este servidor, ou se for o
+// domínio do site) ou de noreply@<domínio do site>. 06/11/2026: chama o /usr/sbin/sendmail diretamente, com o remetente
+// técnico («-f») igual ao «De:» — o mail() do PHP no VPS tem o «-f» fixado pelo FastPanel (admin@<site>.nip.io), o que
+// faz falhar o DMARC. Se o sendmail direto falhar, usa o mail() só quando esse «-f» é do mesmo domínio.
 function enviarEmailLocal($para, $assunto, $html, $replyTo = null, $de = null, $bcc = null) {
     $dominio = dominioSite();
-    if ($dominio === '' || !function_exists('mail')) return false;
+    if ($dominio === '') return false;
+    $dDe = $de ? strtolower(substr((string)strrchr($de, '@'), 1)) : '';
+    $deOk = $de && emailValido($de) && ($dDe === $dominio || podeEnviarComo($dDe));
+    $remetente = $deOk ? $de : 'noreply@' . $dominio;
+    $dRem = strtolower(substr((string)strrchr($remetente, '@'), 1));
 
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isMail();
-        $mail->CharSet = 'UTF-8';
-        $dDe = $de ? strtolower(substr((string)strrchr($de, '@'), 1)) : '';
-        $deOk = $de && emailValido($de) && ($dDe === $dominio || podeEnviarComo($dDe));
-        $mail->setFrom($deOk ? $de : 'noreply@' . $dominio, siteConfig('nome_site', 'Junta de Freguesia'));
-        $mail->addAddress($para);
-        if ($replyTo && emailValido($replyTo)) {
-            $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
+    $vias = ['sendmail'];
+    if (function_exists('mail') && envelopeServidorAlinhado($dRem)) $vias[] = 'mail';
+    foreach ($vias as $via) {
+        $mail = new PHPMailer(true);
+        try {
+            if ($via === 'sendmail') { $mail->isSendmail(); $mail->Sendmail = '/usr/sbin/sendmail'; } else { $mail->isMail(); }
+            $mail->CharSet = 'UTF-8';
+            $mail->setFrom($remetente, siteConfig('nome_site', 'Junta de Freguesia'));
+            $mail->addAddress($para);
+            if ($replyTo && emailValido($replyTo)) {
+                $mail->addReplyTo($replyTo, siteConfig('nome_site', 'Junta de Freguesia'));
+            }
+            if ($bcc && emailValido($bcc)) $mail->addBCC($bcc);
+            $mail->isHTML(true);
+            $mail->Subject = $assunto;
+            $mail->Body = $html;
+            if ($mail->send()) return true;
+        } catch (\Throwable $e) {
+            // tenta a via seguinte
         }
-        if ($bcc && emailValido($bcc)) $mail->addBCC($bcc);
-        $mail->isHTML(true);
-        $mail->Subject = $assunto;
-        $mail->Body = $html;
-        return $mail->send();
-    } catch (Exception $e) {
-        return false;
     }
+    return false;
 }

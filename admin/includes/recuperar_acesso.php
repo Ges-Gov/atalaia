@@ -120,7 +120,6 @@ function recuperarAcessoTratar(PDO $pdo): array
 /** O formulário (no lugar do de entrada) e, depois de enviado, a confirmação. */
 function recuperarAcessoFormulario(array $estado): void
 {
-    $destinos = implode(' e ', RECUPERAR_ACESSO_PARA);
     if ($estado['enviado']): ?>
         <div class="recuperar-ok" role="status">
             <strong><i class="bi bi-check-circle"></i> Pedido enviado à GesGov.</strong>
@@ -138,8 +137,8 @@ function recuperarAcessoFormulario(array $estado): void
             <label for="rcSiteWeb">Não preencher</label>
             <input type="text" id="rcSiteWeb" name="site_web" tabindex="-1" autocomplete="off">
         </div>
-        <p class="recuperar-texto">Indique o seu nome de utilizador. Ao carregar no botão, a GesGov
-            (<strong><?= htmlspecialchars($destinos) ?></strong>) recebe um pedido para alterar a palavra-passe desta conta.</p>
+        <p class="recuperar-texto">Indique o seu nome de utilizador. Ao carregar no botão, a <strong>GesGov</strong>
+            recebe um pedido para alterar a palavra-passe desta conta.</p>
         <label for="rcUser">Utilizador</label>
         <input type="text" name="utilizador" id="rcUser" placeholder="O seu nome de utilizador" required maxlength="120" autocomplete="username">
         <button type="submit" class="login-submit">Pedir nova palavra-passe</button>

@@ -10,7 +10,13 @@
  * - seoPonto($p)          → TouristAttraction
  * - seoComercio($lista)   → ItemList de LocalBusiness / Restaurant / LodgingBusiness…
  * - seoJsonLd($dados)     → imprime o <script type="application/ld+json">
+ *
+ * Também conta a visita (includes/visitas.php): este ficheiro é o único core carregado só pelas páginas
+ * públicas (o header.php difere de site para site), por isso a contagem é ligada aqui (11/2026).
  */
+
+require_once __DIR__ . '/visitas.php';
+contarVisita();
 
 /** Endereço base do site: o domínio configurado no admin ou, sem ele, o do pedido atual. */
 function seoBase(): string

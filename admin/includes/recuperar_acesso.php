@@ -60,8 +60,16 @@ function recuperarAcessoTratar(PDO $pdo): array
     }
     $robo = trim((string)($_POST['site_web'] ?? '')) !== '' || ($abertoEm && time() - $abertoEm < 2);
     if (!$robo) {
+        // mail_helper.php traz também o emailValido() (nos dois modelos)
+        require_once __DIR__ . '/../../includes/mail_helper.php';
+        $emailEnvio = trim((string)($_POST['email_envio'] ?? ''));
         if ($utilizador === '' || mb_strlen($utilizador) > 120 || preg_match('/[\x00-\x1F\x7F]/u', $utilizador)) {
             return ['erro' => 'Indique o seu nome de utilizador.', 'enviado' => false];
+        }
+        $emailOk = $emailEnvio !== '' && mb_strlen($emailEnvio) <= 190
+            && (function_exists('emailValido') ? emailValido($emailEnvio) : filter_var($emailEnvio, FILTER_VALIDATE_EMAIL));
+        if (!$emailOk) {
+            return ['erro' => 'Indique um email válido para onde enviar a nova palavra-passe.', 'enviado' => false];
         }
         if (count($envios) >= 2 || !recuperarAcessoLimite()) {
             return ['erro' => 'Já foi enviado um pedido há pouco. A GesGov vai tratar dele; se for urgente, contacte-nos.', 'enviado' => false];
@@ -79,7 +87,6 @@ function recuperarAcessoTratar(PDO $pdo): array
             $estado = 'não foi possível verificar';
         }
 
-        require_once __DIR__ . '/../../includes/mail_helper.php';
         $junta = (string)siteConfig('nome_site', 'Junta de Freguesia');
         $host = preg_replace('/[^a-z0-9.\-:]/i', '', (string)($_SERVER['HTTP_HOST'] ?? ''));
         $esquema = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') ? 'https' : 'http';
@@ -90,10 +97,14 @@ function recuperarAcessoTratar(PDO $pdo): array
         $html = "<h2>Pedido de nova palavra-passe do backoffice</h2>"
             . "<p><strong>Junta de Freguesia:</strong> {$h($junta)}<br><strong>Site:</strong> {$h($host)}<br>"
             . "<strong>Utilizador indicado:</strong> «{$h($utilizador)}»<br><strong>Conta:</strong> {$h($estado)}</p>"
+            . "<p style=\"font-size:16px\"><strong>Enviar a nova palavra-passe para:</strong> {$h($emailEnvio)}</p>"
+            . ($emailJunta !== '' && strcasecmp($emailEnvio, $emailJunta) !== 0
+                ? "<p style=\"background:#fef3c7;color:#92400e;padding:10px 12px;border-radius:8px\"><strong>Atenção:</strong> este não é o email da Junta "
+                  . "registado no site ({$h($emailJunta)}). Se parecer estranho, confirmar com a Junta antes de enviar.</p>"
+                : '')
             . "<p><strong>Pedido feito a:</strong> " . date('d/m/Y \à\s H:i') . "</p>"
             . "<p><strong>O que fazer:</strong> entrar no backoffice com a conta da GesGov, mudar a palavra-passe em "
-            . "<a href=\"{$h($linkUtilizadores)}\">Utilizadores</a> e enviar a nova à Junta"
-            . ($emailJunta !== '' ? " ({$h($emailJunta)})" : '') . ".</p>"
+            . "<a href=\"{$h($linkUtilizadores)}\">Utilizadores</a> e enviar a nova para o email indicado acima.</p>"
             . "<p style=\"color:#64748b;font-size:13px\">Se a Junta não pediu isto, pode ser alguém a experimentar o botão: não é preciso fazer nada.</p>";
 
         $ok = false;
@@ -123,7 +134,7 @@ function recuperarAcessoFormulario(array $estado): void
     if ($estado['enviado']): ?>
         <div class="recuperar-ok" role="status">
             <strong><i class="bi bi-check-circle"></i> Pedido enviado à GesGov.</strong>
-            Vamos alterar a palavra-passe e enviar a nova para o email da Junta de Freguesia.
+            Vamos tratar do pedido e enviar a nova palavra-passe para o email indicado.
         </div>
         <a class="login-submit recuperar-voltar" href="login.php">Voltar à entrada</a>
     <?php return; endif; ?>
@@ -137,10 +148,12 @@ function recuperarAcessoFormulario(array $estado): void
             <label for="rcSiteWeb">Não preencher</label>
             <input type="text" id="rcSiteWeb" name="site_web" tabindex="-1" autocomplete="off">
         </div>
-        <p class="recuperar-texto">Indique o seu nome de utilizador. Ao carregar no botão, a <strong>GesGov</strong>
-            recebe um pedido para alterar a palavra-passe desta conta.</p>
+        <p class="recuperar-texto">Indique o seu nome de utilizador e o email para onde enviar a nova palavra-passe.
+            Ao carregar no botão, a <strong>GesGov</strong> recebe o pedido.</p>
         <label for="rcUser">Utilizador</label>
         <input type="text" name="utilizador" id="rcUser" placeholder="O seu nome de utilizador" required maxlength="120" autocomplete="username">
+        <label for="rcEmail">Email para onde enviar a nova palavra-passe</label>
+        <input type="email" name="email_envio" id="rcEmail" placeholder="nome@exemplo.pt" required maxlength="190" autocomplete="email">
         <button type="submit" class="login-submit">Pedir nova palavra-passe</button>
     </form>
     <a class="recuperar-link" href="login.php"><i class="bi bi-arrow-left"></i> Voltar à entrada</a>
@@ -158,7 +171,8 @@ function recuperarAcessoEstilos(): void
 .recuperar-texto strong{color:#fff;}
 .recuperar-ok{padding:14px 16px;border-radius:14px;background:#dcfce7;color:#166534;line-height:1.55;font-size:14px;margin-bottom:14px;}
 .recuperar-ok strong{display:block;margin-bottom:4px;}
-.recuperar-voltar{display:flex;justify-content:center;text-decoration:none;}
+/* o «Voltar à entrada» é um <a> com o aspeto do botão: texto centrado na vertical (antes ficava colado em cima) */
+a.login-submit.recuperar-voltar{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box;}
 .recuperar-isco{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 </style>
 <?php

@@ -22,7 +22,12 @@ if (isset($_SESSION['admin'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// 09/11/2026: «Esqueci-me da palavra-passe» — o pedido vai para a GesGov (admin/includes/recuperar_acesso.php)
+require_once __DIR__ . "/includes/recuperar_acesso.php";
+$recuperar = recuperarAcessoModo();
+$recuperarEstado = $recuperar ? recuperarAcessoTratar($pdo) : null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$recuperar) {
     $user = $_POST['username'] ?? '';
     $pass = md5($_POST['password'] ?? '');
 
@@ -424,6 +429,7 @@ if ($admin) {
             }
         }
     </style>
+<?php recuperarAcessoEstilos(); ?>
 </head>
 
 <body>
@@ -484,6 +490,7 @@ if ($admin) {
             <div class="erro" role="alert"><?= htmlspecialchars($erro) ?></div>
         <?php endif; ?>
 
+        <?php if ($recuperar): recuperarAcessoFormulario($recuperarEstado); else: ?>
         <form method="POST">
             <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect) ?>">
             <label for="lgUser">Utilizador</label>
@@ -502,6 +509,8 @@ if ($admin) {
                 Entrar no painel
             </button>
         </form>
+        <a class="recuperar-link" href="login.php?recuperar=1">Esqueci-me da palavra-passe</a>
+        <?php endif; ?>
 
         <div class="login-security">
             <strong>Acesso reservado.</strong><br>

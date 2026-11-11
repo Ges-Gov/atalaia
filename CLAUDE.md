@@ -162,3 +162,7 @@ backoffice real é `new.aaej.pt/admin`. Em 15/10/2026 o código foi também atua
 - `freguesia.php` e `admin/freguesia.php` apareciam como «mexidos no servidor». Só diferiam nas terminações de linha (CRLF), por isso foram substituídos.
 - Inventário antes e depois (`atal_inventario_antes/depois_20261027.json`): 32 notícias com os mesmos títulos, 1 evento, 6 pontos, as mesmas associações e o mesmo comércio.
 - Ferramenta: `atalaia_fase.py backup|migracoes|conteudo` no scratchpad, com a password em FTP_PASS.
+
+## Limite de envio de ficheiros (11/11/2026)
+
+O alojamento (cPanel) tinha `upload_max_filesize = 2M` e `post_max_size = 8M`: nenhum documento acima de 2 MB entrava (o presidente não conseguiu enviar a prestação de contas, 8,6 MB). Acrescentado `upload_max_filesize = 64M` e `post_max_size = 64M` ao `php.ini` e ao `.user.ini` da raiz do site (por FTP, no formato do MultiPHP INI Editor do cPanel; os originais só tinham o `error_log`). Se alguém usar o MultiPHP INI Editor, confirmar que estes dois valores ficam.

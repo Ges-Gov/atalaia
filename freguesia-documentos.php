@@ -27,7 +27,9 @@ if ($anoFiltro === 'sem') {
 
 // Pastas por ano (05/11/2026): sem pesquisa nem filtros, mostram-se primeiro as pastas «Documentos AAAA»
 require_once __DIR__ . "/includes/documentos_pastas.php";
-$vistaPastas = $pesquisa === '' && $catFiltro === '' && $anoFiltro === '';
+// 11/11/2026: as pastas por ano só aparecem com tema_config documentos_pastas = 1 (pedido da Atalaia)
+$pastasLigadas = temaConfig('documentos_pastas', '0') === '1';
+$vistaPastas = $pastasLigadas && $pesquisa === '' && $catFiltro === '' && $anoFiltro === '';
 $pastas = $vistaPastas ? $pdo->query("SELECT * FROM (SELECT YEAR(data_documento) AS ano, COUNT(*) AS n FROM documentos WHERE ativo = 1 AND area = 'freguesia' GROUP BY YEAR(data_documento)) t ORDER BY (ano IS NULL), ano DESC")->fetchAll(PDO::FETCH_ASSOC) : [];
 
 $whereSql = implode(" AND ", $where);
@@ -545,7 +547,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
 
             <?php elseif (!empty($grupos)): ?>
 
-                <?php if ($anoFiltro !== '' && $pesquisa === '' && $catFiltro === '') documentosVoltarPastas('freguesia-documentos.php'); ?>
+                <?php if ($pastasLigadas && $anoFiltro !== '' && $pesquisa === '' && $catFiltro === '') documentosVoltarPastas('freguesia-documentos.php'); ?>
 
                 <?php foreach ($grupos as $cat => $docs): ?>
 

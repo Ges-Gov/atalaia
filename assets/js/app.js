@@ -2110,8 +2110,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 else { f.setAttribute("inert", ""); f.setAttribute("aria-hidden", "true"); }
             });
             botoes.forEach(function (b, k) { if (k === atual) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
+            janela();
             // reinicia a barra de tempo do ponto ativo
             caixa.classList.remove("a-rodar"); void caixa.offsetWidth; if (timer) caixa.classList.add("a-rodar");
+        }
+        // 11/11/2026: com muitos pontos, só se veem 7 pontinhos de cada vez, numa janela à volta do ativo;
+        // os das pontas ficam mais pequenos quando há mais para lá deles (assim a barra nunca sai do quadro)
+        const MAX_PONTOS = 7;
+        function janela() {
+            const n = botoes.length;
+            if (n <= MAX_PONTOS) return;
+            const ini = Math.max(0, Math.min(atual - Math.floor(MAX_PONTOS / 2), n - MAX_PONTOS)), fim = ini + MAX_PONTOS - 1;
+            botoes.forEach(function (b, k) {
+                b.classList.toggle("fora", k < ini || k > fim);
+                b.classList.toggle("borda", (k === ini && ini > 0) || (k === fim && fim < n - 1));
+            });
         }
         function parar() { clearInterval(timer); timer = null; caixa.classList.remove("a-rodar"); }
         function decidir() {

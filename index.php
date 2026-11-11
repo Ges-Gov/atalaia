@@ -1009,6 +1009,14 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
         $fixos = array_slice($pontos, 1, 5);
         $idsFixos = array_column($fixos, 'id');
         $rodam = array_values(array_filter($pontos, fn($p) => !in_array($p['id'], $idsFixos) && !empty($p['imagem'])));
+        // 11/11/2026: no quadro grande só fotografias com pelo menos 900 px de largura (as pequenas ficavam pixelizadas),
+        // desde que fiquem pelo menos 4; senão, ficam todas. Os pontinhos mostram-se numa janela (app.js), por isso o número
+        // de pontos a rodar não tem limite.
+        $rodamGrandes = array_values(array_filter($rodam, function ($p) {
+            $d = @getimagesize(__DIR__ . '/assets/img/' . $p['imagem']);
+            return $d && $d[0] >= 900;
+        }));
+        if (count($rodamGrandes) >= 4) $rodam = $rodamGrandes;
         if (!$rodam && $pontos) $rodam = [$pontos[0]];
         $tilePonto = function (array $p, bool $grande, string $extra = '') use ($pdo) {
             // Fotografias do ponto (vivem na Galeria, no álbum do ponto) + a foto principal.
@@ -1064,7 +1072,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                         <button type="button" class="ponto-rotativo__pausa" data-rotativo-pausa aria-label="Pausar a apresentação"><i class="bi bi-pause-fill" aria-hidden="true"></i></button>
                         <div class="ponto-rotativo__pontos" role="group" aria-label="Escolher local">
                             <?php foreach ($rodam as $k => $p): ?>
-                                <button type="button" data-rotativo-ir="<?= $k ?>" aria-label="<?= htmlspecialchars($p['nome']) ?>"<?= $k === 0 ? ' aria-current="true"' : '' ?>><span></span></button>
+                                <button type="button" data-rotativo-ir="<?= $k ?>" aria-label="<?= htmlspecialchars($p['nome']) ?>"<?= $k === 0 ? ' aria-current="true"' : '' ?><?= $k >= 7 ? ' class="fora"' : ($k === 6 && count($rodam) > 7 ? ' class="borda"' : '') ?>><span></span></button>
                             <?php endforeach; ?>
                         </div>
                     </div>

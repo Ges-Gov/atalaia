@@ -290,6 +290,12 @@ function getAssociacaoIcon($nome)
     transition:.5s ease;
 }
 
+/* logótipos: inteiros, sobre branco, sem o véu escuro (11/11/2026) */
+.assoc-image--logo{ background:#fff; }
+.assoc-image--logo img{ object-fit:contain; padding:34px 34px 46px; box-sizing:border-box; }
+.assoc-image.assoc-image--logo::after{ background:linear-gradient(180deg,rgba(0,0,0,0) 60%,rgba(17,21,28,.10)); }
+.assoc-image.assoc-image--logo .assoc-category-float{ background:rgba(17,21,27,.82); color:#fff; border-color:transparent; }
+
 .assoc-card-insane:hover .assoc-image img{
     transform:scale(1.08);
 }
@@ -610,7 +616,10 @@ function getAssociacaoIcon($nome)
 
                     <article class="assoc-card-insane">
 
-                        <div class="assoc-image">
+                        <?php /* 11/11/2026: logótipos (imagens quase quadradas) aparecem inteiros sobre branco; fotografias continuam a encher o cartão */
+                        $assocLogo = false;
+                        if (!empty($a['imagem']) && ($dimA = @getimagesize(__DIR__ . '/assets/img/' . $a['imagem']))) $assocLogo = $dimA[1] > 0 && $dimA[0] / $dimA[1] < 1.2; ?>
+                        <div class="assoc-image<?= $assocLogo ? ' assoc-image--logo' : '' ?>">
                             <span class="assoc-category-float"><?= htmlspecialchars(!empty($a['categoria']) ? $a['categoria'] : 'Associação') ?></span>
 
                             <?php if (!empty($a['imagem'])): ?>

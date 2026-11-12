@@ -9751,3 +9751,49 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
 :root[data-tema="escuro"] body .marcacoes-tipo__op input:checked + span{ background: color-mix(in srgb, var(--cor-principal) 35%, var(--escuro-superficie)); border-color: color-mix(in srgb, var(--cor-principal) 60%, #fff); color: #fff; }
 :root[data-tema="escuro"] body .hero-slider .hero-actions a.hero-btn:not(.hero-btn-outline){ color: #11151B; }
 @media (min-width: 851px){ :root[data-tema="escuro"] body .hero-slider .hero-actions a.hero-btn-outline{ color: #11151B; } }
+
+/* ==========================================================================
+   12/11/2026 — Botões do topo (slideshow da página inicial), «ideia 3» escolhida sobre a maqueta do Sousel:
+   o principal é uma pílula branca fina que fica com a cor secundária ao passar o rato; o segundo
+   («Explorar mapa» / «Ver com som») é uma ligação branca sublinhada, com seta. Só no topo: os outros
+   .hero-btn (mapa, galeria, chamada final) ficam como estavam. O :is() com [data-tema] dá a mesma força
+   às regras no tema escuro, que tinha regras próprias para estes botões.
+   ========================================================================== */
+:root body .hero-slider .hero-actions{ gap: 24px; align-items: center; }
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn{
+    flex: 0 0 auto; width: auto; min-width: 0; display: inline-flex; align-items: center; gap: 8px;
+    line-height: 1.25; white-space: nowrap; font-size: 15px; transform: none; filter: none; box-shadow: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none; overflow: visible;
+}
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn::before{ content: none; }
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn:focus-visible{ outline: 2px solid #fff; outline-offset: 3px; }
+
+/* principal: pílula branca fina */
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > a.hero-btn:not(.hero-btn-outline){
+    padding: 10px 20px; border-radius: 999px; border: 0; background: #fff; color: #11151B; font-weight: 700;
+    transition: background-color .25s ease, color .25s ease;
+}
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > a.hero-btn:not(.hero-btn-outline):hover{
+    background: var(--cor-secundaria); color: #11151B; transform: none; box-shadow: none;
+}
+
+/* segundo: ligação sublinhada com seta (o sublinhado recolhe ao passar o rato e a seta avança) */
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn-outline{
+    padding: 6px 0; border: 0; border-radius: 0; color: #fff; font-weight: 700;
+    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1.5px no-repeat;
+    transition: background-size .3s ease;
+}
+:is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn-outline:hover{
+    background-size: 0 1.5px; transform: none; box-shadow: none;
+}
+:root body .hero-slider .hero-actions > :is(a, button).hero-btn .bi{ font-size: 1.05em; transition: transform .3s ease; }
+:root body .hero-slider .hero-actions > a.hero-btn-outline:hover .bi-arrow-right{ transform: translateX(4px); }
+
+@media (max-width: 850px){
+    :root body .hero-slider .hero-actions{ gap: 20px; }
+    :is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn{ font-size: 14px; }
+    :is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > a.hero-btn:not(.hero-btn-outline){ padding: 8px 16px; }
+}
+@media (prefers-reduced-motion: reduce){
+    :root body .hero-slider .hero-actions > :is(a, button).hero-btn{ transition: none; }
+}

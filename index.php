@@ -405,7 +405,7 @@ $documentosCount = $pdo->query("SELECT COUNT(*) FROM documentos WHERE ativo = 1"
                         <?php if ($ytId): ?>
                             <button type="button" class="hero-btn hero-btn-outline hero-btn-video" data-video-abrir><i class="bi bi-play-fill" aria-hidden="true"></i> <?= te('inicio.topo.video_ver') ?></button>
                         <?php else: ?>
-                            <a href="/mapa.php" class="hero-btn hero-btn-outline"><?= te('inicio.topo.botao_mapa') ?></a>
+                            <a href="/mapa.php" class="hero-btn hero-btn-outline"><?= te('inicio.topo.botao_mapa') ?> <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                         <?php endif; ?>
                     </div>
                 </div>

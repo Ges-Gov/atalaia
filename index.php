@@ -1087,7 +1087,26 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
 
 <?php
 /* Cartões imersivos "Descobrir": editáveis em Página Inicial › Cartões e atalhos (12/10/2026) */
-if (!empty($home['mostrar_descobrir'])) secaoImersiva('descobrir', tx('inicio.descobrir.kicker'), tx('inicio.descobrir.titulo'), tx('inicio.descobrir.texto'), array_map($imersivoDe, cartoesSite('descobrir')), 'Descobrir');
+/* «Um fim de semana» só faz sentido onde se pode mesmo passar um fim de semana (12/11/2026): pelo menos um
+   alojamento e um restaurante na Economia Local e três pontos de interesse. Sem isso a secção não aparece,
+   mesmo que esteja ligada. As palavras seguem as categorias do comercio.php (o «tipo» é texto livre). */
+$fimDeSemanaPossivel = (function () use ($pdo): bool {
+    try {
+        if ((int) $pdo->query("SELECT COUNT(*) FROM pontos_interesse")->fetchColumn() < 3) return false;
+        $tipos = $pdo->query("SELECT tipo FROM comercio_local")->fetchAll(PDO::FETCH_COLUMN);
+    } catch (Throwable $e) {
+        return false;
+    }
+    $tem = function (array $palavras) use ($tipos): bool {
+        $re = '/(^|[^\p{L}])(' . implode('|', array_map(fn($p) => preg_quote($p, '/'), $palavras)) . ')s?([^\p{L}]|$)/u';
+        foreach ($tipos as $t) if (preg_match($re, mb_strtolower((string) $t))) return true;
+        return false;
+    };
+    return $tem(['restaurante', 'restauração', 'marisqueira', 'churrasqueira', 'tasca', 'taberna', 'pizzaria', 'grelhados', 'cervejaria', 'petisqueira'])
+        && $tem(['hotel', 'alojamento', 'turismo rural', 'turismo de habitação', 'turismo em espaço rural', 'agroturismo', 'hostel',
+                 'residencial', 'pousada', 'guest house', 'hospedaria', 'casa de hóspedes', 'casas de campo', 'aldeamento turístico']);
+})();
+if (!empty($home['mostrar_descobrir']) && $fimDeSemanaPossivel) secaoImersiva('descobrir', tx('inicio.descobrir.kicker'), tx('inicio.descobrir.titulo'), tx('inicio.descobrir.texto'), array_map($imersivoDe, cartoesSite('descobrir')), 'Descobrir');
 ?>
 
 <?php if (!empty($home['mostrar_mapa'])): ?>
@@ -1185,7 +1204,7 @@ if (!empty($home['mostrar_galeria']) && !empty($galeriaHome)) {
             $vistas[$t][] = $c;
             // títulos que são só o nome do ficheiro da câmara (DSC02199, IMG_1234…) dão lugar ao álbum
             $legenda = trim((string)$img['titulo']);
-            if ($legenda === '' || preg_match('/^((dsc|img|dji|pxl|mvimg)[\s_\-]*\d[\w\-]*|[\d_\-\s]+)$/i', $legenda)) $legenda = $img['album'];
+            if ($legenda === '' || preg_match('/^((dsc|img|dji|pxl|mvimg)[\s_\-]*\d[\w\-]*|[\d_\-\s]+|[a-z_]{0,6}[\d_-]{3,}[\w-]*)$/i', $legenda)) $legenda = $img['album'];
             $fotosGaleria[] = ['src' => $src, 'legenda' => $legenda];
         }
         $nFotos = count($fotosGaleria);

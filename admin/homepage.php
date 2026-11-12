@@ -214,6 +214,7 @@ require_once __DIR__ . "/includes/header.php";
         <label>
             <input type="checkbox" name="mostrar_descobrir" <?= !empty($home['mostrar_descobrir']) ? 'checked' : '' ?>>
             «Descobrir» — cartões de turismo (um fim de semana em …)
+            <small style="color:#64748b">(só aparece com pelo menos um alojamento e um restaurante na Economia Local e três pontos de interesse)</small>
         </label>
 
         <label>

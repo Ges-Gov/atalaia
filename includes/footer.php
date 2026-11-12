@@ -107,6 +107,45 @@ if (isset($pdo)) {
                     <span class="rodape__horario-tag"><i class="bi bi-clock-fill" aria-hidden="true"></i> Horário de atendimento</span>
                     <p><?= htmlspecialchars(siteConfig('horario', '09h00-17h00')) ?></p>
                 </div>
+                <?php
+                /* 12/11/2026 (Atalaia, a pedido do presidente): segunda caixa de contactos — a dependência da Rua dos Russos.
+                   Vem dos Contactos úteis: tema_config rodape_contacto_extra = id do registo (o título em
+                   rodape_contacto_extra_titulo). Sem essa chave não aparece nada. */
+                $rodapeExtra = null;
+                $rodapeExtraId = (int) temaConfig('rodape_contacto_extra', '0');
+                if ($rodapeExtraId > 0 && isset($pdo)) {
+                    try {
+                        $stExtra = $pdo->prepare("SELECT * FROM contactos_uteis WHERE id = ? AND ativo = 1");
+                        $stExtra->execute([$rodapeExtraId]);
+                        $rodapeExtra = $stExtra->fetch(PDO::FETCH_ASSOC) ?: null;
+                    } catch (Throwable $e) {
+                        $rodapeExtra = null;
+                    }
+                }
+                ?>
+                <?php if ($rodapeExtra): ?>
+                    <h3 class="rodape__titulo rodape__titulo--sub"><?= htmlspecialchars(temaConfig('rodape_contacto_extra_titulo', '') !== '' ? temaConfig('rodape_contacto_extra_titulo') : $rodapeExtra['nome']) ?></h3>
+                    <ul class="rodape__contactos">
+                        <?php foreach (array_filter(array_map('trim', preg_split('#\s*/\s*#', (string) $rodapeExtra['telefone']))) as $telExtra): ?>
+                            <li><span class="rodape__ico" aria-hidden="true"><i class="bi <?= preg_match('/^9/', $telExtra) ? 'bi-phone-fill' : 'bi-telephone-fill' ?>"></i></span>
+                                <a href="tel:<?= htmlspecialchars(preg_replace('/[^\d+]/', '', $telExtra)) ?>"><?= htmlspecialchars($telExtra) ?></a></li>
+                        <?php endforeach; ?>
+                        <?php if (trim((string) $rodapeExtra['email']) !== ''): ?>
+                            <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-envelope-fill"></i></span>
+                                <a href="mailto:<?= htmlspecialchars($rodapeExtra['email']) ?>"><?= str_replace('@', '<wbr>@', htmlspecialchars($rodapeExtra['email'])) ?></a></li>
+                        <?php endif; ?>
+                        <?php if (trim((string) $rodapeExtra['morada']) !== ''): ?>
+                            <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-geo-alt-fill"></i></span>
+                                <span><?= htmlspecialchars($rodapeExtra['morada']) ?></span></li>
+                        <?php endif; ?>
+                    </ul>
+                    <?php if (trim((string) $rodapeExtra['horario']) !== ''): ?>
+                        <div class="rodape__horario">
+                            <span class="rodape__horario-tag"><i class="bi bi-clock-fill" aria-hidden="true"></i> Horário de atendimento</span>
+                            <p><?= htmlspecialchars($rodapeExtra['horario']) ?></p>
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
 
             <!-- 3. Junta Virtual e ligações (as mesmas do rodapé anterior) -->

@@ -8343,6 +8343,8 @@ html.spotlight-aberto{ overflow: hidden; }
    Os rostos (a.ponto-tile) ficam empilhados; troca-se por opacidade com um ligeiro zoom da foto.
    O contentor ocupa o lugar 2×2 do antigo cartão grande. */
 .ponto-rotativo{ position: relative; grid-column: span 2; grid-row: span 2; border-radius: 20px; }
+/* 12/11/2026: só um ponto com fotografia (a vitrine só mostra pontos com foto): o quadro ocupa a largura toda */
+@media (min-width: 561px){ .pontos-vitrine > .ponto-rotativo:only-child{ grid-column: 1 / -1; } }
 .ponto-rotativo > .ponto-tile{
     position: absolute; inset: 0;
     opacity: 0;

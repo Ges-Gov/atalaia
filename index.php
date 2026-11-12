@@ -1006,9 +1006,12 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                  pontos de interesse com fotografia que NÃO estão nos 5 cartões pequenos (nunca repete
                  um que já esteja à vista); os 5 pequenos ficam fixos. Pára com o rato/foco, fora do
                  ecrã, com o botão de pausa e com «reduzir movimento» (app.js, [data-pontos-rotativo]). */
-        $fixos = array_slice($pontos, 1, 5);
+        // 12/11/2026: na vitrine só entram pontos com fotografia (os outros mostravam o marcador num quadro vazio);
+        // continuam todos na página dos pontos de interesse. Se nenhum tiver fotografia, ficam todos, como antes.
+        $pontosVitrine = array_values(array_filter($pontos, fn($p) => !empty($p['imagem']))) ?: $pontos;
+        $fixos = array_slice($pontosVitrine, 1, 5);
         $idsFixos = array_column($fixos, 'id');
-        $rodam = array_values(array_filter($pontos, fn($p) => !in_array($p['id'], $idsFixos) && !empty($p['imagem'])));
+        $rodam = array_values(array_filter($pontosVitrine, fn($p) => !in_array($p['id'], $idsFixos) && !empty($p['imagem'])));
         // 11/11/2026: no quadro grande só fotografias com pelo menos 900 px de largura (as pequenas ficavam pixelizadas),
         // desde que fiquem pelo menos 4; senão, ficam todas. Os pontinhos mostram-se numa janela (app.js), por isso o número
         // de pontos a rodar não tem limite.
@@ -1017,7 +1020,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
             return $d && $d[0] >= 900;
         }));
         if (count($rodamGrandes) >= 4) $rodam = $rodamGrandes;
-        if (!$rodam && $pontos) $rodam = [$pontos[0]];
+        if (!$rodam && $pontosVitrine) $rodam = [$pontosVitrine[0]];
         $tilePonto = function (array $p, bool $grande, string $extra = '') use ($pdo) {
             // Fotografias do ponto (vivem na Galeria, no álbum do ponto) + a foto principal.
             // Vão para data-lightbox: o clique abre-as num lightbox (app.js); sem JS o link

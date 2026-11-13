@@ -45,6 +45,7 @@ $clarityAtivo = function_exists('temaConfig') ? (temaConfig('clarity_project_id'
             <tr><th scope="col"><?= te('politica_cookies.ponto2.col_cookie') ?></th><th scope="col"><?= te('politica_cookies.ponto2.col_finalidade') ?></th><th scope="col"><?= te('politica_cookies.ponto2.col_duracao') ?></th></tr>
             <tr><td>PHPSESSID</td><td><?= te('politica_cookies.ponto2.sessao_finalidade') ?></td><td><?= te('politica_cookies.ponto2.sessao_duracao') ?></td></tr>
             <tr><td>rm_cookie_consent</td><td><?= te('politica_cookies.ponto2.consent_finalidade') ?></td><td><?= te('politica_cookies.ponto2.consent_duracao') ?></td></tr>
+            <tr><td>jf-tema</td><td>Guarda a escolha do modo claro ou escuro (botão do sol e da lua), para as páginas já abrirem com o tema escolhido.</td><td>1 ano</td></tr>
         </table>
 
         <h2><?= te('politica_cookies.ponto3.titulo') ?></h2>

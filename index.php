@@ -529,12 +529,19 @@ blocoHoje($pdo); ?>
 
         <div class="editorial__grelha">
             <?php foreach ($noticias as $i => $n): ?>
-                <?php $catN = trim((string)($n['categoria'] ?? '')) ?: 'Notícia'; ?>
-                <article class="editorial__item<?= $i === 0 ? ' editorial__item--destaque' : '' ?>" data-categoria="<?= htmlspecialchars($catN) ?>"<?= $i >= 4 ? ' hidden' : '' ?>>
+                <?php
+                $catN = trim((string)($n['categoria'] ?? '')) ?: 'Notícia';
+                // cartaz (imagem alta ou quase quadrada) ou fotografia larga: no destaque, o cartaz aparece inteiro ao lado
+                $imgN = !empty($n['imagem']) ? miniaturaImagem('/assets/img/' . $n['imagem'], 900) : '';
+                $dimN = $imgN !== '' ? @getimagesize(__DIR__ . rawurldecode((string)parse_url($imgN, PHP_URL_PATH))) : false;
+                $formatoN = ($dimN && $dimN[1] > 0 && $dimN[0] / $dimN[1] < 1.2) ? 'cartaz' : 'foto';
+                $fundoN = str_replace(["'", '"', '(', ')', ' '], ['%27', '%22', '%28', '%29', '%20'], $imgN);
+                ?>
+                <article class="editorial__item<?= $i === 0 ? ' editorial__item--destaque' : '' ?>" data-categoria="<?= htmlspecialchars($catN) ?>" data-formato="<?= $formatoN ?>"<?= $i >= 4 ? ' hidden' : '' ?>>
                     <a class="editorial__link" href="/noticia.php?id=<?= (int)$n['id'] ?>">
-                        <div class="editorial__media">
-                            <?php if (!empty($n['imagem'])): ?>
-                                <img src="<?= htmlspecialchars(miniaturaImagem('/assets/img/' . $n['imagem'], 900)) ?>" alt="" loading="lazy"
+                        <div class="editorial__media"<?= $fundoN !== '' ? ' style="--img:url(\'' . htmlspecialchars($fundoN) . '\')"' : '' ?>>
+                            <?php if ($imgN !== ''): ?>
+                                <img src="<?= htmlspecialchars($imgN) ?>" alt="" loading="lazy"
                                      style="object-position:<?= (int)($n['imagem_foco_x'] ?? 50) ?>% <?= (int)($n['imagem_foco_y'] ?? 50) ?>%">
                             <?php else: ?>
                                 <div class="editorial__sem-img" aria-hidden="true"><?= htmlspecialchars(temaConfig("logo_iniciais", "")) ?></div>
@@ -545,6 +552,7 @@ blocoHoje($pdo); ?>
                             <h3><?= htmlspecialchars($n['titulo']) ?></h3>
                             <time datetime="<?= date('Y-m-d', strtotime($n['data'])) ?>"><i class="bi bi-calendar3" aria-hidden="true"></i> <?= date('d/m/Y', strtotime($n['data'])) ?></time>
                             <p><?= htmlspecialchars(mb_substr(trim(strip_tags($n['descricao'] ?? '')), 0, 170)) ?>…</p>
+                            <span class="editorial__ler" aria-hidden="true">Ler notícia <i class="bi bi-arrow-right"></i></span>
                         </div>
                     </a>
                 </article>

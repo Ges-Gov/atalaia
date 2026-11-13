@@ -84,7 +84,10 @@ if (!empty($_SESSION['cidadao_id'])) {
             window.jfDefinirTema = function (t) {
                 escolha = t;
                 try { t ? localStorage.setItem('jf-tema', t) : localStorage.removeItem('jf-tema'); } catch (e) {}
-                aplicar();
+                // cookie de preferência: no pedido seguinte o PHP já põe o tema-escuro.css no HTML (ver mais abaixo)
+                document.cookie = 'jf-tema=' + (t === 'escuro' ? 'escuro' : 'claro') + '; path=/; max-age=31536000; SameSite=Lax';
+                // o tema-escuro.css só vem quando é preciso: muda o tema depois de ele chegar (sem meia página escura)
+                if (t === 'escuro' && window.jfCarregarEscuro) window.jfCarregarEscuro(aplicar); else aplicar();
             };
         })();
     </script>
@@ -102,9 +105,30 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261113b">
-    <link rel="stylesheet" href="/assets/css/tema-escuro.css?v=20261020s">
-    <link rel="stylesheet" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261113d">
+    <?php /* Modo escuro (13/11/2026): o tema-escuro.css (~143 KB, só regras :root[data-tema="escuro"]) só é carregado a
+             quem escolheu o escuro. Com a cookie jf-tema=escuro vem já no HTML; quem o escolheu antes de haver cookie,
+             ou o liga agora no botão, recebe-o por JS (jfCarregarEscuro). */ ?>
+<?php if (($_COOKIE['jf-tema'] ?? '') === 'escuro'): ?>
+    <link rel="stylesheet" id="cssEscuro" href="/assets/css/tema-escuro.css?v=20261020s">
+<?php endif; ?>
+    <script>
+        (function () {
+            window.jfCarregarEscuro = function (depois) {
+                var l = document.getElementById('cssEscuro');
+                if (l) { if (depois) depois(); return; }
+                l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/tema-escuro.css?v=20261020s'; l.id = 'cssEscuro';
+                if (depois) { l.onload = depois; l.onerror = depois; }
+                var aj = document.getElementById('cssEscuroAjustes');
+                if (aj) aj.parentNode.insertBefore(l, aj); else document.head.appendChild(l);
+            };
+            if (document.documentElement.getAttribute('data-tema') === 'escuro' && !document.getElementById('cssEscuro')) {
+                window.jfCarregarEscuro();
+                document.cookie = 'jf-tema=escuro; path=/; max-age=31536000; SameSite=Lax';
+            }
+        })();
+    </script>
+    <link rel="stylesheet" id="cssEscuroAjustes" href="/assets/css/tema-escuro-ajustes.css?v=20261020s">
     <link rel="stylesheet" href="/assets/css/compat-redesign.css?v=20261020r">
     <link rel="stylesheet" href="/assets/vendor/bootstrap-icons/bootstrap-icons.min.css?v=1.11.3"><?php /* ícones servidos pelo próprio site (antes da CDN jsdelivr) */ ?>
 

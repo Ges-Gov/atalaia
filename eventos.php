@@ -108,6 +108,16 @@ $heroImagem = !empty($proximoEvento['imagem'])
    (pointer-events:auto é essencial: com "none" os cliques atravessavam-no.) */
 .agenda-day-insane:hover .agenda-tooltip-insane,
 .agenda-tooltip-insane:hover{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+/* 13/11/2026: no computador, a janela dos dias das pontas (sábado, domingo e segunda) abre para dentro do calendário;
+   centrada no dia, saía do ecrã e ficava cortada */
+@media (min-width:761px) and (hover:hover){
+  .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6)) .agenda-tooltip-insane{left:auto;right:-6px;transform:translateY(8px)}
+  .agenda-calendar-insane>.agenda-day-insane:nth-child(7n+1) .agenda-tooltip-insane{left:-6px;transform:translateY(8px)}
+  .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6),:nth-child(7n+1)):hover .agenda-tooltip-insane,
+  .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6),:nth-child(7n+1)) .agenda-tooltip-insane:hover{transform:translateY(0)}
+  .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6)) .agenda-tooltip-insane:after{left:auto;right:30px;transform:none}
+  .agenda-calendar-insane>.agenda-day-insane:nth-child(7n+1) .agenda-tooltip-insane:after{left:30px;transform:none}
+}
 .agenda-tooltip-insane b{display:block;margin-bottom:12px;color:#11151B}
 .tooltip-event-card{display:block;text-decoration:none;color:inherit;cursor:pointer;border-top:1px solid #eef2f7;padding:12px 8px 10px;margin-top:12px;border-radius:14px;transition:background .18s}
 .tooltip-event-card:hover{background:#f8fafc}

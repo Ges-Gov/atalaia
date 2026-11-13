@@ -440,3 +440,31 @@ tbody[data-ordenar] tr.sl-guardado td{animation:slPisca .9s ease-out}
 .sl-interruptor__txt{color:var(--adm-texto-2);min-width:48px}
 tbody[data-ordenar] tr.sl-oculto td:not(:last-child):not(:nth-last-child(2)){opacity:.45}
 tbody[data-ordenar] tr.sl-oculto img{filter:grayscale(1)}
+
+/* 13/11/2026: no telemóvel, as grelhas de 2 colunas escritas no próprio HTML (datas de início/fim, latitude/longitude,
+   campos lado a lado) passam a uma coluna; os campos de data-hora não encolhem e empurravam a página para o lado */
+@media (max-width: 640px){
+    .admin-main [style*="grid-template-columns:1fr 1fr"],
+    .admin-main [style*="grid-template-columns: 1fr 1fr"]{ grid-template-columns: minmax(0, 1fr) !important; }
+    .admin-main :is(input, select, textarea){ min-width: 0; max-width: 100%; }
+}
+
+/* 13/11/2026: no telemóvel, as tabelas das listas (Notícias, Documentos, Associações, Pedidos…) passam a cartões:
+   uma linha = um cartão, cada coluna com o seu nome à esquerda (o admin-ui.js põe o nome em data-label).
+   Antes era preciso deslizar a tabela para o lado e os botões Editar/Eliminar ficavam fora de vista. */
+@media (max-width: 640px){
+    .admin-main table.adm-cartoes{ display: block; width: 100% !important; min-width: 0 !important; border: 0; background: transparent; box-shadow: none; }
+    .admin-main table.adm-cartoes :is(thead, tr.adm-cartoes__cab){ display: none; }
+    .admin-main table.adm-cartoes tbody{ display: grid; gap: 10px; }
+    .admin-main table.adm-cartoes tr{ display: block; padding: 10px 14px; background: var(--adm-superficie); border: 1px solid var(--adm-borda);
+        border-radius: var(--adm-raio); box-shadow: var(--adm-sombra-1); }
+    .admin-main table.adm-cartoes td{ display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; width: auto; max-width: none;
+        padding: 6px 0; border: 0; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+    .admin-main table.adm-cartoes td + td{ border-top: 1px dashed var(--adm-borda); }
+    .admin-main table.adm-cartoes td[data-label]:not([data-label=""])::before{ content: attr(data-label); flex: 0 0 34%; font-size: 11.5px; font-weight: 600;
+        letter-spacing: .04em; text-transform: uppercase; color: var(--adm-texto-2); }
+    .admin-main table.adm-cartoes td:empty{ display: none; }
+    .admin-main table.adm-cartoes td img{ max-width: 96px; height: auto; }
+    /* a caixa que deixava deslizar a tabela já não é precisa */
+    .admin-main :has(> table.adm-cartoes){ overflow-x: visible !important; }
+}

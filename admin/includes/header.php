@@ -136,8 +136,8 @@ $menuLink = function (array $i, bool $topo = false): string {
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="assets/fonte.css?v=20261013a">
     <link rel="stylesheet" href="assets/admin.css?v=20261012b">
-    <link rel="stylesheet" href="assets/admin-ui.css?v=20261022a">
-    <script src="assets/admin-ui.js?v=20261027a" defer></script>
+    <link rel="stylesheet" href="assets/admin-ui.css?v=20261113">
+    <script src="assets/admin-ui.js?v=20261113" defer></script>
 </head>
 
 <body>

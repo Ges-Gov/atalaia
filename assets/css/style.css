@@ -9797,3 +9797,75 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
 @media (prefers-reduced-motion: reduce){
     :root body .hero-slider .hero-actions > :is(a, button).hero-btn{ transition: none; }
 }
+
+/* ==========================================================================
+   13/11/2026 — Botões do topo das páginas interiores (Freguesia, História, Pontos, Mapa, Ocorrências,
+   Transparência) iguais aos da página inicial: pílula branca fina + ligação sublinhada com seta.
+   A seta das ligações vem do ::after (Bootstrap Icons), sem mexer no HTML. Só nos topos escuros.
+   ========================================================================== */
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-actions, .historia-hero .historia-actions,
+    .pontos-hero-actions, .mapa-hero-actions, .pedidos-hero-actions, .trans-hero-actions){
+    display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 24px;
+}
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn, .historia-hero .historia-btn,
+    .pontos-hero-btn, .mapa-hero-btn, .pedidos-hero-actions > .hero-btn, .trans-hero-actions > .hero-btn){
+    flex: 0 0 auto; width: auto; min-width: 0; display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px;
+    font: inherit; font-size: 15px; line-height: 1.25; white-space: nowrap; text-decoration: none; cursor: pointer;
+    transform: none; filter: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn, .historia-hero .historia-btn,
+    .pontos-hero-btn, .mapa-hero-btn, .pedidos-hero-actions > .hero-btn, .trans-hero-actions > .hero-btn):focus-visible{
+    outline: 2px solid #fff; outline-offset: 3px;
+}
+/* principal: pílula branca fina */
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.primary, .historia-hero .historia-btn.primary,
+    .pontos-hero-btn.primary, .mapa-hero-btn.primary, .pedidos-hero-actions > .hero-btn:first-child, .trans-hero-actions > .hero-btn:first-child){
+    padding: 10px 20px; border-radius: 999px; border: 0; background: #fff; color: #11151B; font-weight: 700;
+    transition: background-color .25s ease, color .25s ease;
+}
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.primary, .historia-hero .historia-btn.primary,
+    .pontos-hero-btn.primary, .mapa-hero-btn.primary, .pedidos-hero-actions > .hero-btn:first-child, .trans-hero-actions > .hero-btn:first-child):hover{
+    background: var(--cor-secundaria); color: #11151B; transform: none; box-shadow: none;
+}
+/* segundo: ligação sublinhada (com seta quando leva a outra página ou secção) */
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.secondary, .historia-hero .historia-btn.secondary,
+    .pontos-hero-btn.secondary, .mapa-hero-btn.secondary, .pedidos-hero-actions > .hero-btn:nth-child(2), .trans-hero-actions > .hero-btn:nth-child(2)){
+    padding: 6px 0; border: 0; border-radius: 0; color: #fff; font-weight: 700;
+    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1.5px no-repeat;
+    transition: background-size .3s ease;
+}
+:is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.secondary, .historia-hero .historia-btn.secondary,
+    .pontos-hero-btn.secondary, .mapa-hero-btn.secondary, .pedidos-hero-actions > .hero-btn:nth-child(2), .trans-hero-actions > .hero-btn:nth-child(2)):hover{
+    background-size: 0 1.5px; transform: none; box-shadow: none;
+}
+:root body :is(.freguesia-hero-premium a.freguesia-btn.secondary, .historia-hero a.historia-btn.secondary, a.pontos-hero-btn.secondary,
+    a.mapa-hero-btn.secondary, .pedidos-hero-actions > a.hero-btn:nth-child(2), .trans-hero-actions > a.hero-btn:nth-child(2))::after{
+    content: "\F138"; font-family: "bootstrap-icons"; font-weight: 400; font-size: 1.05em; line-height: 1; transition: transform .3s ease;
+}
+:root body :is(.freguesia-hero-premium a.freguesia-btn.secondary, .historia-hero a.historia-btn.secondary, a.pontos-hero-btn.secondary,
+    a.mapa-hero-btn.secondary, .pedidos-hero-actions > a.hero-btn:nth-child(2), .trans-hero-actions > a.hero-btn:nth-child(2)):hover::after{
+    transform: translateX(4px);
+}
+@media (max-width: 850px){
+    :is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-actions, .historia-hero .historia-actions,
+        .pontos-hero-actions, .mapa-hero-actions, .pedidos-hero-actions, .trans-hero-actions){ gap: 20px; }
+    :is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn, .historia-hero .historia-btn,
+        .pontos-hero-btn, .mapa-hero-btn, .pedidos-hero-actions > .hero-btn, .trans-hero-actions > .hero-btn){ font-size: 14px; }
+    :is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.primary, .historia-hero .historia-btn.primary,
+        .pontos-hero-btn.primary, .mapa-hero-btn.primary, .pedidos-hero-actions > .hero-btn:first-child, .trans-hero-actions > .hero-btn:first-child){ padding: 8px 16px; }
+}
+@media (prefers-reduced-motion: reduce){
+    :root body :is(.freguesia-hero-premium .freguesia-btn, .historia-hero .historia-btn, .pontos-hero-btn, .mapa-hero-btn,
+        .pedidos-hero-actions > .hero-btn, .trans-hero-actions > .hero-btn){ transition: none; }
+}
+
+/* 13/11/2026 — Executivo, cartão «Falar com a Junta»: emails e moradas compridos partem a linha em vez de sair do cartão */
+:root body .exe-duo > *{ min-width: 0; }
+:root body .exe-contactos li > :not(i){ min-width: 0; overflow-wrap: anywhere; }
+
+/* 13/11/2026 — Formulário de Ocorrências: no computador os campos ficavam 4 por linha e cortavam o texto
+   («Escolha a cate…»): o formulário era uma grelha de 2 colunas com grupos de 2 campos lá dentro; passa a 1 coluna (2 campos por linha) */
+@media (min-width: 761px){
+    :root body .form-pedido-premium{ grid-template-columns: minmax(0, 1fr); }
+    :root body .form-pedido-premium > *{ grid-column: 1 / -1; }   /* sem isto, os «ocupa 2 colunas» criavam uma 2.ª coluna implícita */
+}

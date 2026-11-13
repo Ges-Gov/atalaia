@@ -87,6 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit;
 }
 
+$adminPageTitle = "História";   // 13/11/2026: antes ficava «Painel Administrativo»
 require_once "includes/header.php";
 ?>
 

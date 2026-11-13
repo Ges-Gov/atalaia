@@ -2,6 +2,7 @@
 // homepage_destaque.php
 // Painel premium para gerir destaque homepage (slider/video)
 
+$adminPageTitle = "Vídeo / destaque do topo";   // 13/11/2026: antes ficava «Painel Administrativo»
 require_once 'includes/header.php';
 require_once '../includes/db.php';
 

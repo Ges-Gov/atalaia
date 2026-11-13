@@ -377,3 +377,31 @@
         if (sujo) { e.preventDefault(); e.returnValue = ''; }
     });
 })();
+
+/* 13/11/2026: etiquetas das colunas nas tabelas das listas, para no telemóvel cada linha aparecer como cartão
+   (admin-ui.css, .adm-cartoes). Só tabelas com cabeçalho e pelo menos 3 colunas; as que estão dentro de outra
+   tabela ou têm data-sem-cartoes ficam como estão. */
+(function () {
+    var main = document.querySelector('.admin-main');
+    if (!main) return;
+    main.querySelectorAll('table').forEach(function (t) {
+        if (t.dataset.semCartoes !== undefined || t.parentElement.closest('table')) return;
+        // cabeçalho: o <thead> ou, sem ele, a primeira linha só com <th> (várias listas antigas são assim)
+        var linhaCab = t.querySelector('thead tr') || [].find.call(t.rows, function (r) { return r.cells.length && [].every.call(r.cells, function (c) { return c.tagName === 'TH'; }); });
+        if (!linhaCab) return;
+        var cab = linhaCab.cells;
+        if (cab.length < 3) return;
+        if (!linhaCab.closest('thead')) linhaCab.classList.add('adm-cartoes__cab');
+        var nomes = [].map.call(cab, function (th) { return th.textContent.replace(/\s+/g, ' ').trim(); });
+        [].forEach.call(t.rows, function (tr) {
+            if (tr === linhaCab || tr.closest('thead')) return;
+            var i = 0;
+            [].forEach.call(tr.children, function (td) {
+                if (td.tagName !== 'TD') return;
+                if (!td.hasAttribute('data-label')) td.setAttribute('data-label', (td.colSpan || 1) >= nomes.length ? '' : (nomes[i] || ''));
+                i += td.colSpan || 1;
+            });
+        });
+        t.classList.add('adm-cartoes');
+    });
+})();

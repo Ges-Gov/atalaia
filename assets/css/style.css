@@ -9869,3 +9869,52 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
     :root body .form-pedido-premium{ grid-template-columns: minmax(0, 1fr); }
     :root body .form-pedido-premium > *{ grid-column: 1 / -1; }   /* sem isto, os «ocupa 2 colunas» criavam uma 2.ª coluna implícita */
 }
+
+/* ==========================================================================
+   13/11/2026 — «Evento da Semana» (página inicial) com vidro, como o «Próximo evento» da página de Eventos:
+   a imagem desfocada faz de fundo e aparece inteira por cima; clicável (abre em grande) quando é do evento.
+   ========================================================================== */
+.evento-semana{ position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: 16px; padding: 24px;
+    border-radius: var(--raio-cartao-g, 28px); color: #fff; background: #11151B; box-shadow: var(--sombra-cartao-forte, 0 24px 60px -28px rgba(0,0,0,.5)); min-width: 0; }
+.evento-semana::before{ content: ""; position: absolute; inset: -60px; z-index: -2; background: var(--img) center / cover no-repeat; filter: blur(34px) saturate(1.5); }
+.evento-semana::after{ content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(160deg, rgba(10,12,18,.84) 0%, rgba(10,12,18,.66) 60%, rgba(10,12,18,.52) 100%); }
+.evento-semana--sem-img{ background: linear-gradient(135deg, #242A30, #11151B); }
+.evento-semana--sem-img::before, .evento-semana--sem-img::after{ display: none; }
+.evento-semana__etiqueta{ display: inline-flex; width: max-content; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.3); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.evento-semana__img{ flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; align-items: center; padding: 0; border: 0; background: none; }
+button.evento-semana__img{ cursor: zoom-in; }
+.evento-semana__img img{ display: block; width: auto; max-width: 100%; height: auto; max-height: 280px; border-radius: 12px; box-shadow: 0 22px 44px -18px rgba(0,0,0,.75); transition: transform .3s ease; }
+button.evento-semana__img:hover img{ transform: translateY(-3px); }
+button.evento-semana__img:focus-visible{ outline: 2px solid #fff; outline-offset: 4px; border-radius: 12px; }
+.evento-semana__titulo{ margin: 0; font-size: clamp(22px, 2.2vw, 27px); font-weight: 800; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+.evento-semana__titulo a{ color: inherit; text-decoration: none; }
+.evento-semana__titulo a:hover{ text-decoration: underline; text-underline-offset: 4px; }
+.evento-semana__faixa{ display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 10px 14px; border-radius: 14px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+:root body .home-news-events-premium .evento-semana .evento-countdown{ display: inline; color: #f6d987; font-weight: 700; font-size: inherit; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0; }
+:root body .home-news-events-premium .evento-semana .evento-countdown::before{ display: none; }
+.evento-semana__texto{ margin: 0; color: #dfe6f0; font-size: 14px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+:root body .home-news-events-premium .evento-semana .cal-botoes{ position: static; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: #dfe6f0; font-size: 13px; font-weight: 600; }
+:root body .home-news-events-premium .evento-semana .cal-botoes__rot{ color: #dfe6f0; }
+:root body .home-news-events-premium .evento-semana .cal-btn{ min-height: 0; padding: 6px 12px; border-radius: 999px; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28); font-size: 13px; font-weight: 700; text-decoration: none; }
+:root body .home-news-events-premium .evento-semana .cal-btn:hover{ background: rgba(255,255,255,.22); color: #fff; }
+.evento-semana__rodape{ display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.16); }
+.evento-semana__marca{ display: flex; align-items: center; gap: 10px; min-width: 0; }
+.evento-semana__marca img{ flex: none; width: 40px; height: 40px; object-fit: contain; }
+.evento-semana__marca strong{ display: block; font-size: 13.5px; line-height: 1.25; }
+.evento-semana__marca small{ display: block; font-size: 12px; opacity: .75; }
+.evento-semana__botao{ flex: none; display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 999px; background: #fff; color: #11151B; font-weight: 700; font-size: 14.5px; text-decoration: none; white-space: nowrap; transition: background-color .25s ease; }
+.evento-semana__botao:hover{ background: var(--cor-secundaria); color: #11151B; }
+.evento-semana a:focus-visible{ outline: 2px solid #fff; outline-offset: 3px; }
+.evento-semana-janela{ padding: 0; border: 0; background: transparent; max-width: 94vw; max-height: 94vh; overflow: visible; }
+.evento-semana-janela::backdrop{ background: rgba(8,10,14,.86); }
+.evento-semana-janela img{ display: block; max-width: 94vw; max-height: 88vh; width: auto; height: auto; border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.6); cursor: zoom-out; }
+.evento-semana-janela button{ position: absolute; top: -14px; right: -14px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: #fff; color: #11151B; font-size: 22px; line-height: 1; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+@media (max-width: 760px){
+    .evento-semana{ padding: 18px; }
+    .evento-semana__img img{ max-height: 300px; }
+    .evento-semana__rodape{ flex-wrap: wrap; }
+    .evento-semana-janela button{ top: 8px; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce){ .evento-semana__img img, .evento-semana__botao{ transition: none; } }

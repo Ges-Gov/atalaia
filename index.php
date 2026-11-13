@@ -590,47 +590,78 @@ blocoHoje($pdo); ?>
             $focoEvento = !empty($eventoSemana['imagem']) ? (int)($eventoSemana['imagem_foco_x'] ?? 50) . '% ' . (int)($eventoSemana['imagem_foco_y'] ?? 50) . '%' : '50% 50%';
             $logoJunta = siteConfig('logo', '');
             ?>
-            <article class="evento-destaque">
-                <div class="evento-destaque__topo">
-                    <div class="evento-destaque__etiquetas">
-                        <span class="evento-destaque__etiqueta evento-destaque__etiqueta--icone" aria-hidden="true"><i class="bi bi-calendar-event"></i></span>
-                        <span class="evento-destaque__etiqueta"><?= te('inicio.agenda.destaque') ?></span>
-                    </div>
+            <?php
+            /* 13/11/2026: «Evento da Semana» com vidro (como o «Próximo evento» da página de Eventos): a imagem desfocada
+               faz de fundo e aparece inteira por cima (antes era recortada e tapada pela onda e pela marca); clicando na
+               imagem do evento, abre em grande. Sem imagem do evento usa a fotografia da freguesia (não clicável). */
+            if (!function_exists('eventoDataCurta')) {
+                function eventoDataCurta(array $e): string
+                {
+                    $sem = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                    $mes = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+                    $semHora = eventoDiaInteiro($e);
+                    $f = function (int $t, bool $comDia = true) use ($sem, $mes) {
+                        return ($comDia ? $sem[(int) date('w', $t)] . ', ' : '') . (int) date('j', $t) . ' ' . $mes[(int) date('n', $t) - 1];
+                    };
+                    $ini = strtotime($e['data_evento']);
+                    $txt = $f($ini) . ($semHora ? '' : ' · ' . date('H:i', $ini));
+                    $fim = !empty($e['data_fim']) ? strtotime($e['data_fim']) : 0;
+                    if ($fim && $fim > $ini) {
+                        if (date('Y-m-d', $fim) === date('Y-m-d', $ini)) { if (!$semHora) $txt .= '–' . date('H:i', $fim); }
+                        else $txt .= ' – ' . $f($fim, false) . ($semHora ? '' : ' · ' . date('H:i', $fim));
+                    }
+                    return $txt;
+                }
+            }
+            $semanaImgPropria = !empty($eventoSemana['imagem']);
+            $semanaImg = $fotoEvento !== '' ? '/assets/img/' . $fotoEvento : '';
+            ?>
+            <article class="evento-semana<?= $semanaImg === '' ? ' evento-semana--sem-img' : '' ?>"<?= $semanaImg !== '' ? ' style="--img:url(\'' . htmlspecialchars(miniaturaImagem($semanaImg, 1100), ENT_QUOTES) . '\')"' : '' ?>>
+                <span class="evento-semana__etiqueta"><i class="bi bi-calendar-event" aria-hidden="true"></i> <?= te('inicio.agenda.destaque') ?></span>
 
-                    <?php if (!empty($eventoSemana)): ?>
-                    <h3 class="evento-destaque__titulo"><a href="/evento.php?id=<?= (int)$eventoSemana['id'] ?>"><?= htmlspecialchars($eventoSemana['titulo']) ?></a></h3>
-                    <div class="evento-destaque__meta">
-                        <span><i class="bi bi-calendar3" aria-hidden="true"></i> <?= date(eventoDiaInteiro($eventoSemana) ? 'd/m/Y' : 'd/m/Y H:i', strtotime($eventoSemana['data_evento'])) ?></span>
+                <?php if ($semanaImg !== ''): ?>
+                    <?php if ($semanaImgPropria): ?>
+                    <button type="button" class="evento-semana__img" data-semana-abrir aria-label="Ver a imagem de «<?= htmlspecialchars($eventoSemana['titulo']) ?>» em grande">
+                        <img src="<?= htmlspecialchars(miniaturaImagem($semanaImg, 1100)) ?>" alt="<?= htmlspecialchars($eventoSemana['titulo']) ?>" loading="lazy" decoding="async">
+                    </button>
+                    <?php else: ?>
+                    <div class="evento-semana__img"><img src="<?= htmlspecialchars(miniaturaImagem($semanaImg, 1100)) ?>" alt="" loading="lazy" decoding="async"></div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if (!empty($eventoSemana)): ?>
+                    <h3 class="evento-semana__titulo"><a href="/evento.php?id=<?= (int)$eventoSemana['id'] ?>"><?= htmlspecialchars($eventoSemana['titulo']) ?></a></h3>
+                    <div class="evento-semana__faixa">
+                        <span><?= htmlspecialchars(eventoDataCurta($eventoSemana)) ?></span>
                         <span class="evento-countdown" data-evento="<?= htmlspecialchars($eventoSemana['data_evento']) ?>">A calcular...</span>
                     </div>
                     <?php if (trim((string)($eventoSemana['descricao'] ?? '')) !== ''): ?>
-                    <p class="evento-destaque__texto"><?= htmlspecialchars(mb_substr($eventoSemana['descricao'], 0, 160)) ?>...</p>
+                    <p class="evento-semana__texto"><?= htmlspecialchars(mb_substr($eventoSemana['descricao'], 0, 200)) ?></p>
                     <?php endif; ?>
                     <?= botoesCalendario($eventoSemana) ?>
-                    <?php else: ?>
-                    <h3 class="evento-destaque__titulo"><?= te('inicio.agenda.vazio_titulo') ?></h3>
-                    <p class="evento-destaque__texto"><?= te('inicio.agenda.vazio_texto') ?></p>
-                    <?php endif; ?>
-                </div>
+                <?php else: ?>
+                    <h3 class="evento-semana__titulo"><?= te('inicio.agenda.vazio_titulo') ?></h3>
+                    <p class="evento-semana__texto"><?= te('inicio.agenda.vazio_texto') ?></p>
+                <?php endif; ?>
 
-                <div class="evento-destaque__foto">
-                    <?php if ($fotoEvento !== ''): ?>
-                    <img src="<?= htmlspecialchars(miniaturaImagem('/assets/img/' . $fotoEvento, 1100)) ?>" alt="<?= htmlspecialchars($eventoSemana['titulo'] ?? '') ?>" style="object-position:<?= $focoEvento ?>" loading="lazy" decoding="async">
-                    <?php endif; ?>
-                    <svg class="evento-destaque__onda" viewBox="0 0 600 70" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0H600V6C520 44 380 70 220 62 130 58 60 48 0 40Z"/></svg>
-                    <div class="evento-destaque__rodape">
-                        <div class="evento-destaque__marca">
-                            <?php if ($logoJunta !== ''): ?><img src="/assets/img/<?= htmlspecialchars($logoJunta) ?>" alt="" width="44" height="44"><?php endif; ?>
-                            <span><strong><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong><?php if (nomeConcelho() !== ''): ?><small><?= htmlspecialchars(nomeConcelho()) ?></small><?php endif; ?></span>
-                        </div>
-                        <?php if (!empty($eventoSemana)): ?>
-                        <a href="/evento.php?id=<?= (int)$eventoSemana['id'] ?>" class="evento-destaque__botao"><?= te('inicio.agenda.botao_evento') ?> <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-                        <?php else: ?>
-                        <a href="/eventos.php" class="evento-destaque__botao"><?= te('inicio.agenda.vazio_botao') ?> <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-                        <?php endif; ?>
+                <div class="evento-semana__rodape">
+                    <div class="evento-semana__marca">
+                        <?php if ($logoJunta !== ''): ?><img src="/assets/img/<?= htmlspecialchars($logoJunta) ?>" alt="" width="40" height="40"><?php endif; ?>
+                        <span><strong><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong><?php if (nomeConcelho() !== ''): ?><small><?= htmlspecialchars(nomeConcelho()) ?></small><?php endif; ?></span>
                     </div>
+                    <?php if (!empty($eventoSemana)): ?>
+                    <a href="/evento.php?id=<?= (int)$eventoSemana['id'] ?>" class="evento-semana__botao"><?= te('inicio.agenda.botao_evento') ?></a>
+                    <?php else: ?>
+                    <a href="/eventos.php" class="evento-semana__botao"><?= te('inicio.agenda.vazio_botao') ?></a>
+                    <?php endif; ?>
                 </div>
             </article>
+            <?php if ($semanaImgPropria): ?>
+            <dialog class="evento-semana-janela" id="eventoSemanaJanela" aria-label="Imagem do evento">
+                <img src="<?= htmlspecialchars($semanaImg) ?>" alt="<?= htmlspecialchars($eventoSemana['titulo']) ?>" loading="lazy">
+                <button type="button" aria-label="Fechar">&times;</button>
+            </dialog>
+            <?php endif; ?>
 
             <div class="news-events-lists">
 
@@ -1131,6 +1162,13 @@ if (!empty($home['mostrar_descobrir']) && $fimDeSemanaPossivel) secaoImersiva('d
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // 13/11/2026: a imagem do «Evento da Semana» abre em grande (fecha com Esc, no × ou com um clique)
+    const semanaJanela = document.getElementById("eventoSemanaJanela"), semanaAbrir = document.querySelector("[data-semana-abrir]");
+    if (semanaJanela && semanaAbrir && typeof semanaJanela.showModal === "function") {
+        semanaAbrir.addEventListener("click", function () { semanaJanela.showModal(); });
+        semanaJanela.addEventListener("click", function () { semanaJanela.close(); });
+    }
+
     const countdown = document.querySelector(".evento-countdown");
 
     if (!countdown) return;
@@ -1142,7 +1180,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const distancia = dataEvento - agora;
 
         if (distancia <= 0) {
-            countdown.innerHTML = "O evento já começou";
+            countdown.textContent = "O evento já começou";
             return;
         }
 
@@ -1150,7 +1188,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const horas = Math.floor((distancia / (1000 * 60 * 60)) % 24);
         const minutos = Math.floor((distancia / (1000 * 60)) % 60);
 
-        countdown.innerHTML = "Faltam " + dias + " dias, " + horas + "h " + minutos + "min";
+        countdown.textContent = "Faltam " + dias + " dias, " + horas + "h " + minutos + "min";
     }
 
     atualizarCountdown();

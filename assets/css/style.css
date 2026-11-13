@@ -9419,3 +9419,19 @@ button.evento-semana__img:focus-visible{ outline: 2px solid #fff; outline-offset
     }
     :root body .editorial__item--destaque[data-formato="cartaz"] .editorial__texto{ position: relative; right: auto; padding-top: 300px; }
 }
+
+/* ---------- Notícias (13/11/2026, 2.ª volta): a imagem do destaque abre em grande ----------
+   Botão por cima da imagem (fora da ligação da notícia), só visível no destaque; ocupa a mesma caixa da imagem. */
+.editorial__ampliar{ display: none; }
+:root body .editorial__item--destaque{ position: relative; }
+:root body .editorial__item--destaque .editorial__ampliar{
+    display: block; position: absolute; z-index: 4; top: 24px; right: 24px; bottom: 24px; width: 46%;
+    padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: zoom-in;
+}
+:root body .editorial__item--destaque .editorial__ampliar:focus-visible{ outline: 3px solid #fff; outline-offset: 2px; }
+@media (min-width: 901px) and (max-width: 1200px){
+    :root body .editorial__item--destaque .editorial__ampliar{ width: 38%; right: 20px; }
+}
+@media (max-width: 900px){
+    :root body .editorial__item--destaque .editorial__ampliar{ top: 16px; left: 16px; right: 16px; bottom: auto; width: auto; height: 270px; }
+}

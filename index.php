@@ -533,8 +533,8 @@ blocoHoje($pdo); ?>
                 $catN = trim((string)($n['categoria'] ?? '')) ?: 'Notícia';
                 // cartaz (imagem alta ou quase quadrada) ou fotografia larga: no destaque, o cartaz aparece inteiro ao lado
                 $imgN = !empty($n['imagem']) ? miniaturaImagem('/assets/img/' . $n['imagem'], 900) : '';
-                $dimN = $imgN !== '' ? @getimagesize(__DIR__ . rawurldecode((string)parse_url($imgN, PHP_URL_PATH))) : false;
-                $formatoN = ($dimN && $dimN[1] > 0 && $dimN[0] / $dimN[1] < 1.2) ? 'cartaz' : 'foto';
+                // 13/11/2026 (pedido): no destaque, qualquer imagem aparece inteira ao lado; sem imagem, as iniciais enchem o cartão
+                $formatoN = $imgN !== '' ? 'cartaz' : 'foto';
                 $fundoN = str_replace(["'", '"', '(', ')', ' '], ['%27', '%22', '%28', '%29', '%20'], $imgN);
                 ?>
                 <article class="editorial__item<?= $i === 0 ? ' editorial__item--destaque' : '' ?>" data-categoria="<?= htmlspecialchars($catN) ?>" data-formato="<?= $formatoN ?>"<?= $i >= 4 ? ' hidden' : '' ?>>
@@ -555,10 +555,29 @@ blocoHoje($pdo); ?>
                             <span class="editorial__ler" aria-hidden="true">Ler notícia <i class="bi bi-arrow-right"></i></span>
                         </div>
                     </a>
+                    <?php if ($imgN !== ''): /* só se vê no destaque: abre a imagem em grande (fora do <a>, para não aninhar) */ ?>
+                        <button type="button" class="editorial__ampliar" data-noticia-ampliar="<?= htmlspecialchars(miniaturaImagem('/assets/img/' . $n['imagem'], 1800)) ?>" data-titulo="<?= htmlspecialchars($n['titulo']) ?>" aria-label="Ver a imagem de «<?= htmlspecialchars($n['titulo']) ?>» em grande"></button>
+                    <?php endif; ?>
                 </article>
             <?php endforeach; ?>
             <p class="editorial__vazio" data-editorial-vazio hidden><?= te('inicio.noticias.vazio') ?> <a href="/noticias.php">Ver todas as notícias</a></p>
         </div>
+        <dialog class="evento-semana-janela" id="noticiaImagemJanela" aria-label="Imagem da notícia">
+            <img src="data:," alt="">
+            <button type="button" aria-label="Fechar">&times;</button>
+        </dialog>
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 13/11/2026: a imagem da notícia em destaque abre em grande (fecha com Esc, no × ou com um clique)
+            const janela = document.getElementById("noticiaImagemJanela");
+            if (!janela || typeof janela.showModal !== "function") return;
+            const img = janela.querySelector("img");
+            document.querySelectorAll("[data-noticia-ampliar]").forEach(function (b) {
+                b.addEventListener("click", function () { img.src = b.dataset.noticiaAmpliar; img.alt = b.dataset.titulo || ""; janela.showModal(); });
+            });
+            janela.addEventListener("click", function () { janela.close(); });
+        });
+        </script>
     </div>
 </section>
 <?php endif; ?>

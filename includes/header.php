@@ -105,7 +105,7 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261113d">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261113e">
     <?php /* Modo escuro (13/11/2026): o tema-escuro.css (~143 KB, só regras :root[data-tema="escuro"]) só é carregado a
              quem escolheu o escuro. Com a cookie jf-tema=escuro vem já no HTML; quem o escolheu antes de haver cookie,
              ou o liga agora no botão, recebe-o por JS (jfCarregarEscuro). */ ?>

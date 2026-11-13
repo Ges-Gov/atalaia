@@ -56,7 +56,8 @@ foreach ($imagens as &$imgT) { if (preg_match('/^[A-Za-z_]{0,6}[\d_-]{3,}[\w-]*$
     elseif (preg_match('/^[a-z0-9]+(-[a-z0-9]+)+$/', (string)$imgT['titulo'])) $imgT['titulo'] = mb_strtoupper(mb_substr(str_replace('-', ' ', $imgT['titulo']), 0, 1)) . mb_substr(str_replace('-', ' ', $imgT['titulo']), 1); }
 unset($imgT);
 
-$todasImagens = array_map(fn($img) => imagemGaleriaUrl($img['ficheiro']), $imagens);
+// 13/11/2026: na janela grande vai a versão de 2000 px (os originais chegam a 20–30 MB); na grelha, 800 px
+$todasImagens = array_map(fn($img) => miniaturaImagem(imagemGaleriaUrl($img['ficheiro']), 2000), $imagens);
 ?>
 
 <style>
@@ -241,7 +242,7 @@ a.galeria-publica-item .galeria-publica-legenda{opacity:1;transform:none;font-si
             <div class="galeria-publica-grid">
                 <?php foreach ($imagens as $i => $img): ?>
                     <button type="button" class="galeria-publica-item" onclick="lbAbrir(todasImagens, <?= $i ?>)">
-                        <img src="<?= htmlspecialchars(imagemGaleriaUrl($img['ficheiro'])) ?>"
+                        <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($img['ficheiro']), 800)) ?>"
                              alt="<?= htmlspecialchars($img['titulo'] ?: $nomeFreguesia) ?>"
                              loading="lazy">
                         <?php if (!empty($img['titulo']) || $vistaTodas): ?>
@@ -259,7 +260,7 @@ a.galeria-publica-item .galeria-publica-legenda{opacity:1;transform:none;font-si
                 <?php foreach ($albuns as $a): ?>
                     <a class="galeria-publica-item" href="/galeria.php?album=<?= (int)$a['id'] ?>">
                         <?php if (!empty($a['capa'])): ?>
-                            <img src="<?= htmlspecialchars(imagemGaleriaUrl($a['capa'])) ?>"
+                            <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($a['capa']), 800)) ?>"
                                  alt="<?= htmlspecialchars($a['nome']) ?>" loading="lazy">
                         <?php endif; ?>
                         <span class="galeria-publica-legenda">

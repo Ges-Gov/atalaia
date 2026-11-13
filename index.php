@@ -1091,6 +1091,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                 $u = imagemGaleriaUrl($img['ficheiro']);
                 if ($u !== '' && !in_array($u, $fotosLb, true)) $fotosLb[] = $u;
             }
+            $fotosLb = array_map(fn($f) => miniaturaImagem($f, 2000), $fotosLb);   // 13/11/2026: janela grande sem os originais
             $descPonto = trim(preg_replace('/\s+/', ' ', strip_tags((string)($p['descricao'] ?? ''))));
             ?>
                 <a class="ponto-tile<?= $grande ? ' ponto-tile--grande' : '' ?>" href="/ponto.php?id=<?= (int)$p['id'] ?>" <?= $extra ?>

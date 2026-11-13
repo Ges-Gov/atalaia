@@ -92,7 +92,7 @@ $imagem = !empty($ponto['imagem'])
             require_once __DIR__ . "/includes/galeria.php";
             $fotosPonto = fotosSemRepetidas(imagensDaOrigem($pdo, 'ponto', (int)$ponto['id']), $imagem);
             $todasFotosPonto = $imagem ? [html_entity_decode($imagem)] : [];
-            foreach ($fotosPonto as $f) $todasFotosPonto[] = imagemGaleriaUrl($f['ficheiro']);
+            foreach ($fotosPonto as $f) $todasFotosPonto[] = miniaturaImagem(imagemGaleriaUrl($f['ficheiro']), 2000);   // 13/11/2026: não o original
             seoPonto($ponto, array_map(fn($f) => imagemGaleriaUrl($f['ficheiro']), $fotosPonto));
             ?>
             <?php if ($imagem): ?>
@@ -110,9 +110,9 @@ $imagem = !empty($ponto['imagem'])
 
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;">
                     <?php foreach ($fotosPonto as $f): ?>
-                        <a href="<?= htmlspecialchars(imagemGaleriaUrl($f['ficheiro'])) ?>" target="_blank" rel="noopener"
+                        <a href="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($f['ficheiro']), 2000)) ?>" target="_blank" rel="noopener"
                            style="display:block;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.10);">
-                            <img src="<?= htmlspecialchars(imagemGaleriaUrl($f['ficheiro'])) ?>"
+                            <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($f['ficheiro']), 800)) ?>"
                                  alt="<?= htmlspecialchars($f['titulo'] ?: $ponto['nome']) ?>" loading="lazy"
                                  style="width:100%;height:145px;object-fit:cover;display:block;">
                         </a>

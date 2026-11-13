@@ -140,7 +140,7 @@ $fotosGaleriaEvento = fotosSemRepetidas(imagensDaOrigem($pdo, 'evento', $id), $i
 
 $todasImagensEvento = [];
 if ($imagem) $todasImagensEvento[] = $imagem;
-foreach ($fotosGaleriaEvento as $g) $todasImagensEvento[] = imagemGaleriaUrl($g['ficheiro']);
+foreach ($fotosGaleriaEvento as $g) $todasImagensEvento[] = miniaturaImagem(imagemGaleriaUrl($g['ficheiro']), 2000);   // 13/11/2026: não o original
 $coverOffsetEvento = $imagem ? 1 : 0;
 
 $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
@@ -392,7 +392,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                     <div class="evento-galeria-grid">
                         <?php foreach ($fotosGaleriaEvento as $gIdx => $g): ?>
                             <a class="evento-galeria-item" href="#" onclick="lbAbrir(todasImagensEvento, <?= $coverOffsetEvento + $gIdx ?>); return false;">
-                                <img src="<?= htmlspecialchars(imagemGaleriaUrl($g['ficheiro'])) ?>" alt="<?= htmlspecialchars($evento['titulo']) ?>" loading="lazy">
+                                <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($g['ficheiro']), 800)) ?>" alt="<?= htmlspecialchars($evento['titulo']) ?>" loading="lazy">
                             </a>
                         <?php endforeach; ?>
                     </div>

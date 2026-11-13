@@ -58,6 +58,30 @@ $proximoEvento = $pdo->query("
     LIMIT 1
 ")->fetch(PDO::FETCH_ASSOC);
 
+// 13/11/2026: data curta do próximo evento («Seg, 7 dez · 20:00»); sem hora nos eventos de dia inteiro e a data
+// de fim só quando é diferente (antes aparecia «07/12/2026 20:00 – 07/12/2026 20:00»)
+require_once __DIR__ . "/includes/calendario.php";
+function eventoDataCurta(array $e): string
+{
+    $sem = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    $mes = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    $semHora = eventoDiaInteiro($e);
+    $f = function (int $t, bool $comDia = true) use ($sem, $mes) {
+        return ($comDia ? $sem[(int) date('w', $t)] . ', ' : '') . (int) date('j', $t) . ' ' . $mes[(int) date('n', $t) - 1];
+    };
+    $ini = strtotime($e['data_evento']);
+    $txt = $f($ini) . ($semHora ? '' : ' · ' . date('H:i', $ini));
+    $fim = !empty($e['data_fim']) ? strtotime($e['data_fim']) : 0;
+    if ($fim && $fim > $ini) {
+        if (date('Y-m-d', $fim) === date('Y-m-d', $ini)) {
+            if (!$semHora) $txt .= '–' . date('H:i', $fim);
+        } else {
+            $txt .= ' – ' . $f($fim, false) . ($semHora ? '' : ' · ' . date('H:i', $fim));
+        }
+    }
+    return $txt;
+}
+
 $heroImagem = !empty($proximoEvento['imagem'])
     ? "/assets/img/" . $proximoEvento['imagem']
     : "/assets/img/freguesia-1.jpg";
@@ -143,6 +167,52 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-badge{display:inline-flex;background:#dcfce7;color:#166534;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900}.eventos-empty{background:white;border-radius:28px;padding:38px;text-align:center;color:#64748b;font-weight:800;box-shadow:0 18px 45px rgba(0,0,0,.08)}
 @media(max-width:1200px){.agenda-top-grid-insane{grid-template-columns:1fr}.eventos-grid-insane{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.eventos-hero-insane{min-height:340px}.eventos-hero-insane h1{font-size:clamp(28px,8vw,40px);letter-spacing:-1px}.eventos-hero-insane p{font-size:15px;line-height:1.5;margin:0}.eventos-main{margin-top:-52px}.evento-feature-insane,.agenda-month-insane{padding:24px;border-radius:26px}.agenda-calendar-insane,.agenda-weekdays-insane{gap:6px}.agenda-day-insane{min-height:54px;border-radius:14px}.agenda-tooltip-insane{width:245px}.eventos-grid-insane{grid-template-columns:1fr}.eventos-section-head{flex-direction:column;align-items:flex-start}}
+
+/* 13/11/2026 — «Próximo evento» com vidro sobre o cartaz: o próprio cartaz, desfocado, faz de fundo; o cartaz aparece
+   inteiro à direita (antes era recortado numa tira) e abre em grande ao carregar */
+.evento-vidro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,40%);gap:26px;align-items:center;padding:30px;min-height:0;isolation:isolate;background:#11151B}
+.evento-vidro:before{width:auto;height:auto;border-radius:0;right:auto;top:auto;inset:-60px;z-index:-2!important;background:var(--cartaz) center/cover no-repeat;filter:blur(34px) saturate(1.5)}
+.evento-vidro:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(120deg,rgba(10,12,18,.86) 0%,rgba(10,12,18,.62) 55%,rgba(10,12,18,.38) 100%)}
+.evento-vidro.evento-vidro--sem-img{grid-template-columns:minmax(0,1fr);background:linear-gradient(135deg,#242A30,#11151B)}
+.evento-vidro.evento-vidro--sem-img:before,.evento-vidro.evento-vidro--sem-img:after{display:none}
+.evento-vidro__info{display:grid;gap:16px;align-content:center;min-width:0}
+.evento-vidro .evento-feature-badge{margin:0;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;padding:7px 13px}
+.evento-vidro h2{font-size:clamp(26px,2.6vw,34px);line-height:1.12;letter-spacing:-.5px;margin:0;text-wrap:balance}
+.evento-vidro__faixa{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.evento-vidro__faixa .bi{margin-right:6px;color:#f6d987}
+.evento-vidro .evento-countdown{background:none;border:0;border-radius:0;padding:0;margin:0;color:#f6d987;font-weight:700}
+.evento-vidro__local{display:flex;gap:8px;align-items:flex-start;margin:0;color:#e6ebf3;font-size:14.5px;line-height:1.45}
+.evento-vidro__local .bi{color:#f6d987}
+.evento-vidro__acoes{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:4px}
+.evento-vidro__acoes .ev-p{display:inline-flex;align-items:center;padding:10px 20px;border-radius:999px;background:#fff;color:#11151B;font-weight:700;font-size:15px;text-decoration:none;transition:background-color .25s ease}
+.evento-vidro__acoes .ev-p:hover{background:var(--cor-secundaria,#C8A02E)}
+.evento-vidro__acoes .ev-s{display:inline-flex;align-items:center;gap:8px;padding:6px 0;color:#fff;font-weight:700;font-size:15px;text-decoration:none;background:linear-gradient(currentColor,currentColor) left bottom/100% 1.5px no-repeat;transition:background-size .3s ease}
+.evento-vidro__acoes .ev-s:hover{background-size:0 1.5px}
+.evento-vidro__acoes .ev-s .bi{transition:transform .3s ease}.evento-vidro__acoes .ev-s:hover .bi{transform:translateX(4px)}
+.evento-vidro__acoes a:focus-visible,.evento-vidro__cartaz:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.evento-vidro__cartaz{justify-self:center;display:block;padding:0;border:0;background:none;cursor:zoom-in;border-radius:16px;box-shadow:0 26px 50px -18px rgba(0,0,0,.7);transition:transform .3s ease;max-width:100%}
+.evento-vidro__cartaz:hover{transform:translateY(-3px)}
+.evento-vidro__cartaz img{display:block;width:auto;max-width:100%;max-height:460px;height:auto;border-radius:16px}
+.evento-cartaz-janela{padding:0;border:0;background:transparent;max-width:94vw;max-height:94vh;overflow:visible}
+.evento-cartaz-janela::backdrop{background:rgba(8,10,14,.86)}
+.evento-cartaz-janela img{display:block;max-width:94vw;max-height:88vh;width:auto;height:auto;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6);cursor:zoom-out}
+.evento-cartaz-janela button{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#11151B;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+@media(max-width:760px){
+  .evento-vidro{grid-template-columns:minmax(0,1fr);padding:22px;gap:20px}
+  .evento-vidro__cartaz{order:-1}
+  .evento-vidro__cartaz img{max-height:340px}
+  .evento-cartaz-janela button{top:8px;right:8px}
+}
+/* 13/11/2026: ao lado do calendário (computador largo) o cartão estica até à altura do calendário; o cartaz passa para
+   cima e cresce até ocupar o espaço que sobrava, com o texto por baixo (antes ficava espaço vazio em cima e em baixo) */
+@media (min-width:1201px){
+  .evento-vidro{display:flex;flex-direction:column;gap:18px;padding:26px 28px}
+  .evento-vidro__info{gap:13px}
+  .evento-vidro__cartaz{order:-1;flex:1 1 0;min-height:240px;width:100%;display:flex;justify-content:center;align-items:center;box-shadow:none;border-radius:0}
+  .evento-vidro__cartaz img{height:100%;width:auto;max-width:100%;max-height:none;object-fit:contain;box-shadow:0 26px 50px -18px rgba(0,0,0,.7)}
+  .evento-vidro__info{align-content:start}
+}
+@media (prefers-reduced-motion: reduce){.evento-vidro__cartaz,.evento-vidro__acoes .ev-s,.evento-vidro__acoes .ev-s .bi{transition:none}}
 </style>
 
 <main class="eventos-page-insane">
@@ -161,31 +231,41 @@ $heroImagem = !empty($proximoEvento['imagem'])
 
         <div class="agenda-top-grid-insane">
 
-            <article class="evento-feature-insane">
-                <span class="evento-feature-badge"><?= te('eventos.destaque.etiqueta') ?></span>
-
-                <?php if ($proximoEvento): ?>
-                    <h2><?= htmlspecialchars($proximoEvento['titulo']) ?></h2>
-                    <p><?= htmlspecialchars(mb_substr($proximoEvento['descricao'] ?? '', 0, 180)) ?><?= mb_strlen($proximoEvento['descricao'] ?? '') > 180 ? '...' : '' ?></p>
-
-                    <div class="evento-feature-date"><i class="bi bi-calendar-event-fill"></i> <?= date('d/m/Y H:i', strtotime($proximoEvento['data_evento'])) ?><?php if (!empty($proximoEvento['data_fim'])): ?> &ndash; <?= date('d/m/Y H:i', strtotime($proximoEvento['data_fim'])) ?><?php endif; ?></div>
-
-                    <div class="evento-countdown" data-evento="<?= htmlspecialchars($proximoEvento['data_evento']) ?>"><?= te('eventos.destaque.a_calcular') ?></div>
-
-                    <div class="evento-feature-image">
-                        <?php if (!empty($proximoEvento['imagem'])): ?>
-                            <img src="/assets/img/<?= htmlspecialchars($proximoEvento['imagem']) ?>" alt="<?= htmlspecialchars($proximoEvento['titulo']) ?>" style="object-position:<?= (int)($proximoEvento['imagem_foco_x'] ?? 50) ?>% <?= (int)($proximoEvento['imagem_foco_y'] ?? 50) ?>%">
-                        <?php else: ?>
-                            <div class="evento-feature-noimg"><i class="bi bi-calendar-event-fill"></i></div>
+            <?php /* 13/11/2026: «vidro sobre o cartaz» (o cartaz inteiro à direita, desfocado no fundo, abre em grande) */
+                  $evImg = ($proximoEvento && !empty($proximoEvento['imagem'])) ? '/assets/img/' . $proximoEvento['imagem'] : ''; ?>
+            <article class="evento-feature-insane evento-vidro<?= $evImg === '' ? ' evento-vidro--sem-img' : '' ?>"<?= $evImg !== '' ? ' style="--cartaz:url(\'' . htmlspecialchars($evImg, ENT_QUOTES) . '\')"' : '' ?>>
+                <div class="evento-vidro__info">
+                    <span class="evento-feature-badge"><?= te('eventos.destaque.etiqueta') ?></span>
+                    <?php if ($proximoEvento): ?>
+                        <h2><?= htmlspecialchars($proximoEvento['titulo']) ?></h2>
+                        <div class="evento-vidro__faixa">
+                            <span><i class="bi bi-calendar-event" aria-hidden="true"></i><?= htmlspecialchars(eventoDataCurta($proximoEvento)) ?></span>
+                            <span class="evento-countdown" data-evento="<?= htmlspecialchars($proximoEvento['data_evento']) ?>"><?= te('eventos.destaque.a_calcular') ?></span>
+                        </div>
+                        <?php if (!empty($proximoEvento['local'])): ?>
+                            <p class="evento-vidro__local"><i class="bi bi-geo-alt" aria-hidden="true"></i><span><?= htmlspecialchars($proximoEvento['local']) ?></span></p>
                         <?php endif; ?>
-                    </div>
-
-                    <a href="/evento.php?id=<?= (int)$proximoEvento['id'] ?>" class="evento-feature-btn"><?= te('eventos.destaque.botao') ?></a>
-                <?php else: ?>
-                    <h2><?= te('eventos.destaque.vazio_titulo') ?></h2>
-                    <p><?= te('eventos.destaque.vazio_texto') ?></p>
+                        <div class="evento-vidro__acoes">
+                            <a class="ev-p" href="/evento.php?id=<?= (int)$proximoEvento['id'] ?>"><?= trim(str_replace('→', '', te('eventos.destaque.botao'))) ?></a>
+                            <a class="ev-s" href="<?= htmlspecialchars(eventoLinkGoogle($proximoEvento)) ?>" target="_blank" rel="noopener">Adicionar ao calendário <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                    <?php else: ?>
+                        <h2><?= te('eventos.destaque.vazio_titulo') ?></h2>
+                        <p><?= te('eventos.destaque.vazio_texto') ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php if ($evImg !== ''): ?>
+                    <button type="button" class="evento-vidro__cartaz" data-cartaz-abrir aria-label="Ver o cartaz de «<?= htmlspecialchars($proximoEvento['titulo']) ?>» em grande">
+                        <img src="<?= htmlspecialchars($evImg) ?>" alt="Cartaz: <?= htmlspecialchars($proximoEvento['titulo']) ?>" loading="lazy" decoding="async">
+                    </button>
                 <?php endif; ?>
             </article>
+            <?php if ($evImg !== ''): ?>
+                <dialog class="evento-cartaz-janela" id="eventoCartazJanela" aria-label="Cartaz do evento">
+                    <img src="<?= htmlspecialchars($evImg) ?>" alt="Cartaz: <?= htmlspecialchars($proximoEvento['titulo']) ?>">
+                    <button type="button" aria-label="Fechar" data-cartaz-fechar>&times;</button>
+                </dialog>
+            <?php endif; ?>
 
             <article class="agenda-month-insane" id="agenda">
                 <div class="agenda-month-head-insane">
@@ -296,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const distancia = dataEvento - agora;
 
         if (distancia <= 0) {
-            countdown.innerHTML = "O evento já começou";
+            countdown.textContent = "O evento já começou";
             return;
         }
 
@@ -304,11 +384,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const horas = Math.floor((distancia / (1000 * 60 * 60)) % 24);
         const minutos = Math.floor((distancia / (1000 * 60)) % 60);
 
-        countdown.innerHTML = "Faltam " + dias + " dias, " + horas + "h " + minutos + "min";
+        countdown.textContent = "Faltam " + dias + " dias, " + horas + "h " + minutos + "min";
     }
 
     atualizarCountdown();
     setInterval(atualizarCountdown, 60000);
+});
+
+// 13/11/2026: o cartaz do próximo evento abre em grande (fecha com Esc, no ×, ou ao clicar na imagem/fora dela)
+document.addEventListener("DOMContentLoaded", function () {
+    const janela = document.getElementById("eventoCartazJanela");
+    const abrir = document.querySelector("[data-cartaz-abrir]");
+    if (!janela || !abrir || typeof janela.showModal !== "function") return;
+    abrir.addEventListener("click", function () { janela.showModal(); });
+    janela.addEventListener("click", function () { janela.close(); });
 });
 </script>
 

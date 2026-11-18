@@ -8,6 +8,7 @@
  *
  * Versão 2 (11/2026): também os documentos publicados por categoria (total e data do último — para o semáforo
  * dos documentos obrigatórios) e as visitas por mês (só totais, do includes/visitas.php).
+ * 18/11/2026: também «acessibilidade» — a última avaliação (DL 83/2018) ou null; a Intranet antiga ignora o campo.
  */
 if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'HEAD'], true)) {
     http_response_code(405);
@@ -67,6 +68,10 @@ foreach ($tentar("SELECT DATE_FORMAT(data, '%Y-%m') mes, SUM(total) total FROM v
 $visitas30 = $tentar('SELECT COALESCE(SUM(total), 0) total, MIN(data) desde FROM visitas_diarias WHERE data > DATE_SUB(CURDATE(), INTERVAL 30 DAY)');
 $visitasDesde = $tentar('SELECT MIN(data) desde FROM visitas_diarias');
 
+// Acessibilidade (18/11/2026): a última avaliação registada (a mesma que a Declaração de Acessibilidade mostra).
+$acess = $tentar('SELECT data_declaracao, estado, auto_data, auto_nota, auto_paginas, manual_data, manual_satisfeitas, manual_total
+    FROM acessibilidade_avaliacoes ORDER BY data_declaracao DESC, id DESC LIMIT 1')[0] ?? null;
+
 echo json_encode([
     'versao' => 2,
     'site' => [
@@ -91,4 +96,14 @@ echo json_encode([
         'ultimos_30_dias' => (int) ($visitas30[0]['total'] ?? 0),
         'meses' => (object) $visitasMeses,
     ],
+    'acessibilidade' => $acess ? [
+        'data_declaracao' => $data($acess['data_declaracao']),
+        'estado' => (string) $acess['estado'],
+        'auto_data' => $data($acess['auto_data']),
+        'auto_nota' => $acess['auto_nota'] !== null ? (float) $acess['auto_nota'] : null,
+        'auto_paginas' => $acess['auto_paginas'] !== null ? (int) $acess['auto_paginas'] : null,
+        'manual_data' => $data($acess['manual_data']),
+        'manual_satisfeitas' => $acess['manual_satisfeitas'] !== null ? (int) $acess['manual_satisfeitas'] : null,
+        'manual_total' => $acess['manual_total'] !== null ? (int) $acess['manual_total'] : null,
+    ] : null,
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

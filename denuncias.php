@@ -93,7 +93,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 .dn-alert{background:#fee2e2;color:#991b1b;border-radius:16px;padding:14px;font-weight:900}
 @media(max-width:760px){.dn-grid{grid-template-columns:1fr}.dn-tipos{grid-template-columns:1fr}.dn-card{padding:22px}}
 </style>
-<main class="dn-page">
+<div class="dn-page">
 <section class="dn-hero"><div class="container">
     <span class="cd-kicker"><i class="bi bi-shield-lock"></i> <?= te('denuncias.hero.kicker') ?></span>
     <h1><?= te('denuncias.hero.titulo') ?></h1>
@@ -161,7 +161,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         </div>
     </form>
 </div></div></section>
-</main>
+</div>
 
 <script>
 (function(){

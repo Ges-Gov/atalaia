@@ -3145,7 +3145,8 @@ a:hover{
     top:20px;
 }
 
-.noticia-side-card h3{
+.noticia-side-card h3,
+.noticia-side-card h2.titulo-h3{
     margin:0 0 18px;
     color:#11151B;
 }
@@ -3634,7 +3635,8 @@ a:hover{
     margin-bottom:20px;
 }
 
-.pedido-info-card h3{
+.pedido-info-card h3,
+.pedido-info-card h2.titulo-h3{
     margin:0 0 14px;
     color:#11151B;
     font-size:25px;
@@ -5533,6 +5535,15 @@ h3, h4{
     letter-spacing: -0.01em;
     line-height: 1.25;
 }
+/* 18/11/2026 (acessibilidade): um <h2> com o aspeto de um <h3>, para os títulos que estavam em <h3> logo a seguir ao
+   <h1> (saltavam o nível 2 — o AccessMonitor marca a ordem dos títulos). Fica igual ao que se via. */
+h2.titulo-h3{
+    font-size: 1.17em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin-block: 1em;
+}
 
 /* Metadados, legendas e notas: Light */
 figcaption,
@@ -5697,6 +5708,14 @@ html.brasao-entrada .brand img{ animation: brasao-entra 1s var(--ease-out) both;
     body .main-nav > .nav-dropdown > .nav-parent:hover{ color: var(--cor-principal); }
     body .main-nav > .nav-ativa,
     body .main-nav > .nav-dropdown > .nav-ativa{ color: #fff !important; text-shadow: none !important; }
+    /* 18/11/2026 (acessibilidade): o item ativo ganha a cor da pílula por baixo dele, só depois de ela lá chegar
+       (atraso = duração do deslizar). Fica igual ao que se via, mas o texto branco passa a ter fundo sólido próprio
+       (o AccessMonitor via texto branco sobre o vidro do cabeçalho). Ao sair, o fundo sai logo (sem transição). */
+    body .main-nav > .nav-ativa,
+    body .main-nav > .nav-dropdown > .nav-ativa{
+        background-color: var(--cor-principal);
+        transition: color var(--dur-2) var(--ease-out), background-color 0s linear var(--dur-3);
+    }
     .nav-indicador{
         position: absolute;
         z-index: 0;
@@ -6566,16 +6585,20 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
     grid-template-columns: 1.15fr 1fr 1fr 1.15fr;
     gap: 18px;
 }
+/* 18/11/2026 (acessibilidade): fundos SÓLIDOS iguais à mistura que se via (4,5% de branco sobre o véu #11151b).
+   Com transparência + fotografia por baixo, o AccessMonitor não conseguia calcular o contraste e dava o rodapé todo
+   como ilegível (≈90% das falhas de contraste do site). O aspeto fica o mesmo. */
 .rodape__col{
     padding: 24px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, .045);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: #1c2025;
     border: 1px solid rgba(255, 255, 255, .09);
     min-width: 0;
 }
+/* A coluna da marca fica transparente: um fundo sólido mostrava-se como um retângulo sobre a fotografia do rodapé. */
 .rodape__col--marca{ background: transparent; border-color: transparent; padding-left: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Etiqueta do campo da newsletter (era o <p> por cima do formulário): o mesmo espaço de 16px até ao campo (8 + gap 8). */
+.rodape__texto.rodape__etiqueta{ display: block; flex-basis: 100%; margin: 0 0 8px; }
 .rodape__brasao{
     width: 72px; height: 72px;
     display: grid; place-items: center;
@@ -6617,7 +6640,7 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
     margin-top: 18px;
     padding: 12px 14px;
     border-radius: 14px;
-    background: color-mix(in srgb, var(--cor-secundaria) 12%, transparent);
+    background: color-mix(in srgb, var(--cor-secundaria) 12%, #1c2025);   /* sólido (acessibilidade, 18/11/2026) */
     border: 1px solid color-mix(in srgb, var(--cor-secundaria) 30%, transparent);
 }
 .rodape__horario-tag{ display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--ouro-vivo, #e3c463); }

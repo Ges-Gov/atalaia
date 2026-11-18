@@ -154,7 +154,7 @@ padding:22px;
 
                 <input type="text" name="nif" placeholder="<?= te('documentos_automaticos.formulario.ph_nif') ?>">
 
-                <input type="date" name="data_nascimento">
+                <input type="date" name="data_nascimento" aria-label="Data de nascimento">
 
                 <input type="text" name="assunto" placeholder="<?= te('documentos_automaticos.formulario.ph_assunto') ?>">
 
@@ -192,7 +192,7 @@ required>
                     <?= te('documentos_automaticos.formulario.botao') ?>
                 </button>
 
-            </form></div><aside class="docs-auto-info"><span class="section-kicker"><?= te('documentos_automaticos.sidebar.kicker') ?></span><h3><?= te('documentos_automaticos.sidebar.titulo') ?></h3><ul><li><?= te('documentos_automaticos.sidebar.item1') ?></li><li><?= te('documentos_automaticos.sidebar.item2') ?></li><li><?= te('documentos_automaticos.sidebar.item3') ?></li><li><?= te('documentos_automaticos.sidebar.item4') ?></li></ul><div class="docs-auto-badges"><span><?= te('documentos_automaticos.sidebar.selo1') ?></span><span><?= te('documentos_automaticos.sidebar.selo2') ?></span><span><?= te('documentos_automaticos.sidebar.selo3') ?></span></div></aside></div>
+            </form></div><div class="docs-auto-info"><span class="section-kicker"><?= te('documentos_automaticos.sidebar.kicker') ?></span><h3><?= te('documentos_automaticos.sidebar.titulo') ?></h3><ul><li><?= te('documentos_automaticos.sidebar.item1') ?></li><li><?= te('documentos_automaticos.sidebar.item2') ?></li><li><?= te('documentos_automaticos.sidebar.item3') ?></li><li><?= te('documentos_automaticos.sidebar.item4') ?></li></ul><div class="docs-auto-badges"><span><?= te('documentos_automaticos.sidebar.selo1') ?></span><span><?= te('documentos_automaticos.sidebar.selo2') ?></span><span><?= te('documentos_automaticos.sidebar.selo3') ?></span></div></div></div>
         </div>
 
     </div>

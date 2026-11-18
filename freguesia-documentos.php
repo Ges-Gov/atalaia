@@ -484,7 +484,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
 }
 </style>
 
-<main class="docs-page-premium">
+<div class="docs-page-premium">
 
     <section class="docs-hero-premium">
         <div class="container">
@@ -615,6 +615,6 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
         </div>
     </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

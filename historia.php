@@ -548,7 +548,7 @@ function textoSeguro($texto) {
 
 </style>
 
-<main class="historia-page">
+<div class="historia-page">
 
 <section class="historia-hero">
     <div class="container">
@@ -594,7 +594,7 @@ function textoSeguro($texto) {
             <p><?= textoSeguro($pagina['intro_texto'] ?? '') ?></p>
         </div>
 
-        <aside class="historia-side">
+        <div class="historia-side">
 
             <div>
                 <div class="historia-side-icon"><i class="bi bi-geo-alt-fill"></i></div>
@@ -607,7 +607,7 @@ function textoSeguro($texto) {
 
             </p>
 
-        </aside>
+        </div>
 
     </section>
 
@@ -796,6 +796,6 @@ function textoSeguro($texto) {
 
 </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

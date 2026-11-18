@@ -953,7 +953,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                 </li>
             <?php };
             if ($equipaExec || $mesaAssembleia): ?>
-            <aside class="pres-equipa" aria-labelledby="presEquipaT">
+            <section class="pres-equipa" aria-labelledby="presEquipaT">
                 <h3 class="section-kicker pres-equipa__titulo" id="presEquipaT">Quem representa a freguesia</h3>
                 <?php if ($equipaExec): ?>
                 <a class="pres-equipa__grupo" href="/executivo.php">
@@ -967,7 +967,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
                     <ul><?php foreach ($mesaAssembleia as $m) $pessoa($m); ?></ul>
                 </a>
                 <?php endif; ?>
-            </aside>
+            </section>
             <?php endif; ?>
 
             <?php /* 16/10/2026: as ligações da freguesia passam a uma faixa a toda a largura do cartão (4 colunas iguais) */ ?>
@@ -1125,7 +1125,7 @@ $mostrarPresidente = !empty($presidenteHome) && !empty($home['mostrar_mensagem_p
         <div class="pontos-vitrine">
             <?php if ($rodam): ?>
             <div class="ponto-rotativo" data-pontos-rotativo role="group" aria-roledescription="apresentação" aria-label="<?= te('inicio.pontos.rotativo') ?>">
-                <?php foreach ($rodam as $k => $p) $tilePonto($p, true, $k === 0 ? 'data-face="0"' : 'data-face="' . $k . '" inert aria-hidden="true"'); ?>
+                <?php foreach ($rodam as $k => $p) $tilePonto($p, true, $k === 0 ? 'data-face="0"' : 'data-face="' . $k . '" inert aria-hidden="true" tabindex="-1"'); ?>
                 <?php if (count($rodam) > 1): ?>
                     <?php /* setas (16/10/2026, a pedido) */ ?>
                     <button type="button" class="ponto-rotativo__seta ponto-rotativo__seta--ant" data-rotativo-ant data-sem-arrasto aria-label="Local anterior"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>

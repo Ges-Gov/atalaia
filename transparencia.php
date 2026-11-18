@@ -700,7 +700,7 @@ $ultimosResolvidos = safeFetch($pdo, "
 }
 </style>
 
-<main class="transparencia-premium-page">
+<div class="transparencia-premium-page">
     <section class="trans-premium-hero">
         <div class="container trans-hero-grid">
             <div class="trans-hero-content">
@@ -946,7 +946,7 @@ $ultimosResolvidos = safeFetch($pdo, "
 
         </div>
     </section>
-</main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

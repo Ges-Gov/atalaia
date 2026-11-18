@@ -34,7 +34,7 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 .legal-note{background:#fffbeb;border:1px solid var(--ouro-fundo-2, #fde68a);border-radius:14px;padding:14px 16px;color:var(--ouro-texto, #92400e);font-weight:700;font-size:14px}
 .legal-dados{margin:4px 0 0;padding:0;list-style:none}
 .legal-dados li{padding-left:0}
-.legal-dados b{color:#11151B}
+.legal-dados strong{color:#11151B}
 </style>
 
 <section class="legal-hero">
@@ -88,10 +88,10 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
             <h3><?= te('declaracao_acessibilidade.ponto4.a_titulo') ?></h3>
             <?php if (!empty($av['auto_data'])): ?>
                 <ul class="legal-dados">
-                    <li><b>Data:</b> <?= $h($dataPt($av['auto_data'])) ?></li>
-                    <li><b>Ferramenta:</b> <?= $h($av['auto_ferramenta'] ?: 'AccessMonitor') ?></li>
-                    <?php if ($av['auto_paginas'] !== null): ?><li><b>Amostra:</b> <?= (int) $av['auto_paginas'] ?> páginas</li><?php endif; ?>
-                    <?php if ($av['auto_nota'] !== null): ?><li><b>Resultado:</b> média de <?= $h(number_format((float) $av['auto_nota'], 1, ',', '')) ?> na escala do AccessMonitor (1 a 10)</li><?php endif; ?>
+                    <li><strong>Data:</strong><?= $h($dataPt($av['auto_data'])) ?></li>
+                    <li><strong>Ferramenta:</strong><?= $h($av['auto_ferramenta'] ?: 'AccessMonitor') ?></li>
+                    <?php if ($av['auto_paginas'] !== null): ?><li><strong>Amostra:</strong><?= (int) $av['auto_paginas'] ?> páginas</li><?php endif; ?>
+                    <?php if ($av['auto_nota'] !== null): ?><li><strong>Resultado:</strong>média de <?= $h(number_format((float) $av['auto_nota'], 1, ',', '')) ?> na escala do AccessMonitor (1 a 10)</li><?php endif; ?>
                     <?php if (!empty($av['auto_resumo'])): ?><li><?= $h($av['auto_resumo']) ?></li><?php endif; ?>
                 </ul>
             <?php else: ?>
@@ -101,10 +101,10 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
             <h3><?= te('declaracao_acessibilidade.ponto4.b_titulo') ?></h3>
             <?php if (!empty($av['manual_data'])): ?>
                 <ul class="legal-dados">
-                    <li><b>Data:</b> <?= $h($dataPt($av['manual_data'])) ?></li>
-                    <li><b>Método:</b> <?= te('declaracao_acessibilidade.ponto4.b_checklist') ?></li>
-                    <?php if ($av['manual_paginas'] !== null): ?><li><b>Amostra:</b> <?= (int) $av['manual_paginas'] ?> páginas</li><?php endif; ?>
-                    <?php if ($av['manual_satisfeitas'] !== null && $av['manual_total']): ?><li><b>Resultado:</b> <?= (int) $av['manual_satisfeitas'] ?> de <?= (int) $av['manual_total'] ?> requisitos satisfeitos</li><?php endif; ?>
+                    <li><strong>Data:</strong><?= $h($dataPt($av['manual_data'])) ?></li>
+                    <li><strong>Método:</strong><?= te('declaracao_acessibilidade.ponto4.b_checklist') ?></li>
+                    <?php if ($av['manual_paginas'] !== null): ?><li><strong>Amostra:</strong><?= (int) $av['manual_paginas'] ?> páginas</li><?php endif; ?>
+                    <?php if ($av['manual_satisfeitas'] !== null && $av['manual_total']): ?><li><strong>Resultado:</strong><?= (int) $av['manual_satisfeitas'] ?> de <?= (int) $av['manual_total'] ?> requisitos satisfeitos</li><?php endif; ?>
                 </ul>
             <?php else: ?>
                 <p><?= te('declaracao_acessibilidade.ponto4.por_registar') ?></p>

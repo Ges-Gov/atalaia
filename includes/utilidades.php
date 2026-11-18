@@ -37,7 +37,7 @@ function blocoFarmaciaServico(PDO $pdo, bool $compacto = false): void
     $morada = trim(($f['morada'] ?? '') . (($f['localidade'] ?? '') !== '' ? ', ' . $f['localidade'] : ''), ', ');
     $mapa = $morada !== '' ? 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(($f['nome'] ?? '') . ', ' . $morada) : '';
     ?>
-    <aside class="farmacia-servico<?= $compacto ? ' farmacia-servico--compacta' : '' ?>" aria-labelledby="farmaciaServicoT">
+    <section class="farmacia-servico<?= $compacto ? ' farmacia-servico--compacta' : '' ?>" aria-labelledby="farmaciaServicoT">
         <span class="farmacia-servico__ico" aria-hidden="true"><i class="bi bi-capsule"></i></span>
         <div class="farmacia-servico__info">
             <span class="farmacia-servico__etq"><?= te('contactos_uteis.farmacia.etiqueta') ?> · até <?= $h(date('d/m', strtotime($f['fim']))) ?> às <?= $h(date('H\hi', strtotime($f['fim']))) ?></span>
@@ -53,7 +53,7 @@ function blocoFarmaciaServico(PDO $pdo, bool $compacto = false): void
                 <a class="farmacia-servico__btn farmacia-servico__btn--sec" href="<?= $h($mapa) ?>" target="_blank" rel="noopener"><i class="bi bi-sign-turn-right" aria-hidden="true"></i> <?= te('contactos_uteis.farmacia.como_chegar') ?><span class="sr-only"> (abre numa nova janela)</span></a>
             <?php endif; ?>
         </div>
-    </aside>
+    </section>
     <?php
 }
 

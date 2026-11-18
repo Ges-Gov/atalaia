@@ -39,7 +39,7 @@
 @media(max-width:650px){.lr-hero{padding:70px 0 90px}.lr-shell{margin-top:-48px}.lr-panel,.lr-cta{padding:22px;border-radius:24px}}
 </style>
 
-<main class="lr-page">
+<div class="lr-page">
 <section class="lr-hero">
     <div class="container lr-hero-grid">
         <div>
@@ -94,6 +94,6 @@
         </div>
     </div>
 </section>
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

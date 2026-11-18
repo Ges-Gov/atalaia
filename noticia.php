@@ -319,8 +319,8 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
 
         </article>
 
-        <aside class="noticia-side-card">
-            <h3><?= te('noticia.sidebar.titulo') ?></h3>
+        <div class="noticia-side-card">
+            <h2 class="titulo-h3"><?= te('noticia.sidebar.titulo') ?></h2>
 
             <?php if (!empty($outrasNoticias)): ?>
                 <?php foreach ($outrasNoticias as $n): ?>
@@ -332,7 +332,7 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
             <?php else: ?>
                 <p><?= te('noticia.sidebar.vazio') ?></p>
             <?php endif; ?>
-        </aside>
+        </div>
 
     </div>
 </section>

@@ -262,7 +262,8 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 .evento-outros{
     margin-top:34px;
 }
-.evento-outros h3{
+.evento-outros h3,
+.evento-outros h2.titulo-h3{
     color:#11151B;
     margin-bottom:16px;
 }
@@ -427,7 +428,7 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 
             <?php if (!empty($outrosEventos)): ?>
                 <div class="evento-outros">
-                    <h3><?= te('evento.sidebar.titulo') ?></h3>
+                    <h2 class="titulo-h3"><?= te('evento.sidebar.titulo') ?></h2>
                     <?php foreach ($outrosEventos as $ev): ?>
                         <a class="evento-outros-item" href="/evento.php?id=<?= (int)$ev['id'] ?>">
                             <strong><?= htmlspecialchars($ev['titulo']) ?></strong>

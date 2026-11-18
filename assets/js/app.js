@@ -2106,8 +2106,10 @@ document.addEventListener("DOMContentLoaded", function () {
             faces.forEach(function (f, k) {
                 const sim = k === atual;
                 f.classList.toggle("is-ativo", sim);
-                if (sim) { f.removeAttribute("inert"); f.removeAttribute("aria-hidden"); }
-                else { f.setAttribute("inert", ""); f.setAttribute("aria-hidden", "true"); }
+                // tabindex -1 além do inert (18/11/2026): o AccessMonitor não conhece o inert e dava as faces
+                // escondidas como «aria-hidden com conteúdo focável».
+                if (sim) { f.removeAttribute("inert"); f.removeAttribute("aria-hidden"); f.removeAttribute("tabindex"); }
+                else { f.setAttribute("inert", ""); f.setAttribute("aria-hidden", "true"); f.setAttribute("tabindex", "-1"); }
             });
             botoes.forEach(function (b, k) { if (k === atual) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
             janela();

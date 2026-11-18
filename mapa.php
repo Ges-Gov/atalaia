@@ -815,7 +815,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 }
 </style>
 
-<main class="mapa-page-insane">
+<div class="mapa-page-insane">
 
     <section class="mapa-hero-insane">
         <div class="container">
@@ -834,10 +834,10 @@ $heroImagem = !empty($pontos[0]['imagem'])
                     </div>
                 </div>
 
-                <aside class="mapa-hero-stat">
+                <div class="mapa-hero-stat">
                     <strong><?= (int)$totalPontos ?></strong>
                     <span><?= te('mapa.hero.contador') ?></span>
-                </aside>
+                </div>
             </div>
         </div>
     </section>
@@ -873,7 +873,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
         <div class="mapa-shell">
 
-            <aside class="mapa-sidebar-insane">
+            <div class="mapa-sidebar-insane">
                 <div class="sidebar-head">
                     <span><?= te('mapa.explorar.kicker') ?></span>
                     <h2><?= te('mapa.explorar.titulo') ?></h2>
@@ -923,7 +923,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
                         </button>
                     <?php endforeach; ?>
                 </div>
-            </aside>
+            </div>
 
             <div class="map-wrap">
                 <div class="map-overlay-top">
@@ -962,7 +962,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
     </section>
 
-</main>
+</div>
 
 <script>
 const pontos = <?= json_encode($pontos, JSON_UNESCAPED_UNICODE) ?>;

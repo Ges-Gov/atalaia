@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </form>
             </div>
 
-            <aside class="recuperar-side">
+            <div class="recuperar-side">
                 <span class="section-kicker"><?= te('recuperar_password.passos.kicker') ?></span>
                 <h2><?= te('recuperar_password.passos.titulo') ?></h2>
 
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="recuperar-note">
                     <?= te('recuperar_password.passos.nota') ?>
                 </div>
-            </aside>
+            </div>
 
         </div>
 

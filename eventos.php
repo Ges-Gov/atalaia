@@ -215,7 +215,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 @media (prefers-reduced-motion: reduce){.evento-vidro__cartaz,.evento-vidro__acoes .ev-s,.evento-vidro__acoes .ev-s .bi{transition:none}}
 </style>
 
-<main class="eventos-page-insane">
+<div class="eventos-page-insane">
 
     <section class="eventos-hero-insane">
         <div class="container">
@@ -363,7 +363,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
             <?php endif; ?>
         </section>
     </section>
-</main>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

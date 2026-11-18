@@ -122,7 +122,7 @@ require_once __DIR__ . "/includes/header.php";
 @media(max-width:760px){.cp-hero{min-height:520px}.cp-hero-inner{padding:70px 0 115px}.cp-hero p{font-size:17px}.cp-stats,.cp-filter,.cp-grid{grid-template-columns:1fr}.cp-stat{width:240px;margin:0 auto;text-align:center;padding:20px 18px;border-radius:22px}.cp-stat strong{font-size:42px}.cp-section-head{display:block}.cp-count{display:inline-flex;margin-top:12px}}
 </style>
 
-<main class="cp-page">
+<div class="cp-page">
     <section class="cp-hero">
         <div class="container">
             <div class="cp-hero-inner">
@@ -225,6 +225,6 @@ require_once __DIR__ . "/includes/header.php";
             <div class="cp-empty"><?= te('procedimentos_concursais.vazio.texto') ?></div>
         <?php endif; ?>
     </section>
-</main>
+</div>
 
 <?php require_once __DIR__ . "/includes/footer.php"; ?>

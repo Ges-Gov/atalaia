@@ -275,7 +275,8 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
     background:rgb(var(--ouro-rgb, 240 180 41) / .20);
 }
 
-.ocorrencias-sidebar h1{
+.ocorrencias-sidebar h1,
+.ocorrencias-sidebar h2.ocorrencias-sidebar__titulo{
     margin:0 0 8px;
     color:white;
     font-size:27px;
@@ -794,9 +795,9 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
 
     <div class="ocorrencias-map-shell">
 
-        <aside class="ocorrencias-sidebar">
+        <div class="ocorrencias-sidebar">
             <div class="ocorrencias-sidebar-head">
-                <h1><?= te('ocorrencias_mapa.mapa.titulo') ?></h1>
+                <h2 class="ocorrencias-sidebar__titulo"><?= te('ocorrencias_mapa.mapa.titulo') ?></h2>
                 <p><?= te('ocorrencias_mapa.mapa.texto') ?></p>
             </div>
 
@@ -842,7 +843,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
             </div>
 
             <div class="ocorrencias-list" id="listaOcorrencias"></div>
-        </aside>
+        </div>
 
         <div class="ocorrencias-map-wrap">
             <div class="map-legend">

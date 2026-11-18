@@ -101,7 +101,7 @@ $atalhos = [
 .exe-pres__cargo{ display: block; font-size: 17px; font-weight: 600; color: #334155; }
 .exe-partido{ display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; letter-spacing: .03em; color: #334155; background: #eef1f4; }
 .exe-pres blockquote{ position: relative; margin: 22px 0 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--cor-secundaria); font-size: clamp(1.05rem, 1rem + .25vw, 1.15rem); line-height: 1.7; color: #1f2937; }
-.exe-pres blockquote footer{ margin-top: 10px; font-size: 15px; font-style: normal; font-weight: 600; color: #475569; }
+.exe-pres blockquote .exe-citacao-autor{ margin: 10px 0 0; font-size: 15px; font-style: normal; font-weight: 600; color: #475569; }
 .exe-pres__pelouros{ margin: 18px 0 0; font-size: 16px; line-height: 1.6; color: #334155; }
 .exe-acoes{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 .exe-btn{ display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 999px; font-size: 15px; font-weight: 600; text-decoration: none; color: var(--cor-principal); background: #fff; border: 1.5px solid color-mix(in srgb, var(--cor-principal) 35%, #fff); transition: background-color .2s, transform .2s; }
@@ -220,7 +220,7 @@ $atalhos = [
                 <?php if ($presMensagem !== ''): ?>
                     <blockquote>
                         <?= nl2br($h($presMensagem)) ?>
-                        <footer>— <?= $h($presidente['nome']) ?>, <?= $h($presidente['cargo']) ?></footer>
+                        <p class="exe-citacao-autor">— <?= $h($presidente['nome']) ?>, <?= $h($presidente['cargo']) ?></p>
                     </blockquote>
                 <?php endif; ?>
 

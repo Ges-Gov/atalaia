@@ -433,7 +433,7 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                     <?php endif; ?>
                 </div>
 
-                <aside class="ct-lado" aria-label="Outras formas de contacto">
+                <section class="ct-lado" aria-label="Outras formas de contacto">
                     <div class="ct-cartao">
                         <?php
                         // Aberto agora? Calculado a partir do horário publicado em Configurações (includes/hoje.php) —
@@ -458,7 +458,7 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                         <h3><i class="bi bi-shield-lock" aria-hidden="true"></i> <?= te('contactos.cartoes.denuncias_titulo') ?></h3>
                         <p>Para denúncias confidenciais use o <a href="/canal-denuncias.php">Canal de Denúncias</a>. Reclamações formais: <a href="/livro-reclamacoes.php">Livro de Reclamações</a>.</p>
                     </div>
-                </aside>
+                </section>
             </div>
         </section>
 

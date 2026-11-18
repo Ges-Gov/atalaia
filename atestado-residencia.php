@@ -497,7 +497,7 @@
                 </form>
             </div>
 
-            <aside class="atestado-side-card">
+            <div class="atestado-side-card">
                 <div class="atestado-side-title">
                     <span><i class="bi bi-lightning-charge"></i></span>
                     <h3>Como funciona</h3>
@@ -532,7 +532,7 @@
                 <div class="atestado-note">
                     <i class="bi bi-lightbulb"></i> Confirme sempre os dados antes de gerar o PDF para evitar erros no documento final.
                 </div>
-            </aside>
+            </div>
 
         </div>
 

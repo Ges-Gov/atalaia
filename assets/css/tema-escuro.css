@@ -171,7 +171,7 @@
 :root[data-tema="escuro"] .noticia-detail-card,
 :root[data-tema="escuro"] .noticia-side-card{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .noticia-detail-content{color:var(--escuro-texto-2)}
-:root[data-tema="escuro"] .noticia-side-card h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .noticia-side-card :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 :root[data-tema="escuro"] .noticia-side-item{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .noticia-side-item:hover{background:var(--escuro-superficie-2)}
 :root[data-tema="escuro"] .noticia-side-item strong{color:var(--escuro-texto)}
@@ -196,7 +196,7 @@
 :root[data-tema="escuro"] .limite-popup h3{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .pedidos-intro-section{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .pedido-info-card{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
-:root[data-tema="escuro"] .pedido-info-card h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .pedido-info-card :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 :root[data-tema="escuro"] .pedido-info-card p{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .pedidos-form-section{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .form-group label{color:var(--escuro-texto)}
@@ -205,7 +205,7 @@
 :root[data-tema="escuro"] .form-group textarea{border:1px solid var(--escuro-borda);background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .pedidos-intro-section{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .pedido-info-card{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
-:root[data-tema="escuro"] .pedido-info-card h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .pedido-info-card :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 :root[data-tema="escuro"] .pedido-info-card p{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .pedidos-form-section{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .pedidos-form-premium-card,
@@ -961,7 +961,7 @@
 :root[data-tema="escuro"] .evento-inscricao-erro{background:var(--escuro-superficie-2);color:color-mix(in srgb, #991b1b 55%, #fff)}
 :root[data-tema="escuro"] .evento-inscricao-sucesso{background:color-mix(in srgb, #dcfce7 14%, var(--escuro-superficie));color:color-mix(in srgb, #166534 55%, #fff)}
 :root[data-tema="escuro"] .evento-inscricao-fechado{background:var(--escuro-superficie-2);color:var(--escuro-texto-2)}
-:root[data-tema="escuro"] .evento-outros h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .evento-outros :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 :root[data-tema="escuro"] .evento-outros-item{background:var(--escuro-superficie);border:1px solid var(--escuro-borda);color:var(--escuro-texto)}
 :root[data-tema="escuro"] .evento-outros-item small{color:var(--escuro-texto-2)}
 
@@ -1008,7 +1008,7 @@
 :root[data-tema="escuro"] .exe-pres__cargo{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .exe-partido{color:var(--escuro-texto-2);background:var(--escuro-superficie-2)}
 :root[data-tema="escuro"] .exe-pres blockquote{color:var(--escuro-texto)}
-:root[data-tema="escuro"] .exe-pres blockquote footer{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .exe-pres blockquote .exe-citacao-autor{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .exe-pres__pelouros{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .exe-btn{color:color-mix(in srgb, var(--cor-principal) 45%, #fff);background:var(--escuro-superficie);border:1.5px solid color-mix(in srgb, var(--cor-principal) 35%, var(--escuro-borda))}
 :root[data-tema="escuro"] .exe-btn:hover{background:color-mix(in srgb, var(--cor-principal) 8%, var(--escuro-superficie))}

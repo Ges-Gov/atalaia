@@ -172,13 +172,14 @@ if (isset($pdo)) {
             <!-- 4. Newsletter e redes sociais -->
             <div class="rodape__col">
                 <h3 class="rodape__titulo">Newsletter</h3>
-                <p class="rodape__texto">Receba as notícias e avisos da Junta no seu email.</p>
                 <?php if (isset($_GET['newsletter']) && $_GET['newsletter'] === 'ok'): ?>
+                    <p class="rodape__texto">Receba as notícias e avisos da Junta no seu email.</p>
                     <p class="rodape__ok" role="status"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Obrigado por subscrever!</p>
                 <?php else: ?>
+                    <?php /* 18/11/2026 (acessibilidade): a frase visível é a etiqueta do campo — o AccessMonitor exige etiqueta visível antes do campo */ ?>
                     <form class="rodape__newsletter" method="POST" action="/newsletter-subscrever.php">
+                        <label class="rodape__texto rodape__etiqueta" for="rodapeEmail">Receba as notícias e avisos da Junta no seu email.</label>
                         <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
-                        <label class="sr-only" for="rodapeEmail">O seu email</label>
                         <input id="rodapeEmail" type="email" name="email" placeholder="O seu email" autocomplete="email" required>
                         <button type="submit">Subscrever</button>
                     </form>
@@ -606,6 +607,6 @@ if (is_file($iaConfigPath)) {
 </script>
 <?php endif; ?>
 
-<script src="/assets/js/app.js?v=20261111"></script>
+<script src="/assets/js/app.js?v=20261118a"></script>
 </body>
 </html>

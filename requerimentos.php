@@ -788,7 +788,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 </style>
 
-<main class="req-page-premium">
+<div class="req-page-premium">
     <section class="req-hero-premium">
         <div class="container req-hero-inner">
             <div>
@@ -942,7 +942,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <aside class="req-side">
+            <div class="req-side">
                 <div class="req-side-card">
                     <h2><?= te('requerimentos.passos.titulo') ?></h2>
 
@@ -985,11 +985,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div><span><i class="bi bi-envelope"></i></span> <?= te('requerimentos.ajuda.item3') ?></div>
                     </div>
                 </div>
-            </aside>
+            </div>
 
         </div>
     </section>
-</main>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

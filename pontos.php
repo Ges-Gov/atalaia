@@ -540,7 +540,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
 }
 </style>
 
-<main class="pontos-page-insane">
+<div class="pontos-page-insane">
 
     <section class="pontos-hero-insane">
         <div class="container">
@@ -559,10 +559,10 @@ $heroImagem = !empty($pontos[0]['imagem'])
                     </div>
                 </div>
 
-                <aside class="pontos-floating-stat">
+                <div class="pontos-floating-stat">
                     <strong><?= (int)$totalPontos ?></strong>
                     <span><?= te('pontos.hero.contagem') ?></span>
-                </aside>
+                </div>
             </div>
         </div>
     </section>
@@ -677,6 +677,6 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
     </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </div>
 
-            <aside class="cidadao-registo-side">
+            <div class="cidadao-registo-side">
 
                 <span class="section-kicker"><?= te('cidadao_registo.ajuda.kicker') ?></span>
 
@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span><?= te('cidadao_registo.ajuda.i4_texto') ?></span>
                 </div>
 
-            </aside>
+            </div>
 
         </div>
 

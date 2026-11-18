@@ -500,7 +500,7 @@ function textoSeguro($texto) {
 }
 </style>
 
-<main class="freguesia-page">
+<div class="freguesia-page">
 
     <section class="freguesia-hero-premium">
         <div class="container">
@@ -535,7 +535,7 @@ function textoSeguro($texto) {
                 <p><?= textoSeguro($pagina['intro_texto'] ?? '') ?></p>
             </div>
 
-            <aside class="freguesia-mini-panel">
+            <div class="freguesia-mini-panel">
                 <div>
                     <strong><?= htmlspecialchars(temaConfig("logo_iniciais", "")) ?></strong>
                     <span><?= te('freguesia.intro.nome') ?></span>
@@ -564,25 +564,25 @@ function textoSeguro($texto) {
                 <?php else: ?>
                     <p style="color:#dbeafe;line-height:1.7;margin:25px 0 0;"><?= te('freguesia.intro.frase') ?></p>
                 <?php endif; ?>
-            </aside>
+            </div>
         </div>
 
         <div class="freguesia-content-grid">
             <article class="freguesia-text-card">
                 <div class="freguesia-icon"><i class="bi bi-bank2"></i></div>
-                <h3><?= htmlspecialchars($pagina['historia_titulo'] ?? '') ?></h3>
+                <?php if (trim($pagina['historia_titulo'] ?? '') !== ''): ?><h3><?= htmlspecialchars($pagina['historia_titulo']) ?></h3><?php endif; ?>
                 <p><?= textoSeguro($pagina['historia_texto'] ?? '') ?></p>
             </article>
 
             <article class="freguesia-text-card">
                 <div class="freguesia-icon"><i class="bi bi-flower1"></i></div>
-                <h3><?= htmlspecialchars($pagina['identidade_titulo'] ?? '') ?></h3>
+                <?php if (trim($pagina['identidade_titulo'] ?? '') !== ''): ?><h3><?= htmlspecialchars($pagina['identidade_titulo']) ?></h3><?php endif; ?>
                 <p><?= textoSeguro($pagina['identidade_texto'] ?? '') ?></p>
             </article>
 
             <article class="freguesia-text-card">
                 <div class="freguesia-icon"><i class="bi bi-compass-fill"></i></div>
-                <h3><?= htmlspecialchars($pagina['patrimonio_titulo'] ?? '') ?></h3>
+                <?php if (trim($pagina['patrimonio_titulo'] ?? '') !== ''): ?><h3><?= htmlspecialchars($pagina['patrimonio_titulo']) ?></h3><?php endif; ?>
                 <p><?= textoSeguro($pagina['patrimonio_texto'] ?? '') ?></p>
             </article>
         </div>
@@ -650,6 +650,6 @@ function textoSeguro($texto) {
 
     </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

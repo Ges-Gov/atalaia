@@ -207,7 +207,7 @@ require_once "includes/header.php";
 
             </div>
 
-            <aside class="cidadao-login-side">
+            <div class="cidadao-login-side">
 
                 <span class="section-kicker"><?= te('cidadao_login.ajuda.kicker') ?></span>
 
@@ -233,7 +233,7 @@ require_once "includes/header.php";
                     <span><?= te('cidadao_login.ajuda.i4_texto') ?></span>
                 </div>
 
-            </aside>
+            </div>
 
         </div>
 

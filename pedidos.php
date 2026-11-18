@@ -283,19 +283,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="pedidos-info-grid">
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-geo-alt"></i></div>
-                <h3><?= te('pedidos.destaques.d1_titulo') ?></h3>
+                <h2 class="titulo-h3"><?= te('pedidos.destaques.d1_titulo') ?></h2>
                 <p><?= te('pedidos.destaques.d1_texto') ?></p>
             </div>
 
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-camera"></i></div>
-                <h3><?= te('pedidos.destaques.d2_titulo') ?></h3>
+                <h2 class="titulo-h3"><?= te('pedidos.destaques.d2_titulo') ?></h2>
                 <p><?= te('pedidos.destaques.d2_texto') ?></p>
             </div>
 
             <div class="pedido-info-card">
                 <div class="pedido-info-icon"><i class="bi bi-search"></i></div>
-                <h3><?= te('pedidos.destaques.d3_titulo') ?></h3>
+                <h2 class="titulo-h3"><?= te('pedidos.destaques.d3_titulo') ?></h2>
                 <p><?= te('pedidos.destaques.d3_texto') ?></p>
             </div>
         </div>
@@ -424,7 +424,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
-        <aside class="content-box pedido-info pedido-info-premium">
+        <div class="content-box pedido-info pedido-info-premium">
             <span class="section-kicker"><?= te('pedidos.passos.titulo') ?></span>
             <h2><?= te('pedidos.passos.subtitulo') ?></h2>
 
@@ -473,7 +473,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?= te('pedidos.sidebar.botao_area') ?>
                 </a>
             <?php endif; ?>
-        </aside>
+        </div>
 
     </div>
 </section>

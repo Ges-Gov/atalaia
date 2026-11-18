@@ -33,7 +33,7 @@ $baseGovUrl = !empty($cfg['botao_link'])
 @media(max-width:760px){.cp-info-hero{min-height:420px}.cp-info-inner{padding:70px 0 90px}.cp-info-hero p{font-size:16px}}
 </style>
 
-<main class="cp-info-page">
+<div class="cp-info-page">
     <section class="cp-info-hero">
         <div class="container">
             <div class="cp-info-inner">
@@ -48,6 +48,6 @@ $baseGovUrl = !empty($cfg['botao_link'])
             </div>
         </div>
     </section>
-</main>
+</div>
 
 <?php require_once __DIR__ . "/includes/footer.php"; ?>

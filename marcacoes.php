@@ -891,7 +891,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <aside class="marcacoes-side-card">
+        <div class="marcacoes-side-card">
             <span class="section-kicker"><?= te('marcacoes.passos.kicker') ?></span>
             <h2><?= te('marcacoes.passos.titulo') ?></h2>
 
@@ -930,7 +930,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div><span><i class="bi bi-envelope"></i></span> <?= te('marcacoes.sidebar.nota2') ?></div>
                 <div><span><i class="bi bi-clock"></i></span> <?= te('marcacoes.sidebar.nota3') ?></div>
             </div>
-        </aside>
+        </div>
 
     </div>
 </section>

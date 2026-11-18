@@ -562,7 +562,7 @@ function getAssociacaoIcon($nome)
 }
 </style>
 
-<main class="associacoes-page-insane">
+<div class="associacoes-page-insane">
 
     <section class="associacoes-hero-insane">
         <div class="container">
@@ -576,10 +576,10 @@ function getAssociacaoIcon($nome)
                     </p>
                 </div>
 
-                <aside class="assoc-hero-stat">
+                <div class="assoc-hero-stat">
                     <strong><?= (int)$totalAssociacoes ?></strong>
                     <span><?= te('associacoes.hero.contagem') ?></span>
-                </aside>
+                </div>
             </div>
         </div>
     </section>
@@ -747,6 +747,6 @@ function getAssociacaoIcon($nome)
 
     </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

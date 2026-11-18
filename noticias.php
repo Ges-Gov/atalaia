@@ -371,7 +371,7 @@ $heroImagem = !empty($noticias[0]['imagem'])
 }
 </style>
 
-<main class="noticias-page-clean">
+<div class="noticias-page-clean">
 
     <section class="noticias-hero-clean">
         <div class="container">
@@ -475,6 +475,6 @@ $heroImagem = !empty($noticias[0]['imagem'])
         </div>
     </section>
 
-</main>
+</div>
 
 <?php require_once "includes/footer.php"; ?>

@@ -295,7 +295,7 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
 .ct-pop-acoes a{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;text-decoration:none;background:var(--cor-principal);color:#fff!important}
 .ct-pop-acoes a.sec{background:#f1f5f9;color:#1e293b!important}
 .leaflet-container{font-family:var(--fonte)}
-.ct-mapa-nota{margin:10px 2px 0;font-size:13px;color:#64748b}
+.ct-mapa-nota{margin:10px 2px 0;font-size:13px;color:#475569}
 
 /* 4. contactos úteis */
 

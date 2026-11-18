@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once "includes/config.php";
 
 $erro = '';
+$errosCampo = [];   // erro junto ao campo (acessibilidade, 18/11/2026)
 
 if (empty($_SESSION['anti_bot_a']) || empty($_SESSION['anti_bot_b'])) {
     $_SESSION['anti_bot_a'] = random_int(1, 9);
@@ -23,7 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($antiBot === '' || (int)$antiBot !== $antiBotResposta) {
 
-        $erro = "Verificação anti-bot inválida. Confirme a conta apresentada.";
+        $errosCampo['anti_bot'] = $antiBot === ''
+            ? 'Escreva o resultado da conta (é só para confirmar que não é um robô).'
+            : 'O resultado da conta não está certo. Faça a nova conta que aparece acima da caixa e escreva o resultado.';
 
         $_SESSION['anti_bot_a'] = random_int(1, 9);
         $_SESSION['anti_bot_b'] = random_int(1, 9);
@@ -55,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            $erro = "Email ou password inválidos.";
+            // não diz qual dos dois está errado (segurança), mas diz o que fazer (acessibilidade, 18/11/2026)
+            $erro = "O email ou a palavra-passe não estão certos. Confirme os dois, ou use «Esqueci-me da password» para definir uma nova.";
 
             $_SESSION['anti_bot_a'] = random_int(1, 9);
             $_SESSION['anti_bot_b'] = random_int(1, 9);
@@ -103,7 +107,7 @@ require_once "includes/header.php";
     color:#11151B;
     font-weight:900;
 }
-.login-antibot-label span{
+.login-antibot-label > span{
     background:#242A30;
     color:white;
     padding:8px 13px;
@@ -139,44 +143,54 @@ require_once "includes/header.php";
                 <p><?= te('cidadao_login.formulario.intro') ?></p>
 
                 <?php if ($erro): ?>
-                    <div class="alerta-erro login-alert">
+                    <div class="alerta-erro login-alert" role="alert">
                         <?= htmlspecialchars($erro) ?>
                     </div>
                 <?php endif; ?>
 
                 <form method="POST" class="cidadao-login-form">
+                    <?php /* etiqueta visível por cima de cada caixa, * nos obrigatórios, erro junto ao campo (18/11/2026) */ ?>
+                    <?= resumoErros($errosCampo) ?>
+                    <?= notaObrigatorios() ?>
 
-                    <div class="login-input-group">
-                        <span><i class="bi bi-envelope"></i></span>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="<?= te('cidadao_login.formulario.ph_email') ?>"
-                            value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                            required
-                        >
+                    <div class="campo">
+                        <?= rotulo('loginEmail', tx('cidadao_login.formulario.ph_email'), true) ?>
+                        <div class="login-input-group">
+                            <span><i class="bi bi-envelope"></i></span>
+                            <input
+                                type="email"
+                                name="email"
+                                id="loginEmail"
+                                autocomplete="email"
+                                value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                                required
+                            >
+                        </div>
                     </div>
 
-                    <div class="login-input-group password-group">
-                        <span><i class="bi bi-lock"></i></span>
+                    <div class="campo">
+                        <?= rotulo('loginPassword', tx('cidadao_login.formulario.ph_password'), true) ?>
+                        <div class="login-input-group password-group">
+                            <span><i class="bi bi-lock"></i></span>
 
-                        <input
-                            type="password"
-                            name="password"
-                            id="loginPassword"
-                            placeholder="<?= te('cidadao_login.formulario.ph_password') ?>"
-                            required
-                        >
+                            <input
+                                type="password"
+                                name="password"
+                                id="loginPassword"
+                                autocomplete="current-password"
+                                required
+                            >
 
-                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="loginPassword">
-                            <i class="bi bi-eye"></i>
-                        </button>
+                            <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="loginPassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
 
                     <div class="login-antibot-box">
                         <label class="login-antibot-label" for="anti_bot">
-                            <strong><?= te('cidadao_login.formulario.antibot') ?></strong>
+                            <strong><?= te('cidadao_login.formulario.antibot') ?> <?= marcaObrigatorio() ?></strong>
                             <span><?= htmlspecialchars($antiBotPergunta) ?> = ?</span>
                         </label>
 
@@ -185,8 +199,9 @@ require_once "includes/header.php";
                             name="anti_bot"
                             id="anti_bot"
                             placeholder="<?= te('cidadao_login.formulario.ph_antibot') ?>"
-                            required
+                            required<?= erroAttrs($errosCampo, 'anti_bot') ?>
                         >
+                        <?= erroCampo($errosCampo, 'anti_bot') ?>
                     </div>
 
                     <button class="hero-btn cidadao-login-entrar" type="submit">

@@ -103,27 +103,37 @@ if ($respostaJunta === '') {
                 <p><?= te('consultar_pedido.formulario.intro') ?></p>
 
                 <form method="POST" class="consulta-form-premium">
-                    <input 
-                        type="text" 
-                        name="codigo" 
-                        placeholder="<?= te('consultar_pedido.formulario.ph_codigo') ?>"
-                        value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>"
-                        required
-                    >
+                    <?php /* etiqueta visível por cima de cada caixa e * nos obrigatórios (acessibilidade, 18/11/2026) */ ?>
+                    <?= notaObrigatorios() ?>
+                    <div class="campo">
+                        <?= rotulo('consultaCodigo', tx('consultar_pedido.formulario.ph_codigo'), true) ?>
+                        <input
+                            type="text"
+                            id="consultaCodigo"
+                            name="codigo"
+                            placeholder="Ex.: <?= htmlspecialchars(prefixoPedidos()) ?>-<?= date('Y') ?>-A1B2C3"
+                            value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>"
+                            required
+                        >
+                    </div>
 
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="<?= te('consultar_pedido.formulario.ph_email') ?>"
-                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                        required
-                    >
+                    <div class="campo">
+                        <?= rotulo('consultaEmail', tx('consultar_pedido.formulario.ph_email'), true) ?>
+                        <input
+                            type="email"
+                            id="consultaEmail"
+                            name="email"
+                            autocomplete="email"
+                            value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                            required
+                        >
+                    </div>
 
                     <button class="hero-btn" type="submit"><?= te('consultar_pedido.formulario.botao') ?></button>
                 </form>
 
                 <?php if ($erro): ?>
-                    <div class="alerta-erro consulta-alerta">
+                    <div class="alerta-erro consulta-alerta" role="alert">
                         <?= htmlspecialchars($erro) ?>
                     </div>
                 <?php endif; ?>

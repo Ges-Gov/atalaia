@@ -10,6 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php
 $sucesso = false;
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $codigoReq = '';
 $cidadaoLogado = null;
 
@@ -51,17 +52,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $siteWeb = trim($_POST['site_web'] ?? ''); // honeypot: campo invisível, só bots o preenchem
 
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if (!$nome) $errosCampo['nome'] = 'Indique o seu nome completo.';
+    if (!$email) $errosCampo['email'] = 'Indique o seu email (ex.: nome@exemplo.pt), para lhe podermos responder.';
+    elseif (!emailValido($email)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if ($telefone !== '' && !telefoneValido($telefone)) $errosCampo['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+    if (!$tipo) $errosCampo['tipo'] = 'Escolha o tipo de requerimento.';
+    if (!$assunto) $errosCampo['assunto'] = 'Escreva o assunto do requerimento (ex.: «Atestado de residência»).';
+    if (!$consentimento) $errosCampo['consentimento'] = 'Para submeter, aceite o tratamento dos seus dados pessoais (caixa no fim do formulário).';
+
     if ($siteWeb !== '') {
         // Bot apanhado no honeypot: finge sucesso, não processa nem envia nada.
         $sucesso = true;
-    } elseif (!$nome || !$email || !$tipo || !$assunto) {
-        $erro = "Preencha todos os campos obrigatórios.";
-    } elseif (!emailValido($email)) {
-        $erro = "Indique um email válido e que exista.";
-    } elseif ($telefone !== '' && !telefoneValido($telefone)) {
-        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
-    } elseif (!$consentimento) {
-        $erro = "Tem de aceitar o tratamento dos seus dados pessoais para submeter o requerimento.";
+        $errosCampo = [];
+    } elseif ($errosCampo) {
+        // mostrados junto a cada campo e no resumo do topo do formulário
     } elseif (submissaoRecente('requerimento')) {
         $erro = "Já recebemos um pedido seu há pouco. Aguarde uns instantes antes de submeter outro.";
     } else {
@@ -156,6 +161,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         enviarEmailSistema($email, "Requerimento recebido", $htmlCidadao);
     }
+}
+
+// Depois de um erro, o formulário volta com o que a pessoa escreveu (antes perdia tudo, até o nome).
+$tipoForm = $assuntoForm = $mensagemForm = '';
+$consentimentoForm = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$sucesso) {
+    if (!$cidadaoLogado) {
+        $nomeForm = $nome;
+        $emailForm = $email;
+        $telefoneForm = $telefone;
+    }
+    $tipoForm = $tipo;
+    $assuntoForm = $assunto;
+    $mensagemForm = $mensagem;
+    $consentimentoForm = $consentimento;
 }
 ?>
 
@@ -890,25 +910,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="POST" enctype="multipart/form-data" class="form-publico req-form-premium">
                         <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
-                        <input type="text" name="nome" placeholder="<?= te('requerimentos.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <?php /* etiqueta visível por cima de cada campo, * nos obrigatórios, erros junto ao campo (18/11/2026) */ ?>
+                        <?= resumoErros($errosCampo, ['nome' => 'reqNome', 'email' => 'reqEmail', 'telefone' => 'reqTelefone', 'tipo' => 'reqTipo', 'assunto' => 'reqAssunto', 'consentimento' => 'reqConsentimento']) ?>
+                        <?= notaObrigatorios() ?>
 
-                        <input type="email" name="email" placeholder="<?= te('requerimentos.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <div class="campo">
+                            <?= rotulo('reqNome', tx('requerimentos.formulario.ph_nome'), true) ?>
+                            <input type="text" id="reqNome" name="nome" autocomplete="name" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required<?= erroAttrs($errosCampo, 'nome') ?>>
+                            <?= erroCampo($errosCampo, 'nome') ?>
+                        </div>
 
-                        <input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="<?= te('requerimentos.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>">
+                        <div class="campo">
+                            <?= rotulo('reqEmail', tx('requerimentos.formulario.ph_email'), true) ?>
+                            <input type="email" id="reqEmail" name="email" autocomplete="email" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required<?= erroAttrs($errosCampo, 'email') ?>>
+                            <?= erroCampo($errosCampo, 'email') ?>
+                        </div>
 
-                        <select name="tipo" required>
-                            <option value=""><?= te('requerimentos.formulario.tipo') ?></option>
-                            <option value="Atestado de residência">Atestado de residência</option>
-                            <option value="Declaração / comprovativo">Declaração / comprovativo</option>
-                            <option value="Pedido de certidão">Pedido de certidão</option>
-                            <option value="Licença / autorização">Licença / autorização</option>
-                            <option value="Apoio social">Apoio social</option>
-                            <option value="Outro requerimento">Outro requerimento</option>
-                        </select>
+                        <div class="campo">
+                            <?= rotulo('reqTelefone', tx('requerimentos.formulario.ph_telefone'), false) ?>
+                            <input type="tel" id="reqTelefone" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="Ex.: 912 345 678" value="<?= htmlspecialchars($telefoneForm) ?>"<?= erroAttrs($errosCampo, 'telefone') ?>>
+                            <?= erroCampo($errosCampo, 'telefone') ?>
+                        </div>
 
-                        <input type="text" name="assunto" placeholder="<?= te('requerimentos.formulario.ph_assunto') ?>" required>
+                        <div class="campo">
+                            <?= rotulo('reqTipo', tx('requerimentos.formulario.tipo'), true) ?>
+                            <select id="reqTipo" name="tipo" required<?= erroAttrs($errosCampo, 'tipo') ?>>
+                                <option value="">Escolha…</option>
+                                <?php foreach (['Atestado de residência', 'Declaração / comprovativo', 'Pedido de certidão', 'Licença / autorização', 'Apoio social', 'Outro requerimento'] as $t): ?>
+                                    <option value="<?= htmlspecialchars($t) ?>"<?= $tipoForm === $t ? ' selected' : '' ?>><?= htmlspecialchars($t) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?= erroCampo($errosCampo, 'tipo') ?>
+                        </div>
 
-                        <textarea name="mensagem" placeholder="<?= te('requerimentos.formulario.ph_mensagem') ?>"></textarea>
+                        <div class="campo">
+                            <?= rotulo('reqAssunto', tx('requerimentos.formulario.ph_assunto'), true) ?>
+                            <input type="text" id="reqAssunto" name="assunto" value="<?= htmlspecialchars($assuntoForm) ?>" required<?= erroAttrs($errosCampo, 'assunto') ?>>
+                            <?= erroCampo($errosCampo, 'assunto') ?>
+                        </div>
+
+                        <div class="campo">
+                            <?= rotulo('reqMensagem', tx('requerimentos.formulario.ph_mensagem'), false) ?>
+                            <textarea id="reqMensagem" name="mensagem"><?= htmlspecialchars($mensagemForm) ?></textarea>
+                        </div>
 
                         <label><?= te('requerimentos.formulario.anexos_titulo') ?></label>
 
@@ -925,9 +969,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="req-consent">
                             <label class="req-consent-check">
-                                <input type="checkbox" name="consentimento" value="1" required>
+                                <input type="checkbox" id="reqConsentimento" name="consentimento" value="1" required<?= $consentimentoForm ? ' checked' : '' ?><?= erroAttrs($errosCampo, 'consentimento') ?>>
                                 <span><?= te('requerimentos.formulario.consentimento') ?></span>
                             </label>
+                            <?= erroCampo($errosCampo, 'consentimento') ?>
                             <p class="req-consent-text">
                                 A <?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?> compromete-se a garantir a segurança e confidencialidade dos seus dados pessoais. No cumprimento do Regulamento Geral de Proteção de Dados (UE) 2016/679, os dados fornecidos neste formulário são utilizados única e exclusivamente para responder e dar seguimento ao requerimento submetido. Os dados são registados e conservados nos sistemas da Junta de Freguesia apenas durante o período necessário ao tratamento do pedido e ao cumprimento das obrigações legais aplicáveis, não sendo transmitidos a terceiros para fins distintos. Pode solicitar o acesso, a atualização ou a eliminação dos seus dados a qualquer momento, contactando diretamente a Junta de Freguesia.
                             </p>

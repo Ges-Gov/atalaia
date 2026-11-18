@@ -1,4 +1,12 @@
 <?php require_once "includes/header.php"; ?>
+<?php
+// Se o envio falhou (gerar-atestado.php), volta com os erros junto a cada campo e o que já estava escrito
+// (acessibilidade, 18/11/2026)
+$errosCampo = $_SESSION['atestado_erros'] ?? [];
+$valAt = $_SESSION['atestado_valores'] ?? [];
+unset($_SESSION['atestado_erros'], $_SESSION['atestado_valores']);
+$va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+?>
 
 <style>
 /* ATESTADO RESIDÊNCIA PREMIUM - apenas visual */
@@ -462,29 +470,35 @@
 
                 <form method="POST" action="gerar-atestado.php" class="form-publico atestado-form-premium">
 
-                    <div class="atestado-field full">
-                        <label>Nome completo *</label>
-                        <input type="text" name="nome" placeholder="Nome completo *" required>
-                    </div>
+                    <?php /* etiquetas ligadas aos campos, * a vermelho, erros junto ao campo, larguras à medida dos dados
+                             (acessibilidade, 18/11/2026) */ ?>
+                    <?= resumoErros($errosCampo, ['nome' => 'atNome', 'morada' => 'atMorada']) ?>
 
                     <div class="atestado-field full">
-                        <label>Morada completa *</label>
-                        <input type="text" name="morada" placeholder="Morada completa *" required>
-                    </div>
-
-                    <div class="atestado-field">
-                        <label>Cartão de Cidadão</label>
-                        <input type="text" name="cc" placeholder="Cartão de Cidadão">
-                    </div>
-
-                    <div class="atestado-field">
-                        <label>NIF</label>
-                        <input type="text" name="nif" placeholder="NIF">
+                        <label for="atNome">Nome completo <?= marcaObrigatorio() ?></label>
+                        <input type="text" id="atNome" name="nome" autocomplete="name" value="<?= $va('nome') ?>" required<?= erroAttrs($errosCampo, 'nome') ?>>
+                        <?= erroCampo($errosCampo, 'nome') ?>
                     </div>
 
                     <div class="atestado-field full">
-                        <label>Data de nascimento</label>
-                        <input type="date" name="data_nascimento">
+                        <label for="atMorada">Morada completa <?= marcaObrigatorio() ?></label>
+                        <input type="text" id="atMorada" name="morada" autocomplete="street-address" value="<?= $va('morada') ?>" required<?= erroAttrs($errosCampo, 'morada') ?>>
+                        <?= erroCampo($errosCampo, 'morada') ?>
+                    </div>
+
+                    <div class="atestado-field campo--cc">
+                        <label for="atCc">Cartão de Cidadão</label>
+                        <input type="text" id="atCc" name="cc" maxlength="20" value="<?= $va('cc') ?>">
+                    </div>
+
+                    <div class="atestado-field campo--nif">
+                        <label for="atNif">NIF</label>
+                        <input type="text" id="atNif" name="nif" inputmode="numeric" maxlength="9" value="<?= $va('nif') ?>">
+                    </div>
+
+                    <div class="atestado-field full campo--data">
+                        <label for="atNascimento">Data de nascimento</label>
+                        <input type="date" id="atNascimento" name="data_nascimento" autocomplete="bday" value="<?= $va('data_nascimento') ?>">
                     </div>
 
                     <div class="atestado-submit-row">

@@ -1523,3 +1523,12 @@
 :root[data-tema="escuro"] .verif__res.ok{background:var(--escuro-superficie);border:1px solid color-mix(in srgb, #bbf7d0 20%, var(--escuro-borda));color:color-mix(in srgb, #14532d 55%, #fff)}
 :root[data-tema="escuro"] .verif__res.nao{background:var(--escuro-superficie-2);color:color-mix(in srgb, #7f1d1d 55%, #fff)}
 :root[data-tema="escuro"][data-tema="escuro"] .verif__kicker{color:color-mix(in srgb,color-mix(in srgb, var(--cor-principal) 45%, #fff) 45%,#fff)}
+
+/* Formulários acessíveis (18/11/2026) — ver style.css */
+:root[data-tema="escuro"] .campo-rotulo{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .campo-opc,
+:root[data-tema="escuro"] .form-nota{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .campo-ob{color:#fca5a5}
+:root[data-tema="escuro"] .campo-erro{color:#fca5a5}
+:root[data-tema="escuro"] .form-resumo{background:var(--escuro-superficie-2);border-color:color-mix(in srgb, #dc2626 45%, var(--escuro-borda));color:var(--escuro-texto)}
+:root[data-tema="escuro"] .form-resumo a{color:#fca5a5}

@@ -3,6 +3,7 @@
 <?php
 $token = $_GET['token'] ?? '';
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $sucesso = false;
 
 $stmt = $pdo->prepare("
@@ -23,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $cidadao) {
     $confirmar = $_POST['confirmar'] ?? '';
 
     if (mb_strlen($password) < 8) {
-        $erro = "A password deve ter pelo menos 8 caracteres.";
+        $errosCampo['password'] = 'A nova palavra-passe tem de ter pelo menos 8 carateres.';
     } elseif ($password !== $confirmar) {
-        $erro = "As passwords não coincidem.";
+        $errosCampo['confirmar'] = 'As duas palavras-passe não são iguais. Escreva outra vez a mesma nas duas caixas.';
     } else {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -62,8 +63,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $cidadao) {
             <a class="btn" href="/cidadao-login.php"><?= te('repor_password.formulario.sucesso_botao') ?></a>
         <?php elseif ($cidadao): ?>
             <form method="POST" class="form-publico">
-                <input type="password" name="password" minlength="8" autocomplete="new-password" placeholder="<?= te('repor_password.formulario.ph_nova') ?>" required>
-                <input type="password" name="confirmar" placeholder="<?= te('repor_password.formulario.ph_confirmar') ?>" required>
+                <?php /* etiqueta visível, * nos obrigatórios, erros junto ao campo (acessibilidade, 18/11/2026) */ ?>
+                <?= resumoErros($errosCampo, ['password' => 'reporPassword', 'confirmar' => 'reporConfirmar']) ?>
+                <?= notaObrigatorios() ?>
+                <div class="campo">
+                    <?= rotulo('reporPassword', tx('repor_password.formulario.ph_nova'), true) ?>
+                    <input type="password" id="reporPassword" name="password" minlength="8" autocomplete="new-password" placeholder="Pelo menos 8 carateres" required<?= erroAttrs($errosCampo, 'password') ?>>
+                    <?= erroCampo($errosCampo, 'password') ?>
+                </div>
+                <div class="campo">
+                    <?= rotulo('reporConfirmar', tx('repor_password.formulario.ph_confirmar'), true) ?>
+                    <input type="password" id="reporConfirmar" name="confirmar" autocomplete="new-password" required<?= erroAttrs($errosCampo, 'confirmar') ?>>
+                    <?= erroCampo($errosCampo, 'confirmar') ?>
+                </div>
 
                 <button class="btn" type="submit"><?= te('repor_password.formulario.botao') ?></button>
             </form>

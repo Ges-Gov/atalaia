@@ -79,12 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
 
                 <form method="POST" class="recuperar-form">
+                    <?php /* etiqueta visível (acessibilidade, 18/11/2026); campo único, por isso sem nota de obrigatórios */ ?>
+                    <label class="campo-rotulo" for="recuperarEmail"><?= htmlspecialchars(rotuloTexto(tx('recuperar_password.formulario.ph_email'))) ?></label>
                     <div class="recuperar-input-group">
                         <span><i class="bi bi-envelope"></i></span>
-                        <input 
-                            type="email" 
-                            name="email" 
-                            placeholder="<?= te('recuperar_password.formulario.ph_email') ?>"
+                        <input
+                            type="email"
+                            name="email"
+                            id="recuperarEmail"
+                            autocomplete="email"
                             value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                             required
                         >

@@ -3,6 +3,7 @@ ob_start();
 require_once "includes/header.php";
 
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 
 function gerarCodigoDpo(){
     return "DPO-" . date("Y") . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
@@ -16,12 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $autoriza = isset($_POST['autoriza_resposta']) ? 1 : 0;
 
     require_once __DIR__ . '/includes/validacao.php';
-    if (!$nome || !$email || !$mensagem) {
-        $erro = "Preencha todos os campos obrigatórios.";
-    } elseif (!emailValido($email)) {
-        $erro = "Indique um email válido e que exista, para lhe podermos responder.";
-    } elseif (!$aceita || !$autoriza) {
-        $erro = "Tem de aceitar a política de privacidade e autorizar o envio dos dados para resposta.";
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if (!$nome) $errosCampo['nome'] = 'Indique o seu nome.';
+    if (!$email) $errosCampo['email'] = 'Indique o seu email (ex.: nome@exemplo.pt), para lhe podermos responder.';
+    elseif (!emailValido($email)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if (!$mensagem) $errosCampo['mensagem'] = 'Escreva o seu pedido ou a sua questão sobre os seus dados pessoais.';
+    if (!$aceita) $errosCampo['aceita_politica'] = 'Para enviar, confirme que conhece e aceita a Política de Privacidade.';
+    if (!$autoriza) $errosCampo['autoriza_resposta'] = 'Para lhe podermos responder, autorize o envio dos dados ao Encarregado de Proteção de Dados.';
+    if ($errosCampo) {
+        // mostrados junto a cada campo e no resumo do topo do formulário
     } else {
         $codigo = gerarCodigoDpo();
 
@@ -61,7 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="dpo-hero"><div class="container dpo-grid"><div><span class="dpo-kicker"><i class="bi bi-shield-lock"></i> Proteção de Dados</span><h1>Encarregado de Proteção de Dados</h1><p><?= te('protecao_dados.hero.subtitulo') ?></p></div><div class="dpo-card-hero"><strong><i class="bi bi-shield"></i></strong><h2>RGPD</h2><p><?= te('protecao_dados.hero.caixa_texto') ?></p></div></div></section>
 <section class="section dpo-shell"><div class="container">
 <div class="dpo-box"><div class="dpo-form-grid"><div class="dpo-info"><h2><?= te('protecao_dados.intro.titulo') ?></h2><p><?= te('protecao_dados.intro.texto') ?></p><div class="dpo-mini"><div><i class="bi bi-check-circle-fill"></i> <?= te('protecao_dados.intro.item1') ?></div><div><i class="bi bi-check-circle-fill"></i> <?= te('protecao_dados.intro.item2') ?></div><div><i class="bi bi-check-circle-fill"></i> <?= te('protecao_dados.intro.item3') ?></div><div><i class="bi bi-check-circle-fill"></i> <?= te('protecao_dados.intro.item4') ?></div></div></div>
-<form method="POST" class="dpo-form"><h2><?= te('protecao_dados.formulario.titulo') ?></h2><?php if($erro): ?><div class="dpo-alert"><?= htmlspecialchars($erro) ?></div><?php endif; ?><div><label><?= te('protecao_dados.formulario.nome') ?></label><input type="text" name="nome" required></div><div><label><?= te('protecao_dados.formulario.email') ?></label><input type="email" name="email" required></div><div><label><?= te('protecao_dados.formulario.mensagem') ?></label><textarea name="mensagem" required></textarea></div><label class="dpo-check"><input type="checkbox" name="aceita_politica" required><span><?= te('protecao_dados.formulario.aceita_politica') ?></span></label><label class="dpo-check"><input type="checkbox" name="autoriza_resposta" required><span><?= te('protecao_dados.formulario.autoriza') ?></span></label><button class="dpo-btn" type="submit"><?= te('protecao_dados.formulario.botao') ?></button></form></div></div>
+<?php /* etiquetas ligadas aos campos, * nos obrigatórios com a nota, erros junto a cada campo e o que foi escrito
+         mantido depois de um erro (acessibilidade, 18/11/2026) */
+$vDpo = fn(string $k): string => htmlspecialchars(trim((string)($_POST[$k] ?? '')), ENT_QUOTES, 'UTF-8'); ?>
+<form method="POST" class="dpo-form"><h2><?= te('protecao_dados.formulario.titulo') ?></h2><?php if($erro): ?><div class="dpo-alert" role="alert"><?= htmlspecialchars($erro) ?></div><?php endif; ?><?= resumoErros($errosCampo, ['nome' => 'dpoNome', 'email' => 'dpoEmail', 'mensagem' => 'dpoMensagem', 'aceita_politica' => 'dpoAceita', 'autoriza_resposta' => 'dpoAutoriza']) ?><?= notaObrigatorios() ?><div><label for="dpoNome"><?= htmlspecialchars(rotuloTexto(tx('protecao_dados.formulario.nome'))) ?> <?= marcaObrigatorio() ?></label><input type="text" id="dpoNome" name="nome" autocomplete="name" value="<?= $vDpo('nome') ?>" required<?= erroAttrs($errosCampo, 'nome') ?>><?= erroCampo($errosCampo, 'nome') ?></div><div><label for="dpoEmail"><?= htmlspecialchars(rotuloTexto(tx('protecao_dados.formulario.email'))) ?> <?= marcaObrigatorio() ?></label><input type="email" id="dpoEmail" name="email" autocomplete="email" value="<?= $vDpo('email') ?>" required<?= erroAttrs($errosCampo, 'email') ?>><?= erroCampo($errosCampo, 'email') ?></div><div><label for="dpoMensagem"><?= htmlspecialchars(rotuloTexto(tx('protecao_dados.formulario.mensagem'))) ?> <?= marcaObrigatorio() ?></label><textarea id="dpoMensagem" name="mensagem" required<?= erroAttrs($errosCampo, 'mensagem') ?>><?= $vDpo('mensagem') ?></textarea><?= erroCampo($errosCampo, 'mensagem') ?></div><label class="dpo-check"><input type="checkbox" id="dpoAceita" name="aceita_politica" required<?= !empty($_POST['aceita_politica']) ? ' checked' : '' ?><?= erroAttrs($errosCampo, 'aceita_politica') ?>><span><?= te('protecao_dados.formulario.aceita_politica') ?> <?= marcaObrigatorio() ?></span></label><?= erroCampo($errosCampo, 'aceita_politica') ?><label class="dpo-check"><input type="checkbox" id="dpoAutoriza" name="autoriza_resposta" required<?= !empty($_POST['autoriza_resposta']) ? ' checked' : '' ?><?= erroAttrs($errosCampo, 'autoriza_resposta') ?>><span><?= te('protecao_dados.formulario.autoriza') ?> <?= marcaObrigatorio() ?></span></label><?= erroCampo($errosCampo, 'autoriza_resposta') ?><button class="dpo-btn" type="submit"><?= te('protecao_dados.formulario.botao') ?></button></form></div></div>
 <div class="dpo-rights"><article class="dpo-right"><h3><i class="bi bi-file-earmark-text"></i> <?= te('protecao_dados.direitos.acesso_titulo') ?></h3><p><?= te('protecao_dados.direitos.acesso_texto') ?></p></article><article class="dpo-right"><h3><i class="bi bi-pencil"></i> <?= te('protecao_dados.direitos.retificacao_titulo') ?></h3><p><?= te('protecao_dados.direitos.retificacao_texto') ?></p></article><article class="dpo-right"><h3><i class="bi bi-trash"></i> <?= te('protecao_dados.direitos.limitacao_titulo') ?></h3><p><?= te('protecao_dados.direitos.limitacao_texto') ?></p></article></div>
 </div></section></div>
 <?php require_once "includes/footer.php"; ob_end_flush(); ?>

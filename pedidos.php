@@ -54,6 +54,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php
 $sucesso = false;
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $codigoPedido = '';
 $cidadaoLogado = null;
 
@@ -117,19 +118,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $siteWeb = trim($_POST['site_web'] ?? ''); // honeypot: campo invisível, só bots o preenchem
 
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if (!$nome) $errosCampo['nome'] = 'Indique o seu nome.';
+    if ($email !== '' && !emailValido($email)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt), ou deixe o campo vazio.';
+    if ($telefone !== '' && !telefoneValido($telefone)) $errosCampo['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+    if (!$categoria) $errosCampo['categoria'] = 'Escolha a categoria da ocorrência.';
+    if (!$assunto) $errosCampo['assunto'] = 'Escreva o assunto em poucas palavras (ex.: «Buraco na estrada»).';
+    if (!$mensagem) $errosCampo['mensagem'] = 'Descreva a ocorrência: o que se passa e desde quando.';
+    if (!$latitude || !$longitude) {
+        $errosCampo['mapa'] = 'Escolha no mapa o local da ocorrência (carregue no mapa ou use «localização atual»).';
+    } elseif ($dentroFreguesia !== '1') {
+        $errosCampo['mapa'] = 'O local escolhido fica fora da Freguesia de ' . nomeFreguesia() . '. Escolha um ponto dentro da linha vermelha.';
+    }
+
     if ($siteWeb !== '') {
         // Bot apanhado no honeypot: finge sucesso, não processa nem envia nada.
         $sucesso = true;
-    } elseif (!$nome || !$categoria || !$assunto || !$mensagem) {
-        $erro = "Preencha todos os campos obrigatórios.";
-    } elseif ($email !== '' && !emailValido($email)) {
-        $erro = "Indique um email válido e que exista.";
-    } elseif ($telefone !== '' && !telefoneValido($telefone)) {
-        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
-    } elseif (!$latitude || !$longitude) {
-        $erro = "Selecione o local do pedido no mapa.";
-    } elseif ($dentroFreguesia !== '1') {
-        $erro = "O local selecionado está fora da área da Freguesia de " . nomeFreguesia() . ".";
+        $errosCampo = [];
+    } elseif ($errosCampo) {
+        // mostrados junto a cada campo e no resumo do topo do formulário
     } elseif (submissaoRecente('pedido')) {
         $erro = "Já recebemos um pedido seu há pouco. Aguarde uns instantes antes de submeter outro.";
     } else {
@@ -256,6 +263,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+// Depois de um erro, o formulário volta com o que a pessoa escreveu (antes perdia o assunto, a mensagem e o local).
+$assuntoForm = $mensagemForm = $localizacaoForm = $subcategoriaForm = $latForm = $lngForm = '';
+$dentroForm = '0';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$sucesso) {
+    if (!$cidadaoLogado) {
+        $nomeForm = $nome;
+        $emailForm = $email;
+        $telefoneForm = $telefone;
+    }
+    $assuntoForm = $assunto;
+    $mensagemForm = $mensagem;
+    $localizacaoForm = $localizacao;
+    $subcategoriaForm = $subcategoria;
+    if (!isset($errosCampo['mapa'])) {
+        $latForm = $latitude;
+        $lngForm = $longitude;
+        $dentroForm = $dentroFreguesia;
+    }
+}
 ?>
 
 <section class="pedidos-hero-premium">
@@ -331,55 +358,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form method="POST" enctype="multipart/form-data" class="form-publico form-pedido-premium" id="formPedido">
                 <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
+                <?php /* etiqueta visível por cima de cada campo (antes o nome do campo só estava no texto de exemplo);
+                         o resumo dos erros e a nota ocupam a largura toda da primeira grelha */ ?>
                 <div class="form-grid">
-                    <input 
-                        type="text" 
-                        name="nome" 
-                        placeholder="<?= te('pedidos.formulario.ph_nome') ?>" 
-                        value="<?= htmlspecialchars($nomeForm) ?>"
-                        <?= $cidadaoLogado ? 'readonly' : '' ?>
-                        required
-                    >
+                    <?= resumoErros($errosCampo, ['nome' => 'pedNome', 'email' => 'pedEmail', 'telefone' => 'pedTelefone', 'categoria' => 'categoriaOcorrencia', 'assunto' => 'pedAssunto', 'mensagem' => 'pedMensagem', 'mapa' => 'btnLocalizacaoAtual']) ?>
+                    <?= notaObrigatorios() ?>
+                    <div class="campo">
+                        <?= rotulo('pedNome', tx('pedidos.formulario.ph_nome'), true) ?>
+                        <input type="text" id="pedNome" name="nome" autocomplete="name"
+                               value="<?= htmlspecialchars($nomeForm) ?>"
+                               <?= $cidadaoLogado ? 'readonly' : '' ?> required<?= erroAttrs($errosCampo, 'nome') ?>>
+                        <?= erroCampo($errosCampo, 'nome') ?>
+                    </div>
 
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="<?= te('pedidos.formulario.ph_email') ?>"
-                        value="<?= htmlspecialchars($emailForm) ?>"
-                        <?= $cidadaoLogado ? 'readonly' : '' ?>
-                    >
+                    <div class="campo">
+                        <?= rotulo('pedEmail', tx('pedidos.formulario.ph_email'), false) ?>
+                        <input type="email" id="pedEmail" name="email" autocomplete="email"
+                               value="<?= htmlspecialchars($emailForm) ?>"
+                               <?= $cidadaoLogado ? 'readonly' : '' ?><?= erroAttrs($errosCampo, 'email') ?>>
+                        <?= erroCampo($errosCampo, 'email') ?>
+                    </div>
                 </div>
 
                 <div class="form-grid">
-                    <input 
-                        type="tel" 
-                        inputmode="tel"
-                        autocomplete="tel"
-                        maxlength="20"
-                        name="telefone" 
-                        placeholder="<?= te('pedidos.formulario.ph_telefone') ?>"
-                        value="<?= htmlspecialchars($telefoneForm) ?>"
-                    >
+                    <div class="campo">
+                        <?= rotulo('pedTelefone', tx('pedidos.formulario.ph_telefone'), false) ?>
+                        <input type="tel" id="pedTelefone" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone"
+                               placeholder="Ex.: 912 345 678"
+                               value="<?= htmlspecialchars($telefoneForm) ?>"<?= erroAttrs($errosCampo, 'telefone') ?>>
+                        <?= erroCampo($errosCampo, 'telefone') ?>
+                    </div>
 
-                    <select name="categoria" id="categoriaOcorrencia" required>
-                        <option value=""><?= te('pedidos.formulario.categoria') ?></option>
-                        <?php foreach ($categoriasOcorrencia as $cat): ?>
-                            <option value="<?= htmlspecialchars($cat['designacao']) ?>" <?= ($categoria ?? '') === $cat['designacao'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['designacao']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="campo">
+                        <?= rotulo('categoriaOcorrencia', tx('pedidos.formulario.categoria'), true) ?>
+                        <select name="categoria" id="categoriaOcorrencia" required<?= erroAttrs($errosCampo, 'categoria') ?>>
+                            <option value="">Escolha…</option>
+                            <?php foreach ($categoriasOcorrencia as $cat): ?>
+                                <option value="<?= htmlspecialchars($cat['designacao']) ?>" <?= ($categoria ?? '') === $cat['designacao'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['designacao']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?= erroCampo($errosCampo, 'categoria') ?>
+                    </div>
                 </div>
 
                 <div class="form-grid">
-                    <select name="subcategoria" id="subcategoriaOcorrencia">
-                        <option value=""><?= te('pedidos.formulario.subcategoria') ?></option>
-                    </select>
+                    <?php /* só aparece quando a categoria escolhida tem subcategorias (antes ficava desativada à vista) */ ?>
+                    <div class="campo" id="campoSubcategoria" hidden>
+                        <?= rotulo('subcategoriaOcorrencia', tx('pedidos.formulario.subcategoria'), false) ?>
+                        <select name="subcategoria" id="subcategoriaOcorrencia" data-escolhida="<?= htmlspecialchars($subcategoriaForm) ?>">
+                            <option value="">Escolha…</option>
+                        </select>
+                    </div>
 
-                    <input type="text" name="assunto" placeholder="<?= te('pedidos.formulario.ph_assunto') ?>" required>
+                    <div class="campo">
+                        <?= rotulo('pedAssunto', tx('pedidos.formulario.ph_assunto'), true) ?>
+                        <input type="text" id="pedAssunto" name="assunto" value="<?= htmlspecialchars($assuntoForm) ?>" required<?= erroAttrs($errosCampo, 'assunto') ?>>
+                        <?= erroCampo($errosCampo, 'assunto') ?>
+                    </div>
                 </div>
 
-                <input type="text" name="localizacao" id="localizacao" placeholder="<?= te('pedidos.formulario.ph_localizacao') ?>">
+                <div class="campo">
+                    <?= rotulo('localizacao', tx('pedidos.formulario.ph_localizacao'), false) ?>
+                    <input type="text" name="localizacao" id="localizacao" value="<?= htmlspecialchars($localizacaoForm) ?>">
+                </div>
 
-                <textarea name="mensagem" placeholder="<?= te('pedidos.formulario.ph_mensagem') ?>" required></textarea>
+                <div class="campo">
+                    <?= rotulo('pedMensagem', tx('pedidos.formulario.ph_mensagem'), true) ?>
+                    <textarea id="pedMensagem" name="mensagem" required<?= erroAttrs($errosCampo, 'mensagem') ?>><?= htmlspecialchars($mensagemForm) ?></textarea>
+                    <?= erroCampo($errosCampo, 'mensagem') ?>
+                </div>
 
                 <div class="mapa-pedido-block">
                     <div class="mapa-pedido-title">
@@ -399,11 +446,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div id="mapaPedidoForm"></div>
+                    <?= erroCampo($errosCampo, 'mapa') ?>
                 </div>
 
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
-                <input type="hidden" name="dentro_freguesia" id="dentro_freguesia" value="0">
+                <input type="hidden" name="latitude" id="latitude" value="<?= htmlspecialchars($latForm) ?>">
+                <input type="hidden" name="longitude" id="longitude" value="<?= htmlspecialchars($lngForm) ?>">
+                <input type="hidden" name="dentro_freguesia" id="dentro_freguesia" value="<?= htmlspecialchars($dentroForm) ?>">
 
                 <label><?= te('pedidos.formulario.anexos_titulo') ?></label>
 
@@ -652,6 +700,12 @@ document.addEventListener("DOMContentLoaded", function () {
         selecionarPonto(e.latlng);
     });
 
+    // depois de um erro no envio, volta a mostrar o ponto que já tinha sido escolhido
+    if (inputLat.value && inputLng.value && inputDentro.value === '1') {
+        marker = L.marker(L.latLng(parseFloat(inputLat.value), parseFloat(inputLng.value))).addTo(mapa);
+        mostrarInfoOk("Local escolhido. Pode carregar noutro ponto do mapa para o mudar.");
+    }
+
     const btnLocalizacaoAtual = document.getElementById('btnLocalizacaoAtual');
 
     if (btnLocalizacaoAtual) {
@@ -714,16 +768,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return opt;
     }
 
+    // A subcategoria só aparece quando a categoria tem subcategorias (revelação progressiva, em vez de um campo
+    // desativado à vista — checklist «Transação» da AMA, 18/11/2026). Depois de um erro, volta a escolhida.
+    const campoSubcategoria = document.getElementById('campoSubcategoria');
     function atualizarSubcategorias() {
         const lista = assuntosPorCategoria[selectCategoria.value] || [];
+        const escolhida = selectSubcategoria.value || selectSubcategoria.dataset.escolhida || '';
+        selectSubcategoria.dataset.escolhida = '';
 
-        selectSubcategoria.replaceChildren(criarOpcao('', 'Subcategoria (opcional)'));
+        selectSubcategoria.replaceChildren(criarOpcao('', 'Escolha…'));
 
         for (const designacao of lista) {
-            selectSubcategoria.appendChild(criarOpcao(designacao, designacao));
+            const opt = criarOpcao(designacao, designacao);
+            if (designacao === escolhida) opt.selected = true;
+            selectSubcategoria.appendChild(opt);
         }
 
         selectSubcategoria.disabled = lista.length === 0;
+        if (campoSubcategoria) campoSubcategoria.hidden = lista.length === 0;
     }
 
     selectCategoria.addEventListener('change', atualizarSubcategorias);

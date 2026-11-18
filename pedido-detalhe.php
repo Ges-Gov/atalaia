@@ -202,6 +202,8 @@ require_once "includes/header.php";
             <div id="typingStatus" style="font-size:13px;color:#6b7280;margin-top:8px;"></div>
 
             <form method="POST" class="form-publico chat-form">
+                <?php /* etiqueta visível (acessibilidade, 18/11/2026); campo único */ ?>
+                <label class="campo-rotulo" for="msgInput">A sua mensagem para a Junta</label>
 
                 <textarea
                     id="msgInput"

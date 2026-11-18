@@ -10,6 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php
 $sucesso = false;
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $cidadaoLogado = null;
 
 if (isset($_SESSION['cidadao_id'])) {
@@ -71,22 +72,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $siteWeb = trim($_POST['site_web'] ?? ''); // honeypot: campo invisível, só bots o preenchem
 
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if (!$nome) $errosCampo['nome'] = 'Indique o seu nome completo.';
+    if (!$email) $errosCampo['email'] = 'Indique o seu email (ex.: nome@exemplo.pt), para lhe confirmarmos o pedido.';
+    elseif (!emailValido($email)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if (!$telefone) $errosCampo['telefone'] = 'Indique um número de telefone (ex.: 912 345 678).';
+    elseif (!telefoneValido($telefone)) $errosCampo['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+    if ($eRequisicao) {
+        if (!$valores['recurso']) $errosCampo['recurso'] = 'Indique o espaço ou equipamento que quer requisitar.';
+        elseif (mb_strlen($valores['recurso']) > 200) $errosCampo['recurso'] = 'O texto é demasiado longo (máximo 200 carateres).';
+    } elseif (!$assunto) {
+        $errosCampo['assunto'] = 'Escolha o assunto do atendimento.';
+    }
+    if (!$data) $errosCampo['data_marcacao'] = 'Escolha o dia que pretende.';
+    elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) || $data < date('Y-m-d')) $errosCampo['data_marcacao'] = 'Escolha um dia a partir de hoje.';
+    if ($eRequisicao) {
+        if (!preg_match($formatoHora, (string)$hora)) $errosCampo['hora_inicio'] = 'Indique a hora de início (ex.: 14:00).';
+        if (!preg_match($formatoHora, (string)$horaFim)) $errosCampo['hora_fim'] = 'Indique a hora de fim (ex.: 18:00).';
+        elseif (!isset($errosCampo['hora_inicio']) && $horaFim <= $hora) $errosCampo['hora_fim'] = 'A hora de fim tem de ser depois da hora de início.';
+        if (!$mensagem) $errosCampo['finalidade'] = 'Explique para que é a requisição (ex.: «Festa de aniversário, 30 pessoas»).';
+    } elseif (!preg_match($formatoHora, (string)$hora)) {
+        $errosCampo['hora_marcacao'] = 'Escolha uma das horas da lista.';
+    }
+    if (mb_strlen($mensagem) > 5000) $errosCampo[$eRequisicao ? 'finalidade' : 'mensagem'] = 'O texto é demasiado longo (máximo 5000 carateres).';
+
     if ($siteWeb !== '') {
         // Bot apanhado no honeypot: finge sucesso, não processa nem envia nada.
         $sucesso = true;
-    } elseif (!$nome || !$email || !$telefone || !$data || !$hora
-              || ($eRequisicao ? (!$valores['recurso'] || !$horaFim || !$mensagem) : !$assunto)) {
-        $erro = "Preencha todos os campos obrigatórios.";
-    } elseif (!emailValido($email)) {
-        $erro = "Indique um email válido e que exista.";
-    } elseif (!telefoneValido($telefone)) {
-        $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
-    } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) || $data < date('Y-m-d')) {
-        $erro = "A data do pedido não pode ser anterior ao dia de hoje.";
-    } elseif (!preg_match($formatoHora, $hora) || ($eRequisicao && (!preg_match($formatoHora, $horaFim) || $horaFim <= $hora))) {
-        $erro = $eRequisicao ? "Indique a hora de início e a hora de fim (a de fim depois da de início)." : "Escolha uma hora válida.";
-    } elseif (mb_strlen($valores['recurso']) > 200 || mb_strlen($mensagem) > 5000) {
-        $erro = "O texto é demasiado longo.";
+        $errosCampo = [];
+    } elseif ($errosCampo) {
+        // mostrados junto a cada campo e no resumo do topo do formulário
     } elseif (submissaoRecente('marcacao')) {
         $erro = "Já recebemos um pedido seu há pouco. Aguarde uns instantes antes de submeter outro.";
     } else {
@@ -106,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($ocupada > 0) {
-            $erro = "Já existe uma marcação para essa data e hora.";
+            $errosCampo['hora_marcacao'] = 'Essa hora já está marcada nesse dia. Escolha outra hora, ou outro dia.';
         } else {
             $stmt = $pdo->prepare("
                 INSERT INTO marcacoes_atendimento
@@ -769,6 +784,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="POST" class="marcacoes-form" id="marcacoesForm">
                     <input type="text" name="site_web" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true">
+                    <?php /* erros junto a cada campo, com resumo no topo (acessibilidade, 18/11/2026) */ ?>
+                    <?= resumoErros($errosCampo, ['nome' => 'marc-nome', 'email' => 'marc-email', 'telefone' => 'marc-telefone', 'assunto' => 'marc-assunto', 'recurso' => 'marc-recurso', 'data_marcacao' => 'marc-data', 'hora_marcacao' => 'marc-hora', 'hora_inicio' => 'marc-hora-inicio', 'hora_fim' => 'marc-hora-fim', 'mensagem' => 'marc-mensagem', 'finalidade' => 'marc-finalidade']) ?>
 
                     <fieldset class="marcacoes-field full marcacoes-tipo">
                         <legend><?= te('marcacoes.formulario.tipo_pedido') ?></legend>
@@ -786,17 +803,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="marcacoes-field">
                         <label for="marc-nome"><?= te('marcacoes.formulario.nome') ?></label>
-                        <input type="text" id="marc-nome" name="nome" autocomplete="name" placeholder="<?= te('marcacoes.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <input type="text" id="marc-nome" name="nome" autocomplete="name" placeholder="<?= te('marcacoes.formulario.ph_nome') ?>" value="<?= htmlspecialchars($nomeForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required<?= erroAttrs($errosCampo, 'nome') ?>>
+                        <?= erroCampo($errosCampo, 'nome') ?>
                     </div>
 
                     <div class="marcacoes-field">
                         <label for="marc-email"><?= te('marcacoes.formulario.email') ?></label>
-                        <input type="email" id="marc-email" name="email" autocomplete="email" placeholder="<?= te('marcacoes.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required>
+                        <input type="email" id="marc-email" name="email" autocomplete="email" placeholder="<?= te('marcacoes.formulario.ph_email') ?>" value="<?= htmlspecialchars($emailForm) ?>" <?= $cidadaoLogado ? 'readonly' : '' ?> required<?= erroAttrs($errosCampo, 'email') ?>>
+                        <?= erroCampo($errosCampo, 'email') ?>
                     </div>
 
                     <div class="marcacoes-field">
                         <label for="marc-telefone"><?= te('marcacoes.formulario.telefone') ?></label>
-                        <input type="tel" id="marc-telefone" name="telefone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="<?= te('marcacoes.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>" required>
+                        <input type="tel" id="marc-telefone" name="telefone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="<?= te('marcacoes.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($telefoneForm) ?>" required<?= erroAttrs($errosCampo, 'telefone') ?>>
+                        <?= erroCampo($errosCampo, 'telefone') ?>
                     </div>
 
                     <!-- Agendar um atendimento -->
@@ -810,43 +830,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="marcacoes-field" data-pedido="atendimento">
                         <label for="marc-assunto"><?= te('marcacoes.formulario.assunto') ?></label>
-                        <select id="marc-assunto" name="assunto" required>
+                        <select id="marc-assunto" name="assunto" required<?= erroAttrs($errosCampo, 'assunto') ?>>
                             <?php foreach (['Recursos Humanos', 'Urbanismo e Habitação', 'Comunicação e Informação', 'Bem-estar Animal', 'Proteção Civil',
                                             'Educação', 'Saúde', 'Turismo', 'Desporto', 'Outros Assuntos'] as $opcao): ?>
                                 <option value="<?= htmlspecialchars($opcao) ?>" <?= $valores['assunto'] === $opcao ? 'selected' : '' ?>><?= htmlspecialchars($opcao) ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <?= erroCampo($errosCampo, 'assunto') ?>
                     </div>
 
                     <!-- Requisitar ou alugar um espaço ou equipamento -->
                     <div class="marcacoes-field full" data-pedido="requisicao">
                         <label for="marc-recurso"><?= te('marcacoes.formulario.recurso') ?></label>
-                        <input type="text" id="marc-recurso" name="recurso" maxlength="200" placeholder="<?= te('marcacoes.formulario.ph_recurso') ?>" value="<?= htmlspecialchars($valores['recurso']) ?>" required>
+                        <input type="text" id="marc-recurso" name="recurso" maxlength="200" placeholder="<?= te('marcacoes.formulario.ph_recurso') ?>" value="<?= htmlspecialchars($valores['recurso']) ?>" required<?= erroAttrs($errosCampo, 'recurso') ?>>
+                        <?= erroCampo($errosCampo, 'recurso') ?>
                     </div>
 
                     <div class="marcacoes-field">
                         <label for="marc-data"><?= te('marcacoes.formulario.data') ?></label>
-                        <input type="date" id="marc-data" name="data_marcacao" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($valores['data']) ?>" required>
+                        <input type="date" id="marc-data" name="data_marcacao" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($valores['data']) ?>" required<?= erroAttrs($errosCampo, 'data_marcacao') ?>>
+                        <?= erroCampo($errosCampo, 'data_marcacao') ?>
                     </div>
 
                     <div class="marcacoes-field" data-pedido="atendimento">
                         <label for="marc-hora"><?= te('marcacoes.formulario.hora') ?></label>
-                        <select id="marc-hora" name="hora_marcacao" required>
+                        <select id="marc-hora" name="hora_marcacao" required<?= erroAttrs($errosCampo, 'hora_marcacao') ?>>
                             <option value=""><?= te('marcacoes.formulario.hora_opcao') ?></option>
                             <?php foreach (['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00'] as $opcao): ?>
                                 <option value="<?= $opcao ?>" <?= $valores['hora'] === $opcao ? 'selected' : '' ?>><?= $opcao ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <?= erroCampo($errosCampo, 'hora_marcacao') ?>
                     </div>
 
                     <div class="marcacoes-field marcacoes-horas" data-pedido="requisicao">
                         <div>
                             <label for="marc-hora-inicio"><?= te('marcacoes.formulario.hora_inicio') ?></label>
-                            <input type="time" id="marc-hora-inicio" name="hora_inicio" value="<?= htmlspecialchars($valores['hora_inicio']) ?>" required>
+                            <input type="time" id="marc-hora-inicio" name="hora_inicio" value="<?= htmlspecialchars($valores['hora_inicio']) ?>" required<?= erroAttrs($errosCampo, 'hora_inicio') ?>>
+                            <?= erroCampo($errosCampo, 'hora_inicio') ?>
                         </div>
                         <div>
                             <label for="marc-hora-fim"><?= te('marcacoes.formulario.hora_fim') ?></label>
-                            <input type="time" id="marc-hora-fim" name="hora_fim" value="<?= htmlspecialchars($valores['hora_fim']) ?>" required>
+                            <input type="time" id="marc-hora-fim" name="hora_fim" value="<?= htmlspecialchars($valores['hora_fim']) ?>" required<?= erroAttrs($errosCampo, 'hora_fim') ?>>
+                            <?= erroCampo($errosCampo, 'hora_fim') ?>
                         </div>
                     </div>
 
@@ -857,12 +883,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="marcacoes-field full" data-pedido="atendimento">
                         <label for="marc-mensagem"><?= te('marcacoes.formulario.mensagem') ?></label>
-                        <textarea id="marc-mensagem" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_mensagem') ?>"><?= $tipoPedido === 'atendimento' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
+                        <textarea id="marc-mensagem" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_mensagem') ?>"<?= erroAttrs($errosCampo, 'mensagem') ?>><?= $tipoPedido === 'atendimento' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
+                        <?= erroCampo($errosCampo, 'mensagem') ?>
                     </div>
 
                     <div class="marcacoes-field full" data-pedido="requisicao">
                         <label for="marc-finalidade"><?= te('marcacoes.formulario.finalidade') ?></label>
-                        <textarea id="marc-finalidade" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_finalidade') ?>" required><?= $tipoPedido === 'requisicao' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
+                        <textarea id="marc-finalidade" name="mensagem" maxlength="5000" placeholder="<?= te('marcacoes.formulario.ph_finalidade') ?>" required<?= erroAttrs($errosCampo, 'finalidade') ?>><?= $tipoPedido === 'requisicao' ? htmlspecialchars($valores['mensagem']) : '' ?></textarea>
+                        <?= erroCampo($errosCampo, 'finalidade') ?>
                     </div>
 
                     <div class="marcacoes-submit-row">

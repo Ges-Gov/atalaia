@@ -9458,3 +9458,31 @@ button.evento-semana__img:focus-visible{ outline: 2px solid #fff; outline-offset
 @media (max-width: 900px){
     :root body .editorial__item--destaque .editorial__ampliar{ top: 16px; left: 16px; right: 16px; bottom: auto; width: auto; height: 270px; }
 }
+
+/* ===== Formulários acessíveis (checklist «Transação» da AMA, Selo nível Prata), 18/11/2026 =====================
+   Etiqueta visível por cima de cada campo, * nos obrigatórios, nota no topo, erros junto ao campo e resumo no topo.
+   Mesmo aspeto do formulário dos Contactos. Marcação gerada por includes/formularios.php. */
+.campo{display:flex;flex-direction:column;gap:6px;min-width:0}
+.campo-rotulo,.campo>label.campo-rotulo{font-size:14px;font-weight:600;color:#1e293b;line-height:1.3;text-transform:none;letter-spacing:normal}
+.campo-ob{color:#b91c1c;font-weight:700;font-style:normal}
+.campo-opc{font-weight:400;color:#64748b}
+.form-nota{font-size:14px;color:#475569;margin:0 0 14px;grid-column:1/-1}
+.campo>input,.campo>select,.campo>textarea{width:100%;box-sizing:border-box;margin:0!important}
+.campo[hidden]{display:none!important}
+.form-grid:has(> .campo[hidden])>.campo{grid-column:1/-1}
+.campo-erro{font-size:13.5px;color:#b91c1c;font-weight:600;margin-top:2px}
+form>.campo-erro{grid-column:1/-1;margin-top:-6px}
+:is(input,select,textarea)[aria-invalid="true"],.campo-invalido{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.12)!important}
+.form-resumo{grid-column:1/-1;border:1px solid #fecaca;background:#fef2f2;color:#7f1d1d;border-radius:14px;padding:14px 18px;margin:0 0 18px;font-size:15px}
+.form-resumo:focus{outline:3px solid #dc2626;outline-offset:2px}
+.form-resumo strong{display:block;margin-bottom:6px}
+.form-resumo ul{margin:0;padding-left:20px}
+.form-resumo a{color:#991b1b;text-decoration:underline}
+/* larguras à medida dos dados (2.1): NIF 9 algarismos, Cartão de Cidadão 12 carateres, data dd/mm/aaaa */
+.campo--nif>input{max-width:calc(13ch + 34px)}
+.campo--cc>input{max-width:calc(17ch + 34px)}
+.campo--data>input{max-width:calc(15ch + 34px)}
+/* formulários em linha (consultar pedido / denúncia / pedido ao DPO): o botão alinha com as caixas, por baixo das etiquetas */
+.consulta-form-premium>button,.ac-form>button,.cons-form>button{align-self:end}
+.ac-form>.campo,.cons-form>.campo{flex:1 1 260px}
+.ac-form>.campo>input,.cons-form>.campo>input{min-width:0}

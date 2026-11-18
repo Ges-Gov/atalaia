@@ -387,14 +387,16 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                             <input type="hidden" name="t" value="<?= time() ?>">
                             <div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
+                            <?php /* * nos obrigatórios, com a nota (acessibilidade, 18/11/2026) */ ?>
+                            <?= notaObrigatorios() ?>
                             <div class="ct-campos">
                                 <div class="ct-campo">
-                                    <label for="ctNome">Nome</label>
+                                    <label for="ctNome">Nome <?= marcaObrigatorio() ?></label>
                                     <input id="ctNome" name="nome" type="text" required autocomplete="name" maxlength="150" value="<?= htmlspecialchars($dadosForm['nome']) ?>"<?= $campoErro('nome') ?>>
                                     <?php if (isset($errosForm['nome'])): ?><span class="ct-erro" id="erro-nome"><?= $errosForm['nome'] ?></span><?php endif; ?>
                                 </div>
                                 <div class="ct-campo">
-                                    <label for="ctEmail">Email</label>
+                                    <label for="ctEmail">Email <?= marcaObrigatorio() ?></label>
                                     <input id="ctEmail" name="email" type="email" required autocomplete="email" maxlength="190" value="<?= htmlspecialchars($dadosForm['email']) ?>"<?= $campoErro('email') ?>>
                                     <?php if (isset($errosForm['email'])): ?><span class="ct-erro" id="erro-email"><?= $errosForm['email'] ?></span><?php endif; ?>
                                 </div>
@@ -404,14 +406,14 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                                     <?php if (isset($errosForm['telefone'])): ?><span class="ct-erro" id="erro-telefone"><?= $errosForm['telefone'] ?></span><?php endif; ?>
                                 </div>
                                 <fieldset class="ct-campo ct-campo--total ct-motivos"<?= isset($errosForm['assunto']) ? ' aria-describedby="erro-assunto"' : '' ?>>
-                                    <legend><?= te('contactos.formulario.campo_motivo') ?></legend>
+                                    <legend><?= te('contactos.formulario.campo_motivo') ?> <?= marcaObrigatorio() ?></legend>
                                     <?php foreach ($assuntosContacto as $i => $a): ?>
                                         <label class="ct-motivo"><input type="radio" name="assunto" value="<?= htmlspecialchars($a) ?>" <?= $dadosForm['assunto'] === $a ? 'checked' : '' ?> required><span><?= htmlspecialchars($a) ?></span></label>
                                     <?php endforeach; ?>
                                     <?php if (isset($errosForm['assunto'])): ?><span class="ct-erro" id="erro-assunto" style="width:100%"><?= $errosForm['assunto'] ?></span><?php endif; ?>
                                 </fieldset>
                                 <div class="ct-campo ct-campo--total">
-                                    <label for="ctMensagem">Mensagem</label>
+                                    <label for="ctMensagem">Mensagem <?= marcaObrigatorio() ?></label>
                                     <textarea id="ctMensagem" name="mensagem" required maxlength="4000" placeholder="<?= te('contactos.formulario.ph_mensagem') ?>"<?= $campoErro('mensagem') ?>><?= htmlspecialchars($dadosForm['mensagem']) ?></textarea>
                                     <span class="ct-contador" aria-live="polite" data-contador-de="ctMensagem"></span>
                                     <?php if (isset($errosForm['mensagem'])): ?><span class="ct-erro" id="erro-mensagem"><?= $errosForm['mensagem'] ?></span><?php endif; ?>
@@ -420,7 +422,7 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                                     <label class="ct-consent">
                                         <input type="checkbox" name="consentimento" value="1" required <?= !empty($_POST['consentimento']) ? 'checked' : '' ?><?= $campoErro('consentimento') ?>>
                                         <span><?= te('contactos.formulario.consentimento') ?>
-                                        <a href="/politica-privacidade.php" target="_blank" rel="noopener">Política de Privacidade</a>.</span>
+                                        <a href="/politica-privacidade.php" target="_blank" rel="noopener">Política de Privacidade</a>. <?= marcaObrigatorio() ?></span>
                                     </label>
                                     <?php if (isset($errosForm['consentimento'])): ?><span class="ct-erro" id="erro-consentimento"><?= $errosForm['consentimento'] ?></span><?php endif; ?>
                                 </div>

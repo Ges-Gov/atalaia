@@ -14,6 +14,7 @@ $evento = $stmt->fetch(PDO::FETCH_ASSOC);
 // Inscrição no evento (ex.: excursão) — tratada ANTES do header.php para poder
 // redirecionar com header("Location: ...") depois de gravar com sucesso.
 $inscricaoErro = '';
+$errosCampo = [];   // erros junto a cada campo da inscrição (acessibilidade, 18/11/2026)
 
 $camposExtraEvento = [];
 if ($evento && !empty($evento['inscricoes_ativas'])) {
@@ -32,14 +33,14 @@ if ($evento && !empty($evento['inscricoes_ativas']) && $_SERVER['REQUEST_METHOD'
     $prazoInscricao = $evento['inscricoes_ate'] ?: $evento['data_evento'];
 
     // Contacto: email OU telefone chega, um dos dois é obrigatório (não os dois).
-    if (!$nomeInsc) {
-        $inscricaoErro = "Preencha o nome.";
-    } elseif (!$emailInsc && !$telefoneInsc) {
-        $inscricaoErro = "Indique um email ou um telefone, para ser possível contactá-lo(a).";
-    } elseif ($emailInsc && !emailValido($emailInsc)) {
-        $inscricaoErro = "O email indicado não é válido ou não existe.";
-    } elseif ($telefoneInsc && !telefoneValido($telefoneInsc)) {
-        $inscricaoErro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if (!$nomeInsc) $errosCampo['nome'] = 'Indique o seu nome.';
+    if (!$emailInsc && !$telefoneInsc) $errosCampo['email'] = 'Indique um email ou um telefone (basta um dos dois), para ser possível contactá-lo(a).';
+    elseif ($emailInsc && !emailValido($emailInsc)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt), ou deixe-o vazio e indique o telefone.';
+    if ($telefoneInsc && !telefoneValido($telefoneInsc)) $errosCampo['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+
+    if ($errosCampo) {
+        $inscricaoErro = 'campos';   // os erros estão em $errosCampo, junto a cada campo
     } elseif ($prazoInscricao && strtotime($prazoInscricao) < time()) {
         $inscricaoErro = "As inscrições para este evento já encerraram.";
     } elseif (!empty($evento['inscricoes_vagas'])) {
@@ -50,7 +51,8 @@ if ($evento && !empty($evento['inscricoes_ativas']) && $_SERVER['REQUEST_METHOD'
         if ($restantes <= 0) {
             $inscricaoErro = "Lamentamos, as vagas para este evento já se esgotaram.";
         } elseif ($numPessoasInsc > $restantes) {
-            $inscricaoErro = "Só restam {$restantes} vaga(s) — reduza o número de pessoas ou contacte a Junta.";
+            $errosCampo['num_pessoas'] = "Só restam {$restantes} vaga(s). Reduza o número de pessoas ou contacte a Junta.";
+            $inscricaoErro = 'campos';
         }
     }
 
@@ -341,28 +343,35 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                     <?php elseif ($esgotado): ?>
                         <p class="evento-inscricao-fechado"><?= te('evento.inscricoes.esgotadas') ?></p>
                     <?php else: ?>
-                        <?php if ($inscricaoErro): ?>
-                            <div class="evento-inscricao-erro"><?= htmlspecialchars($inscricaoErro) ?></div>
+                        <?php if ($inscricaoErro && $inscricaoErro !== 'campos'): ?>
+                            <div class="evento-inscricao-erro" role="alert"><?= htmlspecialchars($inscricaoErro) ?></div>
                         <?php endif; ?>
                         <form method="POST" class="evento-inscricao-form" id="formInscricaoEvento"<?= eventoCamposTemFicheiro($camposExtraEvento) ? ' enctype="multipart/form-data"' : '' ?>>
                             <input type="hidden" name="inscrever_evento" value="1">
+                            <?php /* * no obrigatório e erros junto a cada campo (acessibilidade, 18/11/2026) */ ?>
+                            <?= resumoErros($errosCampo, ['nome' => 'inscNome', 'email' => 'inscEmail', 'telefone' => 'inscTelefone', 'num_pessoas' => 'inscNumPessoas']) ?>
                             <p class="evento-inscricao-nota"><?= te('evento.inscricoes.nota') ?></p>
+                            <?= notaObrigatorios() ?>
                             <div class="evento-inscricao-grid">
                                 <div class="evento-campo">
-                                    <label for="inscNome"><?= te('evento.inscricoes.campo_nome') ?></label>
-                                    <input type="text" id="inscNome" name="nome" required value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>">
+                                    <label for="inscNome"><?= htmlspecialchars(rotuloTexto(tx('evento.inscricoes.campo_nome'))) ?> <?= marcaObrigatorio() ?></label>
+                                    <input type="text" id="inscNome" name="nome" autocomplete="name" required value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"<?= erroAttrs($errosCampo, 'nome') ?>>
+                                    <?= erroCampo($errosCampo, 'nome') ?>
                                 </div>
                                 <div class="evento-campo">
-                                    <label for="inscEmail">Email</label>
-                                    <input type="email" id="inscEmail" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+                                    <label for="inscEmail">Email <span class="campo-opc">(ou telefone)</span></label>
+                                    <input type="email" id="inscEmail" name="email" autocomplete="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"<?= erroAttrs($errosCampo, 'email') ?>>
+                                    <?= erroCampo($errosCampo, 'email') ?>
                                 </div>
                                 <div class="evento-campo">
-                                    <label for="inscTelefone">Telefone</label>
-                                    <input type="tel" id="inscTelefone" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
+                                    <label for="inscTelefone">Telefone <span class="campo-opc">(ou email)</span></label>
+                                    <input type="tel" id="inscTelefone" name="telefone" autocomplete="tel" inputmode="tel" placeholder="Ex.: 912 345 678" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"<?= erroAttrs($errosCampo, 'telefone') ?>>
+                                    <?= erroCampo($errosCampo, 'telefone') ?>
                                 </div>
                                 <div class="evento-campo">
                                     <label for="inscNumPessoas"><?= te('evento.inscricoes.campo_pessoas') ?></label>
-                                    <input type="number" id="inscNumPessoas" name="num_pessoas" min="1" <?= $restantesView !== null ? 'max="' . $restantesView . '"' : '' ?> value="<?= htmlspecialchars($_POST['num_pessoas'] ?? '1') ?>">
+                                    <input type="number" id="inscNumPessoas" name="num_pessoas" min="1" <?= $restantesView !== null ? 'max="' . $restantesView . '"' : '' ?> value="<?= htmlspecialchars($_POST['num_pessoas'] ?? '1') ?>"<?= erroAttrs($errosCampo, 'num_pessoas') ?>>
+                                    <?= erroCampo($errosCampo, 'num_pessoas') ?>
                                 </div>
 
                                 <?php foreach ($camposExtraEvento as $campo) echo eventoCampoHtml($campo); ?>
@@ -374,12 +383,24 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                             <button type="submit" class="hero-btn"><i class="bi bi-send-fill"></i> <?= te('evento.inscricoes.botao') ?></button>
                         </form>
                         <script>
+                        // email OU telefone: avisa junto aos campos, em vez de uma janela de alerta (acessibilidade, 18/11/2026)
                         document.getElementById('formInscricaoEvento').addEventListener('submit', function (e) {
-                            var email = document.getElementById('inscEmail').value.trim();
-                            var telefone = document.getElementById('inscTelefone').value.trim();
-                            if (!email && !telefone) {
+                            var campoEmail = document.getElementById('inscEmail');
+                            var campoTelefone = document.getElementById('inscTelefone');
+                            if (!campoEmail.value.trim() && !campoTelefone.value.trim()) {
                                 e.preventDefault();
-                                alert('Indique um email ou um telefone, para ser possível contactá-lo(a).');
+                                var msg = 'Indique um email ou um telefone (basta um dos dois), para ser possível contactá-lo(a).';
+                                var erro = document.getElementById('erro-email');
+                                if (!erro) {
+                                    erro = document.createElement('div');
+                                    erro.className = 'campo-erro';
+                                    erro.id = 'erro-email';
+                                    campoEmail.insertAdjacentElement('afterend', erro);
+                                }
+                                erro.textContent = msg;
+                                campoEmail.setAttribute('aria-invalid', 'true');
+                                campoEmail.setAttribute('aria-describedby', 'erro-email');
+                                campoEmail.focus();
                             }
                         });
                         </script>

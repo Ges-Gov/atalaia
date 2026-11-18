@@ -22,8 +22,17 @@ $nif = trim($_POST['nif'] ?? '');
 $cc = trim($_POST['cc'] ?? '');
 $dataNascimento = trim($_POST['data_nascimento'] ?? '');
 
+// Em falta: volta ao formulário com o erro junto a cada campo e o que já tinha escrito (antes era uma página em
+// branco com «Dados obrigatórios em falta.» — checklist «Transação» da AMA, 18/11/2026)
 if (!$nome || !$morada) {
-    die("Dados obrigatórios em falta.");
+    if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+    $_SESSION['atestado_erros'] = array_filter([
+        'nome' => $nome ? null : 'Indique o nome completo do requerente.',
+        'morada' => $morada ? null : 'Indique a morada completa (rua, número e localidade).',
+    ]);
+    $_SESSION['atestado_valores'] = ['nome' => $nome, 'morada' => $morada, 'nif' => $nif, 'cc' => $cc, 'data_nascimento' => $dataNascimento];
+    header('Location: /atestado-residencia.php');
+    exit;
 }
 
 $options = new Options();

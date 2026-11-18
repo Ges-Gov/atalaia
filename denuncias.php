@@ -2,6 +2,7 @@
 ob_start();
 require_once "includes/header.php";
 $erro='';
+$errosCampo=[];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $uploadDir=__DIR__."/uploads/denuncias/";
 if(!is_dir($uploadDir)) mkdir($uploadDir,0775,true);
 
@@ -44,14 +45,22 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $telefone=trim($_POST['telefone']??'');
     $email=trim($_POST['email']??'');
 
-    if(!in_array($tipo,['Externo','Interno'],true)||!$categoria||!$assunto||!$descricao) $erro="Preencha os campos obrigatórios (Tipo, Assunto, Categoria e Descrição).";
-    if(!$erro && !isset($_POST['consentimento'])) $erro="Tem de autorizar o tratamento sigiloso dos dados.";
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if(!in_array($tipo,['Externo','Interno'],true)) $errosCampo['tipo']='Escolha se a denúncia é externa ou interna.';
+    if(!$assunto) $errosCampo['assunto']='Escreva o assunto da denúncia em poucas palavras.';
+    if(!$categoria) $errosCampo['categoria']='Escolha a categoria que melhor descreve a situação.';
+    if(!$descricao) $errosCampo['descricao']='Descreva a situação: o que aconteceu, quando e onde.';
+    // anexos verificados ANTES de gravar (antes, um anexo inválido dava erro depois de a denúncia já estar gravada)
+    $nomesAnexos = array_filter((array)($_FILES['anexos']['name'] ?? []));
+    if(count($nomesAnexos) > 5) $errosCampo['anexos']='Pode anexar no máximo 5 ficheiros. Escolha outra vez só os mais importantes.';
+    else foreach($nomesAnexos as $na){ if(!in_array(strtolower(pathinfo($na,PATHINFO_EXTENSION)),['pdf','doc','docx','jpg','jpeg','png','webp','mp3','mp4','zip'],true)){ $errosCampo['anexos']='O ficheiro «'.$na.'» não é aceite. Use PDF, Word, imagem (JPG, PNG, WEBP), MP3, MP4 ou ZIP.'; break; } }
     // Contactos opcionais (a denúncia pode ser anónima), mas se forem dados têm de ser válidos.
     require_once __DIR__ . '/includes/validacao.php';
-    if(!$erro && $email!=='' && !emailValido($email)) $erro="O email indicado não é válido ou não existe.";
-    if(!$erro && $telefone!=='' && !telefoneValido($telefone)) $erro="Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
+    if($email!=='' && !emailValido($email)) $errosCampo['email']='Indique um email válido e que exista (ex.: nome@exemplo.pt), ou deixe o campo vazio.';
+    if($telefone!=='' && !telefoneValido($telefone)) $errosCampo['telefone']='Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro), ou deixe o campo vazio.';
+    if(!isset($_POST['consentimento'])) $errosCampo['consentimento']='Para enviar, autorize o tratamento sigiloso dos dados (caixa no fim do formulário).';
 
-    if(!$erro){
+    if(!$errosCampo){
         $anonima = ($nome==='' && $telefone==='' && $email==='') ? 1 : 0;
         $codigo=gerarCodigoDenuncia();
         $prioridade=(stripos($descricao,'urgente')!==false||stripos($assunto,'urgente')!==false)?'alta':'normal';
@@ -104,57 +113,66 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <?php if($erro): ?><div class="dn-alert" role="alert"><?= htmlspecialchars($erro) ?></div><?php endif; ?>
 
     <form method="POST" enctype="multipart/form-data" class="dn-form" id="formDenuncia">
+        <?php /* etiquetas ligadas aos campos, erros junto a cada campo e o tipo escolhido mantido (acessibilidade, 18/11/2026) */ ?>
+        <?= resumoErros($errosCampo, ['tipo' => 'dnTipoExterno', 'assunto' => 'dnAssunto', 'categoria' => 'dnCategoria', 'descricao' => 'dnDescricao', 'anexos' => 'dnAnexos', 'telefone' => 'dnTelefone', 'email' => 'dnEmail']) ?>
+        <?php $tipoEscolhido = $_POST['tipo'] ?? ''; ?>
 
-        <div>
-            <label class="dn-label"><?= te('denuncias.formulario.tipo') ?> <span class="req">*</span></label>
+        <div role="radiogroup" aria-labelledby="dnTipoRotulo" aria-required="true"<?= isset($errosCampo['tipo']) ? ' aria-describedby="erro-tipo"' : '' ?>>
+            <label class="dn-label" id="dnTipoRotulo"><?= te('denuncias.formulario.tipo') ?> <span class="req" aria-hidden="true">*</span></label>
             <div class="dn-tipos">
-                <label class="dn-tipo-card" data-tipo>
-                    <strong><input type="radio" name="tipo" value="Externo" required>Externo</strong>
+                <label class="dn-tipo-card<?= $tipoEscolhido === 'Externo' ? ' sel' : '' ?>" data-tipo>
+                    <strong><input type="radio" id="dnTipoExterno" name="tipo" value="Externo" required<?= $tipoEscolhido === 'Externo' ? ' checked' : '' ?>>Externo</strong>
                     <p><?= te('denuncias.formulario.externo_texto') ?></p>
                 </label>
-                <label class="dn-tipo-card" data-tipo>
-                    <strong><input type="radio" name="tipo" value="Interno" required>Interno</strong>
+                <label class="dn-tipo-card<?= $tipoEscolhido === 'Interno' ? ' sel' : '' ?>" data-tipo>
+                    <strong><input type="radio" name="tipo" value="Interno" required<?= $tipoEscolhido === 'Interno' ? ' checked' : '' ?>>Interno</strong>
                     <p><?= te('denuncias.formulario.interno_texto') ?></p>
                 </label>
             </div>
+            <?= erroCampo($errosCampo, 'tipo') ?>
         </div>
 
         <div>
-            <label class="dn-label"><?= te('denuncias.formulario.assunto') ?> <span class="req">*</span></label>
-            <input type="text" name="assunto" value="<?= htmlspecialchars($_POST['assunto'] ?? '') ?>" required>
+            <label class="dn-label" for="dnAssunto"><?= te('denuncias.formulario.assunto') ?> <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="dnAssunto" name="assunto" value="<?= htmlspecialchars($_POST['assunto'] ?? '') ?>" required<?= erroAttrs($errosCampo, 'assunto') ?>>
+            <?= erroCampo($errosCampo, 'assunto') ?>
         </div>
 
         <div>
-            <label class="dn-label"><?= te('denuncias.formulario.categoria') ?> <span class="req">*</span></label>
-            <select name="categoria" required>
+            <label class="dn-label" for="dnCategoria"><?= te('denuncias.formulario.categoria') ?> <span class="req" aria-hidden="true">*</span></label>
+            <select id="dnCategoria" name="categoria" required<?= erroAttrs($errosCampo, 'categoria') ?>>
                 <option value=""><?= te('denuncias.formulario.categoria_opcao') ?></option>
                 <?php foreach($categorias as $cat): ?>
                     <option value="<?= htmlspecialchars($cat) ?>" <?= (($_POST['categoria'] ?? '')===$cat)?'selected':'' ?>><?= htmlspecialchars($cat) ?></option>
                 <?php endforeach; ?>
             </select>
+            <?= erroCampo($errosCampo, 'categoria') ?>
         </div>
 
         <div>
-            <label class="dn-label"><?= te('denuncias.formulario.descricao') ?> <span class="req">*</span></label>
-            <textarea name="descricao" placeholder="<?= te('denuncias.formulario.descricao_exemplo') ?>" required><?= htmlspecialchars($_POST['descricao'] ?? '') ?></textarea>
+            <label class="dn-label" for="dnDescricao"><?= te('denuncias.formulario.descricao') ?> <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="dnDescricao" name="descricao" placeholder="<?= te('denuncias.formulario.descricao_exemplo') ?>" required<?= erroAttrs($errosCampo, 'descricao') ?>><?= htmlspecialchars($_POST['descricao'] ?? '') ?></textarea>
+            <?= erroCampo($errosCampo, 'descricao') ?>
         </div>
 
         <div>
-            <label class="dn-label"><?= te('denuncias.formulario.anexos') ?></label>
-            <input type="file" name="anexos[]" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.mp3,.mp4,.zip">
+            <label class="dn-label" for="dnAnexos"><?= te('denuncias.formulario.anexos') ?></label>
+            <input type="file" id="dnAnexos" name="anexos[]" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.mp3,.mp4,.zip"<?= erroAttrs($errosCampo, 'anexos') ?>>
             <small class="dn-help"><?= te('denuncias.formulario.anexos_ajuda') ?></small>
+            <?= erroCampo($errosCampo, 'anexos') ?>
         </div>
 
         <div class="dn-grid">
-            <div><label class="dn-label"><?= te('denuncias.formulario.nome') ?></label><input type="text" name="nome" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
-            <div><label class="dn-label"><?= te('denuncias.formulario.telefone') ?></label><input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
-            <div><label class="dn-label"><?= te('denuncias.formulario.email') ?></label><input type="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
+            <div><label class="dn-label" for="dnNome"><?= te('denuncias.formulario.nome') ?></label><input type="text" id="dnNome" name="nome" autocomplete="name" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small></div>
+            <div><label class="dn-label" for="dnTelefone"><?= te('denuncias.formulario.telefone') ?></label><input type="tel" id="dnTelefone" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"<?= erroAttrs($errosCampo, 'telefone') ?>><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small><?= erroCampo($errosCampo, 'telefone') ?></div>
+            <div><label class="dn-label" for="dnEmail"><?= te('denuncias.formulario.email') ?></label><input type="email" id="dnEmail" name="email" autocomplete="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"<?= erroAttrs($errosCampo, 'email') ?>><small class="dn-help"><?= te('denuncias.formulario.opcional') ?></small><?= erroCampo($errosCampo, 'email') ?></div>
         </div>
 
         <label class="dn-check">
-            <input type="checkbox" name="consentimento" id="consentimento" required>
-            <span><?= te('denuncias.formulario.consentimento') ?></span>
+            <input type="checkbox" name="consentimento" id="consentimento" required<?= !empty($_POST['consentimento']) ? ' checked' : '' ?>>
+            <span><?= te('denuncias.formulario.consentimento') ?> <span class="req" aria-hidden="true">*</span></span>
         </label>
+        <?= erroCampo($errosCampo, 'consentimento') ?>
 
         <div>
             <button class="dn-btn" id="btnContinuar" type="submit" disabled>Continuar</button>

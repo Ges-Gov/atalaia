@@ -1,4 +1,12 @@
 <?php require_once "includes/header.php"; ?>
+<?php
+// Se o envio falhou (gerar-submeter-documento.php), volta com os erros junto a cada campo e o que já estava escrito
+// (acessibilidade, 18/11/2026). As fotos do Cartão de Cidadão têm de ser escolhidas outra vez: o browser não as guarda.
+$errosCampo = $_SESSION['docauto_erros'] ?? [];
+$valDoc = $_SESSION['docauto_valores'] ?? [];
+unset($_SESSION['docauto_erros'], $_SESSION['docauto_valores']);
+$vd = fn(string $k): string => htmlspecialchars((string)($valDoc[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+?>
 
 
 <style>
@@ -138,50 +146,78 @@ padding:22px;
 
             <form method="POST" action="gerar-submeter-documento.php" class="form-publico docs-auto-form" enctype="multipart/form-data">
 
-                <select name="tipo_documento" required>
-                    <option value=""><?= te('documentos_automaticos.formulario.tipo') ?></option>
-                    <option value="atestado_residencia"><?= te('documentos_automaticos.formulario.tipo_atestado') ?></option>
-                    <option value="declaracao"><?= te('documentos_automaticos.formulario.tipo_declaracao') ?></option>
-                    <option value="certidao"><?= te('documentos_automaticos.formulario.tipo_certidao') ?></option>
-                    <option value="licenca"><?= te('documentos_automaticos.formulario.tipo_licenca') ?></option>
-                </select>
+                <?php /* etiqueta visível por cima de cada campo, * nos obrigatórios, erros junto ao campo e larguras à
+                         medida dos dados: NIF, Cartão de Cidadão e data (acessibilidade, 18/11/2026) */ ?>
+                <?= resumoErros($errosCampo, ['tipo_documento' => 'docTipo', 'nome' => 'docNome', 'morada' => 'docMorada', 'cc_frente' => 'docCcFrente', 'cc_verso' => 'docCcVerso']) ?>
+                <?= notaObrigatorios() ?>
 
-                <input type="text" name="nome" placeholder="<?= te('documentos_automaticos.formulario.ph_nome') ?>" required>
+                <div class="campo">
+                    <?= rotulo('docTipo', tx('documentos_automaticos.formulario.tipo'), true) ?>
+                    <select id="docTipo" name="tipo_documento" required<?= erroAttrs($errosCampo, 'tipo_documento') ?>>
+                        <option value="">Escolha…</option>
+                        <?php foreach (['atestado_residencia' => 'tipo_atestado', 'declaracao' => 'tipo_declaracao', 'certidao' => 'tipo_certidao', 'licenca' => 'tipo_licenca'] as $v => $chave): ?>
+                            <option value="<?= $v ?>"<?= ($valDoc['tipo_documento'] ?? '') === $v ? ' selected' : '' ?>><?= te('documentos_automaticos.formulario.' . $chave) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?= erroCampo($errosCampo, 'tipo_documento') ?>
+                </div>
 
-                <input type="text" name="morada" placeholder="<?= te('documentos_automaticos.formulario.ph_morada') ?>" required>
+                <div class="campo">
+                    <?= rotulo('docNome', tx('documentos_automaticos.formulario.ph_nome'), true) ?>
+                    <input type="text" id="docNome" name="nome" autocomplete="name" value="<?= $vd('nome') ?>" required<?= erroAttrs($errosCampo, 'nome') ?>>
+                    <?= erroCampo($errosCampo, 'nome') ?>
+                </div>
 
-                <input type="text" name="cc" placeholder="<?= te('documentos_automaticos.formulario.ph_cc') ?>">
+                <div class="campo">
+                    <?= rotulo('docMorada', tx('documentos_automaticos.formulario.ph_morada'), true) ?>
+                    <input type="text" id="docMorada" name="morada" autocomplete="street-address" value="<?= $vd('morada') ?>" required<?= erroAttrs($errosCampo, 'morada') ?>>
+                    <?= erroCampo($errosCampo, 'morada') ?>
+                </div>
 
-                <input type="text" name="nif" placeholder="<?= te('documentos_automaticos.formulario.ph_nif') ?>">
+                <div class="campo campo--cc">
+                    <?= rotulo('docCc', tx('documentos_automaticos.formulario.ph_cc'), false) ?>
+                    <input type="text" id="docCc" name="cc" maxlength="20" value="<?= $vd('cc') ?>">
+                </div>
 
-                <input type="date" name="data_nascimento" aria-label="Data de nascimento">
+                <div class="campo campo--nif">
+                    <?= rotulo('docNif', tx('documentos_automaticos.formulario.ph_nif'), false) ?>
+                    <input type="text" id="docNif" name="nif" inputmode="numeric" maxlength="9" value="<?= $vd('nif') ?>">
+                </div>
 
-                <input type="text" name="assunto" placeholder="<?= te('documentos_automaticos.formulario.ph_assunto') ?>">
+                <div class="campo campo--data">
+                    <?= rotulo('docNascimento', 'Data de nascimento', false) ?>
+                    <input type="date" id="docNascimento" name="data_nascimento" autocomplete="bday" value="<?= $vd('data_nascimento') ?>">
+                </div>
 
-                <textarea name="observacoes" placeholder="<?= te('documentos_automaticos.formulario.ph_observacoes') ?>"></textarea>
+                <div class="campo">
+                    <?= rotulo('docAssunto', tx('documentos_automaticos.formulario.ph_assunto'), false) ?>
+                    <input type="text" id="docAssunto" name="assunto" value="<?= $vd('assunto') ?>">
+                </div>
 
+                <div class="campo">
+                    <?= rotulo('docObservacoes', tx('documentos_automaticos.formulario.ph_observacoes'), false) ?>
+                    <textarea id="docObservacoes" name="observacoes"><?= $vd('observacoes') ?></textarea>
+                </div>
 
+<label for="docCcFrente"><?= te('documentos_automaticos.formulario.cc_frente') ?> <?= marcaObrigatorio() ?></label>
 
-
-
-
-
-
-<label><?= te('documentos_automaticos.formulario.cc_frente') ?></label>
-
-<input 
-type="file" 
+<input
+type="file"
+id="docCcFrente"
 name="cc_frente"
 accept=".jpg,.jpeg,.png,.pdf,.webp"
-required>
+required<?= erroAttrs($errosCampo, 'cc_frente') ?>>
+<?= erroCampo($errosCampo, 'cc_frente') ?>
 
-<label><?= te('documentos_automaticos.formulario.cc_verso') ?></label>
+<label for="docCcVerso"><?= te('documentos_automaticos.formulario.cc_verso') ?> <?= marcaObrigatorio() ?></label>
 
-<input 
-type="file" 
+<input
+type="file"
+id="docCcVerso"
 name="cc_verso"
 accept=".jpg,.jpeg,.png,.pdf,.webp"
-required>
+required<?= erroAttrs($errosCampo, 'cc_verso') ?>>
+<?= erroCampo($errosCampo, 'cc_verso') ?>
 
 
 

@@ -34,8 +34,25 @@ $dataNascimento = limpar($_POST['data_nascimento'] ?? '');
 $assunto = limpar($_POST['assunto'] ?? '');
 $observacoes = limpar($_POST['observacoes'] ?? '');
 
-if (!$tipo || !$nome || !$morada) {
-    die("Dados obrigatórios em falta.");
+// Em falta: volta ao formulário com o erro junto a cada campo e o que já tinha escrito (antes era uma página em
+// branco com «Dados obrigatórios em falta.» — checklist «Transação» da AMA, 18/11/2026)
+$errosDoc = [];
+if (!$tipo) $errosDoc['tipo_documento'] = 'Escolha o documento que quer pedir.';
+if (!$nome) $errosDoc['nome'] = 'Indique o seu nome completo.';
+if (!$morada) $errosDoc['morada'] = 'Indique a sua morada completa (rua, número e localidade).';
+foreach (['cc_frente' => 'da frente', 'cc_verso' => 'do verso'] as $campoCc => $lado) {
+    if (empty($_FILES[$campoCc]['name']) || ($_FILES[$campoCc]['error'] ?? 1) != 0) {
+        $errosDoc[$campoCc] = "Junte uma foto ou PDF $lado do Cartão de Cidadão (JPG, PNG, WEBP ou PDF).";
+    }
+}
+if ($errosDoc) {
+    $_SESSION['docauto_erros'] = $errosDoc;
+    $_SESSION['docauto_valores'] = [];
+    foreach (['tipo_documento', 'nome', 'morada', 'cc', 'nif', 'data_nascimento', 'assunto', 'observacoes'] as $k) {
+        $_SESSION['docauto_valores'][$k] = trim((string)($_POST[$k] ?? ''));
+    }
+    header('Location: /documentos-automaticos.php');
+    exit;
 }
 
 $codigoReq = "REQ-" . date('Y') . "-" . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));

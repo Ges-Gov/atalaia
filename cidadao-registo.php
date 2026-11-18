@@ -3,6 +3,7 @@
 
 <?php
 $erro = '';
+$errosCampo = [];   // erros junto a cada campo (acessibilidade, 18/11/2026)
 $sucesso = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -11,17 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefone = trim($_POST['telefone'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if ($nome && $email && $password) {
-        if (!emailValido($email)) {
-            $erro = "Indique um email válido e que exista.";
-        } elseif ($telefone !== '' && !telefoneValido($telefone)) {
-            $erro = "Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).";
-        } else {
+    // Cada erro fica junto ao seu campo e diz o que fazer (checklist «Transação» da AMA, 18/11/2026)
+    if ($nome === '') $errosCampo['nome'] = 'Indique o seu nome completo.';
+    if ($email === '') $errosCampo['email'] = 'Indique o seu email (ex.: nome@exemplo.pt). É com ele que vai entrar.';
+    elseif (!emailValido($email)) $errosCampo['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if ($telefone !== '' && !telefoneValido($telefone)) $errosCampo['telefone'] = 'Indique um número de telefone válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+    if ($password === '') $errosCampo['password'] = 'Escolha uma palavra-passe com pelo menos 8 carateres.';
+    elseif (mb_strlen($password) < 8) $errosCampo['password'] = 'A palavra-passe tem de ter pelo menos 8 carateres.';
+
+    if (!$errosCampo) {
+        {
             $stmt = $pdo->prepare("SELECT id FROM cidadaos WHERE email = ?");
             $stmt->execute([$email]);
 
             if ($stmt->fetch()) {
-                $erro = "Já existe uma conta com este email.";
+                $errosCampo['email'] = 'Já existe uma conta com este email. Entre com ele, ou use «Esqueci-me da password» se não se lembrar da palavra-passe.';
             } else {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -50,8 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sucesso = true;
             }
         }
-    } else {
-        $erro = "Preencha todos os campos obrigatórios.";
     }
 }
 ?>
@@ -97,29 +100,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <?php if (!$sucesso): ?>
                     <form method="POST" class="cidadao-registo-form">
+                        <?php /* etiqueta visível por cima de cada caixa, * nos obrigatórios, erros junto ao campo (18/11/2026) */ ?>
+                        <?= resumoErros($errosCampo, ['nome' => 'registoNome', 'email' => 'registoEmail', 'telefone' => 'registoTelefone', 'password' => 'registoPassword']) ?>
+                        <?= notaObrigatorios() ?>
 
-                        <div class="registo-input-group">
-                            <span><i class="bi bi-person"></i></span>
-                            <input type="text" name="nome" placeholder="<?= te('cidadao_registo.formulario.ph_nome') ?>" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>" required>
+                        <div class="campo">
+                            <?= rotulo('registoNome', tx('cidadao_registo.formulario.ph_nome'), true) ?>
+                            <div class="registo-input-group">
+                                <span><i class="bi bi-person"></i></span>
+                                <input type="text" id="registoNome" name="nome" autocomplete="name" value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>" required<?= erroAttrs($errosCampo, 'nome') ?>>
+                            </div>
+                            <?= erroCampo($errosCampo, 'nome') ?>
                         </div>
 
-                        <div class="registo-input-group">
-                            <span><i class="bi bi-envelope"></i></span>
-                            <input type="email" name="email" placeholder="<?= te('cidadao_registo.formulario.ph_email') ?>" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                        <div class="campo">
+                            <?= rotulo('registoEmail', tx('cidadao_registo.formulario.ph_email'), true) ?>
+                            <div class="registo-input-group">
+                                <span><i class="bi bi-envelope"></i></span>
+                                <input type="email" id="registoEmail" name="email" autocomplete="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required<?= erroAttrs($errosCampo, 'email') ?>>
+                            </div>
+                            <?= erroCampo($errosCampo, 'email') ?>
                         </div>
 
-                        <div class="registo-input-group">
-                            <span><i class="bi bi-telephone"></i></span>
-                            <input type="tel" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="<?= te('cidadao_registo.formulario.ph_telefone') ?>" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>">
+                        <div class="campo">
+                            <?= rotulo('registoTelefone', tx('cidadao_registo.formulario.ph_telefone'), false) ?>
+                            <div class="registo-input-group">
+                                <span><i class="bi bi-telephone"></i></span>
+                                <input type="tel" id="registoTelefone" inputmode="tel" autocomplete="tel" maxlength="20" name="telefone" placeholder="Ex.: 912 345 678" value="<?= htmlspecialchars($_POST['telefone'] ?? '') ?>"<?= erroAttrs($errosCampo, 'telefone') ?>>
+                            </div>
+                            <?= erroCampo($errosCampo, 'telefone') ?>
                         </div>
 
-                        <div class="registo-input-group password-group">
-                            <span><i class="bi bi-lock"></i></span>
-                            <input type="password" name="password" id="registoPassword" minlength="8" autocomplete="new-password" placeholder="<?= te('cidadao_registo.formulario.ph_password') ?>" required>
+                        <div class="campo">
+                            <?= rotulo('registoPassword', tx('cidadao_registo.formulario.ph_password'), true) ?>
+                            <div class="registo-input-group password-group">
+                                <span><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password" id="registoPassword" minlength="8" autocomplete="new-password" placeholder="Pelo menos 8 carateres" required<?= erroAttrs($errosCampo, 'password') ?>>
 
-                            <button type="button" class="toggle-password" id="toggleRegistoPassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="registoPassword">
-                                <i class="bi bi-eye"></i>
-                            </button>
+                                <button type="button" class="toggle-password" id="toggleRegistoPassword" aria-label="Mostrar palavra-passe" aria-pressed="false" aria-controls="registoPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <?= erroCampo($errosCampo, 'password') ?>
                         </div>
 
                         <button class="btn btn-registo-full" type="submit">

@@ -9,7 +9,26 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 $erro = '';
+$errosCampo = [];
 $enviado = false;
+
+/** Erros junto a cada campo, cada um a dizer o que fazer (checklist «Transação» da AMA, 18/11/2026). */
+function errosSugestao(array $c): array
+{
+    $e = [];
+    if ($c['nome'] === '') $e['nome'] = 'Indique o seu nome.';
+    elseif (mb_strlen($c['nome']) > 150) $e['nome'] = 'O nome é demasiado longo (máximo 150 carateres).';
+    if ($c['email'] === '') $e['email'] = 'Indique o seu email (ex.: nome@exemplo.pt), para a Junta lhe poder responder.';
+    elseif (!emailValido($c['email'])) $e['email'] = 'Indique um email válido e que exista (ex.: nome@exemplo.pt).';
+    if ($c['telefone'] === '') $e['telefone'] = 'Indique o seu número de telemóvel (ex.: 912 345 678).';
+    elseif (!telefoneValido($c['telefone'], true)) $e['telefone'] = 'Indique um número de telemóvel válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
+    if ($c['assunto'] === '') $e['assunto'] = 'Escreva o assunto da sugestão em poucas palavras.';
+    elseif (mb_strlen($c['assunto']) > 200) $e['assunto'] = 'O assunto é demasiado longo (máximo 200 carateres). Passe o resto para a mensagem.';
+    if ($c['mensagem'] === '') $e['mensagem'] = 'Escreva a sua sugestão.';
+    elseif (mb_strlen($c['mensagem']) > 5000) $e['mensagem'] = 'A mensagem é demasiado longa (máximo 5000 carateres).';
+    if (empty($_POST['consentimento'])) $e['consentimento'] = 'Para enviar, aceite o tratamento dos dados indicados (caixa no fim do formulário).';
+    return $e;
+}
 $campos = ['nome' => '', 'email' => '', 'telefone' => '', 'assunto' => '', 'mensagem' => ''];
 
 if (empty($_SESSION['sugestoes_token'])) {
@@ -29,16 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $enviado = true;                       // robô: finge que correu bem e não guarda nada
     } elseif (count($envios) >= 5) {
         $erro = 'Já enviou várias sugestões na última hora. Tente mais tarde.';
-    } elseif ($campos['nome'] === '' || $campos['telefone'] === '' || $campos['assunto'] === '' || $campos['mensagem'] === '') {
-        $erro = 'Preencha o nome, o telemóvel, o assunto e a mensagem.';
-    } elseif (!emailValido($campos['email'])) {
-        $erro = 'Indique um email válido e que exista, para a Junta lhe poder responder.';
-    } elseif (!telefoneValido($campos['telefone'], true)) {
-        $erro = 'Indique um número de telemóvel válido (ex.: 912 345 678, ou com o indicativo do país se for estrangeiro).';
-    } elseif (empty($_POST['consentimento'])) {
-        $erro = 'Para enviar, tem de aceitar o tratamento dos dados indicados.';
-    } elseif (mb_strlen($campos['mensagem']) > 5000 || mb_strlen($campos['assunto']) > 200 || mb_strlen($campos['nome']) > 150) {
-        $erro = 'O texto é demasiado longo.';
+    } elseif ($errosCampo = errosSugestao($campos)) {
+        // mostrados junto a cada campo e no resumo do topo do formulário (acessibilidade, 18/11/2026)
     } else {
         try {
             $pdo->prepare("INSERT INTO sugestoes (nome, email, telefone, assunto, mensagem, ip) VALUES (?, ?, ?, ?, ?, ?)")
@@ -139,27 +150,37 @@ require_once "includes/header.php";
                     <input type="text" id="sug-website" name="website" tabindex="-1" autocomplete="off">
                 </div>
 
-                <label for="sug-nome">Nome *</label>
-                <input type="text" id="sug-nome" name="nome" maxlength="150" required value="<?= htmlspecialchars($campos['nome']) ?>">
+                <?php /* * nos obrigatórios com a nota, erros junto a cada campo (acessibilidade, 18/11/2026) */ ?>
+                <?= resumoErros($errosCampo, ['nome' => 'sug-nome', 'email' => 'sug-email', 'telefone' => 'sug-telefone', 'assunto' => 'sug-assunto', 'mensagem' => 'sug-mensagem', 'consentimento' => 'sug-consentimento']) ?>
+                <?= notaObrigatorios() ?>
 
-                <label for="sug-email">Email *</label>
-                <input type="email" id="sug-email" name="email" maxlength="190" required autocomplete="email" value="<?= htmlspecialchars($campos['email']) ?>">
+                <label for="sug-nome">Nome <?= marcaObrigatorio() ?></label>
+                <input type="text" id="sug-nome" name="nome" maxlength="150" required autocomplete="name" value="<?= htmlspecialchars($campos['nome']) ?>"<?= erroAttrs($errosCampo, 'nome') ?>>
+                <?= erroCampo($errosCampo, 'nome') ?>
 
-                <label for="sug-telefone">Telemóvel *</label>
+                <label for="sug-email">Email <?= marcaObrigatorio() ?></label>
+                <input type="email" id="sug-email" name="email" maxlength="190" required autocomplete="email" value="<?= htmlspecialchars($campos['email']) ?>"<?= erroAttrs($errosCampo, 'email') ?>>
+                <?= erroCampo($errosCampo, 'email') ?>
+
+                <label for="sug-telefone">Telemóvel <?= marcaObrigatorio() ?></label>
                 <input type="tel" id="sug-telefone" name="telefone" maxlength="20" required autocomplete="tel" inputmode="tel"
-                       placeholder="912 345 678" value="<?= htmlspecialchars($campos['telefone']) ?>">
+                       placeholder="Ex.: 912 345 678" value="<?= htmlspecialchars($campos['telefone']) ?>"<?= erroAttrs($errosCampo, 'telefone') ?>>
+                <?= erroCampo($errosCampo, 'telefone') ?>
 
-                <label for="sug-assunto">Assunto *</label>
-                <input type="text" id="sug-assunto" name="assunto" maxlength="200" required value="<?= htmlspecialchars($campos['assunto']) ?>">
+                <label for="sug-assunto">Assunto <?= marcaObrigatorio() ?></label>
+                <input type="text" id="sug-assunto" name="assunto" maxlength="200" required value="<?= htmlspecialchars($campos['assunto']) ?>"<?= erroAttrs($errosCampo, 'assunto') ?>>
+                <?= erroCampo($errosCampo, 'assunto') ?>
 
-                <label for="sug-mensagem">Mensagem *</label>
-                <textarea id="sug-mensagem" name="mensagem" maxlength="5000" required><?= htmlspecialchars($campos['mensagem']) ?></textarea>
+                <label for="sug-mensagem">Mensagem <?= marcaObrigatorio() ?></label>
+                <textarea id="sug-mensagem" name="mensagem" maxlength="5000" required<?= erroAttrs($errosCampo, 'mensagem') ?>><?= htmlspecialchars($campos['mensagem']) ?></textarea>
+                <?= erroCampo($errosCampo, 'mensagem') ?>
 
                 <label class="sugestoes-consent">
-                    <input type="checkbox" name="consentimento" value="1" required>
+                    <input type="checkbox" id="sug-consentimento" name="consentimento" value="1" required<?= !empty($_POST['consentimento']) && !$enviado ? ' checked' : '' ?><?= erroAttrs($errosCampo, 'consentimento') ?>>
                     <span>Aceito que a Junta de Freguesia trate os dados indicados (nome, email e telemóvel) para responder a esta sugestão,
-                        nos termos da <a href="/politica-privacidade.php">política de privacidade</a>.</span>
+                        nos termos da <a href="/politica-privacidade.php">política de privacidade</a>. <?= marcaObrigatorio() ?></span>
                 </label>
+                <?= erroCampo($errosCampo, 'consentimento') ?>
 
                 <button type="submit">Enviar sugestão</button>
             </form>

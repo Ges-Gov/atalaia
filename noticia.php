@@ -233,25 +233,26 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
             <?php endif; ?>
 
             <div class="noticia-detail-content">
-                <?= nl2br(htmlspecialchars($noticia['descricao'] ?? '')) ?>
+                <?php require_once __DIR__ . '/includes/texto.php'; ?>
+                <?= textoParagrafos($noticia['descricao'] ?? '') ?>
             </div>
 
             <?php if (!empty($galeriaNoticiaFotos)): ?>
                 <style>
                 .noticia-galeria{margin:30px 0 6px;}
-                .noticia-galeria h3{color:#11151B;margin:0 0 16px;}
+                .noticia-galeria :is(h3, h2.titulo-h3){color:#11151B;margin:0 0 16px;}
                 .noticia-galeria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
-                .noticia-galeria-item{display:block;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.25s;cursor:zoom-in;}
+                .noticia-galeria-item{display:block;width:100%;padding:0;border:0;background:none;font:inherit;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.25s;cursor:zoom-in;}
                 .noticia-galeria-item:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.16);opacity:.9;}
                 .noticia-galeria-item img{width:100%;height:170px;object-fit:cover;display:block;}
                 </style>
                 <div class="noticia-galeria" data-carrossel-substitui>
-                    <h3><?= te('noticia.galeria.titulo') ?></h3>
+                    <h2 class="titulo-h3"><?= te('noticia.galeria.titulo') ?></h2>
                     <div class="noticia-galeria-grid">
                         <?php foreach ($galeriaNoticiaFotos as $gIdx => $g): ?>
-                            <a class="noticia-galeria-item" href="#" onclick="lbAbrir(todasImagens, <?= $coverOffset + $gIdx ?>); return false;">
-                                <img src="/assets/img/<?= htmlspecialchars($g['ficheiro']) ?>" alt="<?= htmlspecialchars($noticia['titulo']) ?>" loading="lazy">
-                            </a>
+                            <button type="button" class="noticia-galeria-item" onclick="lbAbrir(todasImagens, <?= $coverOffset + $gIdx ?>)" aria-label="Ampliar a fotografia <?= $gIdx + 1 ?> de <?= count($galeriaNoticiaFotos) ?>">
+                                <img src="/assets/img/<?= htmlspecialchars($g['ficheiro']) ?>" alt="" loading="lazy">
+                            </button>
                         <?php endforeach; ?>
                     </div>
                 </div>

@@ -130,8 +130,9 @@ require_once __DIR__ . "/header.php";
 .cc-form input[type=text],.cc-form input[type=email],.cc-form input[type=tel],.cc-form textarea{width:100%;box-sizing:border-box;border:1px solid #d6dde6;border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;background:#fbfcfd;}
 .cc-form textarea{min-height:96px;resize:vertical;}
 .cc-form input:focus,.cc-form textarea:focus{outline:2px solid var(--cor-principal);outline-offset:1px;background:#fff;}
-.cc-form .cc-ficheiro{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0;font-weight:400;border:2px dashed #cbd5e1;border-radius:18px;padding:22px 16px;background:#fbfcfd;text-align:center;cursor:pointer;}
+.cc-form .cc-ficheiro{display:flex;flex-direction:column;align-items:center;gap:8px;margin:14px 0 0;font-weight:400;border:2px dashed #cbd5e1;border-radius:18px;padding:22px 16px;background:#fbfcfd;text-align:center;cursor:pointer;}
 .cc-ficheiro:hover{border-color:var(--cor-principal);}
+.cc-form .cc-ficheiro label{margin:0;}
 .cc-ficheiro > i{font-size:30px;color:var(--cor-principal);}
 .cc-ficheiro input{max-width:100%;font:inherit;font-size:14px;}
 .cc-ficheiro small{display:block;color:#64748b;font-size:13px;font-weight:400;}
@@ -142,7 +143,7 @@ require_once __DIR__ . "/header.php";
 .cc-alerta{padding:14px 16px;border-radius:14px;margin-bottom:12px;font-weight:700;line-height:1.5;text-align:center;}
 .cc-alerta.ok{background:#dcfce7;color:#166534;}
 .cc-alerta.erro{background:#fee2e2;color:#991b1b;}
-.cc-alt{max-width:720px;margin:18px auto 0;text-align:center;color:#64748b;font-size:14px;line-height:1.6;}
+.cc-alt{max-width:720px;margin:18px auto 0;text-align:center;color:#475569;font-size:14px;line-height:1.6;}
 .cc-alt a{color:var(--cor-principal);font-weight:800;}
 @media(max-width:820px){.cc-passos ol{grid-template-columns:1fr;gap:12px;}.cc-passos li{display:grid;grid-template-columns:54px 1fr;text-align:left;gap:4px 14px;padding:18px;align-items:center;}
     .cc-passos li i{grid-row:span 2;width:54px;height:54px;margin:0;font-size:22px;}.cc-passos strong{margin:0;}}
@@ -156,7 +157,8 @@ require_once __DIR__ . "/header.php";
 }
 </style>
 
-<main>
+<?php /* 19/11/2026 (acessibilidade): era <main>, mas o header.php já abre o <main> da página (ficavam dois) */ ?>
+<div class="cc-pagina">
 <section class="cc-hero">
     <div class="container">
         <span class="cc-kicker"><i class="bi bi-shop"></i> <?= te('comercio.hero.kicker') ?></span>
@@ -235,12 +237,14 @@ require_once __DIR__ . "/header.php";
                 <label for="cc-descricao">Breve descrição</label>
                 <textarea id="cc-descricao" name="descricao" maxlength="1000" placeholder="O que faz, horário…"><?= htmlspecialchars($campos['descricao']) ?></textarea>
 
-                <label for="cc-imagem">Logótipo ou imagem *</label>
-                <label class="cc-ficheiro" for="cc-imagem">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    <input type="file" id="cc-imagem" name="imagem" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
-                    <small>JPG, PNG ou WEBP · horizontal · ideal 1200 × 800 px · até <?= COMERCIO_CAND_MAX_MB ?> MB</small>
-                </label>
+                <?php /* 19/11/2026: a caixa tracejada era um segundo <label> do mesmo campo e a etiqueta ficava em diagonal ao
+                         botão (o AccessMonitor marcava-a mal posicionada); agora a etiqueta está na caixa, por cima do botão */ ?>
+                <div class="cc-ficheiro">
+                    <i class="bi bi-cloud-arrow-up" aria-hidden="true"></i>
+                    <label for="cc-imagem">Logótipo ou imagem *</label>
+                    <input type="file" id="cc-imagem" name="imagem" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required aria-describedby="cc-imagem-ajuda">
+                    <small id="cc-imagem-ajuda">JPG, PNG ou WEBP · horizontal · ideal 1200 × 800 px · até <?= COMERCIO_CAND_MAX_MB ?> MB</small>
+                </div>
 
                 <label class="cc-consent">
                     <input type="checkbox" name="autorizacao" value="1" required>
@@ -259,6 +263,6 @@ require_once __DIR__ . "/header.php";
         <?php endif; ?>
     </div>
 </section>
-</main>
+</div>
 
 <?php require_once __DIR__ . "/footer.php"; ?>

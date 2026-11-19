@@ -944,7 +944,7 @@
 
 /* ===== evento.php (20) ===== */
 :root[data-tema="escuro"] .evento-detalhe-card{background:var(--escuro-superficie)}
-:root[data-tema="escuro"] .evento-galeria h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .evento-galeria :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 :root[data-tema="escuro"] .evento-share-box{background:linear-gradient(135deg,var(--escuro-superficie),var(--escuro-superficie));border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .evento-share-head strong{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .evento-share-head span{color:var(--escuro-texto-2)}
@@ -1256,7 +1256,7 @@
 :root[data-tema="escuro"] .share-toast{background:color-mix(in srgb, #dcfce7 14%, var(--escuro-superficie));color:color-mix(in srgb, #166534 55%, #fff)}
 
 /* ===== noticia.php (#2) (1) ===== */
-:root[data-tema="escuro"] .noticia-galeria h3{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .noticia-galeria :is(h3, h2.titulo-h3){color:var(--escuro-texto)}
 
 /* ===== noticias.php (13) ===== */
 :root[data-tema="escuro"] .noticias-page-clean{background:radial-gradient(circle at top left, rgba(36,42,50,.08), transparent 34%),

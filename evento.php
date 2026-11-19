@@ -207,9 +207,9 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 /* LIGHTBOX */
 /* Galeria de fotos do evento */
 .evento-galeria{margin:30px 0 6px;}
-.evento-galeria h3{color:#11151B;margin:0 0 16px;}
+.evento-galeria :is(h3, h2.titulo-h3){color:#11151B;margin:0 0 16px;}
 .evento-galeria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
-.evento-galeria-item{display:block;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.25s;cursor:zoom-in;}
+.evento-galeria-item{display:block;width:100%;padding:0;border:0;background:none;font:inherit;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.10);transition:.25s;cursor:zoom-in;}
 .evento-galeria-item:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.16);opacity:.9;}
 .evento-galeria-item img{width:100%;height:170px;object-fit:cover;display:block;}
 /* Partilhar evento */
@@ -231,8 +231,9 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
     color:#52606d;
     line-height:1.9;
     font-size:17px;
-    white-space:pre-line;
 }
+.evento-detalhe-texto p{margin:0 0 1.9em;}
+.evento-detalhe-texto p:last-child{margin-bottom:0;}
 .evento-inscricao-box{margin:28px 0;padding:24px;border-radius:22px;background:linear-gradient(135deg,#f8fafc,#ffffff);border:1px solid #e5e7eb;box-shadow:0 14px 34px rgba(0,0,0,.06);}
 .evento-inscricao-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
 .evento-inscricao-head strong{color:#11151B;font-size:19px;display:flex;align-items:center;gap:8px;}
@@ -315,7 +316,8 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
                 </button>
             <?php endif; ?>
 
-            <div class="evento-detalhe-texto"><?= nl2br(htmlspecialchars($evento['descricao'] ?? '')) ?></div>
+            <?php require_once __DIR__ . '/includes/texto.php'; ?>
+            <div class="evento-detalhe-texto"><?= textoParagrafos($evento['descricao'] ?? '', true) ?></div>
 
             <?php if (!empty($evento['inscricoes_ativas'])):
                 $prazoInscricaoView = $evento['inscricoes_ate'] ?: $evento['data_evento'];
@@ -411,12 +413,12 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 
             <?php if (!empty($fotosGaleriaEvento)): ?>
                 <div class="evento-galeria" data-carrossel-substitui>
-                    <h3><?= te('evento.galeria.titulo') ?></h3>
+                    <h2 class="titulo-h3"><?= te('evento.galeria.titulo') ?></h2>
                     <div class="evento-galeria-grid">
                         <?php foreach ($fotosGaleriaEvento as $gIdx => $g): ?>
-                            <a class="evento-galeria-item" href="#" onclick="lbAbrir(todasImagensEvento, <?= $coverOffsetEvento + $gIdx ?>); return false;">
-                                <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($g['ficheiro']), 800)) ?>" alt="<?= htmlspecialchars($evento['titulo']) ?>" loading="lazy">
-                            </a>
+                            <button type="button" class="evento-galeria-item" onclick="lbAbrir(todasImagensEvento, <?= $coverOffsetEvento + $gIdx ?>)" aria-label="Ampliar a fotografia <?= $gIdx + 1 ?> de <?= count($fotosGaleriaEvento) ?>">
+                                <img src="<?= htmlspecialchars(miniaturaImagem(imagemGaleriaUrl($g['ficheiro']), 800)) ?>" alt="" loading="lazy">
+                            </button>
                         <?php endforeach; ?>
                     </div>
                 </div>

@@ -102,15 +102,43 @@ function temaPaletaMarca(): array
     if ($h >= 32 && $h <= 60 && $s > 0.35) return $p = [];          // é dourada: fica o dourado original
     $mix = fn(array $a, array $b, float $t) => sprintf('#%02X%02X%02X', ...array_map(fn($x, $y) => (int)round($x + ($y - $x) * $t), $a, $b));
     $priRgb = preg_match('/^#[0-9a-f]{6}$/i', $pri) ? [hexdec(substr($pri, 1, 2)), hexdec(substr($pri, 3, 2)), hexdec(substr($pri, 5, 2))] : $rgb;
-    return $p = [
+    // 19/11/2026 (acessibilidade): os tons claros são texto sobre o rodapé escuro (#1c2025) e o tema escuro.
+    // Com uma secundária escura (o vermelho do Torrão) a mistura fixa ficava abaixo de 4,5:1; clareia-se só o
+    // necessário até lá chegar (quando a mistura de sempre já chega, fica igual).
+    $claroLegivel = function (float $t) use ($rgb, $mix): string {
+        for (; $t < .9; $t += .02) {
+            $c = $mix($rgb, [255, 255, 255], $t);
+            if (temaContraste($c, '#1C2025') >= 4.6) return $c;
+        }
+        return $mix($rgb, [255, 255, 255], .9);
+    };
+    $p = [
         '--ouro'         => strtoupper($hex),
         '--ouro-rgb'     => implode(' ', $rgb),
-        '--ouro-claro'   => $mix($rgb, [255, 255, 255], .55),   // textos claros sobre fotografias/fundos escuros
-        '--ouro-vivo'    => $mix($rgb, [255, 255, 255], .3),    // destaques no tema escuro
+        '--ouro-claro'   => $claroLegivel(.55),                  // textos claros sobre fotografias/fundos escuros
+        '--ouro-vivo'    => $claroLegivel(.3),                   // destaques no tema escuro e títulos do rodapé
         '--ouro-fundo'   => $mix($rgb, [255, 255, 255], .86),   // fundos suaves de etiquetas/avisos
         '--ouro-fundo-2' => $mix($rgb, [255, 255, 255], .7),
         '--ouro-texto'   => $mix($priRgb, [0, 0, 0], .25),      // texto escuro sobre os fundos suaves
     ];
+    // texto dos botões com fundo na cor secundária (.hero-btn): escuro, a não ser que a secundária seja escura
+    if (temaContraste(strtoupper($hex), '#11151B') < 4.5 && temaContraste(strtoupper($hex), '#FFFFFF') > temaContraste(strtoupper($hex), '#11151B')) {
+        $p['--cor-secundaria-texto'] = '#FFFFFF';
+    }
+    return $p;
+}
+/** Razão de contraste WCAG entre duas cores #RRGGBB. */
+function temaContraste(string $a, string $b): float
+{
+    $lum = function (string $hex): float {
+        $c = array_map(function ($i) use ($hex) {
+            $v = hexdec(substr($hex, $i, 2)) / 255;
+            return $v <= .03928 ? $v / 12.92 : (($v + .055) / 1.055) ** 2.4;
+        }, [1, 3, 5]);
+        return .2126 * $c[0] + .7152 * $c[1] + .0722 * $c[2];
+    };
+    $la = $lum($a); $lb = $lum($b);
+    return (max($la, $lb) + .05) / (min($la, $lb) + .05);
 }
 function temaHsl(array $rgb): array
 {

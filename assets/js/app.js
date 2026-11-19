@@ -1928,7 +1928,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // (os cartões «Saúde», «Ação social»… da página inicial levam cada um à sua categoria).
         const pedida = new URLSearchParams(location.search).get("categoria");
         if (pedida) {
-            const alvo = Array.prototype.find.call(filtros, function (b) { return limpa(b.dataset.cuFiltro) === limpa(pedida); });
+            // o nome exato da categoria ou o título do cartão que começa por ele («Ação social e idosos» → «Ação Social»)
+            const p = limpa(pedida);
+            const alvo = Array.prototype.find.call(filtros, function (b) { return b.dataset.cuFiltro !== "*" && limpa(b.dataset.cuFiltro) === p; })
+                || Array.prototype.find.call(filtros, function (b) { return b.dataset.cuFiltro !== "*" && p.indexOf(limpa(b.dataset.cuFiltro) + " ") === 0; });
             if (alvo) {
                 alvo.click();
                 sec.scrollIntoView({ block: "start", behavior: "auto" });

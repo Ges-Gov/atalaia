@@ -18,6 +18,9 @@ function cartaoImersivo(array $c): string
     $img = !empty($c['imagem']) && is_file(__DIR__ . '/../assets/img/' . $c['imagem']) ? '/assets/img/' . $c['imagem'] : '';
     $icone = $c['icone'] ?? 'bi-arrow-up-right';
     $ext = !empty($c['externo']);
+    // 19/11/2026: um cartão que aponta só para /contactos.php («Saúde», «Ação social»…) abre os contactos úteis já
+    // nessa categoria (app.js); assim também deixa de haver cartões seguidos com a mesma ligação
+    if (in_array($c['url'], ['/contactos.php', 'contactos.php'], true)) $c['url'] = '/contactos.php?categoria=' . rawurlencode($titulo);
     return '<a class="imersivo' . ($img ? '' : ' imersivo--textura') . '" href="' . $h($c['url']) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>'
         . ($img ? '<img class="imersivo__img" src="' . $h($img) . '" alt="" loading="lazy" decoding="async">'
                 : '<i class="bi ' . $h($icone) . ' imersivo__marca" aria-hidden="true"></i>')

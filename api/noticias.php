@@ -69,8 +69,11 @@ $visitas30 = $tentar('SELECT COALESCE(SUM(total), 0) total, MIN(data) desde FROM
 $visitasDesde = $tentar('SELECT MIN(data) desde FROM visitas_diarias');
 
 // Acessibilidade (18/11/2026): a última avaliação registada (a mesma que a Declaração de Acessibilidade mostra).
-$acess = $tentar('SELECT data_declaracao, estado, auto_data, auto_nota, auto_paginas, manual_data, manual_satisfeitas, manual_total
+$acess = $tentar('SELECT id, data_declaracao, estado, auto_data, auto_nota, auto_paginas, manual_data, manual_satisfeitas, manual_total
     FROM acessibilidade_avaliacoes ORDER BY data_declaracao DESC, id DESC LIMIT 1')[0] ?? null;
+// 19/11/2026 (Selo): as checklists dessa avaliação (migração 092; sem ela fica uma lista vazia)
+$acessChecklists = $acess ? $tentar('SELECT checklist, data_avaliacao, satisfeitas, aplicaveis FROM acessibilidade_checklists
+    WHERE avaliacao_id = ' . (int) $acess['id'] . ' ORDER BY id') : [];
 
 echo json_encode([
     'versao' => 2,
@@ -105,5 +108,11 @@ echo json_encode([
         'manual_data' => $data($acess['manual_data']),
         'manual_satisfeitas' => $acess['manual_satisfeitas'] !== null ? (int) $acess['manual_satisfeitas'] : null,
         'manual_total' => $acess['manual_total'] !== null ? (int) $acess['manual_total'] : null,
+        'checklists' => array_map(fn ($c) => [
+            'checklist' => (string) $c['checklist'],
+            'data' => $data($c['data_avaliacao']),
+            'satisfeitas' => (int) $c['satisfeitas'],
+            'aplicaveis' => (int) $c['aplicaveis'],
+        ], $acessChecklists ?: []),
     ] : null,
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

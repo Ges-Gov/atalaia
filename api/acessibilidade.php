@@ -13,6 +13,10 @@
  * Campos (todos opcionais menos «estado»): data_declaracao (AAAA-MM-DD, por omissão hoje), estado (plenamente |
  * parcialmente | nao), auto_data, auto_ferramenta, auto_paginas, auto_nota (0 a 10), auto_resumo, manual_data,
  * manual_paginas, manual_satisfeitas, manual_total, usabilidade.
+ * 19/11/2026 (Selo): auto_relatorio_url (ligação ao relatório da avaliação automática), selo (bronze | prata | ouro,
+ * só depois de atribuído) e checklists[] = {checklist: 10aspetos | conteudo | transacao, data (AAAA-MM-DD), paginas,
+ * satisfeitas, aplicaveis, evidencia_url} — uma linha por checklist em acessibilidade_checklists (migração 092).
+ * As ligações aceites são https://… ou um caminho do próprio site (/assets/…).
  * Resposta JSON: {"ok": true, "id": 12, "url": "declaracao-acessibilidade.php"} ou {"ok": false, "erro": "..."}.
  */
 
@@ -95,11 +99,79 @@ if ($linha['manual_satisfeitas'] !== null && $linha['manual_total'] !== null && 
     acessResponder(422, ['ok' => false, 'erro' => 'Há mais requisitos satisfeitos do que o total.']);
 }
 
+// Ligações: https://… ou um caminho deste site; nada de javascript:, data:, etc.
+$ligacao = function ($v, string $campo): ?string {
+    $v = trim((string) $v);
+    if ($v === '') return null;
+    if (mb_strlen($v) > 255 || !preg_match('~^(https://[^\s<>"\']+|/[^\s<>"\']*)$~i', $v)) {
+        acessResponder(422, ['ok' => false, 'erro' => "Ligação inválida em «{$campo}» (use https://… ou /caminho)."]);
+    }
+    return $v;
+};
+$selo = trim((string)($entrada['selo'] ?? ''));
+if ($selo !== '' && !in_array($selo, ['bronze', 'prata', 'ouro'], true)) {
+    acessResponder(422, ['ok' => false, 'erro' => 'O selo tem de ser bronze, prata ou ouro.']);
+}
+
+$checklists = [];
+$nomesChecklists = ['10aspetos', 'conteudo', 'transacao'];
+foreach ((array)($entrada['checklists'] ?? []) as $i => $c) {
+    if (!is_array($c)) acessResponder(422, ['ok' => false, 'erro' => "Checklist {$i} inválida."]);
+    $nome = (string)($c['checklist'] ?? '');
+    if (!in_array($nome, $nomesChecklists, true)) {
+        acessResponder(422, ['ok' => false, 'erro' => 'A checklist tem de ser 10aspetos, conteudo ou transacao.']);
+    }
+    $d = DateTime::createFromFormat('!Y-m-d', (string)($c['data'] ?? ''));
+    if (!$d || $d->format('Y-m-d') !== (string) $c['data']) {
+        acessResponder(422, ['ok' => false, 'erro' => "Data inválida na checklist «{$nome}» (use AAAA-MM-DD)."]);
+    }
+    $num = function ($v) use ($nome) {
+        $v = trim((string) $v);
+        if ($v === '') return null;
+        if (!ctype_digit($v) || (int) $v > 10000) acessResponder(422, ['ok' => false, 'erro' => "Número inválido na checklist «{$nome}»."]);
+        return (int) $v;
+    };
+    $sat = $num($c['satisfeitas'] ?? '');
+    $apl = $num($c['aplicaveis'] ?? '');
+    if ($sat === null || !$apl || $sat > $apl) {
+        acessResponder(422, ['ok' => false, 'erro' => "Na checklist «{$nome}», os requisitos satisfeitos têm de estar entre 0 e os aplicáveis."]);
+    }
+    $checklists[] = [
+        'checklist' => $nome,
+        'data_avaliacao' => (string) $c['data'],
+        'paginas' => $num($c['paginas'] ?? ''),
+        'satisfeitas' => $sat,
+        'aplicaveis' => $apl,
+        'evidencia_url' => $ligacao($c['evidencia_url'] ?? '', "evidência da checklist {$nome}"),
+    ];
+}
+$extra = [
+    'auto_relatorio_url' => $ligacao($entrada['auto_relatorio_url'] ?? '', 'auto_relatorio_url'),
+    'selo' => $selo === '' ? null : $selo,
+];
+
 try {
+    $temExtra = (bool) $pdo->query("SHOW COLUMNS FROM acessibilidade_avaliacoes LIKE 'selo'")->fetch();
+} catch (Throwable $e) {
+    acessResponder(409, ['ok' => false, 'erro' => 'O site ainda não tem a tabela acessibilidade_avaliacoes (falta correr a migração 090).']);
+}
+if (($checklists || array_filter($extra, fn($v) => $v !== null)) && !$temExtra) {
+    acessResponder(409, ['ok' => false, 'erro' => 'O site ainda não tem as checklists (falta correr a migração 092).']);
+}
+if ($temExtra) $linha += $extra;
+
+try {
+    $pdo->beginTransaction();
     $colunas = array_keys($linha);
     $sql = 'INSERT INTO acessibilidade_avaliacoes (' . implode(', ', $colunas) . ') VALUES (:' . implode(', :', $colunas) . ')';
     $pdo->prepare($sql)->execute($linha);
-    acessResponder(200, ['ok' => true, 'id' => (int) $pdo->lastInsertId(), 'url' => 'declaracao-acessibilidade.php']);
+    $id = (int) $pdo->lastInsertId();
+    $ins = $pdo->prepare('INSERT INTO acessibilidade_checklists (avaliacao_id, checklist, data_avaliacao, paginas, satisfeitas, aplicaveis, evidencia_url)
+                          VALUES (:avaliacao_id, :checklist, :data_avaliacao, :paginas, :satisfeitas, :aplicaveis, :evidencia_url)');
+    foreach ($checklists as $c) $ins->execute(['avaliacao_id' => $id] + $c);
+    $pdo->commit();
+    acessResponder(200, ['ok' => true, 'id' => $id, 'checklists' => count($checklists), 'url' => 'declaracao-acessibilidade.php']);
 } catch (Throwable $e) {
-    acessResponder(409, ['ok' => false, 'erro' => 'O site ainda não tem a tabela acessibilidade_avaliacoes (falta correr a migração 090).']);
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    acessResponder(500, ['ok' => false, 'erro' => 'Não foi possível gravar a avaliação.']);
 }

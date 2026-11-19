@@ -8,6 +8,28 @@ try {
 } catch (Throwable $e) {
     $av = null;
 }
+// 19/11/2026 (Selo): as avaliações manuais (checklists da AMA) desta avaliação, cada uma com a folha de evidências.
+// A marcação das secções segue o gerador da AMA (classes «mr …»), que o Observatório e a candidatura ao Selo leem.
+$checklistsAv = [];
+if ($av) {
+    try {
+        $st = $pdo->prepare("SELECT * FROM acessibilidade_checklists WHERE avaliacao_id = ? ORDER BY FIELD(checklist, '10aspetos', 'conteudo', 'transacao'), id");
+        $st->execute([(int) $av['id']]);
+        $checklistsAv = $st->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        $checklistsAv = [];   // migração 092 ainda por correr
+    }
+    // registos antigos (só a checklist «10 aspetos» nas colunas manual_*)
+    if (!$checklistsAv && !empty($av['manual_data']) && $av['manual_satisfeitas'] !== null && $av['manual_total']) {
+        $checklistsAv[] = ['checklist' => '10aspetos', 'data_avaliacao' => $av['manual_data'], 'paginas' => $av['manual_paginas'],
+            'satisfeitas' => $av['manual_satisfeitas'], 'aplicaveis' => $av['manual_total'], 'evidencia_url' => null];
+    }
+}
+$nomesChecklists = [
+    '10aspetos' => 'Checklist «10 aspetos críticos de acessibilidade funcional»',
+    'conteudo' => 'Checklist «Conteúdo»',
+    'transacao' => 'Checklist «Transação»',
+];
 $estados = ['plenamente' => 'Plenamente conforme', 'parcialmente' => 'Parcialmente conforme', 'nao' => 'Não conforme'];
 $estado = ($av && isset($estados[$av['estado']])) ? $av['estado'] : null;
 $dataPt = fn ($d) => $d ? date('d/m/Y', strtotime($d)) : '';
@@ -35,6 +57,10 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 .legal-dados{margin:4px 0 0;padding:0;list-style:none}
 .legal-dados li{padding-left:0}
 .legal-dados strong{color:#11151B}
+.legal-avaliacoes ol{padding-left:22px;margin:6px 0 0}
+.legal-avaliacoes ol > li{margin-bottom:10px}
+.legal-avaliacoes ul{margin:4px 0 0;padding-left:20px;list-style:disc}
+.legal-avaliacoes ul li{line-height:1.6}
 </style>
 
 <section class="legal-hero">
@@ -47,15 +73,15 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 
 <div class="legal-shell">
     <div class="legal-card">
-        <p>A <strong><?= $h(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong> está
+        <p><span class="mr mr-e-intro">A</span> <strong><span class="mr mr-e-name"><?= $h(siteConfig('nome_site', 'Junta de Freguesia')) ?></span></strong> está
         <?= te('declaracao_acessibilidade.intro.texto') ?>
-        <?= te('declaracao_acessibilidade.intro.sitio') ?> <strong><?= $h($_SERVER['HTTP_HOST'] ?? '') ?></strong>.</p>
+        <?= te('declaracao_acessibilidade.intro.sitio') ?> <span class="mr mr-t-type" hidden>Sítio Web</span><a href="/" class="siteurl"><strong><span class="mr mr-t-desc"><?= $h($_SERVER['HTTP_HOST'] ?? '') ?></span></strong></a>.</p>
 
         <!-- I. Estado de conformidade -->
         <h2><?= te('declaracao_acessibilidade.ponto1.titulo') ?></h2>
         <?php if ($estado): ?>
             <p><span class="legal-badge <?= $h($estado) ?>"><?= $h($estados[$estado]) ?></span></p>
-            <p><?= te('declaracao_acessibilidade.ponto1.texto1') ?> <strong><?= $h(mb_strtolower($estados[$estado])) ?></strong> <?= te('declaracao_acessibilidade.ponto1.texto2') ?>
+            <p><?= te('declaracao_acessibilidade.ponto1.texto1') ?> <strong><span class="mr mr-conformance-status"><?= $h(mb_strtolower($estados[$estado])) ?></span></strong> <?= te('declaracao_acessibilidade.ponto1.texto2') ?>
             <?= $estado === 'plenamente' ? te('declaracao_acessibilidade.ponto1.texto3_pleno') : te('declaracao_acessibilidade.ponto1.texto3') ?></p>
         <?php else: ?>
             <p><span class="legal-badge parcialmente"><?= te('declaracao_acessibilidade.ponto1.selo') ?></span></p>
@@ -82,42 +108,48 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
         <?php if (!$av): ?>
             <p><?= te('declaracao_acessibilidade.ponto4.sem_avaliacao') ?></p>
         <?php else: ?>
-            <p><?= te('declaracao_acessibilidade.ponto4.atualizada') ?> <strong><?= $h($dataPt($av['data_declaracao'])) ?></strong>.
+            <?php /* As datas dentro das classes «mr» ficam em AAAA-MM-DD e as listas com o texto do gerador da AMA
+                     («(data). Relatório: …», «Amostra: N páginas.», «Principais resultados …»): é o que o Observatório lê. */ ?>
+            <p><?= te('declaracao_acessibilidade.ponto4.atualizada') ?> <strong><span class="mr mr-date"><?= $h($av['data_declaracao']) ?></span></strong>.
             <?= te('declaracao_acessibilidade.ponto4.metodos') ?></p>
 
             <h3><?= te('declaracao_acessibilidade.ponto4.a_titulo') ?></h3>
             <?php if (!empty($av['auto_data'])): ?>
-                <ul class="legal-dados">
-                    <li><strong>Data:</strong><?= $h($dataPt($av['auto_data'])) ?></li>
-                    <li><strong>Ferramenta:</strong><?= $h($av['auto_ferramenta'] ?: 'AccessMonitor') ?></li>
-                    <?php if ($av['auto_paginas'] !== null): ?><li><strong>Amostra:</strong><?= (int) $av['auto_paginas'] ?> páginas</li><?php endif; ?>
-                    <?php if ($av['auto_nota'] !== null): ?><li><strong>Resultado:</strong>média de <?= $h(number_format((float) $av['auto_nota'], 1, ',', '')) ?> na escala do AccessMonitor (1 a 10)</li><?php endif; ?>
-                    <?php if (!empty($av['auto_resumo'])): ?><li><?= $h($av['auto_resumo']) ?></li><?php endif; ?>
-                </ul>
+                <article class="mr mr-automatic-summary legal-avaliacoes"><ol><li>(<?= $h($av['auto_data']) ?>). Relatório: <a href="<?= $h($av['auto_relatorio_url'] ?? '' ?: '/declaracao-acessibilidade.php') ?>"<?= str_starts_with((string)($av['auto_relatorio_url'] ?? ''), 'https://') ? ' target="_blank" rel="noopener"' : '' ?>>Avaliação automática de <?= $h($dataPt($av['auto_data'])) ?></a><ul>
+                    <li>Ferramenta utilizada: <?= $h($av['auto_ferramenta'] ?: 'AccessMonitor') ?></li>
+                    <?php if ($av['auto_paginas'] !== null): ?><li>Amostra: <?= (int) $av['auto_paginas'] ?> páginas.</li><?php endif; ?>
+                    <li>Principais resultados (sumário): <?php if ($av['auto_nota'] !== null): ?>média de <?= $h(number_format((float) $av['auto_nota'], 1, ',', '')) ?> na escala do AccessMonitor (1 a 10).<?php endif; ?> <?= $h($av['auto_resumo'] ?? '') ?></li>
+                </ul></li></ol></article>
             <?php else: ?>
                 <p><?= te('declaracao_acessibilidade.ponto4.por_registar') ?></p>
             <?php endif; ?>
 
             <h3><?= te('declaracao_acessibilidade.ponto4.b_titulo') ?></h3>
-            <?php if (!empty($av['manual_data'])): ?>
-                <ul class="legal-dados">
-                    <li><strong>Data:</strong><?= $h($dataPt($av['manual_data'])) ?></li>
-                    <li><strong>Método:</strong><?= te('declaracao_acessibilidade.ponto4.b_checklist') ?></li>
-                    <?php if ($av['manual_paginas'] !== null): ?><li><strong>Amostra:</strong><?= (int) $av['manual_paginas'] ?> páginas</li><?php endif; ?>
-                    <?php if ($av['manual_satisfeitas'] !== null && $av['manual_total']): ?><li><strong>Resultado:</strong><?= (int) $av['manual_satisfeitas'] ?> de <?= (int) $av['manual_total'] ?> requisitos satisfeitos</li><?php endif; ?>
-                </ul>
+            <?php if ($checklistsAv): ?>
+                <article class="mr mr-manual-summary legal-avaliacoes"><ol>
+                <?php foreach ($checklistsAv as $c): $nomeC = $nomesChecklists[$c['checklist']] ?? $c['checklist']; ?>
+                    <li>(<?= $h($c['data_avaliacao']) ?>). Relatório: <?php if (!empty($c['evidencia_url'])): ?><a href="<?= $h($c['evidencia_url']) ?>"><?= $h($nomeC) ?></a> <span class="legal-meta">(folha de evidências, Excel)</span><?php else: ?><a href="/declaracao-acessibilidade.php"><?= $h($nomeC) ?></a><?php endif; ?><ul>
+                        <?php if ($c['paginas'] !== null): ?><li>Amostra: <?= (int) $c['paginas'] ?> páginas.</li><?php endif; ?>
+                        <li>Principais resultados (heurísticas satisfeitas/total heurísticas aplicadas): <?= (int) $c['satisfeitas'] ?>/<?= (int) $c['aplicaveis'] ?></li>
+                    </ul></li>
+                <?php endforeach; ?>
+                </ol></article>
             <?php else: ?>
                 <p><?= te('declaracao_acessibilidade.ponto4.por_registar') ?></p>
             <?php endif; ?>
 
             <h3><?= te('declaracao_acessibilidade.ponto4.c_titulo') ?></h3>
-            <p><?= !empty($av['usabilidade']) ? nl2br($h($av['usabilidade']), false) : te('declaracao_acessibilidade.ponto4.c_nao') ?></p>
+            <?php if (!empty($av['usabilidade'])): ?>
+                <article class="mr mr-users-summary"><p><?= nl2br($h($av['usabilidade']), false) ?></p></article>
+            <?php else: ?>
+                <p><?= te('declaracao_acessibilidade.ponto4.c_nao') ?></p>
+            <?php endif; ?>
         <?php endif; ?>
 
         <!-- III. Contacto e solicitação de informação -->
         <h2><?= te('declaracao_acessibilidade.ponto5.titulo') ?></h2>
         <p><?= te('declaracao_acessibilidade.ponto5.intro') ?></p>
-        <ul>
+        <ul class="mr mr-contacts">
             <?php if (siteConfig('email')): ?><li><?= te('declaracao_acessibilidade.ponto5.email') ?> <?= $h(siteConfig('email')) ?></li><?php endif; ?>
             <?php if (siteConfig('telefone')): ?><li><?= te('declaracao_acessibilidade.ponto5.telefone') ?> <?= $h(siteConfig('telefone')) ?></li><?php endif; ?>
             <li><?= te('declaracao_acessibilidade.ponto5.contactos_texto') ?> <a href="/contactos.php"><?= te('declaracao_acessibilidade.ponto5.contactos_link') ?></a>.</li>
@@ -126,6 +158,10 @@ $h = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 
         <!-- IV. Outras evidências -->
         <h2><?= te('declaracao_acessibilidade.ponto2.titulo') ?></h2>
+        <?php if (!empty($av['selo'])): ?>
+            <p>O sítio Web <?= $h($_SERVER['HTTP_HOST'] ?? '') ?> da <?= $h(siteConfig('nome_site', 'Junta de Freguesia')) ?> encontra-se certificado com o selo
+            <strong><span class="mr mr-seal"><?= $h(ucfirst($av['selo'])) ?></span></strong> de usabilidade e acessibilidade.</p>
+        <?php endif; ?>
         <p><?= te('declaracao_acessibilidade.ponto2.intro') ?></p>
         <ul>
             <li><?= te('declaracao_acessibilidade.ponto2.medida1') ?></li>

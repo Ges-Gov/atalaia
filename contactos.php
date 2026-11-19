@@ -167,7 +167,7 @@ $campoErro = fn($k) => isset($errosForm[$k]) ? ' aria-invalid="true" aria-descri
 /* ===== Contactos (10/2026) ===== */
 .contact-hero{background:radial-gradient(circle at 15% 18%,rgb(var(--ouro-rgb, 240 180 41) / .24),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:92px 0 108px;position:relative;overflow:hidden}
 .contact-hero .container{position:relative;z-index:2}
-.contact-kicker{display:inline-flex;background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 30%, #242a30);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.contact-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .contact-hero h1{margin:18px 0 14px;line-height:1.02;max-width:980px}
 .contact-hero p{max-width:880px;color:#e2e8f0;font-size:19px;line-height:1.7;margin:0}
 @media(max-width:700px){.contact-hero p{font-size:15px;line-height:1.5}}

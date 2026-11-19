@@ -257,8 +257,7 @@ body:not(.tem-fundo-separador) [class$="-hero"]:not(.home-video-hero) strong{ co
 body:not(.tem-fundo-separador) [class$="-hero"]:not(.home-video-hero) [class*="kicker"],
 body:not(.tem-fundo-separador) [class$="-hero"]:not(.home-video-hero) [class*="badge"],
 body:not(.tem-fundo-separador) [class$="-hero"]:not(.home-video-hero) [class*="tag"]{
-  /* fundos sólidos (a mesma mistura que se via): com transparência o AccessMonitor não calcula o contraste, 19/11/2026 */
-  background:color-mix(in srgb, var(--tema-acento) 16%, var(--tema-hero-1)) !important;
+  background:color-mix(in srgb, var(--tema-acento) 16%, transparent) !important;
   border:1px solid color-mix(in srgb, var(--tema-acento) 50%, transparent) !important;
   color:var(--tema-acento-escuro) !important;
 }
@@ -277,7 +276,7 @@ body.tem-fundo-separador [class$="-hero"]:not(.home-video-hero) strong{ color:#f
 body.tem-fundo-separador [class$="-hero"]:not(.home-video-hero) [class*="kicker"],
 body.tem-fundo-separador [class$="-hero"]:not(.home-video-hero) [class*="badge"],
 body.tem-fundo-separador [class$="-hero"]:not(.home-video-hero) [class*="tag"]{
-  background:color-mix(in srgb, var(--tema-acento) 28%, #1a1e25) !important;   /* sólido, sobre o véu escuro da foto */
+  background:color-mix(in srgb, var(--tema-acento) 28%, transparent) !important;
   border:1px solid color-mix(in srgb, var(--tema-acento) 60%, transparent) !important;
   color:var(--tema-kicker-img-texto) !important;
 }

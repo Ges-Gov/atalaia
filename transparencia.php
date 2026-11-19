@@ -117,7 +117,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     gap:8px;
     padding:9px 14px;
     border-radius:999px;
-    background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 16%, #22282f);   /* sólido (acessibilidade, 19/11/2026) */
+    background:rgb(var(--ouro-rgb, 240 180 41) / .16);
     border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);
     color:var(--ouro-claro, #f8d77a);
     font-weight:900;
@@ -168,9 +168,10 @@ $ultimosResolvidos = safeFetch($pdo, "
     display:grid;
     place-items:center;
     text-align:center;
-    background:color-mix(in srgb, #fff 12%, #1a1f26);   /* sólido (acessibilidade, 19/11/2026) */
+    background:rgba(255,255,255,.12);
     border:1px solid rgba(255,255,255,.22);
     box-shadow:0 32px 80px rgba(0,0,0,.28), inset 0 0 0 18px rgba(255,255,255,.035);
+    backdrop-filter:blur(14px);
     animation:transFloat 5s ease-in-out infinite;
 }
 

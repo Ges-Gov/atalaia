@@ -75,7 +75,7 @@ $atalhos = [
 .exe-migalhas li + li::before{ content: "›"; margin-right: 6px; opacity: .7; }
 .exe-migalhas a{ color: inherit; text-decoration: none; }
 .exe-migalhas a:hover{ text-decoration: underline; }
-.exe-kicker{ display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff); background: color-mix(in srgb, #fff 10%, color-mix(in srgb, var(--cor-principal) 82%, #000)); border: 1px solid rgb(255 255 255 / .22); }   /* fundo sólido (acessibilidade, 19/11/2026) */
+.exe-kicker{ display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: color-mix(in srgb, var(--cor-secundaria) 55%, #fff); background: rgb(255 255 255 / .1); border: 1px solid rgb(255 255 255 / .22); }
 .exe-hero h1{ margin: 16px 0 12px; font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.4rem); line-height: 1.08; letter-spacing: -.02em; color: #fff; }
 .exe-hero p{ margin: 0; max-width: 62ch; font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem); line-height: 1.6; color: rgb(255 255 255 / .9); }
 .exe-chips{ display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }

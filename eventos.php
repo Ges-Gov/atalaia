@@ -93,7 +93,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .eventos-hero-insane:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;right:-220px;top:-260px;background:rgba(255,255,255,.06)}
 .eventos-hero-insane:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(0deg,#f8fafc,transparent)}
 .eventos-hero-inner{position:relative;z-index:2;padding:80px 0 125px}
-.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #141820);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
+.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--ouro-rgb, 240 180 41) / .15);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
 .eventos-hero-insane h1{font-size:clamp(46px,7vw,84px);line-height:.98;margin:0 0 20px;letter-spacing:-2px}
 .eventos-hero-insane p{color:#dbeafe;font-size:21px;line-height:1.8;max-width:780px;margin:0}
 .eventos-main{position:relative;z-index:5;margin-top:-78px}
@@ -178,7 +178,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-vidro__info{display:grid;gap:16px;align-content:center;min-width:0}
 .evento-vidro .evento-feature-badge{margin:0;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;padding:7px 13px}
 .evento-vidro h2{font-size:clamp(26px,2.6vw,34px);line-height:1.12;letter-spacing:-.5px;margin:0;text-wrap:balance}
-.evento-vidro__faixa{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:12px 14px;border-radius:16px;background:color-mix(in srgb, #fff 10%, #1a1d24);border:1px solid rgba(255,255,255,.2);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.evento-vidro__faixa{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
 .evento-vidro__faixa .bi{margin-right:6px;color:#f6d987}
 .evento-vidro .evento-countdown{background:none;border:0;border-radius:0;padding:0;margin:0;color:#f6d987;font-weight:700}
 .evento-vidro__local{display:flex;gap:8px;align-items:flex-start;margin:0;color:#e6ebf3;font-size:14.5px;line-height:1.45}

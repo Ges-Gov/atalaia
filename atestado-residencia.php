@@ -53,8 +53,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
     align-items:center;
     gap:8px;
     color:var(--cor-secundaria);
-    /* fundos sólidos iguais ao que se via (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
-    background:color-mix(in srgb, rgb(240 180 41) 13%, color-mix(in srgb, var(--cor-principal) 85%, #11151B));
+    background:rgba(240,180,41,.13);
     border:1px solid rgba(240,180,41,.34);
     border-radius:999px;
     padding:8px 13px;
@@ -81,7 +80,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
 }
 
 .atestado-hero-card{
-    background:color-mix(in srgb, #fff 12%, color-mix(in srgb, var(--cor-principal) 35%, #11151B));
+    background:rgba(255,255,255,.12);
     border:1px solid rgba(255,255,255,.18);
     border-radius:30px;
     padding:28px;

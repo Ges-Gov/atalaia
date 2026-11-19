@@ -307,7 +307,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
     width:64px;
     height:76px;
     border-radius:14px;
-    background:#dc2626;   /* sólido: o início claro do gradiente não tinha contraste com o branco (19/11/2026) */
+    background:linear-gradient(135deg,#dc2626,#b91c1c);   /* o vermelho claro do início não tinha contraste com o branco (19/11/2026) */
     color:white;
     display:grid;
     place-items:center;

@@ -109,8 +109,7 @@ function textoSeguro($texto) {
     align-items: center;
     gap: 8px;
     color: var(--ouro, #C8A02E);
-    /* fundos sólidos iguais ao que se via (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
-    background: color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 14%, #15191f);
+    background: rgb(var(--ouro-rgb, 240 180 41) / .14);
     border: 1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
     padding: 10px 16px;
     border-radius: 999px;
@@ -160,9 +159,10 @@ function textoSeguro($texto) {
 }
 
 .freguesia-btn.secondary {
-    background: color-mix(in srgb, #fff 14%, #191d24);
+    background: rgba(255,255,255,.14);
     color: white;
     border: 1px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
 }
 
 .freguesia-btn:hover {
@@ -300,7 +300,7 @@ function textoSeguro($texto) {
 }
 
 .localidades-section .freguesia-kicker {
-    background: color-mix(in srgb, #fff 10%, #1a1f25);
+    background: rgba(255,255,255,.10);
     border-color: rgba(255,255,255,.18);
 }
 

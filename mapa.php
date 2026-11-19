@@ -127,8 +127,7 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    /* fundos sólidos (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
-    background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #141820);
+    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
     border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
     color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
@@ -194,8 +193,9 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-hero-stat{
     min-width:190px;
-    background:color-mix(in srgb, #fff 13%, #1b2027);
+    background:rgba(255,255,255,.13);
     border:1px solid rgba(255,255,255,.20);
+    backdrop-filter:blur(16px);
     border-radius:28px;
     padding:28px;
     text-align:center;

@@ -8710,8 +8710,7 @@ body .section-heading .link-premium:hover .bi{ transform: translateX(3px); }
    sobre fundo escuro e quase não se viam — texto claro e pílula translúcida, como no tema escuro */
 body:not(#_):not(#__) :is(.mem-lendas, .localidades-section, .timeline-section) :is(.freguesia-kicker, .historia-kicker){   /* tem de pesar mais que a regra geral das etiquetas (body:not(#_), num <style> do tema carregado depois) */
     color: color-mix(in srgb, var(--cor-secundaria) 70%, #fff) !important;
-    background: color-mix(in srgb, #fff 8%, #1b2026);   /* sólido (era branco a 8% sobre o painel escuro), 19/11/2026 */
-    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 45%, transparent);
+    background: rgb(255 255 255 / .08); border: 1px solid color-mix(in srgb, var(--cor-secundaria) 45%, transparent);
 }
 
 /* ---------- Transições entre páginas — ponto 2a (15/10/2026) ----------
@@ -9497,35 +9496,57 @@ form>.campo-erro{grid-column:1/-1;margin-top:-6px}
 .ac-form>.campo>input,.cons-form>.campo>input{min-width:0}
 
 /* ==========================================================================
-   19/11/2026 (acessibilidade) — topos e secções escuras: etiquetas («kickers») e cartões de vidro com fundo SÓLIDO.
-   Com transparência por cima da fotografia ou de um gradiente, o AccessMonitor não consegue calcular o contraste e
-   dá o texto como ilegível (era a falha mais comum a seguir ao <b>). Os tons são a mistura que se via sobre o véu
-   escuro do topo; o texto das etiquetas usa o --ouro-claro da marca (pensado para texto claro sobre fundo escuro).
+   19/11/2026 (acessibilidade) — etiquetas («kickers») e cartões de VIDRO dos topos e painéis escuros.
+   O AccessMonitor não consegue calcular o contraste de texto sobre um fundo translúcido por cima de uma fotografia
+   ou de um gradiente, e dava-o como ilegível (era a falha mais comum a seguir ao <b>). O vidro mantém-se, mas passa
+   para uma camada por trás (::before): o elemento fica sem fundo próprio e o texto é medido contra o véu escuro do
+   topo, como os títulos. Fica igual ao que se via. O texto das etiquetas usa o --ouro-claro da marca (pensado para
+   texto claro sobre fundo escuro; com a cor secundária havia sites com contraste insuficiente).
    ========================================================================== */
-:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.legal-kicker, .sugestoes-kicker,
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.legal-kicker, .sugestoes-kicker,
     .rh-kicker, .req-kicker, .pontos-kicker, .noticias-kicker-clean, .marcacoes-eyebrow, .lr-kicker, .historia-kicker,
     .heraldica-kicker, .func-kicker, .dpo-kicker, .docs-kicker, .cp-kicker, .cp-info-kicker, .compete-kicker,
     .comercio-kicker, .cd-kicker, .assoc-kicker, .sess-kicker, .faq-kicker, .mapa-kicker, .contact-kicker,
     .freguesia-kicker, .eventos-kicker, .trans-kicker, .atestado-eyebrow, .exe-kicker, .asm-kicker),
-:root body :is(.ocorrencias-map-hero .ocorrencias-kicker, .timeline-section .historia-kicker, .localidades-section .freguesia-kicker){
-    background-color: color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #1a1e25);
-    color: var(--ouro-claro, #f8d77a);
-    -webkit-backdrop-filter: none; backdrop-filter: none;
-}
-:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.pontos-floating-stat, .comercio-hero-stat,
+:root body:not(#_) :is(.ocorrencias-map-hero .ocorrencias-kicker, .timeline-section .historia-kicker, .localidades-section .freguesia-kicker),
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.pontos-floating-stat, .comercio-hero-stat,
     .assoc-hero-stat, .marcacoes-status-card, .req-hero-panel, .cd-card-hero, .dpo-card-hero, .lr-orb, .mapa-hero-stat,
-    .atestado-hero-card, .trans-score-card, .cd-btn.secondary, .lr-btn.secondary){
-    background-color: color-mix(in srgb, #fff 12%, #1a1e25);
-    -webkit-backdrop-filter: none; backdrop-filter: none;
+    .atestado-hero-card, .trans-score-card, .cd-btn.secondary, .lr-btn.secondary, .marcacoes-mini-grid > div, .req-hero-mini-grid > div),
+:root body:not(#_) :is(.cidadao-login-side, .cidadao-registo-side, .recuperar-side) :is(.login-benefit, .registo-benefit, .recuperar-step, .recuperar-note),
+:root body:not(#_) :is(.req-help-list > div, .evento-vidro__faixa){
+    --vidro: rgb(255 255 255 / .12);
+    background-color: transparent !important;
+    position: relative; isolation: isolate;
 }
-/* as caixinhas dentro desses cartões (Marcações, Requerimentos): branco a 10% por cima do cartão, já sólido */
-:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.marcacoes-mini-grid, .req-hero-mini-grid) > div{
-    background-color: color-mix(in srgb, #fff 21%, #1a1e25);
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.legal-kicker, .sugestoes-kicker,
+    .rh-kicker, .req-kicker, .pontos-kicker, .noticias-kicker-clean, .marcacoes-eyebrow, .lr-kicker, .historia-kicker,
+    .heraldica-kicker, .func-kicker, .dpo-kicker, .docs-kicker, .cp-kicker, .cp-info-kicker, .compete-kicker,
+    .comercio-kicker, .cd-kicker, .assoc-kicker, .sess-kicker, .mapa-kicker, .contact-kicker,
+    .freguesia-kicker, .eventos-kicker, .trans-kicker, .atestado-eyebrow),
+:root body:not(#_) .ocorrencias-map-hero .ocorrencias-kicker{
+    --vidro: rgb(var(--ouro-rgb, 240 180 41) / .15);
+    color: var(--ouro-claro, #f8d77a);
 }
-/* painéis laterais escuros (entrar, registo, recuperar a palavra-passe): os blocos lá dentro */
-:root body :is(.cidadao-login-side, .cidadao-registo-side, .recuperar-side) :is(.login-benefit, .registo-benefit, .recuperar-step, .recuperar-note){
-    background-color: color-mix(in srgb, #fff 9%, color-mix(in srgb, var(--cor-principal) 45%, #11151B));
-    -webkit-backdrop-filter: none; backdrop-filter: none;
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) .faq-kicker{ --vidro: rgba(46, 125, 50, .16); color: var(--ouro-claro, #f8d77a); }
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.exe-kicker, .asm-kicker){ --vidro: rgb(255 255 255 / .1); }
+:root body:not(#_) :is(.timeline-section .historia-kicker, .localidades-section .freguesia-kicker){ --vidro: rgb(255 255 255 / .08); }
+:root body:not(#_) :is(.marcacoes-mini-grid, .req-hero-mini-grid, .req-help-list) > div,
+:root body:not(#_) .evento-vidro__faixa{ --vidro: rgb(255 255 255 / .1); }
+:root body:not(#_) :is(.cidadao-login-side, .cidadao-registo-side, .recuperar-side) :is(.login-benefit, .registo-benefit, .recuperar-step, .recuperar-note){ --vidro: rgb(255 255 255 / .09); }
+/* a camada de vidro (a mesma cor translúcida que o elemento tinha) */
+:root body:not(#_) section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.legal-kicker, .sugestoes-kicker,
+    .rh-kicker, .req-kicker, .pontos-kicker, .noticias-kicker-clean, .marcacoes-eyebrow, .lr-kicker, .historia-kicker,
+    .heraldica-kicker, .func-kicker, .dpo-kicker, .docs-kicker, .cp-kicker, .cp-info-kicker, .compete-kicker,
+    .comercio-kicker, .cd-kicker, .assoc-kicker, .sess-kicker, .faq-kicker, .mapa-kicker, .contact-kicker,
+    .freguesia-kicker, .eventos-kicker, .trans-kicker, .atestado-eyebrow, .exe-kicker, .asm-kicker,
+    .pontos-floating-stat, .comercio-hero-stat, .assoc-hero-stat, .marcacoes-status-card, .req-hero-panel, .cd-card-hero,
+    .dpo-card-hero, .lr-orb, .mapa-hero-stat, .atestado-hero-card, .trans-score-card, .cd-btn.secondary, .lr-btn.secondary,
+    .marcacoes-mini-grid > div, .req-hero-mini-grid > div)::before,
+:root body:not(#_) :is(.ocorrencias-map-hero .ocorrencias-kicker, .timeline-section .historia-kicker, .localidades-section .freguesia-kicker)::before,
+:root body:not(#_) :is(.cidadao-login-side, .cidadao-registo-side, .recuperar-side) :is(.login-benefit, .registo-benefit, .recuperar-step, .recuperar-note)::before,
+:root body:not(#_) :is(.req-help-list > div, .evento-vidro__faixa)::before{
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+    background: var(--vidro);
 }
 /* Etiqueta visível dos campos de pesquisa das listas (documentos, procedimentos, ocorrências): por cima da linha de
    filtros, a ocupá-la toda (o campo só tinha texto de exemplo — o AccessMonitor pede uma etiqueta por cima ou à esquerda) */

@@ -141,26 +141,26 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
     filter:brightness(1.04);
 }
 
-/* Cores sólidas com contraste de pelo menos 4,5:1 com o texto branco (os gradientes começavam em tons claros —
-   verde e laranja — onde o branco não se lia; acessibilidade, 19/11/2026) */
+/* Gradientes com as duas pontas a pelo menos 4,5:1 com o texto branco (o verde do WhatsApp, o laranja do Instagram
+   e o azul claro do Facebook ficavam abaixo; acessibilidade, 19/11/2026) */
 .share-facebook{
-    background:#1360c4;
+    background:linear-gradient(135deg,#1565d8,#0d47a1);
 }
 
 .share-whatsapp{
-    background:#0b7a6e;
+    background:linear-gradient(135deg,#0f7f72,#075e54);
 }
 
 .share-instagram{
-    background:#c13584;
+    background:linear-gradient(135deg,#c13584,#833ab4);
 }
 
 .share-copy{
-    background:#242A30;
+    background:linear-gradient(135deg,#242A30,#11151B);
 }
 
 .share-email{
-    background:#475569;
+    background:linear-gradient(135deg,#64748b,#334155);
 }
 
 .share-note{

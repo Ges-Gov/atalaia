@@ -127,7 +127,8 @@ $heroImagem = !empty($pontos[0]['imagem'])
     display:inline-flex;
     align-items:center;
     gap:9px;
-    background:rgb(var(--ouro-rgb, 240 180 41) / .15);
+    /* fundos sólidos (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
+    background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #141820);
     border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
     color:var(--ouro-claro, #f8d77a);
     border-radius:999px;
@@ -193,9 +194,8 @@ $heroImagem = !empty($pontos[0]['imagem'])
 
 .mapa-hero-stat{
     min-width:190px;
-    background:rgba(255,255,255,.13);
+    background:color-mix(in srgb, #fff 13%, #1b2027);
     border:1px solid rgba(255,255,255,.20);
-    backdrop-filter:blur(16px);
     border-radius:28px;
     padding:28px;
     text-align:center;
@@ -310,6 +310,17 @@ $heroImagem = !empty($pontos[0]['imagem'])
     position:relative;
     margin-bottom:14px;
 }
+
+.map-search-rotulo{
+    display:block;
+    margin:0 0 6px 4px;
+    color:#475569;
+    font-size:12px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+:root[data-tema="escuro"] .map-search-rotulo{color:var(--escuro-texto-2, #cbd5e1)}
 
 .map-search-wrap span{
     position:absolute;
@@ -850,14 +861,14 @@ $heroImagem = !empty($pontos[0]['imagem'])
             <div class="ct-mfiltro" style="--c:<?= $cor ?>" data-grupo-mapa="<?= $t ?>">
                 <button type="button" class="ct-mfiltro__btn" data-filtro-mapa="<?= $t ?>" aria-pressed="true">
                     <span class="ct-mfiltro__icone" aria-hidden="true"><i class="bi <?= $ic ?>"></i></span>
-                    <span><?= htmlspecialchars($rot) ?></span> <b data-conta-mapa="<?= $t ?>"><?= $nTipo[$t] ?></b>
+                    <span><?= htmlspecialchars($rot) ?></span> <span class="negrito" data-conta-mapa="<?= $t ?>"><?= $nTipo[$t] ?></span>
                 </button>
                 <?php if (count($subsT) > 1): ?>
                 <button type="button" class="ct-mfiltro__mais" aria-expanded="false" aria-controls="mapaSub-<?= $t ?>" aria-label="Mais filtros de <?= htmlspecialchars($rot) ?>"><i class="bi bi-chevron-down" aria-hidden="true"></i></button>
                 <div class="ct-msub" id="mapaSub-<?= $t ?>" role="group" aria-label="Tipos de <?= htmlspecialchars(mb_strtolower($rot)) ?>" hidden>
                     <p class="ct-msub__titulo"><?= htmlspecialchars($rot) ?></p>
                     <?php foreach ($subsT as $s => $q): ?>
-                    <label class="ct-msub__op"><input type="checkbox" data-sub-mapa="<?= $t ?>" value="<?= htmlspecialchars($s) ?>" checked><span><?= htmlspecialchars($s) ?></span><b><?= $q ?></b></label>
+                    <label class="ct-msub__op"><input type="checkbox" data-sub-mapa="<?= $t ?>" value="<?= htmlspecialchars($s) ?>" checked><span><?= htmlspecialchars($s) ?></span><span class="negrito"><?= $q ?></span></label>
                     <?php endforeach; ?>
                     <div class="ct-msub__acoes">
                         <button type="button" data-sub-todos="<?= $t ?>">Todos</button>
@@ -885,9 +896,11 @@ $heroImagem = !empty($pontos[0]['imagem'])
                     <span><?= te('mapa.explorar.limite_texto') ?></span>
                 </div>
 
+                <?php /* etiqueta visível por cima do campo (acessibilidade, 19/11/2026) */ ?>
+                <label for="mapSearch" class="map-search-rotulo">Pesquisar no mapa</label>
                 <div class="map-search-wrap">
-                    <span><i class="bi bi-search"></i></span>
-                    <input 
+                    <span aria-hidden="true"><i class="bi bi-search"></i></span>
+                    <input
                         type="text" 
                         id="mapSearch" 
                         placeholder="<?= te('mapa.explorar.ph_pesquisa') ?>"

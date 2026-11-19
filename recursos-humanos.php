@@ -57,9 +57,9 @@ function rhListaDocs(array $lista): void
 .rh-intro p{color:#64748b;line-height:1.8;margin:0}
 .rh-quick-card{text-decoration:none;color:inherit;transition:.22s}
 .rh-quick-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(15,23,42,.10)}
-.rh-quick-card b{display:block;font-size:26px;margin-bottom:8px;color:var(--cor-principal)}
+.rh-quick-card .negrito{display:block;font-size:26px;margin-bottom:8px;color:var(--cor-principal)}
 .rh-quick-card strong{display:block;color:#11151B;font-size:18px}
-.rh-quick-card span{color:#64748b;font-size:14px}
+.rh-quick-card span:not(.negrito){color:#64748b;font-size:14px}
 .rh-section{margin-top:22px}
 .rh-section h2{color:#11151B;margin:0;font-size:24px;display:flex;align-items:center;gap:10px}
 .rh-section h2 i{color:var(--cor-principal)}
@@ -104,7 +104,7 @@ function rhListaDocs(array $lista): void
 <section class="section rh-shell"><div class="container">
     <div class="rh-stats"><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_1_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_1_valor'] ?? '') ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_2_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_2_valor'] ?? '') ?></strong></div><div class="rh-stat"><span><?= htmlspecialchars($cfg['destaque_3_titulo'] ?? '') ?></span><strong><?= htmlspecialchars($cfg['destaque_3_valor'] ?? '') ?></strong></div></div>
     <div class="rh-intro"><h2><?= htmlspecialchars($cfg['intro_titulo']) ?></h2><p><?= rh($cfg['intro_texto']) ?></p></div>
-    <div class="rh-quick"><?php foreach($cats as $k=>$m): ?><a class="rh-quick-card" href="/recursos-humanos.php?categoria=<?= urlencode($k) ?>"><b><?= $m[2] ?></b><strong><?= htmlspecialchars($m[0]) ?></strong><span><?= htmlspecialchars($m[1]) ?></span></a><?php endforeach; ?></div>
+    <div class="rh-quick"><?php foreach($cats as $k=>$m): ?><a class="rh-quick-card" href="/recursos-humanos.php?categoria=<?= urlencode($k) ?>"><span class="negrito"><?= $m[2] ?></span><strong><?= htmlspecialchars($m[0]) ?></strong><span><?= htmlspecialchars($m[1]) ?></span></a><?php endforeach; ?></div>
     <?php foreach($cats as $k=>$m): ?>
         <div class="rh-section" id="<?= htmlspecialchars($k) ?>"><h2><?= $m[2] ?> <?= htmlspecialchars($m[0]) ?></h2><p><?= htmlspecialchars($m[1]) ?></p><?php rhListaDocs($por[$k] ?? []); ?></div>
     <?php endforeach; ?>

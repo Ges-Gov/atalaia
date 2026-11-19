@@ -5552,7 +5552,7 @@ time,
 .rm-footer-bottom a{
     font-weight: 300;
 }
-h5, h6, strong, b{
+h5, h6, strong, b, .negrito{
     font-weight: 700;
 }
 /* Listas da homepage (Últimas Notícias / Próximos Eventos) com menos de 3 itens: as colunas
@@ -6463,7 +6463,7 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
 @keyframes prox-entra{ from{ opacity: 0; transform: translateY(6px); } to{ opacity: 1; transform: none; } }
 .prox-passos{ list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .prox-passos li{ display: flex; align-items: center; gap: 12px; color: #1e293b; }
-.prox-passos b{
+.prox-passos .negrito{
     flex-shrink: 0;
     display: grid; place-items: center;
     width: 30px; height: 30px; border-radius: 50%;
@@ -6546,7 +6546,7 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
 :root[data-tema="escuro"] .prox-tabs [role="tab"]{ color: var(--escuro-texto-2); }
 :root[data-tema="escuro"] .prox-tabs [role="tab"][aria-selected="true"]{ color: #fff; }
 :root[data-tema="escuro"] .prox-form input{ background: var(--escuro-superficie); border-color: var(--escuro-borda); color: var(--escuro-texto); }
-:root[data-tema="escuro"] .prox-passos b{ color: var(--ouro-vivo, #e3c463); }
+:root[data-tema="escuro"] .prox-passos .negrito{ color: var(--ouro-vivo, #e3c463); }
 :root[data-tema="escuro"] .prox-acao--secundaria:not(.prox-bloco--voz *){ color: color-mix(in srgb, var(--cor-principal) 45%, #fff); }
 
 @media (max-width: 1100px){
@@ -6882,8 +6882,8 @@ body .premium-list-block .premium-horizontal-list{ grid-template-columns: minmax
 /* ---------- Memória da freguesia (includes/memoria.php, página A Freguesia) ---------- */
 .mem-marcos{ list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .mem-marcos li{ padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
-.mem-marcos b{ display: block; font-size: 22px; font-weight: 700; color: var(--ouro-vivo, #e3c463); line-height: 1.1; font-variant-numeric: tabular-nums; }
-.mem-marcos span{ display: block; margin-top: 4px; font-size: 13px; line-height: 1.35; color: rgba(255,255,255,.85); }
+.mem-marcos .negrito{ display: block; font-size: 22px; font-weight: 700; color: var(--ouro-vivo, #e3c463); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.mem-marcos span:not(.negrito){ display: block; margin-top: 4px; font-size: 13px; line-height: 1.35; color: rgba(255,255,255,.85); }
 .mem-marcos__mais{ display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; color: var(--ouro-vivo, #e3c463); font-weight: 600; font-size: 14px; text-decoration: none; }
 .mem-marcos__mais:hover .bi{ transform: translateX(3px); }
 .mem-marcos__mais .bi{ transition: transform var(--dur-2) var(--ease-out); }
@@ -7552,13 +7552,13 @@ html.spotlight-aberto{ overflow: hidden; }
     pointer-events: none;
     transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring);
 }
-.scrollspy__dica b{ color: var(--tema-acento-escuro, var(--ouro-texto, #856611)); font-weight: 700; }
+.scrollspy__dica .negrito{ color: var(--tema-acento-escuro, var(--ouro-texto, #856611)); font-weight: 700; }
 .scrollspy__ponto:hover .scrollspy__dica,
 .scrollspy__ponto:focus-visible .scrollspy__dica{ opacity: 1; transform: translate(0, -50%); }
 .scrollspy__ponto:focus-visible{ outline-offset: 1px; border-radius: 999px; }
 :root[data-tema="escuro"] .scrollspy ul{ background: rgba(28, 32, 37, .6); border-color: rgba(255,255,255,.08); }
 :root[data-tema="escuro"] .scrollspy__dica{ background: rgba(28, 32, 37, .94); border-color: rgba(255,255,255,.1); color: var(--escuro-texto); }
-:root[data-tema="escuro"] .scrollspy__dica b{ color: var(--tema-acento-escuro); }
+:root[data-tema="escuro"] .scrollspy__dica .negrito{ color: var(--tema-acento-escuro); }
 @media (max-width: 1099px){ .scrollspy{ display: none; } }
 
 /* Movimento reduzido: sem deslocamentos, escalas, parallax ou autoplay (o app.js também respeita) */
@@ -7648,6 +7648,10 @@ html.spotlight-aberto{ overflow: hidden; }
 .cu-sec__cab{ display: flex; align-items: flex-end; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; margin-bottom: 16px; }
 .cu-sec__cab h2{ margin: 4px 0 0; }
 .cu-procura{ position: relative; flex: 0 1 340px; min-width: 240px; }
+/* 19/11/2026 (acessibilidade): etiqueta visível por cima do campo; a lupa fica centrada no campo */
+.cu-procura__rotulo{ display: block; margin: 0 0 6px 2px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #475569; }
+.cu-procura__campo{ position: relative; display: block; }
+:root[data-tema="escuro"] .cu-procura__rotulo{ color: var(--escuro-texto-2, #cbd5e1); }
 .cu-procura .bi{ position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; }
 .cu-procura input{ width: 100%; height: 46px; padding: 0 16px 0 42px; border-radius: 14px; border: 1.5px solid #dfe3e8; background: #fff; font: 400 15px var(--font-base, "Montserrat", sans-serif); color: #11151b; transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out); }
 .cu-procura input:focus{ outline: none; border-color: var(--cor-principal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-principal) 16%, transparent); }
@@ -8205,7 +8209,7 @@ body .home-news-events-premium .evento-semana-card--cor .evento-countdown{
 .ct-mfiltro__btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 16px 0 7px;border:0;border-radius:999px;background:transparent;font:600 15px var(--fonte);color:#1e293b;cursor:pointer}
  .ct-mfiltro:has(.ct-mfiltro__mais) .ct-mfiltro__btn{border-radius:999px 0 0 999px;padding-right:12px}
 .ct-mfiltro__icone{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--c);color:#fff;font-size:16px;transition:background-color var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-spring)}
-.ct-mfiltro__btn b{min-width:26px;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,transparent);color:#334155;font-size:13px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.ct-mfiltro__btn .negrito{min-width:26px;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,transparent);color:#334155;font-size:13px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
 .ct-mfiltro__mais{display:grid;place-items:center;width:46px;border:0;border-left:1px solid #e5e9ee;border-radius:0 999px 999px 0;background:transparent;color:#475569;font-size:15px;cursor:pointer}
 .ct-mfiltro__mais .bi{transition:transform var(--dur-2) var(--ease-out)}
 .ct-mfiltro__mais[aria-expanded="true"] .bi{transform:rotate(180deg)}
@@ -8220,7 +8224,7 @@ body .home-news-events-premium .evento-semana-card--cor .evento-countdown{
 .ct-mfiltro:has([aria-pressed="false"]){background:#f8fafc;box-shadow:none}
 .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__icone{background:#cbd5e1;color:#475569}
 .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn{color:#64748b;text-decoration:line-through;text-decoration-thickness:1px}
-.ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn b{background:#e2e8f0;color:#64748b;text-decoration:none}
+.ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn .negrito{background:#e2e8f0;color:#64748b;text-decoration:none}
 /* parcial: alguns tipos desmarcados */
 .ct-mfiltro--parcial .ct-mfiltro__icone{box-shadow:0 0 0 3px #fff,0 0 0 5px color-mix(in srgb,var(--c) 45%,transparent)}
 
@@ -8231,7 +8235,7 @@ body .home-news-events-premium .evento-semana-card--cor .evento-countdown{
 .ct-msub__op{display:flex;align-items:center;gap:11px;min-height:46px;padding:0 10px;border-radius:12px;font-size:15px;color:#1e293b;cursor:pointer;transition:background-color var(--dur-1) var(--ease-out)}
 .ct-msub__op:hover{background:color-mix(in srgb,var(--c) 8%,transparent)}
 .ct-msub__op input{width:20px;height:20px;margin:0;accent-color:var(--c);cursor:pointer;flex:none}
-.ct-msub__op b{margin-left:auto;padding-left:14px;font-weight:600;color:#64748b;font-variant-numeric:tabular-nums}
+.ct-msub__op .negrito{margin-left:auto;padding-left:14px;font-weight:600;color:#64748b;font-variant-numeric:tabular-nums}
 .ct-msub__acoes{display:flex;gap:8px;margin-top:8px;padding-top:10px;border-top:1px solid #eef2f5}
 .ct-msub__acoes button{flex:1;min-height:40px;border:1px solid #dfe5ea;border-radius:999px;background:#fff;font:600 13.5px var(--fonte);color:#334155;cursor:pointer}
 .ct-msub__acoes button:hover{border-color:var(--c);color:#0f172a}
@@ -8242,7 +8246,7 @@ body .home-news-events-premium .evento-semana-card--cor .evento-countdown{
 .ct-lista__vazio{padding:22px 14px;text-align:center;color:#64748b;font-size:14.5px}
 .ct-lista .ct-lista__vazio button{display:inline;width:auto;padding:0;margin-left:4px;background:none;color:var(--cor-principal);font-weight:700;text-decoration:underline}
 :root[data-tema="escuro"] .ct-mfiltro__btn{color:var(--escuro-texto)}
-:root[data-tema="escuro"] .ct-mfiltro__btn b,:root[data-tema="escuro"] .ct-msub__op b,:root[data-tema="escuro"] .ct-msub__titulo{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .ct-mfiltro__btn .negrito,:root[data-tema="escuro"] .ct-msub__op .negrito,:root[data-tema="escuro"] .ct-msub__titulo{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-msub__op{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]){background:color-mix(in srgb,var(--escuro-superficie) 70%,transparent)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__icone{background:var(--escuro-borda);color:var(--escuro-texto-2)}
@@ -8706,7 +8710,8 @@ body .section-heading .link-premium:hover .bi{ transform: translateX(3px); }
    sobre fundo escuro e quase não se viam — texto claro e pílula translúcida, como no tema escuro */
 body:not(#_):not(#__) :is(.mem-lendas, .localidades-section, .timeline-section) :is(.freguesia-kicker, .historia-kicker){   /* tem de pesar mais que a regra geral das etiquetas (body:not(#_), num <style> do tema carregado depois) */
     color: color-mix(in srgb, var(--cor-secundaria) 70%, #fff) !important;
-    background: rgb(255 255 255 / .08); border: 1px solid color-mix(in srgb, var(--cor-secundaria) 45%, transparent);
+    background: color-mix(in srgb, #fff 8%, #1b2026);   /* sólido (era branco a 8% sobre o painel escuro), 19/11/2026 */
+    border: 1px solid color-mix(in srgb, var(--cor-secundaria) 45%, transparent);
 }
 
 /* ---------- Transições entre páginas — ponto 2a (15/10/2026) ----------
@@ -9260,11 +9265,14 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
 /* segundo: ligação sublinhada com seta (o sublinhado recolhe ao passar o rato e a seta avança) */
 :is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn-outline{
     padding: 6px 0; border: 0; border-radius: 0; color: #fff; font-weight: 700;
-    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1.5px no-repeat;
-    transition: background-size .3s ease;
+    /* 19/11/2026 (acessibilidade): sublinhado com text-decoration e não com um gradiente de fundo — o AccessMonitor lia o
+       gradiente branco como fundo do texto branco (contraste nulo). */
+    background: none;
+    text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 7px;
+    transition: text-decoration-color .3s ease;
 }
 :is(:root, :root[data-tema="escuro"]) body .hero-slider .hero-actions > :is(a, button).hero-btn-outline:hover{
-    background-size: 0 1.5px; transform: none; box-shadow: none;
+    text-decoration-color: transparent; transform: none; box-shadow: none;
 }
 :root body .hero-slider .hero-actions > :is(a, button).hero-btn .bi{ font-size: 1.05em; transition: transform .3s ease; }
 :root body .hero-slider .hero-actions > a.hero-btn-outline:hover .bi-arrow-right{ transform: translateX(4px); }
@@ -9311,12 +9319,13 @@ body .site-header .header-inner .brand.brand--so-logo img{ height:68px !importan
 :is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.secondary, .historia-hero .historia-btn.secondary,
     .pontos-hero-btn.secondary, .mapa-hero-btn.secondary, .pedidos-hero-actions > .hero-btn:nth-child(2), .trans-hero-actions > .hero-btn:nth-child(2)){
     padding: 6px 0; border: 0; border-radius: 0; color: #fff; font-weight: 700;
-    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1.5px no-repeat;
-    transition: background-size .3s ease;
+    background: none;   /* sublinhado com text-decoration, não gradiente (acessibilidade, 19/11/2026) */
+    text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 7px;
+    transition: text-decoration-color .3s ease;
 }
 :is(:root, :root[data-tema="escuro"]) body :is(.freguesia-hero-premium .freguesia-btn.secondary, .historia-hero .historia-btn.secondary,
     .pontos-hero-btn.secondary, .mapa-hero-btn.secondary, .pedidos-hero-actions > .hero-btn:nth-child(2), .trans-hero-actions > .hero-btn:nth-child(2)):hover{
-    background-size: 0 1.5px; transform: none; box-shadow: none;
+    text-decoration-color: transparent; transform: none; box-shadow: none;
 }
 :root body :is(.freguesia-hero-premium a.freguesia-btn.secondary, .historia-hero a.historia-btn.secondary, a.pontos-hero-btn.secondary,
     a.mapa-hero-btn.secondary, .pedidos-hero-actions > a.hero-btn:nth-child(2), .trans-hero-actions > a.hero-btn:nth-child(2))::after{
@@ -9486,3 +9495,49 @@ form>.campo-erro{grid-column:1/-1;margin-top:-6px}
 .consulta-form-premium>button,.ac-form>button,.cons-form>button{align-self:end}
 .ac-form>.campo,.cons-form>.campo{flex:1 1 260px}
 .ac-form>.campo>input,.cons-form>.campo>input{min-width:0}
+
+/* ==========================================================================
+   19/11/2026 (acessibilidade) — topos e secções escuras: etiquetas («kickers») e cartões de vidro com fundo SÓLIDO.
+   Com transparência por cima da fotografia ou de um gradiente, o AccessMonitor não consegue calcular o contraste e
+   dá o texto como ilegível (era a falha mais comum a seguir ao <b>). Os tons são a mistura que se via sobre o véu
+   escuro do topo; o texto das etiquetas usa o --ouro-claro da marca (pensado para texto claro sobre fundo escuro).
+   ========================================================================== */
+:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.legal-kicker, .sugestoes-kicker,
+    .rh-kicker, .req-kicker, .pontos-kicker, .noticias-kicker-clean, .marcacoes-eyebrow, .lr-kicker, .historia-kicker,
+    .heraldica-kicker, .func-kicker, .dpo-kicker, .docs-kicker, .cp-kicker, .cp-info-kicker, .compete-kicker,
+    .comercio-kicker, .cd-kicker, .assoc-kicker, .sess-kicker, .faq-kicker, .mapa-kicker, .contact-kicker,
+    .freguesia-kicker, .eventos-kicker, .trans-kicker, .atestado-eyebrow, .exe-kicker, .asm-kicker),
+:root body :is(.ocorrencias-map-hero .ocorrencias-kicker, .timeline-section .historia-kicker, .localidades-section .freguesia-kicker){
+    background-color: color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #1a1e25);
+    color: var(--ouro-claro, #f8d77a);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.pontos-floating-stat, .comercio-hero-stat,
+    .assoc-hero-stat, .marcacoes-status-card, .req-hero-panel, .cd-card-hero, .dpo-card-hero, .lr-orb, .mapa-hero-stat,
+    .atestado-hero-card, .trans-score-card, .cd-btn.secondary, .lr-btn.secondary){
+    background-color: color-mix(in srgb, #fff 12%, #1a1e25);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+/* as caixinhas dentro desses cartões (Marcações, Requerimentos): branco a 10% por cima do cartão, já sólido */
+:root body section[class*="hero"]:not(.hero-slider):not(.home-video-hero) :is(.marcacoes-mini-grid, .req-hero-mini-grid) > div{
+    background-color: color-mix(in srgb, #fff 21%, #1a1e25);
+}
+/* painéis laterais escuros (entrar, registo, recuperar a palavra-passe): os blocos lá dentro */
+:root body :is(.cidadao-login-side, .cidadao-registo-side, .recuperar-side) :is(.login-benefit, .registo-benefit, .recuperar-step, .recuperar-note){
+    background-color: color-mix(in srgb, #fff 9%, color-mix(in srgb, var(--cor-principal) 45%, #11151B));
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+/* Etiqueta visível dos campos de pesquisa das listas (documentos, procedimentos, ocorrências): por cima da linha de
+   filtros, a ocupá-la toda (o campo só tinha texto de exemplo — o AccessMonitor pede uma etiqueta por cima ou à esquerda) */
+.filtro-rotulo{ display: block; grid-column: 1 / -1; margin: 0 0 -2px 4px; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .5px; color: #475569; }
+:root[data-tema="escuro"] .filtro-rotulo{ color: var(--escuro-texto-2, #cbd5e1); }
+/* Caixas com ícone (entrar, registo, recuperar): o campo ocupa a caixa toda e o ícone fica por cima, à esquerda.
+   Assim a etiqueta (por cima) fica sobre o campo mesmo quando é curta como «Email» — o AccessMonitor dá-a como mal
+   posicionada quando acaba antes de o campo começar. Fica igual ao que se via. (As de palavra-passe já estavam bem.) */
+:root body :is(.login-input-group, .registo-input-group, .recuperar-input-group):not(.password-group){ position: relative; padding: 0; }
+:root body :is(.login-input-group, .registo-input-group, .recuperar-input-group):not(.password-group) > span{
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none;
+}
+:root body :is(.login-input-group, .registo-input-group, .recuperar-input-group):not(.password-group) input{
+    align-self: stretch; height: auto; min-width: 0; padding: 0 16px 0 47px !important; border-radius: inherit;
+}

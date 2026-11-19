@@ -815,6 +815,7 @@ $percentagemResolvidas = $totalOcorrencias > 0 ? round(($totalResolvidas / $tota
             <div class="ocorrencias-filter-box">
                 <h2><?= te('ocorrencias_mapa.filtros.titulo') ?></h2>
 
+                <label for="pesquisaOcorrencias" class="filtro-rotulo">Pesquisar ocorrências</label>
                 <input type="text" id="pesquisaOcorrencias" placeholder="<?= te('ocorrencias_mapa.filtros.ph_pesquisa') ?>">
 
                 <select id="filtroCategoria">

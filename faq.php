@@ -28,7 +28,7 @@ $faqs = $pdo->query("SELECT * FROM faqs WHERE ativo = 1 ORDER BY ordem ASC, id A
 .faq-hero .container{position:relative;z-index:2;}
 .faq-kicker{
     display:inline-flex;
-    background:rgba(46,125,50,.16);
+    background:color-mix(in srgb, rgb(46 125 50) 33%, #242a30);   /* sólido, igual ao que se via (acessibilidade, 19/11/2026) */
     border:1px solid rgba(46,125,50,.38);
     color:#81C784;
     padding:9px 14px;

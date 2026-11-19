@@ -397,7 +397,7 @@
 :root[data-tema="escuro"] .voltar-topo{background:color-mix(in srgb, var(--escuro-superficie) 82%, transparent);color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
 :root[data-tema="escuro"] .scrollspy ul{background:color-mix(in srgb, var(--escuro-superficie) 55%, transparent);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .scrollspy__dica{background:color-mix(in srgb, var(--escuro-superficie) 90%, transparent);color:var(--escuro-texto)}
-:root[data-tema="escuro"] .scrollspy__dica b{color:var(--tema-acento-escuro, var(--ouro-texto, color-mix(in srgb, #856611 55%, #fff)))}
+:root[data-tema="escuro"] .scrollspy__dica .negrito{color:var(--tema-acento-escuro, var(--ouro-texto, color-mix(in srgb, #856611 55%, #fff)))}
 :root[data-tema="escuro"] .pwa-convite{background:color-mix(in srgb, var(--escuro-superficie) 82%, transparent);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .pwa-convite__icone{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .pwa-convite__texto{color:var(--escuro-texto-2)}
@@ -512,16 +512,16 @@
 :root[data-tema="escuro"] .ct-mfiltro{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="true"]){border-color:color-mix(in srgb,var(--c) 45%,var(--escuro-borda))}
 :root[data-tema="escuro"] .ct-mfiltro__btn{color:var(--escuro-texto)}
-:root[data-tema="escuro"] .ct-mfiltro__btn b{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .ct-mfiltro__btn .negrito{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-mfiltro__mais{border-left:1px solid var(--escuro-borda);color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]){background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__icone{background:var(--escuro-superficie-3);color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn{color:var(--escuro-texto-2)}
-:root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn b{background:var(--escuro-superficie-3);color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .ct-mfiltro:has([aria-pressed="false"]) .ct-mfiltro__btn .negrito{background:var(--escuro-superficie-3);color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-msub{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .ct-msub__titulo{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-msub__op{color:var(--escuro-texto)}
-:root[data-tema="escuro"] .ct-msub__op b{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .ct-msub__op .negrito{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-msub__acoes{border-top:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .ct-msub__acoes button{border:1px solid var(--escuro-borda);background:var(--escuro-superficie);color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .ct-msub__acoes button:hover{color:color-mix(in srgb, #0f172a 45%, #fff)}
@@ -774,7 +774,7 @@
 :root[data-tema="escuro"] .atestado-side-title h3{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .atestado-step{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .atestado-step:hover{background:var(--escuro-superficie)}
-:root[data-tema="escuro"] .atestado-step b{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .atestado-step .negrito{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .atestado-step p{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .atestado-note{background:color-mix(in srgb, #fff7e0 14%, var(--escuro-superficie));border:1px solid color-mix(in srgb, #ffe08a 20%, var(--escuro-borda));color:color-mix(in srgb, #73510b 55%, #fff)}
 :root[data-tema="escuro"] .atestado-mini-card{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
@@ -975,7 +975,7 @@
 :root[data-tema="escuro"] .agenda-day-insane{background:var(--escuro-superficie);border:1px solid var(--escuro-borda);color:var(--escuro-texto)}
 :root[data-tema="escuro"] .agenda-tooltip-insane{background:var(--escuro-superficie);color:var(--escuro-texto);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .agenda-tooltip-insane:after{border-top-color:var(--escuro-borda)}
-:root[data-tema="escuro"] .agenda-tooltip-insane b{color:var(--escuro-texto)}
+:root[data-tema="escuro"] .agenda-tooltip-insane .negrito{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .tooltip-event-card{border-top:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .tooltip-event-card:hover{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .tooltip-event-cta{color:color-mix(in srgb, var(--cor-principal,var(--escuro-texto) 45%, #fff))}
@@ -1183,7 +1183,7 @@
 :root[data-tema="escuro"] .lr-panel h2{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .lr-step{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .lr-step strong{color:var(--escuro-texto)}
-:root[data-tema="escuro"] .lr-step span{color:var(--escuro-texto-2)}
+:root[data-tema="escuro"] .lr-step span:not(.negrito){color:var(--escuro-texto-2)}
 
 /* ===== mapa.php (30) ===== */
 :root[data-tema="escuro"] .mapa-page-insane{background:radial-gradient(circle at top left, rgba(36,42,50,.08), transparent 34%),
@@ -1413,7 +1413,7 @@
 :root[data-tema="escuro"] .rh-stat strong{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .rh-intro h2{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .rh-intro p{color:var(--escuro-texto-2)}
-:root[data-tema="escuro"] .rh-quick-card b{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
+:root[data-tema="escuro"] .rh-quick-card .negrito{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
 :root[data-tema="escuro"] .rh-quick-card strong{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .rh-quick-card span{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .rh-section h2{color:var(--escuro-texto)}
@@ -1474,7 +1474,7 @@
         radial-gradient(circle at top right, rgba(36,42,50,.16), transparent 36%),
         linear-gradient(180deg,var(--escuro-superficie-2) 0%,var(--escuro-superficie) 42%,var(--escuro-superficie) 100%)}
 :root[data-tema="escuro"] .trans-orb-badge{background:var(--escuro-superficie);color:var(--escuro-texto)}
-:root[data-tema="escuro"] .trans-orb-badge b{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
+:root[data-tema="escuro"] .trans-orb-badge .negrito{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
 :root[data-tema="escuro"] .trans-live-strip{background:color-mix(in srgb, var(--escuro-superficie) 96%, transparent);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .trans-live-item{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .trans-live-item strong{color:var(--escuro-texto)}

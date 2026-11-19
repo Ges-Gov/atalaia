@@ -143,7 +143,8 @@ require_once __DIR__ . "/includes/header.php";
         </div>
 
         <form class="cp-filter" method="GET">
-            <input type="text" name="q" value="<?= htmlspecialchars($pesquisa) ?>" placeholder="Pesquisar por título, referência ou descrição...">
+            <label for="cpPesquisa" class="filtro-rotulo">Pesquisar procedimentos</label>
+            <input type="text" id="cpPesquisa" name="q" value="<?= htmlspecialchars($pesquisa) ?>" placeholder="Pesquisar por título, referência ou descrição...">
             <select name="carreira">
                 <option value=""><?= te('procedimentos_concursais.filtros.carreiras') ?></option>
                 <?php foreach($carreirasUsadas as $c): ?>

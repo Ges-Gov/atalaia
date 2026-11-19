@@ -31,7 +31,7 @@
 .lr-card h3{margin:0 0 12px;color:#11151B;font-size:24px}.lr-card p,.lr-panel p{margin:0;color:#64748b;line-height:1.75;font-weight:700}
 .lr-panel{border-radius:30px;padding:32px;margin-bottom:28px}.lr-panel h2{margin:0 0 14px;color:#11151B;font-size:32px}
 .lr-steps{display:grid;gap:14px;margin-top:20px}.lr-step{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start;background:#f8fafc;border:1px solid #eef2f7;border-radius:20px;padding:16px}
-.lr-step b{width:48px;height:48px;border-radius:16px;background:var(--cor-principal);color:white;display:grid;place-items:center}.lr-step strong{display:block;color:#11151B;margin-bottom:5px}.lr-step span{display:block;color:#64748b;line-height:1.6;font-weight:700}
+.lr-step .negrito{width:48px;height:48px;border-radius:16px;background:var(--cor-principal);color:white;display:grid;place-items:center}.lr-step strong{display:block;color:#11151B;margin-bottom:5px}.lr-step span:not(.negrito){display:block;color:#64748b;line-height:1.6;font-weight:700}
 .lr-cta{position:relative;overflow:hidden;border-radius:30px;padding:34px;background:linear-gradient(135deg,var(--cor-principal),#11151B);color:white;box-shadow:0 22px 60px rgba(0,0,0,.16);margin-bottom:40px}
 .lr-cta:after{content:"";position:absolute;right:-80px;bottom:-110px;width:250px;height:250px;border-radius:50%;background:rgb(var(--ouro-rgb, 240 180 41) / .14)}
 .lr-cta h2,.lr-cta p,.lr-cta .lr-actions{position:relative;z-index:2}.lr-cta h2{margin:0 0 12px;font-size:32px}.lr-cta p{margin:0;color:#dbeafe;line-height:1.75;max-width:850px}
@@ -78,9 +78,9 @@
             <h2><?= te('livro_reclamacoes.passos.titulo') ?></h2>
             <p><?= te('livro_reclamacoes.passos.intro') ?></p>
             <div class="lr-steps">
-                <div class="lr-step"><b>1</b><div><strong><?= te('livro_reclamacoes.passos.p1_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p1_texto') ?></span></div></div>
-                <div class="lr-step"><b>2</b><div><strong><?= te('livro_reclamacoes.passos.p2_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p2_texto') ?></span></div></div>
-                <div class="lr-step"><b>3</b><div><strong><?= te('livro_reclamacoes.passos.p3_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p3_texto') ?></span></div></div>
+                <div class="lr-step"><span class="negrito">1</span><div><strong><?= te('livro_reclamacoes.passos.p1_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p1_texto') ?></span></div></div>
+                <div class="lr-step"><span class="negrito">2</span><div><strong><?= te('livro_reclamacoes.passos.p2_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p2_texto') ?></span></div></div>
+                <div class="lr-step"><span class="negrito">3</span><div><strong><?= te('livro_reclamacoes.passos.p3_titulo') ?></strong><span><?= te('livro_reclamacoes.passos.p3_texto') ?></span></div></div>
             </div>
         </div>
 

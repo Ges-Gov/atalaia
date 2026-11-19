@@ -167,7 +167,7 @@ $campoErro = fn($k) => isset($errosForm[$k]) ? ' aria-invalid="true" aria-descri
 /* ===== Contactos (10/2026) ===== */
 .contact-hero{background:radial-gradient(circle at 15% 18%,rgb(var(--ouro-rgb, 240 180 41) / .24),transparent 30%),linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:92px 0 108px;position:relative;overflow:hidden}
 .contact-hero .container{position:relative;z-index:2}
-.contact-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.contact-kicker{display:inline-flex;background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 30%, #242a30);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .38);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .contact-hero h1{margin:18px 0 14px;line-height:1.02;max-width:980px}
 .contact-hero p{max-width:880px;color:#e2e8f0;font-size:19px;line-height:1.7;margin:0}
 @media(max-width:700px){.contact-hero p{font-size:15px;line-height:1.5}}
@@ -480,14 +480,14 @@ a.ct-rapido:hover{transform:translateY(-4px);box-shadow:var(--sombra-cartao-hove
                 <div class="ct-mfiltro" style="--c:<?= $cor ?>" data-grupo-mapa="<?= $t ?>">
                     <button type="button" class="ct-mfiltro__btn" data-filtro-mapa="<?= $t ?>" aria-pressed="true">
                         <span class="ct-mfiltro__icone" aria-hidden="true"><i class="bi <?= $ic ?>"></i></span>
-                        <span><?= $rot ?></span> <b data-conta-mapa="<?= $t ?>"><?= $nTipo[$t] ?></b>
+                        <span><?= $rot ?></span> <span class="negrito" data-conta-mapa="<?= $t ?>"><?= $nTipo[$t] ?></span>
                     </button>
                     <?php if (count($subsT) > 1): ?>
                     <button type="button" class="ct-mfiltro__mais" aria-expanded="false" aria-controls="ctSub-<?= $t ?>" aria-label="Mais filtros de <?= $rot ?>"><i class="bi bi-chevron-down" aria-hidden="true"></i></button>
                     <div class="ct-msub" id="ctSub-<?= $t ?>" role="group" aria-label="Tipos de <?= mb_strtolower($rot) ?>" hidden>
                         <p class="ct-msub__titulo"><?= $rot ?></p>
                         <?php foreach ($subsT as $s => $q): ?>
-                        <label class="ct-msub__op"><input type="checkbox" data-sub-mapa="<?= $t ?>" value="<?= htmlspecialchars($s) ?>" checked><span><?= htmlspecialchars($s) ?></span><b><?= $q ?></b></label>
+                        <label class="ct-msub__op"><input type="checkbox" data-sub-mapa="<?= $t ?>" value="<?= htmlspecialchars($s) ?>" checked><span><?= htmlspecialchars($s) ?></span><span class="negrito"><?= $q ?></span></label>
                         <?php endforeach; ?>
                         <div class="ct-msub__acoes">
                             <button type="button" data-sub-todos="<?= $t ?>">Todos</button>

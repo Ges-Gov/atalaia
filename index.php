@@ -805,9 +805,9 @@ $proxEmail = siteConfig('email', '');
 
                 <div class="prox-painel" role="tabpanel" id="proxPainel1" aria-labelledby="proxTab1">
                     <ol class="prox-passos">
-                        <li><b>1</b> <?= te('inicio.proximidade.passo1') ?></li>
-                        <li><b>2</b> <?= te('inicio.proximidade.passo2') ?></li>
-                        <li><b>3</b> Guarde o código <?= htmlspecialchars(prefixoPedidos()) ?>-… para acompanhar</li>
+                        <li><span class="negrito">1</span> <?= te('inicio.proximidade.passo1') ?></li>
+                        <li><span class="negrito">2</span> <?= te('inicio.proximidade.passo2') ?></li>
+                        <li><span class="negrito">3</span> Guarde o código <?= htmlspecialchars(prefixoPedidos()) ?>-… para acompanhar</li>
                     </ol>
                     <a href="/pedidos.php" class="prox-acao"><?= te('inicio.proximidade.acao1') ?> <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </div>

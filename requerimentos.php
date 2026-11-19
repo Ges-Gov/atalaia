@@ -740,7 +740,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$sucesso) {
     align-items:center;
     padding:13px;
     border-radius:16px;
-    background:rgba(255,255,255,.10);
+    /* sólido, sobre o cartão escuro (cor principal → #11151B), 19/11/2026 */
+    background:color-mix(in srgb, #fff 10%, color-mix(in srgb, var(--cor-principal) 50%, #11151B));
     border:1px solid rgba(255,255,255,.12);
     color:#dbeafe;
     font-weight:800;

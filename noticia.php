@@ -141,24 +141,26 @@ $coverOffset = !empty($noticia['imagem']) ? 1 : 0;
     filter:brightness(1.04);
 }
 
+/* Cores sólidas com contraste de pelo menos 4,5:1 com o texto branco (os gradientes começavam em tons claros —
+   verde e laranja — onde o branco não se lia; acessibilidade, 19/11/2026) */
 .share-facebook{
-    background:linear-gradient(135deg,#1877f2,#0d47a1);
+    background:#1360c4;
 }
 
 .share-whatsapp{
-    background:linear-gradient(135deg,#25d366,#128c7e);
+    background:#0b7a6e;
 }
 
 .share-instagram{
-    background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);
+    background:#c13584;
 }
 
 .share-copy{
-    background:linear-gradient(135deg,#242A30,#11151B);
+    background:#242A30;
 }
 
 .share-email{
-    background:linear-gradient(135deg,#64748b,#334155);
+    background:#475569;
 }
 
 .share-note{

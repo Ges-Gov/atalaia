@@ -144,10 +144,14 @@ function seccaoContactosUteis(array $contactos, string $idTitulo = 'cuTitulo', s
                 <?php if ($kicker): ?><span class="ct-kicker"><?= $h($kicker) ?></span><?php endif; ?>
                 <h2 id="<?= $h($idTitulo) ?>"><?= $h($titulo) ?></h2>
             </div>
+            <?php /* etiqueta visível por cima do campo (antes só para leitores de ecrã: o AccessMonitor dá-a como
+                     mal posicionada, nível A), 19/11/2026 */ ?>
             <label class="cu-procura">
-                <i class="bi bi-search" aria-hidden="true"></i>
-                <span class="sr-only"><?= te('contactos_uteis.pesquisa.rotulo') ?></span>
-                <input type="search" placeholder="Procurar contacto…" autocomplete="off" data-cu-procura>
+                <span class="cu-procura__rotulo"><?= te('contactos_uteis.pesquisa.rotulo') ?></span>
+                <span class="cu-procura__campo">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input type="search" placeholder="Procurar contacto…" autocomplete="off" data-cu-procura>
+                </span>
             </label>
         </div>
         <?php if ($emergencia): ?>

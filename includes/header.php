@@ -106,19 +106,19 @@ if (!empty($_SESSION['cidadao_id'])) {
 
     <link rel="preload" href="/assets/fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261118b">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261119a">
     <?php /* Modo escuro (13/11/2026): o tema-escuro.css (~143 KB, só regras :root[data-tema="escuro"]) só é carregado a
              quem escolheu o escuro. Com a cookie jf-tema=escuro vem já no HTML; quem o escolheu antes de haver cookie,
              ou o liga agora no botão, recebe-o por JS (jfCarregarEscuro). */ ?>
 <?php if (($_COOKIE['jf-tema'] ?? '') === 'escuro'): ?>
-    <link rel="stylesheet" id="cssEscuro" href="/assets/css/tema-escuro.css?v=20261118b">
+    <link rel="stylesheet" id="cssEscuro" href="/assets/css/tema-escuro.css?v=20261119a">
 <?php endif; ?>
     <script>
         (function () {
             window.jfCarregarEscuro = function (depois) {
                 var l = document.getElementById('cssEscuro');
                 if (l) { if (depois) depois(); return; }
-                l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/tema-escuro.css?v=20261118b'; l.id = 'cssEscuro';
+                l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/css/tema-escuro.css?v=20261119a'; l.id = 'cssEscuro';
                 if (depois) { l.onload = depois; l.onerror = depois; }
                 var aj = document.getElementById('cssEscuroAjustes');
                 if (aj) aj.parentNode.insertBefore(l, aj); else document.head.appendChild(l);

@@ -1080,8 +1080,14 @@ document.addEventListener("DOMContentLoaded", function () {
         a.href = "#" + s.id;
         a.className = "scrollspy__ponto";
         const numero = String(i + 1).padStart(2, "0");
-        a.innerHTML = '<span class="scrollspy__dica"><b>' + numero + '.</b> </span>';
-        a.querySelector(".scrollspy__dica").appendChild(document.createTextNode(nome));
+        // número em <span class="negrito"> e não em <b> (o AccessMonitor marca o <b> como elemento de apresentação), 19/11/2026
+        const dica = document.createElement("span");
+        dica.className = "scrollspy__dica";
+        const num = document.createElement("span");
+        num.className = "negrito";
+        num.textContent = numero + ".";
+        dica.append(num, " ", nome);
+        a.appendChild(dica);
         a.addEventListener("click", function (e) {
             e.preventDefault();
             s.scrollIntoView({ behavior: jfReduzMovimento() ? "auto" : "smooth", block: "start" });
@@ -1918,6 +1924,16 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
         if (procura) procura.addEventListener("input", aplicar);
+        // Ligação direta a uma categoria (19/11/2026): contactos.php?categoria=Saúde abre a secção já filtrada
+        // (os cartões «Saúde», «Ação social»… da página inicial levam cada um à sua categoria).
+        const pedida = new URLSearchParams(location.search).get("categoria");
+        if (pedida) {
+            const alvo = Array.prototype.find.call(filtros, function (b) { return limpa(b.dataset.cuFiltro) === limpa(pedida); });
+            if (alvo) {
+                alvo.click();
+                sec.scrollIntoView({ block: "start", behavior: "auto" });
+            }
+        }
         const limpar = sec.querySelector("[data-cu-limpar]");
         if (limpar) limpar.addEventListener("click", function () {
             if (procura) procura.value = "";

@@ -220,10 +220,11 @@ $emailShareEvento = 'mailto:?subject=' . rawurlencode($tituloPartilhaEvento) . '
 .evento-share-buttons{display:flex;gap:12px;flex-wrap:wrap;}
 .share-btn{border:0;min-height:46px;padding:0 16px;border-radius:15px;display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:white;font-weight:900;cursor:pointer;transition:.25s ease;box-shadow:0 12px 28px rgba(0,0,0,.12);font-family:inherit;font-size:14px;}
 .share-btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.18);filter:brightness(1.04);}
-.share-facebook{background:linear-gradient(135deg,#1877f2,#0d47a1);}
-.share-whatsapp{background:linear-gradient(135deg,#25d366,#128c7e);}
-.share-copy{background:linear-gradient(135deg,#242A30,#11151B);}
-.share-email{background:linear-gradient(135deg,#64748b,#334155);}
+/* cores sólidas com contraste de pelo menos 4,5:1 com o branco (acessibilidade, 19/11/2026) */
+.share-facebook{background:#1360c4;}
+.share-whatsapp{background:#0b7a6e;}
+.share-copy{background:#242A30;}
+.share-email{background:#475569;}
 .share-toast{display:none;margin-top:12px;background:#dcfce7;color:#166534;padding:10px 12px;border-radius:12px;font-weight:900;font-size:13px;}
 .share-toast.show{display:block;}
 .evento-detalhe-texto{

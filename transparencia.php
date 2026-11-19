@@ -117,7 +117,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     gap:8px;
     padding:9px 14px;
     border-radius:999px;
-    background:rgb(var(--ouro-rgb, 240 180 41) / .16);
+    background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 16%, #22282f);   /* sólido (acessibilidade, 19/11/2026) */
     border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);
     color:var(--ouro-claro, #f8d77a);
     font-weight:900;
@@ -168,10 +168,9 @@ $ultimosResolvidos = safeFetch($pdo, "
     display:grid;
     place-items:center;
     text-align:center;
-    background:rgba(255,255,255,.12);
+    background:color-mix(in srgb, #fff 12%, #1a1f26);   /* sólido (acessibilidade, 19/11/2026) */
     border:1px solid rgba(255,255,255,.22);
     box-shadow:0 32px 80px rgba(0,0,0,.28), inset 0 0 0 18px rgba(255,255,255,.035);
-    backdrop-filter:blur(14px);
     animation:transFloat 5s ease-in-out infinite;
 }
 
@@ -210,7 +209,7 @@ $ultimosResolvidos = safeFetch($pdo, "
     font-weight:900;
 }
 
-.trans-orb-badge b{
+.trans-orb-badge .negrito{
     color:var(--cor-principal);
     font-size:22px;
     margin-right:4px;
@@ -718,7 +717,7 @@ $ultimosResolvidos = safeFetch($pdo, "
             </div>
 
             <div class="trans-score-orb">
-                <div class="trans-orb-badge one"><b><?= (int)$total ?></b> pedidos</div>
+                <div class="trans-orb-badge one"><span class="negrito"><?= (int)$total ?></span> pedidos</div>
                 <div class="trans-score-card">
                     <div>
                         <strong><?= $taxaResolucao ?>%</strong>
@@ -726,7 +725,7 @@ $ultimosResolvidos = safeFetch($pdo, "
                         <small><?= te('transparencia.hero.taxa_texto') ?></small>
                     </div>
                 </div>
-                <div class="trans-orb-badge two"><b><?= (int)$resolvidos ?></b> resolvidos</div>
+                <div class="trans-orb-badge two"><span class="negrito"><?= (int)$resolvidos ?></span> resolvidos</div>
             </div>
         </div>
     </section>

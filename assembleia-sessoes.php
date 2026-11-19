@@ -57,13 +57,24 @@ function getDocumentosSessao($pdo, $sessaoId) {
         return [];
     }
 }
+
+/** Ordem de trabalhos como lista (uma linha do texto = um item), em vez de linhas separadas por <br> — o AccessMonitor
+ *  marca <br> usados como lista (acessibilidade, 19/11/2026). Fica com o mesmo aspeto. */
+function ordemTrabalhosLista($texto) {
+    $linhas = array_filter(array_map('trim', preg_split('/\R/', (string) $texto)), 'strlen');
+    $html = '<ul class="ordem-lista">';
+    foreach ($linhas as $linha) {
+        $html .= '<li>' . htmlspecialchars($linha) . '</li>';
+    }
+    return $html . '</ul>';
+}
 ?>
 
 <style>
 .sessoes-hero{background:linear-gradient(135deg,#242A30,#11151B 65%,#071c2e);color:white;padding:84px 0 96px;position:relative;overflow:hidden}
 .sessoes-hero:after{content:"";position:absolute;width:540px;height:540px;border-radius:50%;right:-220px;top:-250px;background:rgba(255,255,255,.07)}
 .sessoes-hero .container{position:relative;z-index:2}
-.sess-kicker{display:inline-flex;background:rgb(var(--ouro-rgb, 240 180 41) / .16);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
+.sess-kicker{display:inline-flex;background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 16%, #22282e);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .36);color:var(--ouro-claro, #f8d77a);padding:9px 14px;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;font-size:12px}
 .sessoes-hero h1{font-size:clamp(42px,5vw,70px);margin:18px 0 14px;line-height:1.02}
 .sessoes-hero p{max-width:790px;color:#dbeafe;font-size:20px;line-height:1.75;margin:0}
 .sess-shell{margin-top:-48px;position:relative;z-index:5}
@@ -76,7 +87,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
 .countdown-box strong{display:block;font-size:18px;margin-bottom:16px}
 .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .countdown-grid div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:14px 10px;text-align:center}
-.countdown-grid b{display:block;font-size:30px}
+.countdown-grid .negrito{display:block;font-size:30px}
 .countdown-grid small{color:#dbeafe;font-weight:800}
 .sess-section-card{background:white;border:1px solid #e5e7eb;border-radius:30px;padding:26px;box-shadow:0 18px 50px rgba(15,23,42,.08);margin-top:24px}
 .sess-section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
@@ -86,12 +97,13 @@ function getDocumentosSessao($pdo, $sessaoId) {
 .sess-card:hover{transform:translateY(-4px);box-shadow:0 20px 45px rgba(15,23,42,.10)}
 .sess-card-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px}
 .sess-date{width:64px;height:64px;border-radius:20px;background:#242A30;color:white;display:grid;place-items:center;text-align:center;box-shadow:0 14px 28px rgba(36,42,50,.20)}
-.sess-date b{display:block;font-size:23px;line-height:1}
+.sess-date .negrito{display:block;font-size:23px;line-height:1}
 .sess-date small{font-size:11px;font-weight:900;text-transform:uppercase}
 .sess-status{height:30px;display:inline-flex;align-items:center;padding:0 10px;border-radius:999px;background:#eef2ff;color:#242A30;font-size:12px;font-weight:900}
 .sess-card h3{color:#11151B;margin:0 0 10px;font-size:21px;line-height:1.25}
 .sess-card p{color:#64748b;line-height:1.6;margin:0 0 15px}
 .ordem-box{background:#f8fafc;border:1px solid #eef2f7;border-radius:18px;padding:14px;color:#334155;line-height:1.55;margin-top:14px}
+.ordem-lista{list-style:none;margin:0;padding:0}
 .docs-ligados{display:grid;gap:8px;margin-top:14px}
 .docs-ligados a{display:flex;justify-content:space-between;gap:10px;background:#eef2ff;color:#242A30;border-radius:14px;padding:10px 12px;text-decoration:none;font-weight:900;font-size:13px}
 .empty-sess{padding:24px;border-radius:22px;border:1px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-weight:800}
@@ -128,7 +140,7 @@ function getDocumentosSessao($pdo, $sessaoId) {
                     </div>
 
                     <?php if (!empty($proxima['ordem_trabalhos'])): ?>
-                        <div class="ordem-box"><strong><?= te('assembleia_sessoes.proxima.ordem') ?></strong><br><?= nl2br(htmlspecialchars($proxima['ordem_trabalhos'])) ?></div>
+                        <div class="ordem-box"><strong><?= te('assembleia_sessoes.proxima.ordem') ?></strong><?= ordemTrabalhosLista($proxima['ordem_trabalhos']) ?></div>
                     <?php endif; ?>
 
                     <?php $docsProxima = getDocumentosSessao($pdo, $proxima['id']); ?>
@@ -163,10 +175,10 @@ function getDocumentosSessao($pdo, $sessaoId) {
                 <div class="countdown-box">
                     <strong><?= te('assembleia_sessoes.proxima.contagem') ?></strong>
                     <div class="countdown-grid" id="sessCountdown" data-date="<?= htmlspecialchars($proxima['data_sessao'] . ' ' . $proxima['hora_sessao']) ?>">
-                        <div><b id="cdDias">0</b><small>Dias</small></div>
-                        <div><b id="cdHoras">0</b><small>Horas</small></div>
-                        <div><b id="cdMinutos">0</b><small>Min.</small></div>
-                        <div><b id="cdSegundos">0</b><small>Seg.</small></div>
+                        <div><span class="negrito" id="cdDias">0</span><small>Dias</small></div>
+                        <div><span class="negrito" id="cdHoras">0</span><small>Horas</small></div>
+                        <div><span class="negrito" id="cdMinutos">0</span><small>Min.</small></div>
+                        <div><span class="negrito" id="cdSegundos">0</span><small>Seg.</small></div>
                     </div>
                 </div>
             </div>
@@ -217,13 +229,13 @@ function getDocumentosSessao($pdo, $sessaoId) {
 
                         <article class="sess-card">
                             <div class="sess-card-top">
-                                <div class="sess-date"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
+                                <div class="sess-date"><div><span class="negrito"><?= date('d', strtotime($s['data_sessao'])) ?></span><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
                                 <span class="sess-status"><?= sessaoEstadoIcon($s['estado']) ?> <?= sessaoEstadoLabel($s['estado']) ?></span>
                             </div>
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
                             <div class="sess-meta"><span><i class="bi bi-clock-fill"></i> <?= substr($s['hora_sessao'], 0, 5) ?></span><span><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($s['local_sessao'] ?: 'A definir') ?></span></div>
                             <?php if (!empty($s['descricao'])): ?><p><?= htmlspecialchars($s['descricao']) ?></p><?php endif; ?>
-                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= nl2br(htmlspecialchars($s['ordem_trabalhos'])) ?></div><?php endif; ?>
+                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= ordemTrabalhosLista($s['ordem_trabalhos']) ?></div><?php endif; ?>
                             <?php if (!empty($docs)): ?><div class="docs-ligados"><?php foreach ($docs as $doc): ?><a href="/uploads/assembleia/<?= htmlspecialchars($doc['ficheiro']) ?>" target="_blank"><span><i class="bi bi-paperclip"></i> <?= htmlspecialchars($doc['titulo']) ?></span><small>Ver</small></a><?php endforeach; ?></div><?php endif; ?>
                         </article>
                     <?php endforeach; ?>
@@ -242,12 +254,12 @@ function getDocumentosSessao($pdo, $sessaoId) {
                         <?php $docs = getDocumentosSessao($pdo, $s['id']); ?>
                         <article class="sess-card">
                             <div class="sess-card-top">
-                                <div class="sess-date" style="background:#475569;"><div><b><?= date('d', strtotime($s['data_sessao'])) ?></b><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
+                                <div class="sess-date" style="background:#475569;"><div><span class="negrito"><?= date('d', strtotime($s['data_sessao'])) ?></span><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
                                 <span class="sess-status"><?= sessaoEstadoIcon($s['estado']) ?> <?= sessaoEstadoLabel($s['estado']) ?></span>
                             </div>
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
                             <div class="sess-meta"><span><i class="bi bi-clock-fill"></i> <?= substr($s['hora_sessao'], 0, 5) ?></span><span><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($s['local_sessao'] ?: 'A definir') ?></span></div>
-                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= nl2br(htmlspecialchars($s['ordem_trabalhos'])) ?></div><?php endif; ?>
+                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= ordemTrabalhosLista($s['ordem_trabalhos']) ?></div><?php endif; ?>
                             <?php if (!empty($docs)): ?><div class="docs-ligados"><?php foreach ($docs as $doc): ?><a href="/uploads/assembleia/<?= htmlspecialchars($doc['ficheiro']) ?>" target="_blank"><span><i class="bi bi-paperclip"></i> <?= htmlspecialchars($doc['titulo']) ?></span><small>Ver</small></a><?php endforeach; ?></div><?php endif; ?>
                         </article>
                     <?php endforeach; ?>

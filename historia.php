@@ -66,7 +66,10 @@ $heroImagem = !empty($pagina['hero_imagem'])
     : "/assets/img/freguesia-2.jpg";
 
 function textoSeguro($texto) {
-    return nl2br(htmlspecialchars($texto ?? ''));
+    // Parágrafos separados por linha em branco passam a <p> próprios (dentro do <p> de quem chama); as quebras
+    // simples continuam <br>. Antes era tudo <br><br> e o AccessMonitor marcava-os como lista feita com <br>, 19/11/2026
+    $paragrafos = preg_split('/\R\s*\R/', trim((string) ($texto ?? '')));
+    return implode('</p><p>', array_map(fn($p) => nl2br(htmlspecialchars(trim($p))), $paragrafos));
 }
 
 ?>

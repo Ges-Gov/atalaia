@@ -93,7 +93,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .eventos-hero-insane:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;right:-220px;top:-260px;background:rgba(255,255,255,.06)}
 .eventos-hero-insane:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(0deg,#f8fafc,transparent)}
 .eventos-hero-inner{position:relative;z-index:2;padding:80px 0 125px}
-.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--ouro-rgb, 240 180 41) / .15);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
+.eventos-kicker{display:inline-flex;align-items:center;gap:9px;background:color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 15%, #141820);border:1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);color:var(--ouro-claro, #f8d77a);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;margin-bottom:18px}
 .eventos-hero-insane h1{font-size:clamp(46px,7vw,84px);line-height:.98;margin:0 0 20px;letter-spacing:-2px}
 .eventos-hero-insane p{color:#dbeafe;font-size:21px;line-height:1.8;max-width:780px;margin:0}
 .eventos-main{position:relative;z-index:5;margin-top:-78px}
@@ -142,7 +142,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
   .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6)) .agenda-tooltip-insane:after{left:auto;right:30px;transform:none}
   .agenda-calendar-insane>.agenda-day-insane:nth-child(7n+1) .agenda-tooltip-insane:after{left:30px;transform:none}
 }
-.agenda-tooltip-insane b{display:block;margin-bottom:12px;color:#11151B}
+.agenda-tooltip-insane .negrito{display:block;margin-bottom:12px;color:#11151B}
 .tooltip-event-card{display:block;text-decoration:none;color:inherit;cursor:pointer;border-top:1px solid #eef2f7;padding:12px 8px 10px;margin-top:12px;border-radius:14px;transition:background .18s}
 .tooltip-event-card:hover{background:#f8fafc}
 .tooltip-event-cta{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-weight:900;font-size:13px;color:var(--cor-principal,#242A30)}
@@ -178,7 +178,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-vidro__info{display:grid;gap:16px;align-content:center;min-width:0}
 .evento-vidro .evento-feature-badge{margin:0;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;padding:7px 13px}
 .evento-vidro h2{font-size:clamp(26px,2.6vw,34px);line-height:1.12;letter-spacing:-.5px;margin:0;text-wrap:balance}
-.evento-vidro__faixa{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.evento-vidro__faixa{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:12px 14px;border-radius:16px;background:color-mix(in srgb, #fff 10%, #1a1d24);border:1px solid rgba(255,255,255,.2);font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
 .evento-vidro__faixa .bi{margin-right:6px;color:#f6d987}
 .evento-vidro .evento-countdown{background:none;border:0;border-radius:0;padding:0;margin:0;color:#f6d987;font-weight:700}
 .evento-vidro__local{display:flex;gap:8px;align-items:flex-start;margin:0;color:#e6ebf3;font-size:14.5px;line-height:1.45}
@@ -186,8 +186,10 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .evento-vidro__acoes{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:4px}
 .evento-vidro__acoes .ev-p{display:inline-flex;align-items:center;padding:10px 20px;border-radius:999px;background:#fff;color:#11151B;font-weight:700;font-size:15px;text-decoration:none;transition:background-color .25s ease}
 .evento-vidro__acoes .ev-p:hover{background:var(--cor-secundaria,#C8A02E)}
-.evento-vidro__acoes .ev-s{display:inline-flex;align-items:center;gap:8px;padding:6px 0;color:#fff;font-weight:700;font-size:15px;text-decoration:none;background:linear-gradient(currentColor,currentColor) left bottom/100% 1.5px no-repeat;transition:background-size .3s ease}
-.evento-vidro__acoes .ev-s:hover{background-size:0 1.5px}
+/* sublinhado com text-decoration e não com um gradiente de fundo (o AccessMonitor lia o gradiente branco como fundo do
+   texto branco), 19/11/2026 */
+.evento-vidro__acoes .ev-s{display:inline-flex;align-items:center;gap:8px;padding:6px 0;color:#fff;font-weight:700;font-size:15px;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:7px;transition:text-decoration-color .3s ease}
+.evento-vidro__acoes .ev-s:hover{text-decoration-color:transparent}
 .evento-vidro__acoes .ev-s .bi{transition:transform .3s ease}.evento-vidro__acoes .ev-s:hover .bi{transform:translateX(4px)}
 .evento-vidro__acoes a:focus-visible,.evento-vidro__cartaz:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .evento-vidro__cartaz{justify-self:center;display:block;padding:0;border:0;background:none;cursor:zoom-in;border-radius:16px;box-shadow:0 26px 50px -18px rgba(0,0,0,.7);transition:transform .3s ease;max-width:100%}
@@ -298,7 +300,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
                             <?php if ($temEventos): ?>
                                 <span class="event-dot-insane"></span>
                                 <div class="agenda-tooltip-insane">
-                                    <b><?= te('eventos.calendario.dia') ?></b>
+                                    <span class="negrito"><?= te('eventos.calendario.dia') ?></span>
 
                                     <?php foreach ($eventosPorDia[$dia] as $ev): ?>
                                         <a class="tooltip-event-card" href="/evento.php?id=<?= (int)$ev['id'] ?>">

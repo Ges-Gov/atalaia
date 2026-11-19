@@ -109,7 +109,8 @@ function textoSeguro($texto) {
     align-items: center;
     gap: 8px;
     color: var(--ouro, #C8A02E);
-    background: rgb(var(--ouro-rgb, 240 180 41) / .14);
+    /* fundos sólidos iguais ao que se via (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
+    background: color-mix(in srgb, rgb(var(--ouro-rgb, 240 180 41)) 14%, #15191f);
     border: 1px solid rgb(var(--ouro-rgb, 240 180 41) / .42);
     padding: 10px 16px;
     border-radius: 999px;
@@ -159,10 +160,9 @@ function textoSeguro($texto) {
 }
 
 .freguesia-btn.secondary {
-    background: rgba(255,255,255,.14);
+    background: color-mix(in srgb, #fff 14%, #191d24);
     color: white;
     border: 1px solid rgba(255,255,255,.25);
-    backdrop-filter: blur(10px);
 }
 
 .freguesia-btn:hover {
@@ -300,7 +300,7 @@ function textoSeguro($texto) {
 }
 
 .localidades-section .freguesia-kicker {
-    background: rgba(255,255,255,.10);
+    background: color-mix(in srgb, #fff 10%, #1a1f25);
     border-color: rgba(255,255,255,.18);
 }
 
@@ -557,7 +557,7 @@ function textoSeguro($texto) {
                 <?php if ($marcos): ?>
                     <ul class="mem-marcos" aria-label="Datas marcantes">
                         <?php foreach ($marcos as [$ano, $txt]): ?>
-                            <li><b><?= htmlspecialchars($ano) ?></b><span><?= htmlspecialchars($curto($txt)) ?></span></li>
+                            <li><span class="negrito"><?= htmlspecialchars($ano) ?></span><span><?= htmlspecialchars($curto($txt)) ?></span></li>
                         <?php endforeach; ?>
                     </ul>
                     <a class="mem-marcos__mais" href="/historia.php"><?= te('freguesia.intro.link_historia') ?> <i class="bi bi-arrow-right" aria-hidden="true"></i></a>

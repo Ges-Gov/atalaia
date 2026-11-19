@@ -53,7 +53,8 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
     align-items:center;
     gap:8px;
     color:var(--cor-secundaria);
-    background:rgba(240,180,41,.13);
+    /* fundos sólidos iguais ao que se via (o AccessMonitor não calcula o contraste sobre transparências), 19/11/2026 */
+    background:color-mix(in srgb, rgb(240 180 41) 13%, color-mix(in srgb, var(--cor-principal) 85%, #11151B));
     border:1px solid rgba(240,180,41,.34);
     border-radius:999px;
     padding:8px 13px;
@@ -80,7 +81,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
 }
 
 .atestado-hero-card{
-    background:rgba(255,255,255,.12);
+    background:color-mix(in srgb, #fff 12%, color-mix(in srgb, var(--cor-principal) 35%, #11151B));
     border:1px solid rgba(255,255,255,.18);
     border-radius:30px;
     padding:28px;
@@ -202,10 +203,10 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
 
 .atestado-field input{
     width:100%;
-    min-height:54px;
+    min-height:50px;
     border:1px solid #dbe4ee;
     border-radius:16px;
-    padding:18px 15px 8px;
+    padding:12px 15px;
     background:#f8fafc;
     color:#11151B;
     font-size:15px;
@@ -215,17 +216,16 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
     box-sizing:border-box;
 }
 
+/* Etiqueta por cima do campo, fora da caixa (era desenhada dentro dela: o AccessMonitor dá a etiqueta como mal
+   posicionada, nível A), 19/11/2026 */
 .atestado-field label{
-    position:absolute;
-    top:7px;
-    left:15px;
-    margin:0;
-    color:#64748b;
-    font-size:11px;
+    display:block;
+    margin:0 0 6px 4px;
+    color:#475569;
+    font-size:12px;
     font-weight:900;
     text-transform:uppercase;
     letter-spacing:.5px;
-    pointer-events:none;
 }
 
 .atestado-field input:hover{
@@ -331,7 +331,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
     place-items:center;
 }
 
-.atestado-step b{
+.atestado-step .negrito{
     display:block;
     color:#11151B;
     margin-bottom:4px;
@@ -521,7 +521,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
                     <div class="atestado-step">
                         <strong>1</strong>
                         <div>
-                            <b>Preencher dados</b>
+                            <span class="negrito">Preencher dados</span>
                             <p>Insira a identificação e a morada completa do requerente.</p>
                         </div>
                     </div>
@@ -529,7 +529,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
                     <div class="atestado-step">
                         <strong>2</strong>
                         <div>
-                            <b>Gerar documento</b>
+                            <span class="negrito">Gerar documento</span>
                             <p>O sistema cria automaticamente o atestado com os dados submetidos.</p>
                         </div>
                     </div>
@@ -537,7 +537,7 @@ $va = fn(string $k): string => htmlspecialchars((string)($valAt[$k] ?? ''), ENT_
                     <div class="atestado-step">
                         <strong>3</strong>
                         <div>
-                            <b>Guardar PDF</b>
+                            <span class="negrito">Guardar PDF</span>
                             <p>O documento fica pronto para impressão, arquivo ou validação interna.</p>
                         </div>
                     </div>

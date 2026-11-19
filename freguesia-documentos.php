@@ -307,7 +307,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
     width:64px;
     height:76px;
     border-radius:14px;
-    background:linear-gradient(135deg,#ef4444,#dc2626);
+    background:#dc2626;   /* sólido: o início claro do gradiente não tinha contraste com o branco (19/11/2026) */
     color:white;
     display:grid;
     place-items:center;
@@ -506,9 +506,10 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
         <div class="container">
             <div class="docs-filter-card">
                 <form method="GET" class="docs-filter-form" data-ajax-alvo="documentos" role="search" aria-label="Filtrar documentos">
+                    <label for="docsPesquisa" class="filtro-rotulo">Pesquisar documentos</label>
                     <div class="docs-input-wrap">
-                        <span><i class="bi bi-search"></i></span>
-                        <input type="text" name="pesquisa" placeholder="Pesquisar por título ou descrição..." value="<?= htmlspecialchars($pesquisa) ?>">
+                        <span aria-hidden="true"><i class="bi bi-search"></i></span>
+                        <input type="text" id="docsPesquisa" name="pesquisa" placeholder="Pesquisar por título ou descrição..." value="<?= htmlspecialchars($pesquisa) ?>">
                     </div>
 
                     <div class="docs-select-wrap">

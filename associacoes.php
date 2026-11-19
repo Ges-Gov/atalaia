@@ -749,4 +749,6 @@ function getAssociacaoIcon($nome)
 
 </div>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['associacoes' => 'atualizado_em'], ['associacoes.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

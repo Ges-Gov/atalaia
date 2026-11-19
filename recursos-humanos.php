@@ -110,4 +110,6 @@ function rhListaDocs(array $lista): void
     <?php endforeach; ?>
 </div></section>
 <?php endif; ?>
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['recursos_humanos_config' => 'atualizado_em', 'recursos_humanos_documentos' => 'atualizado_em'], ['recursos_humanos.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

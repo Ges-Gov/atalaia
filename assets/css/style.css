@@ -8274,7 +8274,7 @@ body .home-news-events-premium .evento-semana-card--cor .evento-countdown{
 
     body .quick-access-section{ margin-top: 28px; }   /* por baixo do slideshow, sem o tapar (15/10, a pedido) */
     body .hero-pesquisa{ min-height: 52px; font-size: 15.5px; margin-bottom: 14px; }
-    body .hero-pesquisa__exemplos{ font-size: 13px; }
+    body .hero-pesquisa__exemplos{ font-size: 13.5px; }   /* era 13px; mínimo 10 pt (Selo, 19/11/2026) */
     body .quick-access-grid--6 .quick-card{ padding: 14px 16px; gap: 4px; }
     body .quick-access-grid--6 .quick-card span{ width: 36px; height: 36px; font-size: 17px; border-radius: 12px; margin-bottom: 4px; }
     body .quick-access-grid--6 .quick-card strong{ font-size: 14.5px; }
@@ -8929,7 +8929,7 @@ body:not(#_):not(#__) .req-side-card.dark .req-kicker{ color: color-mix(in srgb,
 }
 .pres__kicker.section-kicker, .pres-equipa__titulo.section-kicker{ margin: 0 0 14px; line-height: 1.3; }
 .pres-equipa{ gap: 12px; }
-.pres-equipa__titulo{ font-size: 13px !important; }
+.pres-equipa__titulo{ font-size: 13.5px !important; }   /* era 13px; mínimo 10 pt (Selo, 19/11/2026) */
 @media (min-width: 1200px){
     .pres-equipa__grupo{ display: flex; flex-direction: column; }
     
@@ -9562,3 +9562,51 @@ form>.campo-erro{grid-column:1/-1;margin-top:-6px}
 :root body :is(.login-input-group, .registo-input-group, .recuperar-input-group):not(.password-group) input{
     align-self: stretch; height: auto; min-width: 0; padding: 0 16px 0 47px !important; border-radius: inherit;
 }
+
+/* ==========================================================================
+   19/11/2026 — Selo de Usabilidade e Acessibilidade, checklist «Conteúdo».
+   ========================================================================== */
+/* 2.2 Informação secundária (etiquetas, datas, notas) com 10 pt no mínimo: tudo o que estava abaixo de 13,3 px passa a
+   13,5 px. Lista medida em todas as páginas do site (computador e telemóvel); só textos que eram mais pequenos. */
+:root body:not(#_) :is(
+    .agenda-weekdays-insane span, .asm-cargo, .asm-kick2, .asm-kicker, .assoc-category-float, .assoc-kicker,
+    .assoc-tabs a, .atestado-badge, .atestado-eyebrow, .atestado-field label, .bottom-app-nav small, .brand small,
+    .cal-botoes__rot, .cal-btn, .cal-faltam, .cd-kicker:not(.dn-hero *),.comercio-info strong, .comercio-kicker,
+    .comercio-type-float, .compete-kicker, .contact-kicker, .cp-info-kicker, .cp-kicker, .credito a, .credito-onde,
+    .ct-aberto, .ct-contador, .ct-kicker, .ct-lista small, .ct-mapa-nota, .ct-mfiltro__btn .negrito,
+    .ct-msub__op .negrito, .ct-rapido small, .cu-emergencia__t, .cu-filtro span, .cu-procura__rotulo, .cu__cat,
+    .dn-help, .doc-download-link, .doc-meta-mini span, .docs-auto-badges span, .docs-kicker, .dpo-kicker,
+    .editorial__categoria, .editorial__texto time, .evento-badge, .evento-card-date span, .evento-feature-badge,
+    .evento-semana__etiqueta, .evento-semana__marca small, .evento-share-head span, .eventos-kicker, .exe-etiqueta,
+    .exe-kicker, .exe-sec__kicker, .faq-kicker, .filtro-comercio, .filtro-comercio small, .filtro-rotulo,
+    .freguesia-kicker, .func-kicker, .galeria-album-nome, .galeria-publica-hero .container > span,
+    .galeria-publica-legenda small, .heraldica-kicker, .hero-pesquisa__atalho,
+    .historia-heraldica-divider span, .historia-kicker, .historia-side-kicker,
+    .hoje__rotulo, .hoje__txt small, .hoje__txt span, .legal-kicker, .legal-table caption, .links-uteis__titulo,
+    .lr-info-item span, .lr-kicker, .lr-section-head span, .map-legend span, .map-search-rotulo, .mapa-kicker,
+    .mapa-limite-card span, .mapa-pedido-title small, .marcacoes-eyebrow, .marcacoes-field label,
+    .marcacoes-field legend, .mem-cal__quando, .mem-credito-foto, figcaption > .mem-credito, .mem-etiqueta, .mem-fonte a,
+    .evento-detalhe-hero .container > span, .mapa-sidebar-insane .ponto-card-insane span,
+    .mem-foto__data, .mem-marcos li > span:not(.negrito), .mem-tempo__fase, .news-tabs span, .noticia-clean-badge,
+    .noticia-clean-date, .noticia-share-head span, .noticias-kicker-clean, .ocorrencias-kicker,
+    .ocorrencias-legenda span, .ponto-category-float, .ponto-mini-tag,
+    .ponto-tile__meta span, .pontos-kicker, .pontos-tabs span, .premium-event-card p, .premium-event-date span,
+    .pres-equipa__rotulo, .pres-equipa__txt small, .quick-card small, .req-consent-text, .req-file-note, .req-kicker,
+    .rh-kicker, .rodape__horario-tag, .rodape__titulo, .section-kicker, .sess-date small, .sess-kicker,
+    .sess-meta span, .sess-status, .share-note, .sidebar-head span, .sugestoes-kicker, .trans-kicker,
+    .trans-live-item span, .trans-panel-badge, .trans-section-head span, .trans-status-pill span, .mem-fonte
+){ font-size: 13.5px; }
+/* 2.4 Espaçamento entre linhas de 1,5 no mínimo (os poucos textos que estavam a 1,35–1,45) */
+:root body:not(#_) :is(.pres__assinatura, .mem-fonte, .cu__info, .cu__info li){ line-height: 1.5; }
+/* 2.3 Linhas de texto com 100 caracteres no máximo: os parágrafos que ocupavam a largura toda quebram a ~70 */
+:root body:not(#_) :is(.mem-cal__corpo p, .mem-fontes li, .localidade-card p, .exe-fonte, .ct-mapa-nota, .legal-hero p){ max-width: 70ch; }
+/* 3.3 Ligações dentro do texto sublinhadas (não só pela cor) */
+:root body:not(#_) main :is(p, li, dd, figcaption) a:not([class]):not(nav a, footer a, header a),
+:root body:not(#_) :is(.mem-fontes, .exe-fonte, .mem-fonte, .exe-contactos) a{ text-decoration: underline; text-underline-offset: 2px; }
+/* 1.2 Termos do glossário nos textos (ligados pelo app.js): sublinhado pontilhado, a cor do texto */
+.termo-glossario{ color: inherit; text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; }
+.termo-glossario:hover, .termo-glossario:focus-visible{ color: var(--cor-principal); text-decoration-style: solid; }
+:root[data-tema="escuro"] .termo-glossario:hover, :root[data-tema="escuro"] .termo-glossario:focus-visible{ color: var(--ouro-vivo, #e3c463); }
+/* 1.3 «Página atualizada em …» no fim do conteúdo */
+.pagina-atualizada{ display: flex; align-items: center; gap: 6px; margin: 32px 0 8px; font-size: 13.5px; color: #475569; }
+:root[data-tema="escuro"] .pagina-atualizada{ color: var(--escuro-texto-2, #cbd5e1); }

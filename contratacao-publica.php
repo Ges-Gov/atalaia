@@ -50,4 +50,6 @@ $baseGovUrl = !empty($cfg['botao_link'])
     </section>
 </div>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['contratacao_publica_pagina' => 'atualizado_em', 'contratacao_publica' => 'data_publicacao'], ['contratacao_publica.']) ?></div>
 <?php require_once __DIR__ . "/includes/footer.php"; ?>

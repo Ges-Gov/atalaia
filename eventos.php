@@ -130,7 +130,9 @@ $heroImagem = !empty($proximoEvento['imagem'])
 .agenda-tooltip-insane:before{content:"";position:absolute;left:0;right:0;top:100%;height:16px}
 /* Visível e CLICÁVEL enquanto o rato estiver no dia OU no próprio pop-up.
    (pointer-events:auto é essencial: com "none" os cliques atravessavam-no.) */
+/* 19/11/2026: também com o foco do teclado (:focus-within), não só com o rato (Selo, «Conteúdo» 5.1) */
 .agenda-day-insane:hover .agenda-tooltip-insane,
+.agenda-day-insane:focus-within .agenda-tooltip-insane,
 .agenda-tooltip-insane:hover{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 /* 13/11/2026: no computador, a janela dos dias das pontas (sábado, domingo e segunda) abre para dentro do calendário;
    centrada no dia, saía do ecrã e ficava cortada */
@@ -138,6 +140,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
   .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6)) .agenda-tooltip-insane{left:auto;right:-6px;transform:translateY(8px)}
   .agenda-calendar-insane>.agenda-day-insane:nth-child(7n+1) .agenda-tooltip-insane{left:-6px;transform:translateY(8px)}
   .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6),:nth-child(7n+1)):hover .agenda-tooltip-insane,
+  .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6),:nth-child(7n+1)):focus-within .agenda-tooltip-insane,
   .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6),:nth-child(7n+1)) .agenda-tooltip-insane:hover{transform:translateY(0)}
   .agenda-calendar-insane>.agenda-day-insane:is(:nth-child(7n),:nth-child(7n+6)) .agenda-tooltip-insane:after{left:auto;right:30px;transform:none}
   .agenda-calendar-insane>.agenda-day-insane:nth-child(7n+1) .agenda-tooltip-insane:after{left:30px;transform:none}
@@ -151,7 +154,7 @@ $heroImagem = !empty($proximoEvento['imagem'])
    Passa a painel fixo em baixo (por cima da barra de navegação), sempre inteiro e com a largura do ecrã. */
 @media (max-width:760px), (hover:none){
   .agenda-tooltip-insane{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));width:auto!important;max-height:min(60vh,420px);overflow:auto;transform:translateY(12px);border-radius:var(--raio-cartao,20px);box-shadow:0 -6px 30px -10px rgba(15,23,42,.25),0 24px 60px -20px rgba(15,23,42,.45);z-index:1200}
-  .agenda-day-insane:hover .agenda-tooltip-insane,.agenda-tooltip-insane:hover{transform:translateY(0)}
+  .agenda-day-insane:hover .agenda-tooltip-insane,.agenda-day-insane:focus-within .agenda-tooltip-insane,.agenda-tooltip-insane:hover{transform:translateY(0)}
   .agenda-tooltip-insane:after,.agenda-tooltip-insane:before{display:none}
   .agenda-day-insane:hover{transform:none} /* um transform no dia prendia o painel fixo ao dia */
 }

@@ -178,4 +178,6 @@ document.querySelectorAll('.faq-question').forEach(function (btn) {
 });
 </script>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['faqs' => ['atualizado_em', 'criado_em']], ['faq.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

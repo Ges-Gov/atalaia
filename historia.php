@@ -801,4 +801,6 @@ function textoSeguro($texto) {
 
 </div>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['pagina_historia' => 'atualizado_em', 'heraldica_pagina' => 'atualizado_em', 'heraldica_elementos' => 'atualizado_em'], ['historia.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

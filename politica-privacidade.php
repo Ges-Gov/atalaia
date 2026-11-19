@@ -26,7 +26,10 @@
 
 <div class="legal-shell">
     <div class="legal-card">
-        <p class="legal-meta"><?= te('politica_privacidade.hero.atualizacao') ?> <?= date('m/Y') ?></p>
+        <?php /* data real da última alteração do texto (antes era o mês corrente, que mudava sozinho), 19/11/2026 */
+        require_once __DIR__ . '/includes/atualizacao.php';
+        $atualizadaEm = paginaAtualizadaData([], ['politica_privacidade.'], '2026-10-20'); ?>
+        <p class="legal-meta"><?= te('politica_privacidade.hero.atualizacao') ?> <?= $atualizadaEm ? date('d/m/Y', $atualizadaEm) : '' ?></p>
 
         <h2><?= te('politica_privacidade.ponto1.titulo') ?></h2>
         <p>A <strong><?= htmlspecialchars(siteConfig('nome_site', 'Junta de Freguesia')) ?></strong> é a

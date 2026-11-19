@@ -882,4 +882,6 @@ $heroImagem = !empty($todosComercio[0]['imagem'])
 
 
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['comercio_local' => 'atualizado_em'], ['comercio.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

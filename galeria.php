@@ -194,7 +194,7 @@ a.galeria-publica-item .galeria-publica-legenda{opacity:1;transform:none;font-si
     .galeria-publica-grid{columns:2;column-gap:10px;}
     .galeria-publica-item{margin-bottom:10px;}
     .galeria-publica-item{border-radius:14px;}
-    .galeria-publica-legenda{opacity:1;transform:none;padding:30px 12px 10px;font-size:13px;}
+    .galeria-publica-legenda{opacity:1;transform:none;padding:30px 12px 10px;font-size:13.5px;}   /* era 13px; mínimo 10 pt (Selo, 19/11/2026) */
     .galeria-publica-zoom{display:none;}
 }
 </style>

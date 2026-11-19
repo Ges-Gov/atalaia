@@ -443,4 +443,6 @@ if ($totalLugares > 0 && $comLugar) {
 })();
 </script>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['assembleia_composicao' => 'atualizado_em'], ['assembleia_composicao.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

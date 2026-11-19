@@ -32,7 +32,10 @@ $clarityAtivo = function_exists('temaConfig') ? (temaConfig('clarity_project_id'
 
 <div class="legal-shell">
     <div class="legal-card">
-        <p class="legal-meta"><?= te('politica_cookies.hero.atualizacao') ?> <?= date('m/Y') ?></p>
+        <?php /* data real da última alteração do texto (antes era o mês corrente, que mudava sozinho), 19/11/2026 */
+        require_once __DIR__ . '/includes/atualizacao.php';
+        $atualizadaEm = paginaAtualizadaData([], ['politica_cookies.'], '2026-11-13'); ?>
+        <p class="legal-meta"><?= te('politica_cookies.hero.atualizacao') ?> <?= $atualizadaEm ? date('d/m/Y', $atualizadaEm) : '' ?></p>
 
         <h2><?= te('politica_cookies.ponto1.titulo') ?></h2>
         <p><?= te('politica_cookies.ponto1.texto1') ?>

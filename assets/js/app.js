@@ -2290,3 +2290,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     requestAnimationFrame(passo);
 });
+
+
+/* ---------- Glossário nos textos (19/11/2026) -------------------------------------
+   Selo de Usabilidade e Acessibilidade, «Conteúdo» 1.2: os termos menos correntes têm a definição agregada.
+   A primeira ocorrência de cada termo do glossário no conteúdo da página (parágrafos, listas, definições) passa a ser
+   uma ligação para a sua definição em /glossario.php, com a definição também no title. Nunca dentro de títulos,
+   ligações, botões, menus, cabeçalho, rodapé ou topo da página. A lista vem do rodapé (#glossarioTermos). */
+document.addEventListener("DOMContentLoaded", function () {
+    const dados = document.getElementById("glossarioTermos");
+    if (!dados || location.pathname.indexOf("/glossario") === 0) return;
+    let termos;
+    try { termos = JSON.parse(dados.textContent || "[]"); } catch (e) { return; }
+    const zona = document.querySelector("main") || document.body;
+    const proibido = "a, button, label, h1, h2, h3, h4, h5, h6, nav, header, footer, script, style, textarea, select, option, [class*='hero'], .sr-only, [aria-hidden='true'], [hidden], [contenteditable]";
+    const blocos = Array.prototype.filter.call(zona.querySelectorAll("p, li, dd, td"), function (b) { return !b.closest(proibido); });
+    const escapar = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); };
+    termos.forEach(function (t) {
+        const re = new RegExp("(^|[^\\p{L}\\p{N}])(" + t.formas.map(escapar).join("|") + ")(?![\\p{L}\\p{N}])", "u");
+        for (const bloco of blocos) {
+            const andar = document.createTreeWalker(bloco, NodeFilter.SHOW_TEXT, {
+                acceptNode: function (n) { return n.parentElement && !n.parentElement.closest(proibido) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; }
+            });
+            let no, achou = false;
+            while ((no = andar.nextNode())) {
+                const m = no.nodeValue.match(re);
+                if (!m) continue;
+                const resto = no.splitText(m.index + m[1].length);
+                resto.splitText(m[2].length);
+                const a = document.createElement("a");
+                a.className = "termo-glossario";
+                a.href = "/glossario.php#" + t.id;
+                a.title = t.def;
+                a.textContent = m[2];
+                resto.parentNode.replaceChild(a, resto);
+                achou = true;
+                break;
+            }
+            if (achou) break;
+        }
+    });
+});

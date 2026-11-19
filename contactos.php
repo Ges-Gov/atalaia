@@ -727,4 +727,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<?php require_once __DIR__ . '/includes/atualizacao.php'; /* data da última alteração (Selo, «Conteúdo» 1.3), 19/11/2026 */ ?>
+<div class="container"><?= paginaAtualizada(['contactos_pagina_config' => 'atualizado_em', 'contactos_uteis' => 'atualizado_em'], ['contactos.', 'contactos_uteis.']) ?></div>
 <?php require_once "includes/footer.php"; ?>

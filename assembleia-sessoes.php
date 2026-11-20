@@ -1,4 +1,5 @@
 <?php require_once "includes/header.php"; ?>
+<?php require_once "includes/assembleia_pontos.php";   /* 20/11/2026: ordem de trabalhos por pontos */ ?>
 
 <?php
 $hoje = date('Y-m-d');
@@ -68,6 +69,21 @@ function ordemTrabalhosLista($texto) {
     }
     return $html . '</ul>';
 }
+
+/** Ordem de trabalhos de uma sessão: os pontos (20/11/2026) ou, se ainda não os tiver, o texto antigo. */
+function ordemDaSessao($pdo, array $s, bool $comResultados): string {
+    $pontos = assembleiaPontos($pdo, (int)$s['id']);
+    if ($pontos) return assembleiaPontosHtml($pontos, $comResultados);
+    return !empty($s['ordem_trabalhos']) ? ordemTrabalhosLista($s['ordem_trabalhos']) : '';
+}
+
+/** Documentos da sessão (convocatória, edital, ata) como ligações. */
+function documentosSessaoHtml(array $docs): string {
+    if (!$docs) return '';
+    $h = '<div class="docs-ligados">';
+    foreach ($docs as $doc) $h .= '<a href="/uploads/assembleia/' . htmlspecialchars(rawurlencode((string)$doc['ficheiro'])) . '" target="_blank" rel="noopener"><span><i class="bi bi-paperclip" aria-hidden="true"></i> ' . htmlspecialchars($doc['titulo']) . '</span><small>Ver</small></a>';
+    return $h . '</div>';
+}
 ?>
 
 <style>
@@ -104,6 +120,16 @@ function ordemTrabalhosLista($texto) {
 .sess-card p{color:#64748b;line-height:1.6;margin:0 0 15px}
 .ordem-box{background:#f8fafc;border:1px solid #eef2f7;border-radius:18px;padding:14px;color:#334155;line-height:1.55;margin-top:14px}
 .ordem-lista{list-style:none;margin:0;padding:0}
+.ordem-periodo{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#475569;margin:10px 0 4px}
+.ordem-periodo:first-child{margin-top:4px}
+.ordem-pontos > li{padding:4px 0}
+.ordem-sub{margin:4px 0 0 22px}
+.ordem-num{font-weight:900;color:#11151B}
+.ordem-ref{color:#475569;font-size:13px}
+.ordem-resultado{display:inline-block;margin:3px 0 0;padding:2px 9px;border-radius:999px;background:#e2e8f0;color:#1e293b;font-size:12.5px;font-weight:800}
+.ordem-resultado--aprovado{background:#dcfce7;color:#14532d}.ordem-resultado--rejeitado{background:#fee2e2;color:#7f1d1d}
+.ordem-docs{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0}
+.ordem-docs a{display:inline-flex;align-items:center;gap:5px;background:#eef2ff;color:#242A30;border-radius:10px;padding:4px 9px;font-size:12.5px;font-weight:800;text-decoration:none}
 .docs-ligados{display:grid;gap:8px;margin-top:14px}
 .docs-ligados a{display:flex;justify-content:space-between;gap:10px;background:#eef2ff;color:#242A30;border-radius:14px;padding:10px 12px;text-decoration:none;font-weight:900;font-size:13px}
 .empty-sess{padding:24px;border-radius:22px;border:1px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-weight:800}
@@ -139,36 +165,13 @@ function ordemTrabalhosLista($texto) {
                         <span><?= sessaoEstadoIcon($proxima['estado']) ?> <?= sessaoEstadoLabel($proxima['estado']) ?></span>
                     </div>
 
-                    <?php if (!empty($proxima['ordem_trabalhos'])): ?>
-                        <div class="ordem-box"><strong><?= te('assembleia_sessoes.proxima.ordem') ?></strong><?= ordemTrabalhosLista($proxima['ordem_trabalhos']) ?></div>
+                    <?php $ordemProxima = ordemDaSessao($pdo, $proxima, false); if ($ordemProxima !== ''): ?>
+                        <div class="ordem-box"><strong><?= te('assembleia_sessoes.proxima.ordem') ?></strong><?= $ordemProxima ?></div>
                     <?php endif; ?>
 
                     <?php $docsProxima = getDocumentosSessao($pdo, $proxima['id']); ?>
                     <?php if (!empty($docsProxima)): ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        <?= documentosSessaoHtml($docsProxima) ?>
                     <?php endif; ?>
                 </div>
 
@@ -192,41 +195,7 @@ function ordemTrabalhosLista($texto) {
             <?php if (!empty($futuras)): ?>
                 <div class="sess-grid">
                     <?php foreach ($futuras as $s): ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        <?php $docs = getDocumentosSessao($pdo, $s['id']); ?>
                         <article class="sess-card">
                             <div class="sess-card-top">
                                 <div class="sess-date"><div><span class="negrito"><?= date('d', strtotime($s['data_sessao'])) ?></span><small><?= ['', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][(int)date('n', strtotime($s['data_sessao']))] ?></small></div></div>
@@ -235,8 +204,8 @@ function ordemTrabalhosLista($texto) {
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
                             <div class="sess-meta"><span><i class="bi bi-clock-fill"></i> <?= substr($s['hora_sessao'], 0, 5) ?></span><span><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($s['local_sessao'] ?: 'A definir') ?></span></div>
                             <?php if (!empty($s['descricao'])): ?><p><?= htmlspecialchars($s['descricao']) ?></p><?php endif; ?>
-                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= ordemTrabalhosLista($s['ordem_trabalhos']) ?></div><?php endif; ?>
-                            <?php if (!empty($docs)): ?><div class="docs-ligados"><?php foreach ($docs as $doc): ?><a href="/uploads/assembleia/<?= htmlspecialchars($doc['ficheiro']) ?>" target="_blank"><span><i class="bi bi-paperclip"></i> <?= htmlspecialchars($doc['titulo']) ?></span><small>Ver</small></a><?php endforeach; ?></div><?php endif; ?>
+                            <?php $ordem = ordemDaSessao($pdo, $s, false); if ($ordem !== ''): ?><div class="ordem-box"><?= $ordem ?></div><?php endif; ?>
+                            <?= documentosSessaoHtml($docs) ?>
                         </article>
                     <?php endforeach; ?>
                 </div>
@@ -259,8 +228,8 @@ function ordemTrabalhosLista($texto) {
                             </div>
                             <h3><?= htmlspecialchars($s['titulo']) ?></h3>
                             <div class="sess-meta"><span><i class="bi bi-clock-fill"></i> <?= substr($s['hora_sessao'], 0, 5) ?></span><span><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($s['local_sessao'] ?: 'A definir') ?></span></div>
-                            <?php if (!empty($s['ordem_trabalhos'])): ?><div class="ordem-box"><?= ordemTrabalhosLista($s['ordem_trabalhos']) ?></div><?php endif; ?>
-                            <?php if (!empty($docs)): ?><div class="docs-ligados"><?php foreach ($docs as $doc): ?><a href="/uploads/assembleia/<?= htmlspecialchars($doc['ficheiro']) ?>" target="_blank"><span><i class="bi bi-paperclip"></i> <?= htmlspecialchars($doc['titulo']) ?></span><small>Ver</small></a><?php endforeach; ?></div><?php endif; ?>
+                            <?php $ordem = ordemDaSessao($pdo, $s, $s['estado'] === 'realizada'); if ($ordem !== ''): ?><div class="ordem-box"><?= $ordem ?></div><?php endif; ?>
+                            <?= documentosSessaoHtml($docs) ?>
                         </article>
                     <?php endforeach; ?>
                 </div>

@@ -139,6 +139,7 @@ function menuAdminDefinicao(array $badges = []): array
             ['chave' => 'assembleia_documentos', 'rotulo' => 'Documentos', 'href' => 'assembleia-documentos.php', 'icone' => 'bi-folder2-open', 'site' => '/assembleia-documentos.php',
              'dica' => 'Atas, convocatórias e editais da Assembleia'],
             ['chave' => 'assembleia_sessoes', 'rotulo' => 'Sessões', 'href' => 'assembleia-sessoes.php', 'icone' => 'bi-calendar3', 'site' => '/assembleia-sessoes.php',
+             'rel' => ['assembleia-sessao-pontos.php', 'assembleia-sessao-pdf.php'],   /* 20/11/2026: pontos da ordem de trabalhos e convocatória/edital */
              'dica' => 'Calendário e ordem de trabalhos das sessões'],
             ['chave' => 'assembleia_votacoes', 'rotulo' => 'Votações', 'href' => 'assembleia-votacoes.php', 'icone' => 'bi-ui-checks',
              'dica' => 'Votações online dos membros da Assembleia',

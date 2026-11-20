@@ -9615,3 +9615,29 @@ form>.campo-erro{grid-column:1/-1;margin-top:-6px}
 .noticia-detail-content p{ margin: 0 0 1.9em; }
 .noticia-detail-content p:last-child{ margin-bottom: 0; }
 .noticia-detail-content .linha, .evento-detalhe-texto .linha{ display: block; }
+
+/* 20/11/2026 (pedido da direção): barra do topo mais baixa nos portáteis. Entre 1181 e 1599 px o subtítulo fica numa só
+   linha e é ele que dá a largura ao bloco; o nome da Junta parte dentro dessa largura (width:0 + min-width:100% = não
+   alarga o bloco). Até 1439 px as redes sociais saem da barra (continuam no rodapé) e o menu fica mais junto. */
+@media (min-width: 1181px){
+    body .site-header .header-inner .brand small{ white-space: nowrap; line-height: 1.35; margin-top: 3px; }
+}
+@media (min-width: 1181px) and (max-width: 1599px){
+    body .site-header .header-inner .brand{ flex: 0 0 auto; }
+    body .site-header .header-inner .brand > div{ min-width: 0; }
+    body .site-header .header-inner .brand strong{ display: block; width: 0; min-width: 100%; }
+    body .site-header .header-inner .brand small{ display: block; }
+}
+@media (min-width: 1181px) and (max-width: 1439px){
+    body .site-header .menu-redes--barra{ display: none; }
+}
+@media (min-width: 1181px) and (max-width: 1440px){
+    body .site-header .main-nav > a,
+    body .site-header .main-nav > .nav-dropdown > .nav-parent{ padding-left: 10px !important; padding-right: 10px !important; }
+}
+@media (min-width: 1181px) and (max-width: 1300px){
+    body .site-header .header-inner{ gap: 6px; padding-left: 14px; }
+    body .site-header .header-inner .brand img{ height: 50px !important; }
+    body .site-header .main-nav > a,
+    body .site-header .main-nav > .nav-dropdown > .nav-parent{ padding-left: 7px !important; padding-right: 7px !important; font-size: 15px; }
+}

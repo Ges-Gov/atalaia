@@ -4,6 +4,7 @@ $adminActive = "pedidos";
 require_once "includes/header.php";
 require_once "../includes/mail_helper.php";
 require_once "../includes/texto_rico.php";   // 06/11/2026: respostas com formatação (só a Atalaia)
+require_once "includes/ocorrencias_percurso.php";   // 20/11/2026: encaminhar, registar o que foi feito, quem fez cada passo
 
 /* LOG OPERACIONAL */
 function criarLogOperacional($pdo, $adminId, $pedidoId, $tipo, $mensagem)
@@ -43,18 +44,15 @@ if (!adminPodeTratarPedido($pdo, $pedido)) {
         'Só pode abrir as ocorrências que lhe foram atribuídas ou em que foi indicado como colaborador. Se precisar desta, peça ao administrador da Junta.');
 }
 
-/* Lista operadores (só o admin master atribui) */
+/* Pessoas da equipa que podem ser responsáveis ou colaboradoras (administradores e assistentes operacionais).
+   20/11/2026: antes só os operadores podiam ser o responsável. */
+$pessoasEquipa = percursoPessoas($pdo);
 $operadores = [];
-if (isAdminMaster()) {
-    $stmtOps = $pdo->query("
-        SELECT id, nome, username
-        FROM admin_utilizadores
-        WHERE tipo = 'operador'
-        AND ativo = 1
-        ORDER BY nome ASC
-    ");
-    $operadores = $stmtOps->fetchAll(PDO::FETCH_ASSOC);
-}
+foreach ($pessoasEquipa as $pid => $pp) $operadores[] = ['id' => $pid, 'nome' => $pp['nome'], 'username' => $pp['nome']];
+
+/* Aviso depois de encaminhar / registar trabalho (mostrado uma vez) */
+$vpAviso = $_SESSION['vp_aviso'] ?? null;
+unset($_SESSION['vp_aviso']);
 
 /* Prioridades e Estados geridos (Configuração de Ocorrências) */
 $prioridadesDb = $pdo->query("SELECT slug, designacao, cor FROM ocorrencias_prioridades WHERE ativo = 1 ORDER BY ordem ASC")->fetchAll(PDO::FETCH_ASSOC);
@@ -125,51 +123,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_ocorrencia'])
     }
 
     if (isAdminMaster()) {
+        $stAntes = $pdo->prepare("SELECT admin_id FROM pedidos_funcionarios WHERE pedido_id = ?");
+        $stAntes->execute([$id]);
+        $colaboradoresAntes = array_map('intval', $stAntes->fetchAll(PDO::FETCH_COLUMN));
+
         $pdo->prepare("DELETE FROM pedidos_funcionarios WHERE pedido_id = ?")->execute([$id]);
-        $funcionariosEscolhidos = array_map('intval', $_POST['funcionarios'] ?? []);
+        $funcionariosEscolhidos = array_values(array_unique(array_map('intval', $_POST['funcionarios'] ?? [])));
         if (!empty($funcionariosEscolhidos)) {
             $stmtFunc = $pdo->prepare("INSERT INTO pedidos_funcionarios (pedido_id, admin_id) VALUES (?, ?)");
-            foreach (array_unique($funcionariosEscolhidos) as $funcId) {
+            foreach ($funcionariosEscolhidos as $funcId) {
                 $stmtFunc->execute([$id, $funcId]);
             }
         }
 
+        // 20/11/2026: entradas e saídas de colaboradores ficam no percurso
+        $nomesDe = fn(array $ids) => implode(', ', array_map(fn($i) => $pessoasEquipa[$i]['nome'] ?? percursoNome($pdo, $i), $ids));
+        $entraram = array_diff($funcionariosEscolhidos, $colaboradoresAntes);
+        $sairam = array_diff($colaboradoresAntes, $funcionariosEscolhidos);
+        if ($entraram) percursoRegistar($pdo, (int)$id, 'colaboradores', 'Colaboradores acrescentados', $nomesDe($entraram));
+        if ($sairam) percursoRegistar($pdo, (int)$id, 'colaboradores', 'Colaboradores retirados', $nomesDe($sairam));
+
         if ((int) $operadorId !== (int) $operadorIdAntigo) {
-            $nomeOperador = 'Sem operador';
-            foreach ($operadores as $op) {
-                if ((int) $op['id'] === (int) $operadorId) {
-                    $nomeOperador = $op['nome'] ?: $op['username'];
-                    break;
-                }
+            $nomeOperador = $operadorId ? ($pessoasEquipa[(int)$operadorId]['nome'] ?? percursoNome($pdo, (int)$operadorId)) : '';
+            criarLogOperacional($pdo, $adminId, $id, 'atribuicao_operador', 'Responsável: ' . ($nomeOperador ?: 'nenhum'));
+            if ($operadorId) {
+                percursoRegistar($pdo, (int)$id, 'atribuicao', 'Responsável: ' . $nomeOperador, null, (int)$operadorId, $nomeOperador);
+            } else {
+                percursoRegistar($pdo, (int)$id, 'atribuicao', 'Ocorrência sem responsável');
             }
-            criarLogOperacional($pdo, $adminId, $id, 'atribuicao_operador', 'Operador atribuído: ' . $nomeOperador);
-            $pdo->prepare("
-                INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao)
-                VALUES (?, 'atribuicao', 'Operador atribuído', ?)
-            ")->execute([$id, 'Operador responsável: ' . $nomeOperador]);
         }
     }
 
     criarLogOperacional($pdo, $adminId, $id, 'guardar_ocorrencia', 'Ocorrência atualizada por ' . $adminNome);
 
     if ($reclassificado) {
-        $pdo->prepare("
-            INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao)
-            VALUES (?, 'reclassificacao', 'Ocorrência reclassificada', ?)
-        ")->execute([$id, 'Categoria/assunto ajustados por ' . $adminNome . '. Consulte "Dados Originais" para ver o que foi submetido primeiro.']);
+        percursoRegistar($pdo, (int)$id, 'reclassificacao', 'Ocorrência reclassificada',
+            'Categoria/assunto ajustados. Consulte «Dados Originais» para ver o que foi submetido primeiro.');
     }
 
     if ($novoEstado !== $estadoAntigo) {
         criarLogOperacional($pdo, $adminId, $id, 'estado_ocorrencia', 'Estado alterado para: ' . strtoupper(str_replace('_', ' ', $novoEstado)));
 
-        $pdo->prepare("
-            INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao)
-            VALUES (?, 'estado', ?, ?)
-        ")->execute([
-            $id,
-            'Estado alterado para ' . str_replace('_', ' ', $novoEstado),
-            $adminNome . ' alterou o estado desta ocorrência.',
-        ]);
+        // o título fica igual ao de antes: a consulta pública do pedido (consultar-pedido.php) lê-o
+        percursoRegistar($pdo, (int)$id, 'estado', 'Estado alterado para ' . str_replace('_', ' ', $novoEstado));
 
         if (!empty($pedido['email'])) {
             $html = "
@@ -185,6 +181,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_ocorrencia'])
 
     header("Location: ver_pedido.php?id=" . $id);
     exit;
+}
+
+/* ---- Percurso (20/11/2026): encaminhar a outra pessoa e registar o que foi feito ---- */
+if (empty($_SESSION['pedidos_admin_token'])) $_SESSION['pedidos_admin_token'] = bin2hex(random_bytes(16));
+$vpToken = $_SESSION['pedidos_admin_token'];
+$vpVoltar = function (string $tipo, string $texto, array $valores = []) use ($id) {
+    $_SESSION['vp_aviso'] = ['tipo' => $tipo, 'texto' => $texto, 'valores' => $valores];
+    header("Location: ver_pedido.php?id=" . (int)$id . "#percurso");
+    exit;
+};
+
+// Fotografias grandes demais: o PHP descarta o pedido inteiro e o $_POST chega vazio
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    $vpVoltar('erro', 'As fotografias são grandes demais para enviar de uma vez (limite do servidor: ' . ini_get('post_max_size') . '). Envie menos fotografias de cada vez.');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['encaminhar_ocorrencia'])) {
+    $paraId = (int)($_POST['para_id'] ?? 0);
+    $motivo = trim((string)($_POST['motivo'] ?? ''));
+    $valores = ['para_id' => $paraId, 'motivo' => $motivo];
+    if (!hash_equals($vpToken, (string)($_POST['token'] ?? ''))) {
+        $vpVoltar('erro', 'A página esteve aberta muito tempo. Volte a encaminhar.', $valores);
+    } elseif (!isset($pessoasEquipa[$paraId])) {
+        $vpVoltar('erro', 'Escolha a pessoa a quem quer encaminhar a ocorrência.', $valores);
+    } elseif ($paraId === (int)$adminId) {
+        $vpVoltar('erro', 'Escolha outra pessoa: não pode encaminhar a ocorrência para si próprio.', $valores);
+    } elseif ($motivo === '') {
+        $vpVoltar('erro', 'Escreva o que é preciso fazer, ou porque encaminha a ocorrência.', $valores);
+    }
+    $paraNome = $pessoasEquipa[$paraId]['nome'];
+    $anterior = (int)($pedido['operador_id'] ?? 0);
+    $pdo->prepare("UPDATE pedidos_junta SET operador_id = ?, atualizado_em = NOW() WHERE id = ?")->execute([$paraId, $id]);
+    // quem tinha a ocorrência continua a vê-la, como colaborador
+    if ($anterior && $anterior !== $paraId) {
+        $pdo->prepare("INSERT INTO pedidos_funcionarios (pedido_id, admin_id) SELECT ?, ? FROM DUAL
+                       WHERE NOT EXISTS (SELECT 1 FROM pedidos_funcionarios WHERE pedido_id = ? AND admin_id = ?)")
+            ->execute([$id, $anterior, $id, $anterior]);
+    }
+    percursoRegistar($pdo, (int)$id, 'encaminhamento', 'Encaminhada para ' . $paraNome, $motivo, $paraId, $paraNome);
+    criarLogOperacional($pdo, $adminId, $id, 'atribuicao_operador', 'Encaminhada para ' . $paraNome . ' por ' . $adminNome);
+    $vpVoltar('ok', 'Ocorrência encaminhada para ' . $paraNome . '.'
+        . (isOperador() && $anterior === (int)$adminId ? ' Continua a vê-la, como colaborador.' : ''));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registar_trabalho'])) {
+    $texto = trim((string)($_POST['trabalho'] ?? ''));
+    if (!hash_equals($vpToken, (string)($_POST['token'] ?? ''))) {
+        $vpVoltar('erro', 'A página esteve aberta muito tempo. Volte a registar.', ['trabalho' => $texto]);
+    } elseif ($texto === '') {
+        $vpVoltar('erro', 'Escreva o que foi feito (as fotografias são opcionais).', ['trabalho' => $texto]);
+    }
+    $tid = percursoRegistar($pdo, (int)$id, 'intervencao', 'Trabalho registado', $texto);
+    [$nFotos, $errosFotos] = $tid ? percursoGuardarFotos($pdo, (int)$id, $tid, $_FILES['fotos'] ?? []) : [0, []];
+    if ($pedido['estado_interno'] === 'por_tratar') {
+        $pdo->prepare("UPDATE pedidos_junta SET estado_interno = 'em_tratamento', atualizado_em = NOW() WHERE id = ?")->execute([$id]);
+    }
+    criarLogOperacional($pdo, $adminId, $id, 'intervencao', 'Trabalho registado por ' . $adminNome);
+    $msg = 'Trabalho registado' . ($nFotos ? ', com ' . $nFotos . ($nFotos === 1 ? ' fotografia' : ' fotografias') : '') . '.';
+    $vpVoltar($errosFotos ? 'erro' : 'ok', $msg . ($errosFotos ? ' ' . implode(' ', $errosFotos) : ''));
 }
 
 /* Marcar mensagens do cidadão como lidas pelo admin */
@@ -259,10 +314,7 @@ if (isset($_POST['enviar_email_externo'])) {
             VALUES (?, ?, ?, ?, ?)
         ")->execute([$id, $destinatarioExterno, $assuntoExterno, $corpoExterno, $adminNome]);
 
-        $pdo->prepare("
-            INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao)
-            VALUES (?, 'email_externo', 'Ocorrência enviada para entidade externa', ?)
-        ")->execute([$id, 'Enviado para ' . $destinatarioExterno . ' por ' . $adminNome]);
+        percursoRegistar($pdo, (int)$id, 'email_externo', 'Ocorrência enviada para entidade externa', 'Enviado para ' . $destinatarioExterno);
     }
 
     header("Location: ver_pedido.php?id=" . $id);
@@ -313,6 +365,17 @@ $funcionariosDoPedido = $stmtFuncPedido->fetchAll(PDO::FETCH_COLUMN);
 $stmtTimeline = $pdo->prepare("SELECT * FROM pedido_timeline WHERE pedido_id = ? ORDER BY criado_em DESC, id DESC");
 $stmtTimeline->execute([$id]);
 $timeline = $stmtTimeline->fetchAll(PDO::FETCH_ASSOC);
+$timelineFotos = percursoFotos($pdo, (int)$id);
+
+/* Quem está com a ocorrência agora */
+$responsavelNome = !empty($pedido['operador_id']) ? ($pessoasEquipa[(int)$pedido['operador_id']]['nome'] ?? percursoNome($pdo, (int)$pedido['operador_id'])) : '';
+$colaboradoresNomes = array_values(array_filter(array_map(fn($c) => $pessoasEquipa[(int)$c]['nome'] ?? percursoNome($pdo, (int)$c),
+    array_diff(array_map('intval', $funcionariosDoPedido), [(int)($pedido['operador_id'] ?? 0)]))));
+// Ao devolver: por omissão, a última pessoa que encaminhou a ocorrência para quem a tem agora
+$devolverPara = 0;
+foreach ($timeline as $ev) {
+    if (($ev['tipo'] ?? '') === 'encaminhamento' && (int)($ev['para_id'] ?? 0) === (int)$adminId && !empty($ev['autor_id'])) { $devolverPara = (int)$ev['autor_id']; break; }
+}
 
 /* Notas internas — "Tratamentos Internos" e "Notas Internas" eram duas
    secções para exatamente a mesma coisa (privadas, nunca visíveis ao
@@ -427,7 +490,32 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
 .vp-timeline-conteudo { flex: 1; padding-top: 3px; }
 .vp-timeline-conteudo strong { display: block; font-size: 14px; }
 .vp-timeline-conteudo p { margin: 3px 0; color: #64748b; font-size: 13px; }
-.vp-timeline-conteudo small { color: #94a3b8; }
+.vp-timeline-conteudo small { color: #64748b; }
+.vp-timeline-icone.tipo-encaminhamento { background: #eef2ff; color: #4338ca; }
+.vp-timeline-icone.tipo-intervencao { background: #ecfdf5; color: #047857; }
+.vp-timeline-icone.tipo-colaboradores { background: #f1f5f9; color: #475569; }
+.vp-timeline-icone.tipo-email_externo { background: #f0f9ff; color: #0369a1; }
+
+/* Percurso (20/11/2026): quem está com a ocorrência, encaminhar, registar o que foi feito */
+ol.vp-timeline { list-style: none; padding: 0; margin: 14px 0 0; }
+.vp-aviso { display: flex; gap: 10px; align-items: flex-start; border-radius: 12px; padding: 12px 14px; margin: 14px 0 0; font-weight: 700; }
+.vp-aviso--ok { background: #dcfce7; color: #14532d; }
+.vp-aviso--erro { background: #fee2e2; color: #7f1d1d; }
+.vp-quem { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0 0; }
+.vp-quem > div { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 14px; padding: 12px 16px; }
+.vp-quem-rotulo { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #64748b; margin-bottom: 2px; }
+.vp-acoes-percurso { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: stretch; margin-top: 16px; }
+.admin-main form.vp-acao { margin: 0; padding: 20px; display: flex; flex-direction: column; }
+.admin-main form.vp-acao .btn { margin-top: auto; align-self: flex-start; }
+.admin-main form.vp-acao textarea { margin-bottom: 14px; }
+.admin-main form.vp-acao h3.vp-acao-titulo { display: flex; align-items: center; gap: 8px; font-size: 15px; margin: 0 0 4px; padding: 0; border: 0; }
+.vp-acao-titulo i { color: var(--cor-principal); }
+.vp-acao-ajuda { font-size: 13px; color: #64748b; margin: 0 0 10px; }
+.vp-passos-titulo { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #64748b; margin: 22px 0 0; font-weight: 800; }
+.vp-timeline-quem { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 13px; color: #475569; margin-top: 2px; }
+.vp-timeline-quem b { color: var(--tema-admin-escuro); }
+.vp-timeline-fotos { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.vp-timeline-fotos img { width: 112px; height: 84px; object-fit: cover; border-radius: 10px; border: 1px solid #e5e7eb; display: block; }
 
 /* Cartões de entradas nos painéis (tratamentos, notas, emails) — davam-se
    bem, só precisavam de um pouco mais de ritmo visual (ícone do autor). */
@@ -604,9 +692,9 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
                 <div class="vp-secao">
                     <h3 class="vp-secao-titulo"><i class="bi bi-person-badge"></i> Atribuição</h3>
 
-                    <label>Operador responsável</label>
+                    <label>Responsável</label>
                     <select name="operador_id">
-                        <option value="">Sem operador</option>
+                        <option value="">Sem responsável</option>
                         <?php foreach ($operadores as $op): ?>
                             <option value="<?= (int) $op['id'] ?>" <?= (int) ($pedido['operador_id'] ?? 0) === (int) $op['id'] ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($op['nome'] ?: $op['username']) ?>
@@ -615,7 +703,7 @@ $temCoordenadas = !empty($pedido['latitude']) && !empty($pedido['longitude']);
                     </select>
 
                     <label style="margin-top:16px;">Funcionários colaboradores</label>
-                    <p><small>Além do operador responsável, pode associar outros funcionários que estão a colaborar nesta ocorrência.</small></p>
+                    <p><small>Além do responsável, pode associar outras pessoas que estão a colaborar nesta ocorrência. Também a podem abrir e tratar.</small></p>
                     <div class="vp-chips">
                         <?php foreach ($todosFuncionarios as $fu): ?>
                             <label class="vp-chip">
@@ -684,6 +772,10 @@ $timelineIcones = [
     'atribuicao' => 'bi-person-badge-fill',
     'estado' => 'bi-flag-fill',
     'reclassificacao' => 'bi-tag-fill',
+    'encaminhamento' => 'bi-arrow-right-circle-fill',
+    'intervencao' => 'bi-tools',
+    'colaboradores' => 'bi-people-fill',
+    'email_externo' => 'bi-envelope-fill',
 ];
 function vpIniciais($nome) {
     $nome = trim((string) $nome);
@@ -701,28 +793,97 @@ function vpIniciais($nome) {
      aconteceu com este pedido" que faz sentido ver assim que se decide o
      que fazer a seguir. Antes estava perdido numa grelha 2x2 ao lado de
      coisas sem relação nenhuma com ele. -->
-<div class="content-box" style="margin-top:24px;">
+<div class="content-box" style="margin-top:24px;" id="percurso">
     <div class="vp-painel-titulo">
-        <span class="vp-painel-icone"><i class="bi bi-clock-history"></i></span>
-        <h2>Histórico de Resolução</h2>
+        <span class="vp-painel-icone"><i class="bi bi-signpost-2"></i></span>
+        <h2>Percurso da ocorrência</h2>
     </div>
+    <p class="vp-painel-sub">Por quem passou, o que cada pessoa fez e para quem foi encaminhada. Só a equipa vê.</p>
+
+    <?php if ($vpAviso): ?>
+        <div class="vp-aviso vp-aviso--<?= $vpAviso['tipo'] === 'ok' ? 'ok' : 'erro' ?>" role="<?= $vpAviso['tipo'] === 'ok' ? 'status' : 'alert' ?>">
+            <i class="bi <?= $vpAviso['tipo'] === 'ok' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill' ?>" aria-hidden="true"></i>
+            <span><?= htmlspecialchars($vpAviso['texto']) ?></span>
+        </div>
+    <?php endif; ?>
+
+    <div class="vp-quem">
+        <div><span class="vp-quem-rotulo">Responsável</span>
+            <strong><?= $responsavelNome !== '' ? htmlspecialchars($responsavelNome) . ((int)$pedido['operador_id'] === (int)$adminId ? ' (a sua conta)' : '') : 'Ainda sem responsável' ?></strong></div>
+        <div><span class="vp-quem-rotulo">Colaboradores</span>
+            <strong><?= $colaboradoresNomes ? htmlspecialchars(implode(', ', $colaboradoresNomes)) : 'Nenhum' ?></strong></div>
+    </div>
+
+    <?php $vpValores = $vpAviso['valores'] ?? []; ?>
+    <div class="vp-acoes-percurso">
+        <form method="POST" class="vp-compor vp-acao" data-sem-aviso>
+            <input type="hidden" name="encaminhar_ocorrencia" value="1">
+            <input type="hidden" name="token" value="<?= htmlspecialchars($vpToken) ?>">
+            <h3 class="vp-acao-titulo"><i class="bi bi-arrow-right-circle" aria-hidden="true"></i> Encaminhar a outra pessoa</h3>
+            <p class="vp-acao-ajuda">A pessoa escolhida passa a ser a responsável. Quem tinha a ocorrência continua a vê-la. Diga o que é preciso fazer, ou porque a encaminha.</p>
+            <label for="vpParaId">Para quem *</label>
+            <select name="para_id" id="vpParaId" required>
+                <option value="">Escolha a pessoa</option>
+                <?php $escolhido = (int)($vpValores['para_id'] ?? $devolverPara);
+                foreach (['operador' => 'Assistentes operacionais', 'admin' => 'Administradores'] as $grupoTipo => $grupoNome):
+                    $doGrupo = array_filter($pessoasEquipa, fn($pp, $pid) => $pp['tipo'] === $grupoTipo && $pid !== (int)$adminId, ARRAY_FILTER_USE_BOTH);
+                    if (!$doGrupo) continue; ?>
+                    <optgroup label="<?= $grupoNome ?>">
+                        <?php foreach ($doGrupo as $pid => $pp): ?>
+                            <option value="<?= (int)$pid ?>" <?= $escolhido === $pid ? 'selected' : '' ?>><?= htmlspecialchars($pp['nome']) ?><?= $pid === $devolverPara ? ' (quem lhe enviou)' : '' ?></option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                <?php endforeach; ?>
+            </select>
+            <label for="vpMotivo">O que é preciso fazer *</label>
+            <textarea name="motivo" id="vpMotivo" required rows="3"><?= htmlspecialchars((string)($vpValores['motivo'] ?? '')) ?></textarea>
+            <button class="btn" type="submit"><i class="bi bi-send" aria-hidden="true"></i> Encaminhar</button>
+        </form>
+
+        <form method="POST" class="vp-compor vp-acao" enctype="multipart/form-data" data-sem-aviso>
+            <input type="hidden" name="registar_trabalho" value="1">
+            <input type="hidden" name="token" value="<?= htmlspecialchars($vpToken) ?>">
+            <h3 class="vp-acao-titulo"><i class="bi bi-tools" aria-hidden="true"></i> Registar o que foi feito</h3>
+            <p class="vp-acao-ajuda">Fica no percurso com o seu nome e a data. Depois pode devolver a ocorrência a quem lha enviou.</p>
+            <label for="vpTrabalho">O que foi feito *</label>
+            <textarea name="trabalho" id="vpTrabalho" required rows="3"><?= htmlspecialchars((string)($vpValores['trabalho'] ?? '')) ?></textarea>
+            <label for="vpFotos">Fotografias da intervenção (opcional, até 6)</label>
+            <input type="file" name="fotos[]" id="vpFotos" accept="image/jpeg,image/png,image/webp" multiple>
+            <button class="btn" type="submit"><i class="bi bi-check2-circle" aria-hidden="true"></i> Registar</button>
+        </form>
+    </div>
+
+    <h3 class="vp-passos-titulo">Passos</h3>
     <?php if (empty($timeline)): ?>
-        <p>Sem histórico ainda.</p>
+        <p>Sem passos registados ainda.</p>
     <?php else: ?>
-        <div class="vp-timeline">
-            <?php foreach ($timeline as $ev): ?>
-                <div class="vp-timeline-item">
-                    <div class="vp-timeline-icone tipo-<?= htmlspecialchars($ev['tipo']) ?>">
+        <ol class="vp-timeline">
+            <?php foreach ($timeline as $ev): $fotosEv = $timelineFotos[(int)$ev['id']] ?? []; ?>
+                <li class="vp-timeline-item">
+                    <div class="vp-timeline-icone tipo-<?= htmlspecialchars($ev['tipo']) ?>" aria-hidden="true">
                         <i class="bi <?= $timelineIcones[$ev['tipo']] ?? 'bi-record-circle-fill' ?>"></i>
                     </div>
                     <div class="vp-timeline-conteudo">
                         <strong><?= htmlspecialchars($ev['titulo']) ?></strong>
-                        <p><?= htmlspecialchars($ev['descricao'] ?? '') ?></p>
+                        <?php if (!empty($ev['autor_nome']) || !empty($ev['para_nome'])): ?>
+                            <span class="vp-timeline-quem">
+                                <?php if (!empty($ev['autor_nome'])): ?>por <b><?= htmlspecialchars($ev['autor_nome']) ?></b><?php endif; ?>
+                                <?php if (!empty($ev['para_nome'])): ?><i class="bi bi-arrow-right" aria-label="para"></i> <b><?= htmlspecialchars($ev['para_nome']) ?></b><?php endif; ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php if (trim((string)($ev['descricao'] ?? '')) !== ''): ?><p><?= nl2br(htmlspecialchars($ev['descricao'])) ?></p><?php endif; ?>
+                        <?php if ($fotosEv): ?>
+                            <div class="vp-timeline-fotos">
+                                <?php foreach ($fotosEv as $k => $fu): ?>
+                                    <a href="<?= htmlspecialchars($fu) ?>" target="_blank" rel="noopener"><img src="<?= htmlspecialchars($fu) ?>" alt="Fotografia <?= $k + 1 ?> do trabalho registado" loading="lazy"></a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                         <small><?= date('d/m/Y H:i', strtotime($ev['criado_em'])) ?></small>
                     </div>
-                </div>
+                </li>
             <?php endforeach; ?>
-        </div>
+        </ol>
     <?php endif; ?>
 </div>
 

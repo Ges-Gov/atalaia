@@ -18,7 +18,7 @@ function dashFeedIcone($tipo, $estado, $prioridade) {
 
     switch ($tipo) {
         case 'atribuicao_operador':
-            $iconeClasse = 'bi-person-gear'; $cor = '#7c3aed'; $titulo = 'Operador atribuído';
+            $iconeClasse = 'bi-person-gear'; $cor = '#7c3aed'; $titulo = 'Ocorrência atribuída';
             break;
         case 'estado_ocorrencia':
             $iconeClasse = 'bi-arrow-repeat'; $cor = '#2563eb'; $titulo = 'Estado atualizado';
@@ -31,6 +31,9 @@ function dashFeedIcone($tipo, $estado, $prioridade) {
             break;
         case 'novo_pedido':
             $iconeClasse = 'bi-envelope-paper-fill'; $cor = '#f59f00'; $titulo = 'Nova ocorrência';
+            break;
+        case 'intervencao':
+            $iconeClasse = 'bi-tools'; $cor = '#047857'; $titulo = 'Trabalho registado';
             break;
         case 'novo_requerimento':
             $iconeClasse = 'bi-file-earmark-plus-fill'; $cor = '#0ea5e9'; $titulo = 'Novo requerimento — Balcão Virtual';

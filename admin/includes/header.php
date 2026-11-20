@@ -84,7 +84,7 @@ try { $badgeComercioCand = (int)$pdo->query("SELECT COUNT(*) FROM comercio_candi
 [$menuAdmin] = menuAdminDefinicao(compact('badgePedidos', 'badgeRequerimentos', 'badgeFaturacao', 'badgeMensagens', 'badgeReservas', 'badgeSugestoes', 'badgeComercioCand'));
 [$menuVisivel, $menuAtual, $menuGrupoAtual] = menuAdminPreparar($menuAdmin, (string)$adminActive);
 
-$adminPapeis = ['admin' => 'Administrador', 'operador' => 'Operador', 'vogal' => 'Vogal',
+$adminPapeis = ['admin' => 'Administrador', 'operador' => 'Assistente operacional', 'vogal' => 'Vogal',
                 'presidente_assembleia' => 'Presidente da Assembleia', 'admin_denuncias' => 'Canal de Denúncias'];
 $adminPapel = $adminPapeis[$adminTipo ?? 'admin'] ?? ucfirst((string)($adminTipo ?? 'admin'));
 $adminIniciais = (function (string $n): string {

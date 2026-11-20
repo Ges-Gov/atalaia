@@ -12,3 +12,6 @@ cache/
 # ícones gerados do brasão por includes/favicon.php (02/11/2026)
 /favicon.ico
 assets/img/favicon/
+
+# Fotografias das intervenções nas ocorrências (20/11/2026): conteúdo do site, não vai para o git
+uploads/ocorrencias/

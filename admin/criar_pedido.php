@@ -2,6 +2,7 @@
 $adminPageTitle = "Criar Ocorrência";
 $adminActive = "pedidos";
 require_once "includes/header.php";
+require_once "includes/ocorrencias_percurso.php";   // 20/11/2026: quem fez cada passo
 
 $categoriasOcorrencia = $pdo->query("
     SELECT id, designacao FROM ocorrencias_categorias WHERE ativo = 1 ORDER BY ordem ASC, designacao ASC
@@ -73,10 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $novoId = $pdo->lastInsertId();
 
-        $pdo->prepare("
-            INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao)
-            VALUES (?, 'criacao', 'Ocorrência registada', ?)
-        ")->execute([$novoId, 'Registada no backoffice por ' . $adminNome . ' (origem: ' . $origem . ').']);
+        percursoRegistar($pdo, (int)$novoId, 'criacao', 'Ocorrência registada', 'Registada no backoffice (origem: ' . $origem . ').');
 
         header("Location: ver_pedido.php?id=" . $novoId);
         exit;

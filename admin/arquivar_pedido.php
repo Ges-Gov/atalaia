@@ -6,6 +6,7 @@
  */
 require_once "includes/auth.php";
 require_once "../includes/db.php";
+require_once "includes/ocorrencias_percurso.php";   // 20/11/2026: quem fez cada passo
 
 $voltar = 'pedidos.php';
 $ref = (string)($_SERVER['HTTP_REFERER'] ?? '');
@@ -39,8 +40,7 @@ if ($pedido && !adminPodeTratarPedido($pdo, $pedido)) {   // 20/11/2026: o opera
 } else {
     $pdo->prepare("UPDATE pedidos_junta SET estado = 'arquivado', estado_interno = 'tratado' WHERE id = ?")->execute([$id]);
     try {
-        $pdo->prepare("INSERT INTO pedido_timeline (pedido_id, tipo, titulo, descricao) VALUES (?, 'estado', ?, ?)")
-            ->execute([$id, 'Ocorrência arquivada', $adminNome . ' arquivou esta ocorrência (fica guardada).']);
+        percursoRegistar($pdo, $id, 'estado', 'Ocorrência arquivada', 'Fica guardada em «Tratadas».');
         $pdo->prepare("INSERT INTO logs_operacionais (admin_id, pedido_id, tipo, mensagem) VALUES (?, ?, 'estado', ?)")
             ->execute([$adminId, $id, 'Ocorrência arquivada']);
     } catch (Throwable $e) {

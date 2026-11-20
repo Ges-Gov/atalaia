@@ -22,12 +22,57 @@ $utilizadoresOcultos = ['admin', 'admin@denuncias'];
 
 // Perfis que se podem escolher (valor guardado em admin_utilizadores.tipo => nome mostrado)
 $perfis = [
-    'operador' => 'Operador',
+    'operador' => 'Assistente operacional',   // 20/11/2026: era «Operador»
     'vogal' => 'Vogal da Assembleia',
     'presidente_assembleia' => 'Presidente da Assembleia',
     'admin_denuncias' => 'Administrador do Canal de Denúncias',
     'admin' => 'Administrador',
 ];
+
+// 20/11/2026: o que cada perfil pode fazer, explicado na própria página (lista e formulários)
+$perfisAjuda = [
+    'admin' => ['para' => 'Para quem gere o site e o backoffice da Junta.',
+        'entra' => 'no Painel.',
+        'pode' => 'tudo: os conteúdos do site, a Junta Virtual (ocorrências, marcações e mensagens), a Assembleia, a Newsletter e o Sistema (configurações e utilizadores). É o único que elimina ocorrências e gere os utilizadores.',
+        'nao' => 'Se a GesGov lhe atribuir um perfil de permissões, vê só as áreas desse perfil (aparecem por baixo do perfil, na lista).'],
+    'operador' => ['para' => 'Para os assistentes operacionais que tratam das ocorrências no terreno.',
+        'entra' => 'nas Ocorrências.',
+        'pode' => 'ver e tratar só as ocorrências que lhe foram atribuídas ou em que foi indicado como colaborador: registar o que fez (com fotografias), encaminhá-las a outra pessoa, mudar o estado, responder ao freguês, escrever notas internas e arquivar.',
+        'nao' => 'Não vê o resto do backoffice e não pode eliminar ocorrências.'],
+    'vogal' => ['para' => 'Para os membros da Assembleia de Freguesia.',
+        'entra' => 'na Área dos Vogais, no site (não no backoffice).',
+        'pode' => 'enviar documentos para as sessões da Assembleia e ver os que já foram enviados.',
+        'nao' => 'Não entra no backoffice.'],
+    'presidente_assembleia' => ['para' => 'Para o presidente da Mesa da Assembleia de Freguesia.',
+        'entra' => 'nas Sessões da Assembleia.',
+        'pode' => 'gerir a parte da Assembleia: composição, funcionamento, competências, documentos e sessões.',
+        'nao' => 'Não vê o resto do backoffice.'],
+    'admin_denuncias' => ['para' => 'Para quem trata as denúncias do Canal de Denúncias (Lei n.º 93/2021).',
+        'entra' => 'no Canal de Denúncias.',
+        'pode' => 'receber, consultar e tratar as denúncias confidenciais.',
+        'nao' => 'Não vê o resto do backoffice.'],
+];
+$perfilAjudaHtml = function (string $tipo) use ($perfisAjuda): string {
+    $a = $perfisAjuda[$tipo] ?? null;
+    if (!$a) return '';
+    return '<p class="tipo-para">' . htmlspecialchars($a['para']) . '</p><ul class="tipo-lista">'
+        . '<li><strong>Entra</strong> ' . htmlspecialchars($a['entra']) . '</li>'
+        . '<li><strong>Pode</strong> ' . htmlspecialchars($a['pode']) . '</li>'
+        . '<li>' . htmlspecialchars($a['nao']) . '</li></ul>';
+};
+
+// Perfis de permissões (definidos pela GesGov em «Perfis»): áreas que cada um abre, para mostrar na lista
+$areasNomes = ['home' => 'Página Inicial', 'freguesia' => 'A Freguesia', 'virtual' => 'Junta Virtual',
+               'assembleia' => 'Assembleia', 'denuncias' => 'Canal de Denúncias', 'sistema' => 'Sistema'];
+$perfisPermissoes = [];
+try {
+    foreach ($pdo->query("SELECT id, nome, permissoes FROM perfis WHERE ativo = 1") as $pp) {
+        $areas = array_map(fn($c) => $areasNomes[trim($c)] ?? trim($c), array_filter(explode(',', (string)$pp['permissoes'])));
+        $perfisPermissoes[(int)$pp['id']] = ['nome' => $pp['nome'], 'areas' => $areas];
+    }
+} catch (Throwable $e) {
+    $perfisPermissoes = [];   // sem a tabela perfis neste site
+}
 
 $idEhOculto = function ($id) use ($pdo, $utilizadoresOcultos) {
     if (!$id) return false;
@@ -221,6 +266,18 @@ $tabFregueses = ($_GET['tab'] ?? '') === 'fregueses';
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 .tab-intro{color:#64748b;margin:0 0 14px}
+/* 20/11/2026: explicação de cada perfil */
+.tipo-ajuda{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin:-4px 0 18px;color:#334155;font-size:14px;line-height:1.55}
+.tipo-para{margin:0 0 6px;font-weight:700;color:#1e293b}
+.tipo-lista{margin:0;padding-left:18px;display:grid;gap:4px}
+.tipo-lista strong{color:#1e293b}
+.tipos-explicacao{margin-top:28px}
+.tipos-explicacao h2{font-size:20px;margin:0 0 6px}
+.tipos-explicacao > p{color:#64748b;margin:0 0 14px}
+.tipos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.tipo-cartao{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px 18px;display:grid;gap:8px;align-content:start;font-size:14px;line-height:1.55;color:#334155}
+.tipo-cartao .user-type-badge{justify-self:start}
+.user-perfil-areas{display:block;margin-top:5px;font-size:12px;color:#64748b;line-height:1.4;max-width:240px}
 </style>
 
 <?php if ($erro): ?>
@@ -250,12 +307,14 @@ $tabFregueses = ($_GET['tab'] ?? '') === 'fregueses';
     <input type="password" name="password" required autocomplete="new-password">
     <p style="margin:-6px 0 16px;font-size:13px;color:#64748b;">A pessoa pode mudá-la depois, na sua conta.</p>
 
-    <label>Perfil</label>
-    <select name="tipo" required>
+    <label for="tipo-novo">Perfil</label>
+    <?php $tipoEscolhido = isset($perfis[$_POST['tipo'] ?? '']) ? $_POST['tipo'] : 'operador'; ?>
+    <select name="tipo" id="tipo-novo" required aria-describedby="tipo-ajuda" data-tipo-ajuda>
         <?php foreach ($perfis as $valor => $rotulo): ?>
-            <option value="<?= $valor ?>" <?= ($_POST['tipo'] ?? 'operador') === $valor ? 'selected' : '' ?>><?= htmlspecialchars($rotulo) ?></option>
+            <option value="<?= $valor ?>" <?= $tipoEscolhido === $valor ? 'selected' : '' ?>><?= htmlspecialchars($rotulo) ?></option>
         <?php endforeach; ?>
     </select>
+    <div class="tipo-ajuda" id="tipo-ajuda" aria-live="polite"><?= $perfilAjudaHtml($tipoEscolhido) ?></div>
 
     <button class="btn">Criar utilizador</button>
     <a class="btn secondary" href="utilizadores.php">Voltar</a>
@@ -275,16 +334,19 @@ $tabFregueses = ($_GET['tab'] ?? '') === 'fregueses';
     <label>Nome</label>
     <input type="text" name="nome" placeholder="Ex.: João Silva" value="<?= htmlspecialchars($_POST['nome'] ?? ($editar['nome'] ?? '')) ?>">
 
-    <label>Perfil</label>
+    <label for="tipo-editar">Perfil</label>
     <?php if ($propria): ?>
-        <input type="text" value="<?= htmlspecialchars($perfis[$editar['tipo']] ?? $editar['tipo']) ?>" disabled>
+        <input type="text" id="tipo-editar" value="<?= htmlspecialchars($perfis[$editar['tipo']] ?? $editar['tipo']) ?>" disabled aria-describedby="tipo-ajuda">
         <p style="margin:-6px 0 16px;font-size:13px;color:#64748b;">Não pode alterar o perfil da sua própria conta.</p>
+        <div class="tipo-ajuda" id="tipo-ajuda"><?= $perfilAjudaHtml((string)$editar['tipo']) ?></div>
     <?php else: ?>
-        <select name="tipo" required>
+        <?php $tipoEscolhido = isset($perfis[$_POST['tipo'] ?? '']) ? $_POST['tipo'] : (string)$editar['tipo']; ?>
+        <select name="tipo" id="tipo-editar" required aria-describedby="tipo-ajuda" data-tipo-ajuda>
             <?php foreach ($perfis as $valor => $rotulo): ?>
-                <option value="<?= $valor ?>" <?= ($_POST['tipo'] ?? $editar['tipo']) === $valor ? 'selected' : '' ?>><?= htmlspecialchars($rotulo) ?></option>
+                <option value="<?= $valor ?>" <?= $tipoEscolhido === $valor ? 'selected' : '' ?>><?= htmlspecialchars($rotulo) ?></option>
             <?php endforeach; ?>
         </select>
+        <div class="tipo-ajuda" id="tipo-ajuda" aria-live="polite"><?= $perfilAjudaHtml($tipoEscolhido) ?></div>
     <?php endif; ?>
 
     <label>Nova password <small style="font-weight:400;color:#64748b;">(deixe vazio para manter a atual)</small></label>
@@ -322,7 +384,11 @@ $tabFregueses = ($_GET['tab'] ?? '') === 'fregueses';
                 <tr>
                     <td><?= htmlspecialchars($u['nome'] ?: '-') ?><?php if ($propria): ?><span class="user-propria">(a sua conta)</span><?php endif; ?></td>
                     <td><?= htmlspecialchars($u['username']) ?></td>
-                    <td><span class="user-type-badge <?= htmlspecialchars($u['tipo']) ?>"><?= htmlspecialchars($perfis[$u['tipo']] ?? $u['tipo']) ?></span></td>
+                    <td><span class="user-type-badge <?= htmlspecialchars($u['tipo']) ?>"><?= htmlspecialchars($perfis[$u['tipo']] ?? $u['tipo']) ?></span>
+                        <?php $pp = $perfisPermissoes[(int)($u['perfil_id'] ?? 0)] ?? null; if ($pp && $u['tipo'] === 'admin'): ?>
+                            <span class="user-perfil-areas">Perfil «<?= htmlspecialchars($pp['nome']) ?>»: só <?= htmlspecialchars(implode(', ', $pp['areas'])) ?></span>
+                        <?php endif; ?>
+                    </td>
                     <td><span class="user-status <?= !empty($u['ativo']) ? 'active' : 'inactive' ?>"><?= !empty($u['ativo']) ? 'Ativo' : 'Inativo' ?></span></td>
                     <td>
                         <div class="acoes-linha">
@@ -350,6 +416,19 @@ $tabFregueses = ($_GET['tab'] ?? '') === 'fregueses';
             <?php endif; ?>
         </table>
     </div>
+
+    <section class="tipos-explicacao" aria-labelledby="tipos-titulo">
+        <h2 id="tipos-titulo">O que pode fazer cada perfil</h2>
+        <p>Ao criar ou editar um utilizador, escolha o perfil conforme o trabalho que a pessoa vai fazer.</p>
+        <div class="tipos-grid">
+            <?php foreach (['admin', 'operador', 'presidente_assembleia'] as $t): ?>
+                <div class="tipo-cartao">
+                    <span class="user-type-badge <?= $t ?>"><?= htmlspecialchars($perfis[$t]) ?></span>
+                    <?= $perfilAjudaHtml($t) ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
 </div>
 
 <div id="tab-fregueses" class="tab-panel <?= $tabFregueses ? 'active' : '' ?>">
@@ -409,6 +488,22 @@ document.querySelectorAll('.tab-btn').forEach(function (btn) {
 });
 </script>
 
+<?php endif; ?>
+
+<?php if ($modoNovo || $editar): ?>
+<?php foreach ($perfis as $valor => $rotulo): ?>
+<template id="tipo-ajuda-<?= htmlspecialchars($valor) ?>"><?= $perfilAjudaHtml($valor) ?></template>
+<?php endforeach; ?>
+<script>
+// 20/11/2026: ao mudar o perfil no formulário, a explicação por baixo acompanha
+document.querySelectorAll('select[data-tipo-ajuda]').forEach(function (sel) {
+    var caixa = document.getElementById(sel.getAttribute('aria-describedby'));
+    sel.addEventListener('change', function () {
+        var modelo = document.getElementById('tipo-ajuda-' + sel.value);
+        if (caixa && modelo) caixa.replaceChildren(modelo.content.cloneNode(true));
+    });
+});
+</script>
 <?php endif; ?>
 
 <?php require_once "includes/footer.php"; ?>

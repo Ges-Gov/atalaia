@@ -42,7 +42,9 @@ if ($estado !== '') {
 }
 
 if (isOperador()) {
-    $where[] = "operador_id = ?";
+    // 20/11/2026: também as ocorrências em que foi indicado como colaborador (as mesmas que pode abrir)
+    $where[] = "(operador_id = ? OR EXISTS (SELECT 1 FROM pedidos_funcionarios pfo WHERE pfo.pedido_id = pedidos_junta.id AND pfo.admin_id = ?))";
+    $params[] = (int)$adminId;
     $params[] = (int)$adminId;
 }
 

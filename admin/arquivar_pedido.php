@@ -26,11 +26,13 @@ if (!(isAdminMaster() || isOperador() || podeAceder('virtual'))) {
 }
 
 $id = (int)($_POST['id'] ?? 0);
-$st = $pdo->prepare("SELECT id, codigo, estado FROM pedidos_junta WHERE id = ?");
+$st = $pdo->prepare("SELECT id, codigo, estado, operador_id FROM pedidos_junta WHERE id = ?");
 $st->execute([$id]);
 $pedido = $st->fetch(PDO::FETCH_ASSOC);
 
-if (!$pedido) {
+if ($pedido && !adminPodeTratarPedido($pdo, $pedido)) {   // 20/11/2026: o operador só arquiva as suas
+    $_SESSION['pedidos_aviso'] = ['erro', 'Só pode arquivar as ocorrências que lhe foram atribuídas.'];
+} elseif (!$pedido) {
     $_SESSION['pedidos_aviso'] = ['erro', 'Ocorrência não encontrada.'];
 } elseif ($pedido['estado'] === 'arquivado') {
     $_SESSION['pedidos_aviso'] = ['ok', 'A ocorrência ' . $pedido['codigo'] . ' já estava arquivada.'];

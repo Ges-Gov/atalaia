@@ -37,6 +37,12 @@ if (!$pedido) {
     die("Pedido não encontrado.");
 }
 
+// 20/11/2026: o operador só abre as ocorrências que lhe foram atribuídas ou em que colabora (antes abria qualquer ?id=)
+if (!adminPodeTratarPedido($pdo, $pedido)) {
+    adminSemPermissao('Esta ocorrência não lhe está atribuída',
+        'Só pode abrir as ocorrências que lhe foram atribuídas ou em que foi indicado como colaborador. Se precisar desta, peça ao administrador da Junta.');
+}
+
 /* Lista operadores (só o admin master atribui) */
 $operadores = [];
 if (isAdminMaster()) {

@@ -11,7 +11,12 @@ try {
     $loginLogo = '';
 }
 
-$redirect = $_GET['redirect'] ?? ($_POST['redirect'] ?? '');
+$redirect = (string)($_GET['redirect'] ?? ($_POST['redirect'] ?? ''));
+// 20/11/2026: só endereços deste site (antes ?redirect=https://outro-site levava para fora depois de entrar)
+if ($redirect !== '' && (!preg_match('~^/?[A-Za-z0-9_./-]*\.php(\?[^\s#]*)?(#[^\s]*)?$~', $redirect)
+        || strpos($redirect, '//') !== false || strpos($redirect, '..') !== false)) {
+    $redirect = '';
+}
 
 if (isset($_SESSION['admin'])) {
     if ($redirect) header("Location: " . $redirect);

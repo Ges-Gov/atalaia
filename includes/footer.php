@@ -611,6 +611,6 @@ if (is_file($iaConfigPath)) {
 <?php /* termos do glossário para o app.js ligar a primeira ocorrência de cada um à definição (Selo, «Conteúdo» 1.2) */
 require_once __DIR__ . '/glossario-termos.php'; ?>
 <script type="application/json" id="glossarioTermos"><?= json_encode(glossarioLigacoes(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
-<script src="/assets/js/app.js?v=20261119c"></script>
+<script src="/assets/js/app.js?v=20261120b"></script>
 </body>
 </html>

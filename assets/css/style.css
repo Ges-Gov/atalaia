@@ -162,7 +162,7 @@ body {
     filter: brightness(1.1);
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1180px) {
     .top-bar-inner {
         justify-content: center;
         flex-direction: column;
@@ -681,7 +681,7 @@ body {
     color: var(--cor-principal);
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1180px) {
     .nav-dropdown {
         width: 100%;
     }
@@ -4852,7 +4852,7 @@ a:hover{
 
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1180px) {
     .main-header {
         z-index: 1000;
     }
@@ -5020,7 +5020,7 @@ a:hover{
 }
 
 /* Submenu de Recursos Humanos em telemóvel: abre por baixo, ao tocar */
-@media (max-width: 850px) {
+@media (max-width: 1180px) {
     .main-nav {
         box-sizing: border-box;
     }
@@ -5119,7 +5119,7 @@ a:hover{
     font-size:17px;
 }
 
-@media (max-width: 850px){
+@media (max-width: 1180px){
     .nav-search-toggle{
         display:none;
     }
@@ -5664,7 +5664,7 @@ body .site-header .header-inner .brand strong{ font-size: 15.5px; font-weight: 7
 body .site-header .header-inner .brand small{ font-size: 12.5px; font-weight: 400; }
 /* 13/10/2026, a pedido: no computador a pílula é mais alta (mais espaço vertical, mesmos textos),
    mais larga (quase toda a largura) e o brasão um pouco maior. O telemóvel fica como estava. */
-@media (min-width: 851px){
+@media (min-width: 1181px){
     body .site-header .header-inner{
         box-sizing: border-box;   /* a largura inclui o padding: margens de 20px certas */
         width: min(1520px, calc(100% - 40px));
@@ -5685,7 +5685,7 @@ html.brasao-entrada .brand img{ animation: brasao-entra 1s var(--ease-out) both;
 }
 
 /* Itens do menu como pílulas + pílula verde deslizante (.nav-indicador, app.js) */
-@media (min-width: 851px){
+@media (min-width: 1181px){
     body .main-nav{
         position: relative;
         align-items: center;
@@ -5742,7 +5742,7 @@ html.brasao-entrada .brand img{ animation: brasao-entra 1s var(--ease-out) both;
     }
     body .main-nav .nav-search-toggle:hover{ background: color-mix(in srgb, var(--cor-principal) 10%, transparent); }
 }
-@media (max-width: 850px){
+@media (max-width: 1180px){
     body .site-header .header-inner{ padding: 6px 6px 6px 12px; width: calc(100% - 20px); }
     body .site-header .header-inner .brand img{ height: 40px !important; }
     body .main-header{ padding: 8px 0 !important; position: relative; }
@@ -5772,7 +5772,7 @@ body.header-sobre-escuro .site-header :is(.mobile-search-toggle, .tema-toggle){
     text-shadow: 0 1px 8px rgba(0, 0, 0, .35);
 }
 body.header-sobre-escuro .site-header .brand small{ color: rgba(255, 255, 255, .85) !important; }
-@media (min-width: 851px){
+@media (min-width: 1181px){
     body.header-sobre-escuro .site-header :is(.main-nav > a, .main-nav > .nav-dropdown > .nav-parent, .nav-search-toggle){
         color: #fff !important;
         text-shadow: 0 1px 8px rgba(0, 0, 0, .35);
@@ -7120,7 +7120,7 @@ body.header-sobre-escuro .menu-redes--barra a:hover{ background: rgba(255,255,25
 :root[data-tema="escuro"] .menu-redes--barra{ border-left-color: rgba(255,255,255,.14); }
 :root[data-tema="escuro"] .menu-redes--barra a{ color: var(--escuro-texto); }
 .menu-redes--painel{ display: none; }
-@media (max-width: 850px){
+@media (max-width: 1180px){
     .menu-redes--barra{ display: none; }
     .menu-redes--painel{
         display: flex; flex-wrap: wrap; gap: 8px;
@@ -8732,7 +8732,7 @@ body:not(#_):not(#__) :is(.mem-lendas, .localidades-section, .timeline-section) 
    1) a pesquisa (Ctrl K) deixa de ser só uma lupa: em ecrãs largos mostra «Pesquisar  Ctrl K» numa pílula;
    2) os submenus alargam para cada opção caber numa linha («Comunicar uma ocorrência» partia-se em duas). */
 /* (15/10/2026: a pílula «Pesquisar Ctrl K» foi retirada a pedido — fica só a lupa; Ctrl K continua a funcionar) */
-@media (min-width: 851px){
+@media (min-width: 1181px){
     .main-nav .submenu{ min-width: 250px; width: max-content; max-width: 360px; }
     .main-nav .submenu > a, .main-nav .submenu .submenu-main{ white-space: nowrap; }
 }
@@ -8807,7 +8807,7 @@ body:not(#_):not(#__) :is(.mem-lendas, .localidades-section, .timeline-section) 
 }
 
 /* telemóvel: o concelho volta a aparecer por baixo do nome da Junta (regra da casa: sempre visível) */
-@media (max-width: 850px){
+@media (max-width: 1180px){
     body .site-header .header-inner .brand small{ display: block; font-size: 11.5px; line-height: 1.2; margin-top: 2px; }
 }
 /* «Hoje»: títulos (evento, farmácia) até 2 linhas em vez de cortados; no telemóvel o cabeçalho fica em coluna */
@@ -9105,10 +9105,10 @@ body .pres .pres__moldura::before{ inset: -22% -22% auto -22%; height: 75%; bord
 
 /* 3) Cabeçalho entre 851 e 1199px (tablet na horizontal, portáteis pequenos): o botão claro/escuro ficava
       fora do ecrã. Os ícones das redes sociais saem da barra (estão no rodapé) e os itens ficam mais justos. */
-@media (min-width: 851px) and (max-width: 1199px){
+@media (min-width: 1181px) and (max-width: 1199px){
     body .site-header .menu-redes--barra{ display: none; }
 }
-@media (min-width: 851px) and (max-width: 1060px){
+@media (min-width: 1181px) and (max-width: 1060px){
     body .site-header .main-nav > a,
     body .site-header .main-nav > .nav-dropdown > .nav-parent{ padding: 0 10px !important; }
     body .site-header .header-inner{ gap: 8px; padding-left: 16px; }
@@ -9174,7 +9174,7 @@ body .pres .pres__moldura::before{ inset: -22% -22% auto -22%; height: 75%; bord
 /* Menu do telemóvel aberto depois de descer a página (20/10/2026): o «overflow: hidden» no body transformava-o num
    contentor de scroll e a barra (position: sticky) voltava para o topo da página — a barra desaparecia, o menu abria
    fora do ecrã e o scroll ficava bloqueado (parecia congelado). O scroll bloqueia-se no html e o body fica como estava. */
-@media (max-width: 850px){
+@media (max-width: 1180px){
     body.nav-open{ overflow: visible; overflow-x: hidden; overflow-x: clip; }
     html:has(body.nav-open){ overflow: hidden; }
 }
@@ -9189,7 +9189,7 @@ body .pres .pres__moldura::before{ inset: -22% -22% auto -22%; height: 75%; bord
 
 /* Cabeçalho só com o logótipo (tema_config.cabecalho_so_logo = 1): o logótipo já traz o nome */
 body .site-header .header-inner .brand.brand--so-logo img{ height:68px !important; width:auto; }
-@media (max-width: 850px){ body .site-header .header-inner .brand.brand--so-logo img{ height:50px !important; } }
+@media (max-width: 1180px){ body .site-header .header-inner .brand.brand--so-logo img{ height:50px !important; } }
 
 /* Barra de ícones da Junta (tabela atalhos, migração 034): no lugar dos cartões de acesso rápido */
 .home-atalhos-grid{

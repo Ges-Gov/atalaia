@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     indicador.className = "nav-indicador";
     indicador.setAttribute("aria-hidden", "true");
     nav.insertBefore(indicador, nav.firstChild);
-    const desktop = window.matchMedia("(min-width: 851px)");
+    const desktop = window.matchMedia("(min-width: 1181px)");
 
     // item da página atual: link direto, ou o "pai" do submenu que tem a página
     const aqui = location.pathname.replace(/\/$/, "/index.php");
@@ -628,7 +628,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (link.dataset.submenu === "1") return;
         link.dataset.submenu = "1";
         link.addEventListener("click", function (e) {
-            if (!window.matchMedia("(max-width: 850px)").matches) return;
+            if (!window.matchMedia("(max-width: 1180px)").matches) return;
             e.preventDefault();
             const sub = link.parentElement;
             const vaiAbrir = !sub.classList.contains("open");

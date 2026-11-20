@@ -10,7 +10,7 @@
 :root[data-tema="escuro"] .brand small{color:var(--escuro-texto-2)}
 :root[data-tema="escuro"] .main-nav a{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .main-nav a:hover{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
-@media (max-width: 850px){
+@media (max-width: 1180px){
   :root[data-tema="escuro"] .main-nav{background:var(--escuro-superficie)}
 }
 :root[data-tema="escuro"] .content-box{background:var(--escuro-superficie)}
@@ -30,7 +30,7 @@
 :root[data-tema="escuro"] .submenu{background:var(--escuro-superficie)}
 :root[data-tema="escuro"] .submenu a{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .submenu a:hover{background:var(--escuro-superficie-2);color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
-@media (max-width: 850px){
+@media (max-width: 1180px){
   :root[data-tema="escuro"] .submenu{background:var(--escuro-superficie)}
 }
 :root[data-tema="escuro"] .documento-linha{background:var(--escuro-superficie);border:1px solid var(--escuro-borda)}
@@ -271,7 +271,7 @@
 :root[data-tema="escuro"] .recuperar-input-group input{color:var(--escuro-texto)}
 :root[data-tema="escuro"] .recuperar-links a{color:color-mix(in srgb, var(--cor-principal) 45%, #fff)}
 :root[data-tema="escuro"] .hero-actions a.hero-btn{color:var(--escuro-texto)}
-@media (max-width: 850px){
+@media (max-width: 1180px){
   :root[data-tema="escuro"] .main-header{background:var(--escuro-superficie)}
   :root[data-tema="escuro"] .main-nav{background:var(--escuro-superficie) !important}
 }
@@ -286,7 +286,7 @@
 :root[data-tema="escuro"] .slider-pausa{border:1px solid var(--escuro-borda)}
 :root[data-tema="escuro"] .tema-toggle{border:1px solid var(--escuro-borda);color:var(--escuro-texto)}
 :root[data-tema="escuro"] body .site-header .header-inner{border:1px solid var(--escuro-borda)}
-@media (min-width: 851px){
+@media (min-width: 1181px){
   :root[data-tema="escuro"] body .main-nav > a,
   :root[data-tema="escuro"] body .main-nav > .nav-dropdown > .nav-parent{color:var(--escuro-texto)}
   :root[data-tema="escuro"] body .main-nav > a:hover,

@@ -96,7 +96,7 @@ if (isset($pdo)) {
                     <?php endif; ?>
                     <?php if (siteConfig('email', '') !== ''): ?>
                         <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-envelope-fill"></i></span>
-                            <a href="mailto:<?= htmlspecialchars(siteConfig('email')) ?>"><?= str_replace('@', '<wbr>@', htmlspecialchars(siteConfig('email'))) ?></a></li>
+                            <a href="mailto:<?= htmlspecialchars(siteConfig('email')) ?>"><?= preg_replace(['/@/', '/([.\-])/'], ['<wbr>@', '$1<wbr>'], htmlspecialchars(siteConfig('email'))) ?></a></li>
                     <?php endif; ?>
                     <?php if (siteConfig('morada', '') !== ''): ?>
                         <li><span class="rodape__ico" aria-hidden="true"><i class="bi bi-geo-alt-fill"></i></span>

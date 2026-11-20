@@ -6635,7 +6635,7 @@ img.foto-ampliavel:focus-visible{ outline: 3px solid var(--cor-secundaria); outl
 .rodape__ico .bi{ display: block; line-height: 1; }
 .rodape a{ color: #f1f3f5; text-decoration: none; transition: color var(--dur-2) var(--ease-out); }
 .rodape a:hover{ color: var(--ouro-vivo, #e3c463); }
-.rodape__contactos li > a, .rodape__contactos li > span:last-child{ padding-top: 5px; }
+.rodape__contactos li > a, .rodape__contactos li > span:last-child{ padding-top: 5px; min-width: 0; overflow-wrap: anywhere; } /* 20/11/2026: emails e moradas longos partem dentro do cartão do rodapé */
 .rodape__horario{
     margin-top: 18px;
     padding: 12px 14px;

@@ -10,7 +10,8 @@ $where = ["ativo = 1", "area = 'freguesia'"];
 $params = [];
 
 if ($pesquisa !== '') {
-    $where[] = "(titulo LIKE ? OR descricao LIKE ?)";
+    $where[] = "(titulo LIKE ? OR descricao LIKE ? OR tags LIKE ?)";   // tags: palavras-chave (migração 095, 20/11/2026)
+    $params[] = "%$pesquisa%";
     $params[] = "%$pesquisa%";
     $params[] = "%$pesquisa%";
 }
@@ -509,7 +510,7 @@ $anosLista = $pdo->query("SELECT DISTINCT YEAR(data_documento) AS ano FROM docum
                     <label for="docsPesquisa" class="filtro-rotulo">Pesquisar documentos</label>
                     <div class="docs-input-wrap">
                         <span aria-hidden="true"><i class="bi bi-search"></i></span>
-                        <input type="text" id="docsPesquisa" name="pesquisa" placeholder="Pesquisar por título ou descrição..." value="<?= htmlspecialchars($pesquisa) ?>">
+                        <input type="text" id="docsPesquisa" name="pesquisa" placeholder="Pesquisar por título, descrição ou palavras-chave..." value="<?= htmlspecialchars($pesquisa) ?>">
                     </div>
 
                     <div class="docs-select-wrap">

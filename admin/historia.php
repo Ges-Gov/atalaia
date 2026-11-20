@@ -94,7 +94,7 @@ require_once "includes/header.php";
 <style>
 
 .historia-admin{
-    padding:28px;
+    padding:0;   /* 20/11/2026: a largura toda, como as outras páginas */
 }
 
 .historia-admin-hero{

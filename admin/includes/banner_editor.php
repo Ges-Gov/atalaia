@@ -23,7 +23,7 @@ function bannerEditor(string $chave, string $titulo = '', string $kicker = ''): 
     $nome = $GLOBALS['SEPARADORES_FUNDO'][$chave] ?? $chave;
     static $recursos = false;
     if (!$recursos) { $recursos = true; ?>
-        <link rel="stylesheet" href="assets/banner-editor.css?v=20261013a">
+        <link rel="stylesheet" href="assets/banner-editor.css?v=20261120e">
         <script src="assets/banner-editor.js?v=20261013a" defer></script>
     <?php } ?>
     <div class="bn" data-banner-editor data-chave="<?= htmlspecialchars($chave) ?>" data-url="<?= htmlspecialchars($url) ?>" data-x="<?= $x ?>" data-y="<?= $y ?>">

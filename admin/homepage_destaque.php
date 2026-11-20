@@ -93,8 +93,6 @@ background:white;
 padding:30px;
 border-radius:24px;
 box-shadow:0 18px 45px rgba(0,0,0,.08);
-max-width:1100px;
-margin:auto;
 }
 .hp-grid{
 display:grid;

@@ -154,6 +154,8 @@ $pendentes = dashCount($pdo, "SELECT COUNT(*) FROM pedidos_junta WHERE estado = 
 $analise = dashCount($pdo, "SELECT COUNT(*) FROM pedidos_junta WHERE estado = 'em_analise'");
 $resolvidos = dashCount($pdo, "SELECT COUNT(*) FROM pedidos_junta WHERE estado = 'resolvido'");
 
+// 20/11/2026: os requerimentos só aparecem no painel com o Balcão Virtual ligado (tema_config.balcao_virtual_ativo)
+$balcaoAtivo = temaConfig('balcao_virtual_ativo', '0') === '1';
 $totalRequerimentos = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos");
 $reqPendentes = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos WHERE estado = 'pendente'");
 $reqAnalise = dashCount($pdo, "SELECT COUNT(*) FROM requerimentos WHERE estado = 'em_analise'");
@@ -260,7 +262,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
         <div class="dash-hero-info">
             <div class="dash-hero-eyebrow"><i class="bi bi-building"></i> <?= htmlspecialchars(siteConfig('nome_site', 'Backoffice')) ?></div>
             <h1>Painel de Gestão</h1>
-            <p>Visão geral do Balcão Virtual, ocorrências, requerimentos e atividade da freguesia.</p>
+            <p><?= $balcaoAtivo ? 'Visão geral do Balcão Virtual, ocorrências, requerimentos e atividade da freguesia.' : 'Visão geral das ocorrências, marcações e atividade da freguesia.' ?></p>
         </div>
 
         <div class="dash-hero-kpis">
@@ -308,6 +310,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
             <em><?= $taxaResolucao ?>% de resolução</em>
         </a>
 
+        <?php if ($balcaoAtivo): ?>
         <a class="dash-kpi-card purple" href="requerimentos.php?estado=pendente">
             <div class="dash-kpi-icon"><i class="bi bi-file-earmark-text"></i></div>
             <small>Requerimentos</small>
@@ -321,6 +324,8 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
             <strong><?= (int)$reqAtrasados ?></strong>
             <em><?= $prazoPorDocumento ? 'fora do prazo definido' : 'por tratar há mais de 5 dias' ?></em>
         </a>
+
+        <?php endif; ?>
 
         <a class="dash-kpi-card blue" href="marcacoes.php">
             <div class="dash-kpi-icon"><i class="bi bi-calendar-event"></i></div>
@@ -361,7 +366,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
             <div class="dash-panel-head">
                 <div>
                     <h3>Atividade mensal</h3>
-                    <small>Pedidos e requerimentos nos últimos meses</small>
+                    <small><?= $balcaoAtivo ? 'Pedidos e requerimentos nos últimos meses' : 'Pedidos nos últimos meses' ?></small>
                 </div>
             </div>
             <canvas id="graficoAtividadeMensal"></canvas>
@@ -379,6 +384,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
     </div>
 
     <div class="dash-main-grid">
+        <?php if ($balcaoAtivo): ?>
         <div class="dash-panel-insane">
             <div class="dash-panel-head">
                 <div>
@@ -388,6 +394,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
             </div>
             <canvas id="graficoRequerimentosEstado"></canvas>
         </div>
+        <?php endif; ?>
 
         <div class="dash-panel-insane">
             <div class="dash-panel-head">
@@ -453,6 +460,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
             </div>
         </div>
 
+        <?php if ($balcaoAtivo): ?>
         <div class="dash-panel-insane">
             <div class="dash-panel-head">
                 <div>
@@ -478,6 +486,7 @@ $taxaResolucao = $totalPedidos > 0 ? round(($resolvidos / $totalPedidos) * 100) 
                 <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
 
         <div class="dash-panel-insane">
             <div class="dash-panel-head">
@@ -633,14 +642,14 @@ new Chart(document.getElementById('graficoAtividadeMensal'), {
                 borderWidth: 3,
                 tension: 0.35,
                 fill: true
-            },
+            }<?php if ($balcaoAtivo): ?>,
             {
                 label: 'Requerimentos',
                 data: dadosPorLabel(requerimentosMesLabels, requerimentosMesDados, labelsMensais),
                 borderWidth: 3,
                 tension: 0.35,
                 fill: true
-            }<?php if ($temReservas): ?>,
+            }<?php endif; ?><?php if ($temReservas): ?>,
             {
                 label: 'Reservas',
                 data: dadosPorLabel(reservasMesLabels, reservasMesDados, labelsMensais),
@@ -685,7 +694,7 @@ new Chart(document.getElementById('graficoPedidosEstado'), {
     }
 });
 
-new Chart(document.getElementById('graficoRequerimentosEstado'), {
+if (document.getElementById('graficoRequerimentosEstado')) new Chart(document.getElementById('graficoRequerimentosEstado'), {
     type: 'bar',
     data: {
         labels: requerimentosEstadoLabels,

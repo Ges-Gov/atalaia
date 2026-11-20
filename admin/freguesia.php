@@ -138,7 +138,7 @@ require_once "includes/header.php";
 ?>
 
 <style>
-.freguesia-admin-page{padding:28px;}
+.freguesia-admin-page{padding:0;} /* 20/11/2026: a largura toda, como as outras páginas */
 .freguesia-admin-hero{background:linear-gradient(135deg,#242A30,#11151B);color:white;border-radius:28px;padding:32px;margin-bottom:24px;box-shadow:0 20px 45px rgba(0,0,0,.14);display:flex;justify-content:space-between;gap:24px;align-items:center;overflow:hidden;position:relative;}
 .freguesia-admin-hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-150px;top:-200px;background:rgba(255,255,255,.06);}
 .freguesia-admin-hero>*{position:relative;z-index:2;}
@@ -157,7 +157,7 @@ require_once "includes/header.php";
 .freguesia-preview{width:100%;max-height:260px;object-fit:cover;border-radius:20px;margin-top:12px;box-shadow:0 14px 34px rgba(0,0,0,.12);}
 .freguesia-help{background:#f8fafc;border-left:5px solid #242A30;border-radius:16px;padding:16px;color:#475569;line-height:1.7;margin-top:12px;}
 .freguesia-save-bar{position:sticky;bottom:18px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border:1px solid #e5e7eb;border-radius:20px;padding:16px;box-shadow:0 18px 45px rgba(0,0,0,.14);display:flex;justify-content:space-between;gap:14px;align-items:center;z-index:20;}
-.freguesia-btn-admin{border:0;background:#242A30;color:white;padding:14px 22px;border-radius:14px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.25s;}
+.freguesia-btn-admin{border:0;background:#242A30;color:white;padding:14px 22px;border-radius:14px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:.25s;font-family:inherit;font-size:15px;line-height:1.55;}
 .freguesia-btn-admin:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(36,42,50,.25);}
 .freguesia-btn-admin.secondary{background:#64748b;}
 .freguesia-alert{padding:14px 16px;border-radius:14px;margin-bottom:18px;font-weight:900;background:#dcfce7;color:#166534;}

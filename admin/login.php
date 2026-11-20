@@ -16,7 +16,7 @@ $redirect = $_GET['redirect'] ?? ($_POST['redirect'] ?? '');
 if (isset($_SESSION['admin'])) {
     if ($redirect) header("Location: " . $redirect);
     elseif (($_SESSION['admin_tipo'] ?? '') === 'vogal') header("Location: ../area-vogais.php");
-    elseif (($_SESSION['admin_tipo'] ?? '') === 'presidente_assembleia') header("Location: assembleia-votacoes.php");
+    elseif (($_SESSION['admin_tipo'] ?? '') === 'presidente_assembleia') header("Location: assembleia-sessoes.php");
     elseif (($_SESSION['admin_tipo'] ?? '') === 'admin_denuncias') header("Location: denuncias.php");
     else header("Location: dashboard.php");
     exit;
@@ -72,7 +72,7 @@ if ($admin) {
 
     if ($redirect) header("Location: " . $redirect);
     elseif (($admin['tipo'] ?? '') === 'vogal') header("Location: ../area-vogais.php");
-    elseif (($admin['tipo'] ?? '') === 'presidente_assembleia') header("Location: assembleia-votacoes.php");
+    elseif (($admin['tipo'] ?? '') === 'presidente_assembleia') header("Location: assembleia-sessoes.php");
     elseif (($admin['tipo'] ?? '') === 'admin_denuncias') header("Location: denuncias.php");
     else header("Location: dashboard.php");
     exit;

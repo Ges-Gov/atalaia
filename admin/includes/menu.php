@@ -31,7 +31,7 @@ function menuAdminDefinicao(array $badges = []): array
 
     $menuAdmin = [
         ['chave' => 'dashboard', 'rotulo' => 'Painel', 'href' => 'dashboard.php', 'icone' => 'bi-speedometer2',
-         'dica' => 'Resumo do dia: pedidos por tratar, reservas, requerimentos e atividade do site'],
+         'dica' => 'Resumo do dia: pedidos por tratar, reservas' . (temaConfig('balcao_virtual_ativo', '0') === '1' ? ', requerimentos' : '') . ' e atividade do site'],
 
         ['grupo' => 'home', 'rotulo' => 'Página Inicial', 'icone' => 'bi-house-heart', 'perm' => 'home',
          'dica' => 'Tudo o que aparece na página de entrada do site', 'itens' => [
@@ -99,7 +99,8 @@ function menuAdminDefinicao(array $badges = []): array
             ...($badgeSugestoes !== null ? [['chave' => 'sugestoes', 'rotulo' => 'Sugestões', 'href' => 'sugestoes.php', 'icone' => 'bi-lightbulb', 'site' => '/sugestoes.php',
              'badge' => $badgeSugestoes, 'dica' => 'Sugestões enviadas pelo formulário do site']] : []),
             ['chave' => 'requerimentos', 'rotulo' => 'Requerimentos', 'href' => 'requerimentos.php', 'icone' => 'bi-file-earmark-check', 'site' => '/requerimentos.php', 'badge' => $badgeRequerimentos,
-             'rel' => ['ver_requerimento.php'], 'dica' => 'Pedidos de documentos feitos online (Balcão Virtual)'],
+             'rel' => ['ver_requerimento.php'], 'dica' => 'Pedidos de documentos feitos online (Balcão Virtual)',
+             'se' => temaConfig('balcao_virtual_ativo', '0') === '1'],   /* 20/11/2026: escondido enquanto o Balcão Virtual não está ligado */
             ['chave' => 'marcacoes', 'rotulo' => 'Marcações', 'href' => 'marcacoes.php', 'icone' => 'bi-calendar-check',
              'rel' => ['ver_marcacao.php'], 'dica' => 'Marcações de atendimento e requisições de espaços ou equipamento'],
             ['chave' => 'reservas', 'rotulo' => 'Reservas de espaços', 'href' => 'reservas.php', 'icone' => 'bi-calendar2-check', 'site' => '/reservas.php', 'badge' => $badgeReservas,
@@ -140,7 +141,8 @@ function menuAdminDefinicao(array $badges = []): array
             ['chave' => 'assembleia_sessoes', 'rotulo' => 'Sessões', 'href' => 'assembleia-sessoes.php', 'icone' => 'bi-calendar3', 'site' => '/assembleia-sessoes.php',
              'dica' => 'Calendário e ordem de trabalhos das sessões'],
             ['chave' => 'assembleia_votacoes', 'rotulo' => 'Votações', 'href' => 'assembleia-votacoes.php', 'icone' => 'bi-ui-checks',
-             'dica' => 'Votações online dos membros da Assembleia'],
+             'dica' => 'Votações online dos membros da Assembleia',
+             'se' => temaConfig('assembleia_votacoes_ativo', '0') === '1'],   /* 20/11/2026: escondido até as votações estarem prontas */
         ]],
 
         ['chave' => 'contactos', 'rotulo' => 'Contactos', 'href' => 'contactos.php', 'icone' => 'bi-telephone', 'site' => '/contactos.php',
